@@ -41,7 +41,7 @@ export default function Discover() {
     try {
       const q = filter.trim() || undefined;
       const [list, out, acc] = await Promise.all([
-        api.users.list(q),
+        q ? api.users.search(q) : api.users.list(""),
         api.connections.outgoing(),
         api.connections.accepted(),
       ]);
@@ -64,10 +64,13 @@ export default function Discover() {
   }, [filter]);
 
   useEffect(() => {
-    load();
+    const timer = setTimeout(() => {
+      load();
+    }, 300); // debounce search
+    return () => clearTimeout(timer);
   }, [load]);
 
-  const headingFilter = useMemo(() => filter.trim() || "All categories", [filter]);
+  const headingFilter = useMemo(() => filter.trim() || "Everyone", [filter]);
 
   async function sendRequest(targetId) {
     setActionId(targetId);
@@ -90,17 +93,17 @@ export default function Discover() {
     <div className="container">
       <header className="page-header">
         <h1 className="page-title">Discover</h1>
-        <p className="subtitle">Browse creators and brands. Filter by category to narrow results.</p>
+        <p className="subtitle">Search for creators and brands by name or username.</p>
       </header>
 
       <div className="filter-bar field" style={{ marginBottom: 0 }}>
-        <label htmlFor="filter-cat">Category filter</label>
-        <select id="filter-cat" className="input" value={filter} onChange={(e) => setFilter(e.target.value)}>
-          <option value="">All categories</option>
-          {CATEGORIES.map((c) => (
-            <option key={c} value={c}>{c}</option>
-          ))}
-        </select>
+        <input 
+          type="search" 
+          className="input" 
+          placeholder="Search name or @username..." 
+          value={filter} 
+          onChange={(e) => setFilter(e.target.value)} 
+        />
       </div>
       <p className="filter-hint">
         Showing results for <strong>{headingFilter}</strong>

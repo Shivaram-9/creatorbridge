@@ -153,6 +153,7 @@ export const api = {
       const q = category ? `?category=${encodeURIComponent(category)}` : "";
       return request(`/users${q}`);
     },
+    search: (q) => request(`/users/search?q=${encodeURIComponent(q || "")}`),
     get: (id) => request(`/users/${id}`),
     addPortfolioItem: (body) => request("/users/me/portfolio", { method: "POST", body }),
     removePortfolioItem: (itemId) => request(`/users/me/portfolio/${itemId}`, { method: "DELETE" }),

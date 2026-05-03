@@ -100,6 +100,30 @@ usersRouter.get("/", async (req, res) => {
   }
 });
 
+/** Search: by name or username */
+usersRouter.get("/search", async (req, res) => {
+  try {
+    const { q } = req.query;
+    if (!q || typeof q !== "string") return res.json([]);
+    const keyword = q.trim();
+    if (!keyword) return res.json([]);
+
+    const regex = new RegExp(keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
+    const users = await User.find({
+      _id: { $ne: req.userId },
+      $or: [{ name: regex }, { username: regex }],
+    })
+      .select("-password")
+      .limit(50)
+      .lean();
+
+    res.json(users);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Search failed" });
+  }
+});
+
 usersRouter.get("/:id", async (req, res) => {
   try {
     if (req.params.id === req.userId) {

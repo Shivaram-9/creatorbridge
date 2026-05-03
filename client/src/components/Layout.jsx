@@ -1,17 +1,24 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Link, NavLink, Outlet } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 import OfflineBanner from "./OfflineBanner.jsx";
 import { api } from "../services/api.js";
 
-function NavLinkItem({ to, children }) {
+function BottomNavItem({ to, icon, label, badgeCount }) {
   return (
     <NavLink
       to={to}
-      className={({ isActive }) => `nav-link ${isActive ? "nav-link-active" : ""}`}
-      end={to === "/"}
+      className={({ isActive }) => `bottom-nav-item ${isActive ? "active" : ""}`}
     >
-      {children}
+      <div className="bottom-nav-icon">
+        {icon}
+        {badgeCount > 0 && (
+          <span className="bottom-nav-badge">
+            {badgeCount > 99 ? "99+" : badgeCount}
+          </span>
+        )}
+      </div>
+      <span className="bottom-nav-label">{label}</span>
     </NavLink>
   );
 }
@@ -19,24 +26,35 @@ function NavLinkItem({ to, children }) {
 export default function Layout() {
   const { user, logout } = useAuth();
   const [unreadCount, setUnreadCount] = useState(0);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
 
-  /* Poll notifications count on mount + every 60s */
+  /* Poll notifications count */
   useEffect(() => {
     if (!user) return;
-
     async function fetchCount() {
       try {
         const data = await api.notifications.list();
         if (Array.isArray(data)) setUnreadCount(data.length);
       } catch {
-        /* silent — badge is cosmetic */
+        // silent
       }
     }
-
     fetchCount();
     const interval = setInterval(fetchCount, 60_000);
     return () => clearInterval(interval);
   }, [user]);
+
+  /* Close menu on click outside */
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (menuOpen && menuRef.current && !menuRef.current.contains(e.target)) {
+        setMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [menuOpen]);
 
   return (
     <div className="layout">
@@ -47,27 +65,37 @@ export default function Layout() {
             CreatorBridge
           </Link>
           {user && (
-            <nav className="nav">
-              <NavLinkItem to="/discover">Discover</NavLinkItem>
-              <NavLinkItem to="/connections">Connections</NavLinkItem>
-              <NavLinkItem to="/notifications">
-                <span className="nav-notif-wrap">
-                  Notifications
-                  {unreadCount > 0 && (
-                    <span className="nav-badge" aria-label={`${unreadCount} notifications`}>
-                      {unreadCount > 99 ? "99+" : unreadCount}
-                    </span>
-                  )}
-                </span>
-              </NavLinkItem>
-              <NavLinkItem to="/settings">⚙ Settings</NavLinkItem>
-            </nav>
+            <div className="top-menu-container" ref={menuRef}>
+              <button 
+                className="menu-toggle" 
+                onClick={() => setMenuOpen(!menuOpen)}
+                aria-label="Menu"
+              >
+                ☰
+              </button>
+              {menuOpen && (
+                <div className="dropdown-menu">
+                  <Link to="/profile" className="dropdown-item" onClick={() => setMenuOpen(false)}>👤 Profile</Link>
+                  <Link to="/settings" className="dropdown-item" onClick={() => setMenuOpen(false)}>⚙ Settings</Link>
+                  <button className="dropdown-item text-danger" onClick={() => { setMenuOpen(false); logout(); }}>🚪 Logout</button>
+                </div>
+              )}
+            </div>
           )}
         </div>
       </header>
+
       <main className="main-content">
         <Outlet />
       </main>
+
+      {user && (
+        <nav className="bottom-nav">
+          <BottomNavItem to="/discover" icon="🔍" label="Discover" />
+          <BottomNavItem to="/connections" icon="🤝" label="Connections" />
+          <BottomNavItem to="/notifications" icon="🔔" label="Alerts" badgeCount={unreadCount} />
+        </nav>
+      )}
     </div>
   );
 }

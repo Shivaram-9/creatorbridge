@@ -6,31 +6,7 @@ import { connectSocket, getSocket } from "../services/socket.js";
 import { roleBadgeClass } from "../utils/badges.js";
 import ErrorBanner from "../components/ErrorBanner.jsx";
 
-/* ── Collab message helpers ── */
-const COLLAB_PREFIX = "📋 COLLABORATION PROPOSAL\n";
-
-function isCollabMessage(content) {
-  return typeof content === "string" && content.startsWith(COLLAB_PREFIX);
-}
-
-function parseCollab(content) {
-  const lines = content.slice(COLLAB_PREFIX.length).split("\n");
-  const data = {};
-  for (const line of lines) {
-    const [key, ...rest] = line.split(": ");
-    if (key && rest.length) data[key.trim()] = rest.join(": ").trim();
-  }
-  return data;
-}
-
-function buildCollabContent({ title, budget, deliverables }) {
-  return (
-    COLLAB_PREFIX +
-    `Campaign: ${title}\n` +
-    `Budget: ${budget}\n` +
-    `Deliverables: ${deliverables}`
-  );
-}
+/* Removed collab message helpers */
 
 /**
  * Chat page — real-time messaging with REST fallback.
@@ -48,12 +24,10 @@ export default function Chat() {
   const [sending, setSending] = useState(false);
   const [socketOnline, setSocketOnline] = useState(false);
 
-  /* Collab modal state */
-  const [showCollab, setShowCollab] = useState(false);
-  const [collabTitle, setCollabTitle] = useState("");
-  const [collabBudget, setCollabBudget] = useState("");
-  const [collabDeliverables, setCollabDeliverables] = useState("");
-  const [collabSending, setCollabSending] = useState(false);
+  /* Media attachment state */
+  const [showMedia, setShowMedia] = useState(false);
+  const [mediaUrl, setMediaUrl] = useState("");
+  const [mediaType, setMediaType] = useState("image");
 
   const seenIdsRef = useRef(new Set());
   const bottomRef = useRef(null);
@@ -186,9 +160,10 @@ export default function Chat() {
 
   /* ── Send helpers ── */
   const sendContentViaRest = useCallback(
-    async (content, onDone) => {
+    async (content, mediaUrl, mediaType, onDone) => {
       try {
-        const msg = await api.messages.send(receiverId, content);
+        const payload = { receiverId, content, mediaUrl, mediaType };
+        const msg = await api.messages.send(payload);
         if (msg?.error) {
           setError(typeof msg.error === "string" ? msg.error : "Something went wrong");
         } else {
@@ -204,16 +179,16 @@ export default function Chat() {
   );
 
   const sendContent = useCallback(
-    (content, onDone) => {
-      if (!content || !receiverId) { onDone?.(); return; }
+    (content, mediaUrl, mediaType, onDone) => {
+      if ((!content && !mediaUrl) || !receiverId) { onDone?.(); return; }
 
       const socket = getSocket() || connectSocket();
-      const payload = { receiverId, content };
+      const payload = { receiverId, content, mediaUrl, mediaType };
 
       if (socket?.connected) {
         socket.emit("send_message", payload, (ack) => {
           if (ack?.error) {
-            sendContentViaRest(content, onDone);
+            sendContentViaRest(content, mediaUrl, mediaType, onDone);
             return;
           }
           if (ack?.message) pushMessage(ack.message);
@@ -222,7 +197,7 @@ export default function Chat() {
         return;
       }
 
-      sendContentViaRest(content, onDone);
+      sendContentViaRest(content, mediaUrl, mediaType, onDone);
     },
     [receiverId, pushMessage, sendContentViaRest]
   );
@@ -230,33 +205,28 @@ export default function Chat() {
   /* Normal message */
   function handleSubmit(e) {
     e.preventDefault();
-    const content = input.trim();
-    if (!content || sending) return;
+    const txt = input.trim();
+    if (!txt || sending) return;
     setSending(true);
     setError("");
-    sendContent(content, () => {
+    sendContent(txt, null, null, () => {
       setInput("");
       setSending(false);
     });
   }
 
-  /* Collab proposal */
-  function handleCollabSubmit(e) {
+  /* Media message */
+  function handleMediaSubmit(e) {
     e.preventDefault();
-    const title = collabTitle.trim();
-    const budget = collabBudget.trim();
-    const deliverables = collabDeliverables.trim();
-    if (!title || !budget || !deliverables) return;
-
-    setCollabSending(true);
+    const url = mediaUrl.trim();
+    if (!url || sending) return;
+    
+    setSending(true);
     setError("");
-    const content = buildCollabContent({ title, budget, deliverables });
-    sendContent(content, () => {
-      setCollabSending(false);
-      setShowCollab(false);
-      setCollabTitle("");
-      setCollabBudget("");
-      setCollabDeliverables("");
+    sendContent("", url, mediaType, () => {
+      setSending(false);
+      setShowMedia(false);
+      setMediaUrl("");
     });
   }
 
@@ -334,48 +304,25 @@ export default function Chat() {
               <div className="chat-empty__illustration" aria-hidden="true">💬</div>
               <p className="chat-empty__title">Start the conversation</p>
               <p className="chat-empty__text">
-                Send a message below or tap 🤝 to send a collaboration proposal.
+                Send a message below or tap 📎 to send media.
               </p>
             </div>
           ) : (
             messages.map((m) => {
               const sid = m.sender?._id || m.sender;
               const mine = sid === user?._id;
-              const collab = isCollabMessage(m.content);
-
-              if (collab) {
-                const data = parseCollab(m.content);
-                return (
-                  <div key={m._id || m.content} className={`chat-bubble ${mine ? "chat-bubble-mine" : "chat-bubble-theirs"}`}>
-                    <span className="chat-bubble__sender">{senderLabelFor(m, mine)}</span>
-                    <div className="collab-card">
-                      <div className="collab-card__header">
-                        <span className="collab-card__icon" aria-hidden="true">🤝</span>
-                        <span className="collab-card__label">Collaboration Proposal</span>
-                      </div>
-                      <div className="collab-card__body">
-                        <div className="collab-card__row">
-                          <span className="collab-card__key">Campaign</span>
-                          <span className="collab-card__val">{data.Campaign || "—"}</span>
-                        </div>
-                        <div className="collab-card__row">
-                          <span className="collab-card__key">Budget</span>
-                          <span className="collab-card__val">{data.Budget || "—"}</span>
-                        </div>
-                        <div className="collab-card__row">
-                          <span className="collab-card__key">Deliverables</span>
-                          <span className="collab-card__val">{data.Deliverables || "—"}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                );
-              }
 
               return (
-                <div key={m._id || m.content} className={`chat-bubble ${mine ? "chat-bubble-mine" : "chat-bubble-theirs"}`}>
+                <div key={m._id || m.content || m.mediaUrl} className={`chat-bubble ${mine ? "chat-bubble-mine" : "chat-bubble-theirs"}`}>
                   <span className="chat-bubble__sender">{senderLabelFor(m, mine)}</span>
-                  <div className="chat-bubble__text">{m.content}</div>
+                  {m.mediaUrl ? (
+                    m.mediaType === "video" ? (
+                      <video src={m.mediaUrl} controls className="chat-media-preview" style={{ maxWidth: '100%', borderRadius: '8px', marginTop: '0.25rem' }} />
+                    ) : (
+                      <img src={m.mediaUrl} alt="attachment" className="chat-media-preview" style={{ maxWidth: '100%', borderRadius: '8px', marginTop: '0.25rem' }} />
+                    )
+                  ) : null}
+                  {m.content && <div className="chat-bubble__text">{m.content}</div>}
                 </div>
               );
             })
@@ -383,16 +330,16 @@ export default function Chat() {
           <div ref={bottomRef} />
         </div>
 
-        {/* Input row + Collab button */}
+        {/* Input row + Media button */}
         <form className="chat-form" onSubmit={handleSubmit}>
           <button
             type="button"
             className="chat-collab-trigger"
-            onClick={() => setShowCollab(true)}
-            title="Interested to Collaborate"
-            aria-label="Interested to Collaborate"
+            onClick={() => setShowMedia(true)}
+            title="Attach Media"
+            aria-label="Attach Media"
           >
-            🤝
+            📎
           </button>
           <input
             className="input"
@@ -411,70 +358,57 @@ export default function Chat() {
       </div>
 
       {/* ═══════════════════════════════
-          COLLAB MODAL
+          MEDIA MODAL
          ═══════════════════════════════ */}
-      {showCollab && (
-        <div className="collab-overlay" onClick={() => !collabSending && setShowCollab(false)}>
+      {showMedia && (
+        <div className="collab-overlay" onClick={() => !sending && setShowMedia(false)}>
           <div className="collab-modal" onClick={(e) => e.stopPropagation()}>
             <div className="collab-modal__header">
               <div className="collab-modal__header-text">
-                <span className="collab-modal__header-icon" aria-hidden="true">🤝</span>
-                <h2 className="collab-modal__title">Interested to Collaborate</h2>
+                <span className="collab-modal__header-icon" aria-hidden="true">📎</span>
+                <h2 className="collab-modal__title">Attach Media</h2>
               </div>
-              <button type="button" className="collab-modal__close" onClick={() => setShowCollab(false)} aria-label="Close" disabled={collabSending}>✕</button>
+              <button type="button" className="collab-modal__close" onClick={() => setShowMedia(false)} aria-label="Close" disabled={sending}>✕</button>
             </div>
             <p className="collab-modal__desc">
-              Send a collaboration proposal to <strong>{partner?.name || partner?.email}</strong>. They'll see it as a card in the chat.
+              Paste an image or video URL to send it in the chat.
             </p>
-            <form onSubmit={handleCollabSubmit}>
+            <form onSubmit={handleMediaSubmit}>
               <div className="field">
-                <label htmlFor="collab-title">Campaign title</label>
+                <label htmlFor="media-url">Media URL</label>
                 <input
-                  id="collab-title"
+                  id="media-url"
                   className="input"
-                  value={collabTitle}
-                  onChange={(e) => setCollabTitle(e.target.value)}
-                  placeholder="e.g. Summer Product Launch"
-                  maxLength={200}
+                  value={mediaUrl}
+                  onChange={(e) => setMediaUrl(e.target.value)}
+                  placeholder="https://..."
+                  maxLength={1000}
                   required
                   autoFocus
                 />
               </div>
               <div className="field">
-                <label htmlFor="collab-budget">Budget</label>
-                <input
-                  id="collab-budget"
+                <label htmlFor="media-type">Type</label>
+                <select
+                  id="media-type"
                   className="input"
-                  value={collabBudget}
-                  onChange={(e) => setCollabBudget(e.target.value)}
-                  placeholder="e.g. $500 or Negotiable"
-                  maxLength={100}
-                  required
-                />
-              </div>
-              <div className="field">
-                <label htmlFor="collab-deliverables">Deliverables</label>
-                <textarea
-                  id="collab-deliverables"
-                  className="input"
-                  value={collabDeliverables}
-                  onChange={(e) => setCollabDeliverables(e.target.value)}
-                  placeholder="e.g. 2 Instagram Reels + 1 Story"
-                  rows={3}
-                  maxLength={500}
-                  required
-                />
+                  value={mediaType}
+                  onChange={(e) => setMediaType(e.target.value)}
+                >
+                  <option value="image">Image</option>
+                  <option value="video">Video</option>
+                </select>
               </div>
               <div className="collab-modal__actions">
-                <button type="button" className="btn btn-secondary" onClick={() => setShowCollab(false)} disabled={collabSending}>
+                <button type="button" className="btn btn-secondary" onClick={() => setShowMedia(false)} disabled={sending}>
                   Cancel
                 </button>
                 <button
                   type="submit"
                   className="btn btn-primary"
-                  disabled={collabSending || !collabTitle.trim() || !collabBudget.trim() || !collabDeliverables.trim()}
+                  disabled={sending || !mediaUrl.trim()}
                 >
-                  {collabSending ? "Sending…" : "Send Proposal"}
+                  {sending ? "Sending…" : "Send Media"}
                 </button>
               </div>
             </form>

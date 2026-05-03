@@ -83,54 +83,38 @@ export default function Profile() {
     };
   }, [setUser]);
 
-  /* Handle avatar file → base64 */
-  function handleAvatarFile(e) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    if (file.size > 512_000) {
-      setError("Image must be under 500 KB");
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = () => setAvatar(reader.result);
-    reader.readAsDataURL(file);
-  }
+  /* Removed base64 avatar code */
 
-  /* Handle portfolio file upload */
-  function handlePortfolioFile(e) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    if (file.size > 2_000_000) {
-      setPfError("File must be under 2 MB");
-      return;
-    }
-    const isVideo = file.type.startsWith("video/");
+  /* Handle portfolio url upload */
+  async function handlePortfolioSubmit() {
+    const url = pfFileRef.current?.value?.trim();
+    if (!url) return;
+    
+    // Auto-detect simple video extensions or default to image
+    const isVideo = url.match(/\.(mp4|webm|ogg)$/i) || pfCaption.toLowerCase().includes("video");
+    
     setPfAdding(true);
     setPfError("");
 
-    const reader = new FileReader();
-    reader.onload = async () => {
-      try {
-        const result = await api.users.addPortfolioItem({
-          url: reader.result,
-          caption: pfCaption.trim(),
-          mediaType: isVideo ? "video" : "image",
-        });
-        if (result?.error) {
-          setPfError(typeof result.error === "string" ? result.error : "Something went wrong");
-        } else {
-          setPortfolio(Array.isArray(result.portfolio) ? result.portfolio : []);
-          setUser(result);
-          setPfCaption("");
-        }
-      } catch {
-        setPfError("Something went wrong");
-      } finally {
-        setPfAdding(false);
+    try {
+      const result = await api.users.addPortfolioItem({
+        url,
+        caption: pfCaption.trim(),
+        mediaType: isVideo ? "video" : "image",
+      });
+      if (result?.error) {
+        setPfError(typeof result.error === "string" ? result.error : "Something went wrong");
+      } else {
+        setPortfolio(Array.isArray(result.portfolio) ? result.portfolio : []);
+        setUser(result);
+        setPfCaption("");
         if (pfFileRef.current) pfFileRef.current.value = "";
       }
-    };
-    reader.readAsDataURL(file);
+    } catch {
+      setPfError("Something went wrong");
+    } finally {
+      setPfAdding(false);
+    }
   }
 
   async function removePortfolioItem(itemId) {
@@ -294,23 +278,23 @@ export default function Profile() {
                 maxLength={300}
                 style={{ flex: 1 }}
               />
+              <input
+                ref={pfFileRef}
+                className="input"
+                placeholder="Media URL (https://...)"
+                maxLength={1000}
+                style={{ flex: 1 }}
+              />
               <button
                 type="button"
                 className="btn btn-primary btn-sm"
-                onClick={() => pfFileRef.current?.click()}
+                onClick={handlePortfolioSubmit}
                 disabled={pfAdding}
               >
-                {pfAdding ? "Uploading…" : "＋ Add"}
+                {pfAdding ? "Adding…" : "＋ Add"}
               </button>
-              <input
-                ref={pfFileRef}
-                type="file"
-                accept="image/*,video/*"
-                className="sr-only"
-                onChange={handlePortfolioFile}
-              />
             </div>
-            <span className="muted" style={{ fontSize: "0.75rem" }}>Max 2 MB per file · Images and short videos</span>
+            <span className="muted" style={{ fontSize: "0.75rem" }}>Provide a public URL for your image or video</span>
           </div>
         )}
 
@@ -332,17 +316,20 @@ export default function Profile() {
                   <span className="avatar-upload-thumb__empty">📷</span>
                 )}
               </div>
-              <div className="avatar-upload-actions">
-                <button type="button" className="btn btn-secondary btn-sm" onClick={() => fileRef.current?.click()}>
-                  Choose image
-                </button>
+              <div className="avatar-upload-actions" style={{ flex: 1, display: 'flex', gap: '0.5rem', flexDirection: 'column' }}>
+                <input 
+                  type="text" 
+                  className="input" 
+                  value={avatar} 
+                  onChange={(e) => setAvatar(e.target.value)} 
+                  placeholder="Paste avatar URL here..." 
+                />
                 {avatar && (
-                  <button type="button" className="btn btn-ghost btn-sm" onClick={() => setAvatar("")}>
+                  <button type="button" className="btn btn-ghost btn-sm" onClick={() => setAvatar("")} style={{ alignSelf: 'flex-start' }}>
                     Remove
                   </button>
                 )}
-                <input ref={fileRef} type="file" accept="image/*" className="sr-only" onChange={handleAvatarFile} aria-label="Upload profile photo" />
-                <span className="muted" style={{ fontSize: "0.75rem" }}>Max 500 KB · JPG, PNG</span>
+                <span className="muted" style={{ fontSize: "0.75rem" }}>Provide a public URL for your profile photo</span>
               </div>
             </div>
           </div>

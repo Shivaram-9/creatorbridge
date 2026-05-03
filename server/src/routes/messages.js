@@ -41,13 +41,16 @@ messagesRouter.get("/conversation/:otherUserId", async (req, res) => {
 
 messagesRouter.post("/", async (req, res) => {
   try {
-    const { receiverId, content } = req.body;
+    const { receiverId, content, mediaUrl: rawMediaUrl, mediaType: rawMediaType } = req.body;
     if (!receiverId || !mongoose.isValidObjectId(receiverId)) {
       return res.status(400).json({ error: "Valid receiverId is required" });
     }
     const text = typeof content === "string" ? content.trim() : "";
-    if (!text) {
-      return res.status(400).json({ error: "Message content is required" });
+    const mediaUrl = typeof rawMediaUrl === "string" ? rawMediaUrl.trim() : "";
+    const mediaType = rawMediaType === "video" ? "video" : "image";
+
+    if (!text && !mediaUrl) {
+      return res.status(400).json({ error: "Message content or media is required" });
     }
     if (receiverId === req.userId) {
       return res.status(400).json({ error: "Invalid receiver" });
@@ -60,6 +63,8 @@ messagesRouter.post("/", async (req, res) => {
       sender: req.userId,
       receiver: receiverId,
       content: text.slice(0, 5000),
+      mediaUrl: mediaUrl.slice(0, 1000) || undefined,
+      mediaType: mediaUrl ? mediaType : undefined,
     });
     await msg.populate("sender", "name email role");
     await msg.populate("receiver", "name email role");

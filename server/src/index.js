@@ -60,8 +60,11 @@ io.on("connection", (socket) => {
     try {
       const receiverId = payload?.receiverId;
       const content = typeof payload?.content === "string" ? payload.content.trim() : "";
-      if (!receiverId || !content) {
-        ack?.({ error: "receiverId and content required" });
+      const mediaUrl = typeof payload?.mediaUrl === "string" ? payload.mediaUrl.trim() : "";
+      const mediaType = payload?.mediaType === "video" ? "video" : "image";
+
+      if (!receiverId || (!content && !mediaUrl)) {
+        ack?.({ error: "receiverId and either content or mediaUrl are required" });
         return;
       }
       if (receiverId === uid) {
@@ -77,6 +80,8 @@ io.on("connection", (socket) => {
         sender: uid,
         receiver: receiverId,
         content: content.slice(0, 5000),
+        mediaUrl: mediaUrl.slice(0, 1000) || undefined,
+        mediaType: mediaUrl ? mediaType : undefined,
       });
       await msg.populate("sender", "name email role");
       await msg.populate("receiver", "name email role");
