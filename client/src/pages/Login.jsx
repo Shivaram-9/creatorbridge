@@ -7,7 +7,8 @@ import ErrorBanner from "../components/ErrorBanner.jsx";
 export default function Login() {
   const { user, login } = useAuth();
   const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
+  const fromPath = location.state?.from?.pathname;
+  const from = fromPath && fromPath !== "/" ? fromPath : "/home";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

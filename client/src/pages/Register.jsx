@@ -14,7 +14,7 @@ export default function Register() {
   const [submitting, setSubmitting] = useState(false);
 
   /* Already logged-in users who already picked a role go home */
-  if (user) return <Navigate to="/" replace />;
+  if (user) return <Navigate to="/home" replace />;
 
   async function handleSubmit(e) {
     e.preventDefault();
