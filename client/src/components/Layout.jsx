@@ -61,7 +61,7 @@ export default function Layout() {
       <OfflineBanner />
       <header className="header">
         <div className="header-inner container">
-          <Link to="/" className="logo">
+          <Link to="/home" className="logo">
             CreatorBridge
           </Link>
           {user && (
