@@ -1,0 +1,10 @@
+{
+  "appId": "com.creatorbridge.app",
+  "appName": "CreatorBridge",
+  "webDir": "client/dist",
+  "server": {
+    "cleartext": true,
+    "androidScheme": "http",
+    "allowNavigation": ["10.0.2.2"]
+  }
+}

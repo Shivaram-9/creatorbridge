@@ -1,0 +1,175 @@
+import { API_BASE_URL, API_ORIGIN } from "../config.js";
+
+const TOKEN_KEY = "creatorbridge_token";
+
+/* ── Auth-failure callback (set by AuthContext) ── */
+let _onAuthFailure = null;
+
+/** Register a callback invoked on any 401 response. */
+export function registerAuthFailureHandler(fn) {
+  _onAuthFailure = typeof fn === "function" ? fn : null;
+}
+
+/* ── Token helpers ── */
+export function getResolvedApiOrigin() {
+  return API_ORIGIN;
+}
+
+export function getToken() {
+  return localStorage.getItem(TOKEN_KEY);
+}
+
+export function setToken(token) {
+  if (token) localStorage.setItem(TOKEN_KEY, token);
+  else localStorage.removeItem(TOKEN_KEY);
+}
+
+/* ── Offline check ── */
+function isOffline() {
+  return typeof navigator !== "undefined" && navigator.onLine === false;
+}
+
+/** If any result is `{ error: string }` from this module, returns that message. */
+export function firstApiError(...results) {
+  for (const r of results) {
+    if (r && typeof r === "object" && !Array.isArray(r) && typeof r.error === "string") {
+      return r.error;
+    }
+  }
+  return null;
+}
+
+/* ── URL helper ── */
+function urlFor(path) {
+  const rest = path.replace(/^\//, "");
+  return `${API_BASE_URL}/${rest}`;
+}
+
+/* ── Core request function ── */
+async function request(path, options = {}) {
+  if (isOffline()) {
+    return { error: "No internet connection" };
+  }
+
+  const url = urlFor(path);
+  const headers = { ...options.headers };
+  const token = getToken();
+  if (token) headers.Authorization = `Bearer ${token}`;
+  if (options.body && !(options.body instanceof FormData) && !headers["Content-Type"]) {
+    headers["Content-Type"] = "application/json";
+  }
+
+  let res;
+  try {
+    res = await fetch(url, {
+      ...options,
+      headers,
+      credentials: "include",
+      body:
+        options.body && typeof options.body === "object" && !(options.body instanceof FormData)
+          ? JSON.stringify(options.body)
+          : options.body,
+    });
+  } catch {
+    return { error: "Server is unreachable right now" };
+  }
+
+  /* ── 401 → auth failure ── */
+  if (res.status === 401) {
+    if (_onAuthFailure) _onAuthFailure();
+    return { error: "Session expired — please sign in again" };
+  }
+
+  let data;
+  try {
+    const text = await res.text();
+    data = text ? JSON.parse(text) : null;
+  } catch {
+    return { error: "Server returned an invalid response" };
+  }
+
+  if (!res.ok) {
+    const msg =
+      typeof data?.error === "string" ? data.error : data?.error != null ? String(data.error) : "";
+    return { error: msg || `Request failed (${res.status})` };
+  }
+
+  return data ?? {};
+}
+
+/* ── Login (special: no auth header, needs token extraction) ── */
+export const login = async (body) => {
+  if (isOffline()) {
+    return { error: "No internet connection" };
+  }
+
+  const url = `${API_BASE_URL}/auth/login`;
+
+  let res;
+  try {
+    res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify(body),
+    });
+  } catch {
+    return { error: "Server is unreachable right now" };
+  }
+
+  let data;
+  try {
+    const text = await res.text();
+    data = text ? JSON.parse(text) : null;
+  } catch {
+    return { error: "Server returned an invalid response" };
+  }
+
+  if (!res.ok) {
+    const errMsg =
+      typeof data?.error === "string" ? data.error : data?.error != null ? String(data.error) : "";
+    return { error: errMsg || "Invalid credentials" };
+  }
+
+  if (!data?.token) {
+    const errMsg =
+      typeof data?.error === "string" ? data.error : data?.error != null ? String(data.error) : "";
+    return { error: errMsg || "Something went wrong" };
+  }
+
+  return data;
+};
+
+/* ── Public API surface ── */
+export const api = {
+  auth: {
+    register: (body) => request("/auth/register", { method: "POST", body }),
+    login: (body) => login(body),
+  },
+  users: {
+    me: () => request("/users/me"),
+    updateMe: (body) => request("/users/me", { method: "PATCH", body }),
+    list: (category) => {
+      const q = category ? `?category=${encodeURIComponent(category)}` : "";
+      return request(`/users${q}`);
+    },
+    get: (id) => request(`/users/${id}`),
+    addPortfolioItem: (body) => request("/users/me/portfolio", { method: "POST", body }),
+    removePortfolioItem: (itemId) => request(`/users/me/portfolio/${itemId}`, { method: "DELETE" }),
+  },
+  connections: {
+    request: (toUserId) => request("/connections/request", { method: "POST", body: { toUserId } }),
+    incoming: () => request("/connections/incoming"),
+    outgoing: () => request("/connections/outgoing"),
+    accepted: () => request("/connections/accepted"),
+    accept: (id) => request(`/connections/${id}/accept`, { method: "PATCH" }),
+    reject: (id) => request(`/connections/${id}/reject`, { method: "PATCH" }),
+  },
+  messages: {
+    conversation: (otherUserId) => request(`/messages/conversation/${otherUserId}`),
+    send: (receiverId, content) => request("/messages", { method: "POST", body: { receiverId, content } }),
+  },
+  notifications: {
+    list: () => request("/notifications"),
+  },
+};
