@@ -1,4 +1,4 @@
-import { API_BASE_URL, API_ORIGIN } from "../config.js";
+import { BASE_URL } from "../config/api.js";
 
 const TOKEN_KEY = "creatorbridge_token";
 
@@ -12,7 +12,7 @@ export function registerAuthFailureHandler(fn) {
 
 /* ── Token helpers ── */
 export function getResolvedApiOrigin() {
-  return API_ORIGIN;
+  return BASE_URL;
 }
 
 export function getToken() {
@@ -42,7 +42,7 @@ export function firstApiError(...results) {
 /* ── URL helper ── */
 function urlFor(path) {
   const rest = path.replace(/^\//, "");
-  return `${API_BASE_URL}/${rest}`;
+  return `${BASE_URL}/api/${rest}`;
 }
 
 /* ── Core request function ── */
@@ -103,7 +103,7 @@ export const login = async (body) => {
     return { error: "No internet connection" };
   }
 
-  const url = `${API_BASE_URL}/auth/login`;
+  const url = `${BASE_URL}/api/auth/login`;
 
   let res;
   try {

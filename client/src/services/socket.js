@@ -1,6 +1,8 @@
 import { io } from "socket.io-client";
 import { getToken } from "./api.js";
 
+import { BASE_URL } from "../config/api.js";
+
 let socket = null;
 
 export function getSocket() {
@@ -18,7 +20,7 @@ export function connectSocket() {
     socket = null;
   }
 
-  socket = io(import.meta.env.VITE_API_URL || "http://localhost:5000", {
+  socket = io(BASE_URL, {
     auth: { token },
     transports: ["websocket"],
     withCredentials: true,
