@@ -205,7 +205,7 @@ export default function UserProfile() {
           {portfolio.length > 0 && (
             <div className="up-stat">
               <span className="up-stat__value">{portfolio.length}</span>
-              <span className="up-stat__label">Portfolio</span>
+              <span className="up-stat__label">Post</span>
             </div>
           )}
         </div>
@@ -274,7 +274,7 @@ export default function UserProfile() {
          ═══════════════════════════════ */}
       {portfolio.length > 0 && (
         <section className="up-section">
-          <h2 className="up-section__title">Portfolio</h2>
+          <h2 className="up-section__title">Post</h2>
           <div className="up-section__card up-section__card--flush">
             <PortfolioGrid items={portfolio} />
           </div>
@@ -284,10 +284,10 @@ export default function UserProfile() {
       {/* Empty portfolio state for own profile */}
       {isOwn && portfolio.length === 0 && (
         <section className="up-section">
-          <h2 className="up-section__title">Portfolio</h2>
+          <h2 className="up-section__title">Post</h2>
           <div className="empty-state empty-state--compact">
             <div className="empty-state__icon" aria-hidden="true">🖼️</div>
-            <h3 className="empty-state__title">No portfolio items yet</h3>
+            <h3 className="empty-state__title">No posts yet</h3>
             <p className="empty-state__text">Upload images and videos to showcase your work.</p>
             <div className="empty-state__action">
               <Link to="/profile" className="btn btn-primary btn-sm">Add from profile</Link>

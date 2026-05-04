@@ -23,14 +23,14 @@ export default function PortfolioGrid({ items = [] }) {
 
   return (
     <>
-      <div className="portfolio-grid" role="list" aria-label="Portfolio">
+      <div className="portfolio-grid" role="list" aria-label="Posts">
         {items.map((item, idx) => (
           <button
             key={item._id || idx}
             type="button"
             className="portfolio-cell"
             onClick={() => setViewIdx(idx)}
-            aria-label={item.caption || `Portfolio item ${idx + 1}`}
+            aria-label={item.caption || `Post ${idx + 1}`}
           >
             {item.mediaType === "video" ? (
               <div className="portfolio-cell__video-thumb">
@@ -45,7 +45,7 @@ export default function PortfolioGrid({ items = [] }) {
 
       {/* Lightbox */}
       {current && (
-        <div className="lightbox" onClick={() => setViewIdx(null)} role="dialog" aria-label="View portfolio item">
+        <div className="lightbox" onClick={() => setViewIdx(null)} role="dialog" aria-label="View post">
           <div className="lightbox__inner" onClick={(e) => e.stopPropagation()}>
             {items.length > 1 && (
               <button type="button" className="lightbox__arrow lightbox__arrow--left" onClick={prev} aria-label="Previous">

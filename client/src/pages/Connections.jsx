@@ -222,7 +222,7 @@ export default function Connections() {
             </h2>
             {partners.length === 0 ? (
               <div className="empty-state empty-state--compact" role="status">
-                <div className="empty-state__illustration" aria-hidden="true">🤝</div>
+                <div className="empty-state__illustration" aria-hidden="true">👥</div>
                 <h3 className="empty-state__title">Your network is empty</h3>
                 <p className="empty-state__text">
                   Accepted connections appear here so you can jump straight into messaging.

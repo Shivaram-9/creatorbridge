@@ -235,7 +235,7 @@ export default function Profile() {
       {/* ── Portfolio Section ── */}
       <div className="card portfolio-section">
         <div className="portfolio-section__header">
-          <h2 className="portfolio-section__title">Portfolio</h2>
+          <h2 className="portfolio-section__title">Post</h2>
           <span className="portfolio-section__count">{portfolio.length} / 10</span>
         </div>
 

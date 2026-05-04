@@ -134,7 +134,7 @@ export default function Layout() {
         <nav className="bottom-nav">
           <BottomNavItem to="/home" icon="🏠" label="Home" />
           <BottomNavItem to="/reels" icon="🎬" label="Reels" />
-          <BottomNavItem to="/connections" icon="🤝" label="Connections" />
+          <BottomNavItem to="/connections" icon="👥" label="Connections" />
           <BottomNavItem to="/messages" icon="💬" label="Messages" />
           <BottomNavItem to="/profile" icon="👤" label="Profile" />
         </nav>
