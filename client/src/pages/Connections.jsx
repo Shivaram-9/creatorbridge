@@ -255,6 +255,28 @@ export default function Connections() {
                 })}
               </div>
             )}
+          {/* ── Suggested ── */}
+          <section className="section-block" aria-labelledby="suggested-heading">
+            <h2 id="suggested-heading" className="section-title">
+              Suggested for you
+            </h2>
+            <div className="list-gap">
+              {[
+                { id: 's1', name: 'Sarah Jenkins', username: 'sarah_j', role: 'INFLUENCER', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah' },
+                { id: 's2', name: 'Global Brands Co', username: 'global_brands', role: 'BRAND', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Global' },
+                { id: 's3', name: 'David Miller', username: 'david_tech', role: 'INFLUENCER', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=David' },
+              ].map((u) => (
+                <article key={u.id} className="card user-card">
+                  <div className="user-card__body">
+                    <UserHeading u={u} />
+                    <p className="user-card__bio" style={{ marginTop: '0.25rem' }}>Popular in your category</p>
+                  </div>
+                  <div className="user-card__aside">
+                    <button type="button" className="btn btn-primary btn-sm">Connect</button>
+                  </div>
+                </article>
+              ))}
+            </div>
           </section>
         </>
       )}

@@ -3368,3 +3368,98 @@ textarea.input {
 .create-post-input-group .input-sm:focus {
   box-shadow: none;
 }
+
+/* ??? DROPDOWNS & ANIMATIONS ??? */
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  min-width: 200px;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  padding: 0.5rem;
+  z-index: 50;
+}
+
+.dropdown-menu--notif {
+  min-width: 300px;
+  padding: 0;
+}
+
+.dropdown-header {
+  padding: 0.75rem 1rem;
+  font-weight: 700;
+  font-size: 0.875rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+
+.dropdown-footer {
+  display: block;
+  padding: 0.75rem;
+  text-align: center;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--accent);
+  border-top: 1px solid var(--border);
+  text-decoration: none;
+}
+
+.dropdown-footer:hover {
+  background: var(--surface-alt);
+}
+
+.dropdown-item--notif {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border-strong);
+  transition: var(--transition);
+}
+
+.dropdown-item--notif:last-child {
+  border-bottom: none;
+}
+
+.notif-icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.notif-content {
+  flex: 1;
+}
+
+.notif-text {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--text);
+  line-height: 1.4;
+}
+
+.notif-time {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.slide-in {
+  animation: slideIn 0.2s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ??? SUGGESTED USERS ??? */
+.user-card__bio {
+  color: var(--text-muted);
+}
