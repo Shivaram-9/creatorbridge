@@ -5,6 +5,8 @@ import { CATEGORIES } from "../constants/categories.js";
 import ErrorBanner from "../components/ErrorBanner.jsx";
 import PortfolioGrid from "../components/PortfolioGrid.jsx";
 
+import { ShareIcon } from "../components/Icons.jsx";
+
 /** Generate initials from name or email */
 function initials(name, email) {
   if (name) {
@@ -78,11 +80,30 @@ export default function Profile() {
     }
   };
 
-  const handleShareProfile = () => {
-    const url = window.location.origin + "/profile";
-    navigator.clipboard.writeText(url);
-    setCopyStatus(true);
-    setTimeout(() => setCopyStatus(false), 2000);
+  const handleShareProfile = async () => {
+    const shareData = {
+      title: "CreatorBridge Profile",
+      text: `Check out ${user?.name || user?.username || 'this profile'} on CreatorBridge!`,
+      url: window.location.href,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(window.location.href);
+        setCopyStatus(true);
+        setTimeout(() => setCopyStatus(false), 2000);
+      }
+    } catch (err) {
+      // If user cancels share, we don't need to show error
+      if (err.name !== 'AbortError') {
+        // Fallback to clipboard if share fails
+        await navigator.clipboard.writeText(window.location.href);
+        setCopyStatus(true);
+        setTimeout(() => setCopyStatus(false), 2000);
+      }
+    }
   };
 
   async function handleSubmit(e) {
@@ -185,7 +206,15 @@ export default function Profile() {
                 <h1 className="profile-v2-username">{user?.username || displayName}</h1>
                 <div className="profile-v2-actions">
                   <button className="profile-v2-btn" onClick={() => setIsEditing(true)}>Edit profile</button>
-                  <button className="profile-v2-btn" onClick={handleShareProfile}>
+                  <button 
+                    className={`profile-v2-btn ${copyStatus ? 'btn-success' : ''}`} 
+                    onClick={handleShareProfile}
+                    style={{ display: 'flex', alignItems: 'center', gap: '6px', transition: 'transform 0.1s' }}
+                    onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.95)'}
+                    onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                    onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                  >
+                    <ShareIcon />
                     {copyStatus ? "Copied!" : "Share profile"}
                   </button>
                 </div>
