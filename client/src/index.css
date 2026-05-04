@@ -3136,7 +3136,7 @@ textarea.input {
 
 .post-image-wrapper {
   margin: 0 -1rem -1rem;
-  background: #f1f5f9;
+  background: var(--bg);
 }
 
 .post-image {
@@ -3462,4 +3462,327 @@ textarea.input {
 /* ??? SUGGESTED USERS ??? */
 .user-card__bio {
   color: var(--text-muted);
+}
+
+/* ??? INSTAGRAM STYLE PROFILE ??? */
+.profile-v2 {
+  max-width: 935px;
+  margin: 0 auto;
+  padding: 1rem 1rem 5rem;
+}
+
+.profile-v2-header {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+.profile-v2-avatar-col {
+  flex: 0 0 auto;
+}
+
+.profile-v2-avatar {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  background: var(--surface-alt);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.profile-v2-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-v2-info-col {
+  flex: 1;
+}
+
+.profile-v2-top-row {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.profile-v2-username {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.profile-v2-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.profile-v2-btn {
+  padding: 0.4rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 8px;
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  color: var(--text);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.profile-v2-btn:hover {
+  background: var(--border);
+}
+
+.profile-v2-stats {
+  display: flex;
+  gap: 2.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.profile-v2-stat {
+  font-size: 1rem;
+  color: var(--text);
+}
+
+.profile-v2-stat strong {
+  font-weight: 700;
+  margin-right: 0.25rem;
+}
+
+.profile-v2-bio-wrap {
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.profile-v2-display-name {
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+  display: block;
+}
+
+.profile-v2-tabs {
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+  margin-top: 1rem;
+}
+
+.profile-v2-tab {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 1rem 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  border-top: 1px solid transparent;
+  margin-top: -1px;
+}
+
+.profile-v2-tab.active {
+  color: var(--text);
+  border-top: 1px solid var(--text);
+}
+
+/* ??? PHOTO OPTIONS MODAL ??? */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.photo-options-modal {
+  background: #ffffff;
+  width: 90%;
+  max-width: 400px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+
+.photo-option {
+  width: 100%;
+  padding: 1rem;
+  text-align: center;
+  border: none;
+  background: none;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.photo-option:last-child {
+  border-bottom: none;
+}
+
+.photo-option--danger {
+  color: var(--danger);
+  font-weight: 700;
+}
+
+.photo-option--cancel {
+  color: var(--text);
+}
+
+/* ??? VERTICAL EDIT FORM ??? */
+.edit-profile-v2 {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.vertical-field {
+  margin-bottom: 1.5rem;
+}
+
+.vertical-field label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--text-muted);
+}
+
+/* ??? MESSAGING V2 ??? */
+.messages-v2 {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.msg-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1.5rem;
+}
+
+.msg-tab {
+  flex: 1;
+  padding: 1rem;
+  text-align: center;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--text-muted);
+}
+
+.msg-tab.active {
+  color: var(--accent);
+  border-bottom: 2px solid var(--accent);
+}
+
+.chat-list-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 12px;
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.chat-list-item:hover {
+  background: var(--surface-alt);
+}
+
+.chat-item-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--surface-alt);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.chat-item-info {
+  flex: 1;
+}
+
+.chat-item-name {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.chat-item-last {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+.chat-screen {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 160px);
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+}
+
+.chat-header {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.chat-messages {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.bubble {
+  max-width: 70%;
+  padding: 0.75rem 1rem;
+  border-radius: 18px;
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.bubble--left {
+  align-self: flex-start;
+  background: var(--surface-alt);
+  border-bottom-left-radius: 4px;
+}
+
+.bubble--right {
+  align-self: flex-end;
+  background: var(--accent);
+  color: #ffffff;
+  border-bottom-right-radius: 4px;
+}
+
+.chat-input-area {
+  padding: 1rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 0.75rem;
+}
+
+.chat-input {
+  flex: 1;
+  border-radius: 999px;
+  padding: 0.6rem 1.25rem;
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
 }

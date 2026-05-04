@@ -10,7 +10,6 @@ import Profile from "./pages/Profile.jsx";
 import UserProfile from "./pages/UserProfile.jsx";
 import Discover from "./pages/Discover.jsx";
 import Connections from "./pages/Connections.jsx";
-import Reels from "./pages/Reels.jsx";
 import Messages from "./pages/Messages.jsx";
 import Notifications from "./pages/Notifications.jsx";
 import Settings from "./pages/Settings.jsx";
@@ -48,7 +47,6 @@ export default function App() {
         <Route path="/notifications" element={<Notifications />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/chat/:userId" element={<Chat />} />
-        <Route path="/reels" element={<Reels />} />
         <Route path="/messages" element={<Messages />} />
       </Route>
 

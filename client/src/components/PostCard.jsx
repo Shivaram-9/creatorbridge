@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { HeartIcon, MessageCircleIcon, SendIcon, BookmarkIcon } from "./Icons.jsx";
 
 export default function PostCard({ post }) {
   const [liked, setLiked] = useState(false);
@@ -64,7 +65,9 @@ export default function PostCard({ post }) {
             onClick={handleLike}
             aria-label="Like"
           >
-            <span className="post-action-icon">{liked ? "❤️" : "🤍"}</span>
+            <span className="post-action-icon">
+              <HeartIcon filled={liked} />
+            </span>
             <span className="post-action-count">{likesCount}</span>
           </button>
           <button 
@@ -72,11 +75,15 @@ export default function PostCard({ post }) {
             onClick={() => setShowComments(!showComments)}
             aria-label="Comment"
           >
-            <span className="post-action-icon">💬</span>
+            <span className="post-action-icon">
+              <MessageCircleIcon />
+            </span>
             <span className="post-action-count">{(post.comments || 0) + comments.length}</span>
           </button>
           <button className="post-action-btn" onClick={handleShare} aria-label="Share">
-            <span className="post-action-icon">{shareStatus === "Copied!" ? "✅" : "📤"}</span>
+            <span className="post-action-icon">
+              <SendIcon />
+            </span>
             <span className="post-action-count">{shareStatus}</span>
           </button>
         </div>
@@ -85,7 +92,9 @@ export default function PostCard({ post }) {
           onClick={() => setSaved(!saved)}
           aria-label="Save"
         >
-          <span className="post-action-icon">{saved ? "🔖" : "📑"}</span>
+          <span className="post-action-icon">
+            <BookmarkIcon filled={saved} />
+          </span>
         </button>
       </div>
 

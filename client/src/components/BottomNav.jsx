@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom";
+import { HomeIcon, UsersIcon, MessageIcon, ProfileIcon } from "./Icons.jsx";
 
 function BottomNavItem({ to, icon, label, badgeCount }) {
   return (
@@ -22,11 +23,10 @@ function BottomNavItem({ to, icon, label, badgeCount }) {
 export default function BottomNav() {
   return (
     <nav className="bottom-nav">
-      <BottomNavItem to="/home" icon="🏠" label="Home" />
-      <BottomNavItem to="/reels" icon="🎬" label="Reels" />
-      <BottomNavItem to="/connections" icon="👥" label="Connections" />
-      <BottomNavItem to="/messages" icon="💬" label="Messages" />
-      <BottomNavItem to="/profile" icon="👤" label="Profile" />
+      <BottomNavItem to="/home" icon={<HomeIcon />} label="Home" />
+      <BottomNavItem to="/connections" icon={<UsersIcon />} label="Connections" />
+      <BottomNavItem to="/messages" icon={<MessageIcon />} label="Messages" />
+      <BottomNavItem to="/profile" icon={<ProfileIcon />} label="Profile" />
     </nav>
   );
 }

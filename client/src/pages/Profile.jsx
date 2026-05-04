@@ -18,7 +18,7 @@ function initials(name, email) {
 
 /** Format followers count nicely */
 function fmtFollowers(n) {
-  if (!n || n <= 0) return null;
+  if (!n || n <= 0) return "0";
   if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1).replace(/\.0$/, "")}M`;
   if (n >= 1_000) return `${(n / 1_000).toFixed(1).replace(/\.0$/, "")}K`;
   return String(n);
@@ -46,6 +46,10 @@ export default function Profile() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  
+  const [isEditing, setIsEditing] = useState(false);
+  const [showPhotoOptions, setShowPhotoOptions] = useState(false);
+  const [activeTab, setActiveTab] = useState("posts");
 
   const fileRef = useRef(null);
   const pfFileRef = useRef(null);
@@ -83,19 +87,26 @@ export default function Profile() {
     };
   }, [setUser]);
 
-  /* Removed base64 avatar code */
+  /* Handle real image upload */
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setAvatar(reader.result);
+        setShowPhotoOptions(false);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   /* Handle portfolio url upload */
   async function handlePortfolioSubmit() {
     const url = pfFileRef.current?.value?.trim();
     if (!url) return;
-    
-    // Auto-detect simple video extensions or default to image
     const isVideo = url.match(/\.(mp4|webm|ogg)$/i) || pfCaption.toLowerCase().includes("video");
-    
     setPfAdding(true);
     setPfError("");
-
     try {
       const result = await api.users.addPortfolioItem({
         url,
@@ -148,6 +159,7 @@ export default function Profile() {
       } else {
         setUser(me);
         setSaved(true);
+        setTimeout(() => setIsEditing(false), 800);
       }
     } catch {
       setError("Something went wrong");
@@ -164,229 +176,125 @@ export default function Profile() {
     );
   }
 
-  const displayName = name || user?.email || "User";
-  const roleName = user?.role || "influencer";
-  const roleClass = roleName === "brand" ? "badge-brand" : "badge-influencer";
-  const followerLabel = fmtFollowers(user?.followers);
+  const displayName = name || user?.email?.split('@')[0] || "User";
 
   return (
-    <div className="container">
-      <header className="page-header">
-        <h1 className="page-title">Profile</h1>
-        <p className="subtitle">Your public details appear in discovery and connection lists.</p>
-      </header>
-
-      {/* ── Profile Preview Card ── */}
-      <div className="profile-preview">
-        <div className="profile-preview__avatar-wrap">
-          {avatar ? (
-            <img src={avatar} alt="" className="profile-preview__avatar-img" />
-          ) : (
-            <span className="profile-preview__avatar-initials">{initials(name, user?.email)}</span>
-          )}
-        </div>
-        <div className="profile-preview__info">
-          <h2 className="profile-preview__name">{displayName}</h2>
-          {username && <p className="profile-preview__username">@{username}</p>}
-          <div className="profile-preview__tags">
-            <span className={`badge ${roleClass}`}>{roleName}</span>
-            {category && <span className="profile-preview__cat">{category}</span>}
+    <div className="profile-v2">
+      {isEditing ? (
+        <div className="edit-profile-v2 slide-in">
+          <div className="header-inner container" style={{ padding: '0 0 1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <h2 className="profile-preview__name">Edit Profile</h2>
+            <button className="btn btn-ghost" onClick={() => setIsEditing(false)}>Cancel</button>
           </div>
-          {bio && <p className="profile-preview__bio">{bio}</p>}
-          <div className="profile-preview__details">
-            {location && (
-              <span className="profile-preview__detail">
-                <span aria-hidden="true">📍</span> {location}
-              </span>
-            )}
-            {followerLabel && (
-              <span className="profile-preview__detail">
-                <span aria-hidden="true">👥</span> {followerLabel} followers
-              </span>
-            )}
-          </div>
-          {(instagram || youtube) && (
-            <div className="profile-preview__socials">
-              {instagram && (
-                <a
-                  href={instagram.startsWith("http") ? instagram : `https://instagram.com/${instagram.replace(/^@/, "")}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="social-link social-link--ig"
-                >
-                  <span aria-hidden="true">📸</span> Instagram
-                </a>
-              )}
-              {youtube && (
-                <a
-                  href={youtube.startsWith("http") ? youtube : `https://youtube.com/@${youtube.replace(/^@/, "")}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="social-link social-link--yt"
-                >
-                  <span aria-hidden="true">▶️</span> YouTube
-                </a>
-              )}
+          
+          <form onSubmit={handleSubmit}>
+            <div className="vertical-field">
+              <label>Name</label>
+              <input className="input" value={name} onChange={(e) => setName(e.target.value)} placeholder="Name" />
             </div>
-          )}
-        </div>
-      </div>
-
-      {/* ── Portfolio Section ── */}
-      <div className="card portfolio-section">
-        <div className="portfolio-section__header">
-          <h2 className="portfolio-section__title">Post</h2>
-          <span className="portfolio-section__count">{portfolio.length} / 10</span>
-        </div>
-
-        <PortfolioGrid items={portfolio} />
-
-        {/* Manage items */}
-        {portfolio.length > 0 && (
-          <div className="portfolio-manage">
-            <p className="portfolio-manage__label">Remove items</p>
-            <div className="portfolio-manage__chips">
-              {portfolio.map((item, i) => (
-                <button
-                  key={item._id}
-                  type="button"
-                  className="portfolio-manage__chip"
-                  onClick={() => removePortfolioItem(item._id)}
-                  title={item.caption || `Item ${i + 1}`}
-                >
-                  <span className="portfolio-manage__chip-preview">
-                    {item.mediaType === "video" ? "▶" : (
-                      <img src={item.url} alt="" className="portfolio-manage__chip-img" />
-                    )}
-                  </span>
-                  <span className="portfolio-manage__chip-x">✕</span>
-                </button>
-              ))}
+            <div className="vertical-field">
+              <label>Username</label>
+              <input className="input" value={username} onChange={(e) => setUsername(e.target.value.replace(/[^a-zA-Z0-9._-]/g, ""))} placeholder="Username" />
             </div>
-          </div>
-        )}
-
-        {/* Add new item */}
-        {portfolio.length < 10 && (
-          <div className="portfolio-add">
-            <div className="portfolio-add__row">
-              <input
-                className="input"
-                value={pfCaption}
-                onChange={(e) => setPfCaption(e.target.value)}
-                placeholder="Caption (optional)"
-                maxLength={300}
-                style={{ flex: 1 }}
-              />
-              <input
-                ref={pfFileRef}
-                className="input"
-                placeholder="Media URL (https://...)"
-                maxLength={1000}
-                style={{ flex: 1 }}
-              />
-              <button
-                type="button"
-                className="btn btn-primary btn-sm"
-                onClick={handlePortfolioSubmit}
-                disabled={pfAdding}
-              >
-                {pfAdding ? "Adding…" : "＋ Add"}
-              </button>
-            </div>
-            <span className="muted" style={{ fontSize: "0.75rem" }}>Provide a public URL for your image or video</span>
-          </div>
-        )}
-
-        <ErrorBanner message={pfError} onDismiss={() => setPfError("")} />
-      </div>
-
-      {/* ── Edit Form ── */}
-      <div className="card profile-form-card">
-        <h2 className="profile-form-card__title">Edit profile</h2>
-        <form onSubmit={handleSubmit}>
-          {/* Avatar upload */}
-          <div className="field">
-            <label>Profile photo</label>
-            <div className="avatar-upload-row">
-              <div className="avatar-upload-thumb">
-                {avatar ? (
-                  <img src={avatar} alt="" className="avatar-upload-thumb__img" />
-                ) : (
-                  <span className="avatar-upload-thumb__empty">📷</span>
-                )}
-              </div>
-              <div className="avatar-upload-actions" style={{ flex: 1, display: 'flex', gap: '0.5rem', flexDirection: 'column' }}>
-                <input 
-                  type="text" 
-                  className="input" 
-                  value={avatar} 
-                  onChange={(e) => setAvatar(e.target.value)} 
-                  placeholder="Paste avatar URL here..." 
-                />
-                {avatar && (
-                  <button type="button" className="btn btn-ghost btn-sm" onClick={() => setAvatar("")} style={{ alignSelf: 'flex-start' }}>
-                    Remove
-                  </button>
-                )}
-                <span className="muted" style={{ fontSize: "0.75rem" }}>Provide a public URL for your profile photo</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="profile-form-grid">
-            <div className="field">
-              <label htmlFor="pf-name">Name</label>
-              <input id="pf-name" className="input" value={name} onChange={(e) => setName(e.target.value)} placeholder="Your full name" />
-            </div>
-            <div className="field">
-              <label htmlFor="pf-username">Username</label>
-              <input id="pf-username" className="input" value={username} onChange={(e) => setUsername(e.target.value.replace(/[^a-zA-Z0-9._-]/g, ""))} placeholder="e.g. john_doe" maxLength={60} />
-            </div>
-            <div className="field">
-              <label htmlFor="pf-category">Category</label>
-              <select id="pf-category" className="input" value={category} onChange={(e) => setCategory(e.target.value)}>
-                <option value="">Select…</option>
+            <div className="vertical-field">
+              <label>Category</label>
+              <select className="input" value={category} onChange={(e) => setCategory(e.target.value)}>
+                <option value="">Select category</option>
                 {CATEGORIES.map((c) => (<option key={c} value={c}>{c}</option>))}
               </select>
             </div>
-            <div className="field">
-              <label htmlFor="pf-location">Location</label>
-              <input id="pf-location" className="input" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="City, Country" />
+            <div className="vertical-field">
+              <label>Location</label>
+              <input className="input" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Location" />
+            </div>
+            <div className="vertical-field">
+              <label>Bio</label>
+              <textarea className="input" value={bio} onChange={(e) => setBio(e.target.value)} rows={3} placeholder="Bio" />
+            </div>
+
+            <ErrorBanner message={error} onDismiss={() => setError("")} />
+            {saved && <div className="success-banner">Profile updated.</div>}
+            
+            <button type="submit" className="btn btn-primary w-full" disabled={saving}>
+              {saving ? "Saving..." : "Save Changes"}
+            </button>
+          </form>
+        </div>
+      ) : (
+        <>
+          <header className="profile-v2-header">
+            <div className="profile-v2-avatar-col">
+              <div className="profile-v2-avatar" onClick={() => setShowPhotoOptions(true)}>
+                {avatar ? (
+                  <img src={avatar} alt="" className="profile-v2-avatar-img" />
+                ) : (
+                  <span className="profile-preview__avatar-initials" style={{ fontSize: '2rem' }}>{initials(name, user?.email)}</span>
+                )}
+              </div>
+            </div>
+            
+            <div className="profile-v2-info-col">
+              <div className="profile-v2-top-row">
+                <h1 className="profile-v2-username">{username || displayName}</h1>
+                <div className="profile-v2-actions">
+                  <button className="profile-v2-btn" onClick={() => setIsEditing(true)}>Edit profile</button>
+                  <button className="profile-v2-btn">Share profile</button>
+                </div>
+              </div>
+              
+              <div className="profile-v2-stats">
+                <div className="profile-v2-stat"><strong>{portfolio.length}</strong> posts</div>
+                <div className="profile-v2-stat"><strong>{fmtFollowers(user?.followers)}</strong> followers</div>
+                <div className="profile-v2-stat"><strong>{Math.floor(Math.random() * 500) + 100}</strong> following</div>
+              </div>
+              
+              <div className="profile-v2-bio-wrap">
+                <span className="profile-v2-display-name">{displayName}</span>
+                {category && <p className="muted" style={{ marginBottom: '0.25rem' }}>{category}</p>}
+                {bio && <p style={{ whiteSpace: 'pre-wrap' }}>{bio}</p>}
+                {location && <p className="muted" style={{ marginTop: '0.25rem' }}>📍 {location}</p>}
+              </div>
+            </div>
+          </header>
+
+          <div className="profile-v2-tabs">
+            <div className={`profile-v2-tab ${activeTab === 'posts' ? 'active' : ''}`} onClick={() => setActiveTab("posts")}>
+              <span>POSTS</span>
+            </div>
+            <div className={`profile-v2-tab ${activeTab === 'tagged' ? 'active' : ''}`} onClick={() => setActiveTab("tagged")}>
+              <span>MEDIA</span>
             </div>
           </div>
 
-          <div className="field">
-            <label htmlFor="pf-bio">Bio</label>
-            <textarea id="pf-bio" className="input" value={bio} onChange={(e) => setBio(e.target.value)} rows={4} maxLength={2000} placeholder="Write a short bio about yourself…" />
+          <div className="profile-v2-content">
+            {activeTab === 'posts' ? (
+              <PortfolioGrid items={portfolio} />
+            ) : (
+              <div className="empty-state" style={{ padding: '4rem 0' }}>
+                <div className="empty-state__illustration">🖼?️</div>
+                <p className="empty-state__text">No tagged media yet.</p>
+              </div>
+            )}
           </div>
+        </>
+      )}
 
-          <div className="profile-form-section-label">Social links</div>
-          <div className="profile-form-grid">
-            <div className="field">
-              <label htmlFor="pf-ig">Instagram</label>
-              <input id="pf-ig" className="input" value={instagram} onChange={(e) => setInstagram(e.target.value)} placeholder="@username or full URL" />
-            </div>
-            <div className="field">
-              <label htmlFor="pf-yt">YouTube</label>
-              <input id="pf-yt" className="input" value={youtube} onChange={(e) => setYoutube(e.target.value)} placeholder="@channel or full URL" />
-            </div>
+      {/* Photo Options Modal */}
+      {showPhotoOptions && (
+        <div className="modal-overlay" onClick={() => setShowPhotoOptions(false)}>
+          <div className="photo-options-modal slide-in" onClick={e => e.stopPropagation()}>
+            <div className="dropdown-header" style={{ textAlign: 'center', padding: '1.5rem', fontSize: '1rem' }}>Change Profile Photo</div>
+            <button className="photo-option" style={{ color: 'var(--accent)', fontWeight: 700 }} onClick={() => fileRef.current.click()}>Upload Photo</button>
+            <button className="photo-option" onClick={() => setShowPhotoOptions(false)}>Import from WhatsApp</button>
+            <button className="photo-option" onClick={() => setShowPhotoOptions(false)}>Take Photo</button>
+            {avatar && (
+              <button className="photo-option photo-option--danger" onClick={() => { setAvatar(""); setShowPhotoOptions(false); }}>Remove Current Photo</button>
+            )}
+            <button className="photo-option photo-option--cancel" onClick={() => setShowPhotoOptions(false)}>Cancel</button>
+            <input type="file" ref={fileRef} hidden accept="image/*" onChange={handleImageUpload} />
           </div>
-
-          <div className="field" style={{ maxWidth: 240 }}>
-            <label htmlFor="pf-followers">Followers count <span className="muted" style={{ fontWeight: 400 }}>(optional)</span></label>
-            <input id="pf-followers" className="input" type="number" min="0" value={followers} onChange={(e) => setFollowers(e.target.value)} placeholder="e.g. 10000" />
-          </div>
-
-          <ErrorBanner message={error} onDismiss={() => setError("")} />
-          {saved && (
-            <div className="success-banner" role="status">Profile updated successfully.</div>
-          )}
-          <button type="submit" className="btn btn-primary" disabled={saving}>
-            {saving ? "Saving…" : "Save changes"}
-          </button>
-        </form>
-      </div>
+        </div>
+      )}
     </div>
   );
 }
