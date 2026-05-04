@@ -1,4 +1,5 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { useEffect } from "react";
+import { Navigate, Route, Routes, useNavigate, useLocation } from "react-router-dom";
 import Layout from "./components/Layout.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import SplashScreen from "./pages/SplashScreen.jsx";
@@ -15,7 +16,23 @@ import Notifications from "./pages/Notifications.jsx";
 import Settings from "./pages/Settings.jsx";
 
 export default function App() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    // Detect page refresh
+    const entries = performance.getEntriesByType('navigation');
+    const isReload = entries.length > 0 && entries[0].type === 'reload';
+
+    if (isReload && location.pathname !== "/") {
+
+      console.log("Reload detected, redirecting to Splash...");
+      navigate("/", { replace: true });
+    }
+  }, []);
+
   return (
+
     <Routes>
       <Route path="/" element={<SplashScreen />} />
       <Route path="/login" element={<Login />} />
