@@ -3178,3 +3178,67 @@ textarea.input {
 .post-action-count {
   font-variant-numeric: tabular-nums;
 }
+
+/* ??? Post Actions Layout ??? */
+.post-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.post-actions__left {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.post-action-btn--saved {
+  color: var(--accent);
+}
+
+/* ??? Post Comments ??? */
+.post-comments-section {
+  padding: 1rem;
+  background: #f8fafc;
+  border-top: 1px solid var(--border);
+}
+
+.post-comments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.post-comment-item {
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: var(--text);
+}
+
+.post-comment-item strong {
+  color: var(--text);
+  margin-right: 0.4rem;
+}
+
+.post-comment-form {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.post-comment-input {
+  flex: 1;
+  padding: 0.5rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  font-size: 0.875rem;
+  background: #ffffff;
+}
+
+.post-comment-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
