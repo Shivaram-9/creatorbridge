@@ -1,5 +1,4 @@
-import { useEffect } from "react";
-import { Navigate, Route, Routes, useNavigate, useLocation } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import Layout from "./components/Layout.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import SplashScreen from "./pages/SplashScreen.jsx";
@@ -11,16 +10,14 @@ import Profile from "./pages/Profile.jsx";
 import UserProfile from "./pages/UserProfile.jsx";
 import Discover from "./pages/Discover.jsx";
 import Connections from "./pages/Connections.jsx";
-import Chat from "./pages/Chat.jsx";
+import Reels from "./pages/Reels.jsx";
+import Messages from "./pages/Messages.jsx";
 import Notifications from "./pages/Notifications.jsx";
 import Settings from "./pages/Settings.jsx";
-import Placeholder from "./pages/Placeholder.jsx";
-
+import Chat from "./pages/Chat.jsx";
 
 export default function App() {
   return (
-
-
     <Routes>
       <Route path="/" element={<SplashScreen />} />
       <Route path="/login" element={<Login />} />
@@ -51,10 +48,9 @@ export default function App() {
         <Route path="/notifications" element={<Notifications />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/chat/:userId" element={<Chat />} />
-        <Route path="/reels" element={<Placeholder title="Reels" />} />
-        <Route path="/messages" element={<Placeholder title="Messages" />} />
+        <Route path="/reels" element={<Reels />} />
+        <Route path="/messages" element={<Messages />} />
       </Route>
-
 
       <Route path="*" element={<Navigate to="/home" replace />} />
     </Routes>
