@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { MessageIcon } from "../components/Icons.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
 
 const DUMMY_REQUESTS = [
   { id: 1, name: "Travel Explorer", username: "travel_exp", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Travel" },
@@ -12,6 +13,7 @@ const DUMMY_CHATS = [
 ];
 
 export default function Messages() {
+  const { updateFollowers, updateFollowing } = useAuth();
   const [activeTab, setActiveTab] = useState("chats");
   const [requests, setRequests] = useState(DUMMY_REQUESTS);
   const [chats, setChats] = useState(DUMMY_CHATS);
@@ -24,6 +26,8 @@ export default function Messages() {
   ]);
 
   const handleAccept = (req) => {
+    updateFollowers(1);
+    updateFollowing(1);
     setRequests(requests.filter(r => r.id !== req.id));
     setChats([{ id: req.id, name: req.name, lastMsg: "You accepted the request", time: "now", avatar: req.avatar }, ...chats]);
   };

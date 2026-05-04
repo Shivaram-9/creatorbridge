@@ -25,22 +25,20 @@ function fmtFollowers(n) {
 }
 
 export default function Profile() {
-  const { user, setUser } = useAuth();
+  const { 
+    user, setUser, 
+    userPosts, setUserPosts,
+    followersCount, followingCount,
+    refreshUser
+  } = useAuth();
 
-  const [name, setName] = useState("");
-  const [username, setUsername] = useState("");
-  const [category, setCategory] = useState("");
-  const [bio, setBio] = useState("");
-  const [location, setLocation] = useState("");
-  const [avatar, setAvatar] = useState("");
-  const [instagram, setInstagram] = useState("");
-  const [youtube, setYoutube] = useState("");
-  const [followers, setFollowers] = useState("");
-
-  const [portfolio, setPortfolio] = useState([]);
-  const [pfCaption, setPfCaption] = useState("");
-  const [pfAdding, setPfAdding] = useState(false);
-  const [pfError, setPfError] = useState("");
+  // Local state for editing to prevent side effects on actual data
+  const [editName, setEditName] = useState("");
+  const [editUsername, setEditUsername] = useState("");
+  const [editCategory, setEditCategory] = useState("");
+  const [editBio, setEditBio] = useState("");
+  const [editLocation, setEditLocation] = useState("");
+  const [editAvatar, setEditAvatar] = useState("");
 
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
@@ -50,42 +48,22 @@ export default function Profile() {
   const [isEditing, setIsEditing] = useState(false);
   const [showPhotoOptions, setShowPhotoOptions] = useState(false);
   const [activeTab, setActiveTab] = useState("posts");
+  const [copyStatus, setCopyStatus] = useState(false);
 
   const fileRef = useRef(null);
-  const pfFileRef = useRef(null);
 
-  /* Populate fields from API */
+  /* Populate edit fields from user data */
   useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        const me = await api.users.me();
-        if (cancelled) return;
-        if (me?.error) {
-          setError(typeof me.error === "string" ? me.error : "Something went wrong");
-        } else {
-          setName(me.name || "");
-          setUsername(me.username || "");
-          setCategory(me.category || "");
-          setBio(me.bio || "");
-          setLocation(me.location || "");
-          setAvatar(me.avatar || "");
-          setInstagram(me.instagram || "");
-          setYoutube(me.youtube || "");
-          setFollowers(me.followers ? String(me.followers) : "");
-          setPortfolio(Array.isArray(me.portfolio) ? me.portfolio : []);
-          setUser(me);
-        }
-      } catch {
-        setError("Something went wrong");
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [setUser]);
+    if (user) {
+      setEditName(user.name || "");
+      setEditUsername(user.username || "");
+      setEditCategory(user.category || "");
+      setEditBio(user.bio || "");
+      setEditLocation(user.location || "");
+      setEditAvatar(user.avatar || "");
+      setLoading(false);
+    }
+  }, [user, isEditing]);
 
   /* Handle real image upload */
   const handleImageUpload = (e) => {
@@ -93,55 +71,19 @@ export default function Profile() {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setAvatar(reader.result);
+        setEditAvatar(reader.result);
         setShowPhotoOptions(false);
       };
       reader.readAsDataURL(file);
     }
   };
 
-  /* Handle portfolio url upload */
-  async function handlePortfolioSubmit() {
-    const url = pfFileRef.current?.value?.trim();
-    if (!url) return;
-    const isVideo = url.match(/\.(mp4|webm|ogg)$/i) || pfCaption.toLowerCase().includes("video");
-    setPfAdding(true);
-    setPfError("");
-    try {
-      const result = await api.users.addPortfolioItem({
-        url,
-        caption: pfCaption.trim(),
-        mediaType: isVideo ? "video" : "image",
-      });
-      if (result?.error) {
-        setPfError(typeof result.error === "string" ? result.error : "Something went wrong");
-      } else {
-        setPortfolio(Array.isArray(result.portfolio) ? result.portfolio : []);
-        setUser(result);
-        setPfCaption("");
-        if (pfFileRef.current) pfFileRef.current.value = "";
-      }
-    } catch {
-      setPfError("Something went wrong");
-    } finally {
-      setPfAdding(false);
-    }
-  }
-
-  async function removePortfolioItem(itemId) {
-    setPfError("");
-    try {
-      const result = await api.users.removePortfolioItem(itemId);
-      if (result?.error) {
-        setPfError(typeof result.error === "string" ? result.error : "Something went wrong");
-      } else {
-        setPortfolio(Array.isArray(result.portfolio) ? result.portfolio : []);
-        setUser(result);
-      }
-    } catch {
-      setPfError("Something went wrong");
-    }
-  }
+  const handleShareProfile = () => {
+    const url = window.location.origin + "/profile";
+    navigator.clipboard.writeText(url);
+    setCopyStatus(true);
+    setTimeout(() => setCopyStatus(false), 2000);
+  };
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -150,8 +92,13 @@ export default function Profile() {
     setSaving(true);
     try {
       const body = {
-        name, username, category, bio, location, avatar, instagram, youtube,
-        followers: followers ? Number(followers) : 0,
+        name: editName,
+        username: editUsername,
+        category: editCategory,
+        bio: editBio,
+        location: editLocation,
+        avatar: editAvatar,
+        followers: followersCount,
       };
       const me = await api.users.updateMe(body);
       if (me?.error) {
@@ -168,7 +115,7 @@ export default function Profile() {
     }
   }
 
-  if (loading) {
+  if (loading && !user) {
     return (
       <div className="container">
         <p className="loading-line">Loading profile</p>
@@ -176,7 +123,7 @@ export default function Profile() {
     );
   }
 
-  const displayName = name || user?.email?.split('@')[0] || "User";
+  const displayName = user?.name || user?.email?.split('@')[0] || "User";
 
   return (
     <div className="profile-v2">
@@ -190,26 +137,26 @@ export default function Profile() {
           <form onSubmit={handleSubmit}>
             <div className="vertical-field">
               <label>Name</label>
-              <input className="input" value={name} onChange={(e) => setName(e.target.value)} placeholder="Name" />
+              <input className="input" value={editName} onChange={(e) => setEditName(e.target.value)} placeholder="Name" />
             </div>
             <div className="vertical-field">
               <label>Username</label>
-              <input className="input" value={username} onChange={(e) => setUsername(e.target.value.replace(/[^a-zA-Z0-9._-]/g, ""))} placeholder="Username" />
+              <input className="input" value={editUsername} onChange={(e) => setEditUsername(e.target.value.replace(/[^a-zA-Z0-9._-]/g, ""))} placeholder="Username" />
             </div>
             <div className="vertical-field">
               <label>Category</label>
-              <select className="input" value={category} onChange={(e) => setCategory(e.target.value)}>
+              <select className="input" value={editCategory} onChange={(e) => setEditCategory(e.target.value)}>
                 <option value="">Select category</option>
                 {CATEGORIES.map((c) => (<option key={c} value={c}>{c}</option>))}
               </select>
             </div>
             <div className="vertical-field">
               <label>Location</label>
-              <input className="input" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Location" />
+              <input className="input" value={editLocation} onChange={(e) => setEditLocation(e.target.value)} placeholder="Location" />
             </div>
             <div className="vertical-field">
               <label>Bio</label>
-              <textarea className="input" value={bio} onChange={(e) => setBio(e.target.value)} rows={3} placeholder="Bio" />
+              <textarea className="input" value={editBio} onChange={(e) => setEditBio(e.target.value)} rows={3} placeholder="Bio" />
             </div>
 
             <ErrorBanner message={error} onDismiss={() => setError("")} />
@@ -225,34 +172,36 @@ export default function Profile() {
           <header className="profile-v2-header">
             <div className="profile-v2-avatar-col">
               <div className="profile-v2-avatar" onClick={() => setShowPhotoOptions(true)}>
-                {avatar ? (
-                  <img src={avatar} alt="" className="profile-v2-avatar-img" />
+                {user?.avatar ? (
+                  <img src={user.avatar} alt="" className="profile-v2-avatar-img" />
                 ) : (
-                  <span className="profile-preview__avatar-initials" style={{ fontSize: '2rem' }}>{initials(name, user?.email)}</span>
+                  <span className="profile-preview__avatar-initials" style={{ fontSize: '2rem' }}>{initials(user?.name, user?.email)}</span>
                 )}
               </div>
             </div>
             
             <div className="profile-v2-info-col">
               <div className="profile-v2-top-row">
-                <h1 className="profile-v2-username">{username || displayName}</h1>
+                <h1 className="profile-v2-username">{user?.username || displayName}</h1>
                 <div className="profile-v2-actions">
                   <button className="profile-v2-btn" onClick={() => setIsEditing(true)}>Edit profile</button>
-                  <button className="profile-v2-btn">Share profile</button>
+                  <button className="profile-v2-btn" onClick={handleShareProfile}>
+                    {copyStatus ? "Copied!" : "Share profile"}
+                  </button>
                 </div>
               </div>
               
               <div className="profile-v2-stats">
-                <div className="profile-v2-stat"><strong>{portfolio.length}</strong> posts</div>
-                <div className="profile-v2-stat"><strong>{fmtFollowers(user?.followers)}</strong> followers</div>
-                <div className="profile-v2-stat"><strong>{Math.floor(Math.random() * 500) + 100}</strong> following</div>
+                <div className="profile-v2-stat"><strong>{userPosts.length}</strong> posts</div>
+                <div className="profile-v2-stat"><strong>{fmtFollowers(followersCount)}</strong> followers</div>
+                <div className="profile-v2-stat"><strong>{fmtFollowers(followingCount)}</strong> following</div>
               </div>
               
               <div className="profile-v2-bio-wrap">
                 <span className="profile-v2-display-name">{displayName}</span>
-                {category && <p className="muted" style={{ marginBottom: '0.25rem' }}>{category}</p>}
-                {bio && <p style={{ whiteSpace: 'pre-wrap' }}>{bio}</p>}
-                {location && <p className="muted" style={{ marginTop: '0.25rem' }}>📍 {location}</p>}
+                {user?.category && <p className="muted" style={{ marginBottom: '0.25rem' }}>{user.category}</p>}
+                {user?.bio && <p style={{ whiteSpace: 'pre-wrap' }}>{user.bio}</p>}
+                {user?.location && <p className="muted" style={{ marginTop: '0.25rem' }}>📍 {user.location}</p>}
               </div>
             </div>
           </header>
@@ -268,7 +217,7 @@ export default function Profile() {
 
           <div className="profile-v2-content">
             {activeTab === 'posts' ? (
-              <PortfolioGrid items={portfolio} />
+              <PortfolioGrid items={userPosts} />
             ) : (
               <div className="empty-state" style={{ padding: '4rem 0' }}>
                 <div className="empty-state__illustration">🖼?️</div>
@@ -287,10 +236,9 @@ export default function Profile() {
             <button className="photo-option" style={{ color: 'var(--accent)', fontWeight: 700 }} onClick={() => fileRef.current.click()}>Upload Photo</button>
             <button className="photo-option" onClick={() => setShowPhotoOptions(false)}>Import from WhatsApp</button>
             <button className="photo-option" onClick={() => setShowPhotoOptions(false)}>Take Photo</button>
-            {avatar && (
-              <button className="photo-option photo-option--danger" onClick={() => { setAvatar(""); setShowPhotoOptions(false); }}>Remove Current Photo</button>
+            {user?.avatar && (
+              <button className="photo-option photo-option--danger" onClick={() => { setUser({ ...user, avatar: "" }); setShowPhotoOptions(false); }}>Remove Current Photo</button>
             )}
-            <button className="photo-option photo-option--cancel" onClick={() => setShowPhotoOptions(false)}>Cancel</button>
             <input type="file" ref={fileRef} hidden accept="image/*" onChange={handleImageUpload} />
           </div>
         </div>

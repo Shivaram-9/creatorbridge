@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { api, firstApiError } from "../services/api.js";
 import { roleBadgeClass } from "../utils/badges.js";
 import ErrorBanner from "../components/ErrorBanner.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
 
 /** Generate initials */
 function initials(name, email) {
@@ -16,6 +17,7 @@ function initials(name, email) {
 }
 
 export default function Connections() {
+  const { updateFollowers, updateFollowing } = useAuth();
   const [incoming, setIncoming] = useState([]);
   const [outgoing, setOutgoing] = useState([]);
   const [partners, setPartners] = useState([]);
@@ -58,6 +60,8 @@ export default function Connections() {
       if (result?.error) {
         setError(typeof result.error === "string" ? result.error : "Something went wrong");
       } else {
+        updateFollowers(1);
+        updateFollowing(1); // Usually bidirectional in this app's current logic
         await load();
       }
     } catch {
@@ -233,17 +237,31 @@ export default function Connections() {
               { id: 's1', name: 'Sarah Jenkins', username: 'sarah_j', role: 'INFLUENCER', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah' },
               { id: 's2', name: 'Global Brands Co', username: 'global_brands', role: 'BRAND', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Global' },
               { id: 's3', name: 'David Miller', username: 'david_tech', role: 'INFLUENCER', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=David' },
-            ].map((u) => (
-              <article key={u.id} className="card user-card">
-                <div className="user-card__body">
-                  <UserHeading u={u} />
-                  <p className="user-card__bio" style={{ marginTop: '0.25rem' }}>Popular in your category</p>
-                </div>
-                <div className="user-card__aside">
-                  <button type="button" className="btn btn-primary btn-sm">Connect</button>
-                </div>
-              </article>
-            ))}
+            ].map((u) => {
+              const isSent = outgoing.some(o => o.to?._id === u.id);
+              return (
+                <article key={u.id} className="card user-card">
+                  <div className="user-card__body">
+                    <UserHeading u={u} />
+                    <p className="user-card__bio" style={{ marginTop: '0.25rem' }}>Popular in your category</p>
+                  </div>
+                  <div className="user-card__aside">
+                    <button 
+                      type="button" 
+                      className={`btn btn-sm ${isSent ? 'btn-ghost' : 'btn-primary'}`}
+                      onClick={() => {
+                        if (!isSent) {
+                          updateFollowing(1);
+                          setOutgoing([...outgoing, { _id: u.id, to: u }]);
+                        }
+                      }}
+                    >
+                      {isSent ? 'Pending' : 'Connect'}
+                    </button>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </section>
       </>

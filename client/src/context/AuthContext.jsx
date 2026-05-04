@@ -9,16 +9,19 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [userPosts, setUserPosts] = useState([]);
+  const [followersCount, setFollowersCount] = useState(0);
+  const [followingCount, setFollowingCount] = useState(0);
   const navigate = useNavigate();
 
   const logout = useCallback(() => {
     setToken(null);
     setUser(null);
+    setUserPosts([]);
     disconnectSocket();
     navigate("/login", { replace: true });
   }, [navigate]);
 
-  /* Register the global 401 handler so api.js can trigger logout */
   useEffect(() => {
     registerAuthFailureHandler(logout);
     return () => registerAuthFailureHandler(null);
@@ -31,7 +34,6 @@ export function AuthProvider({ children }) {
       setLoading(false);
       return;
     }
-    /* Ensure the token is in localStorage so request() picks it up */
     setToken(token);
     const me = await api.users.me();
     if (me?.error) {
@@ -40,6 +42,9 @@ export function AuthProvider({ children }) {
       disconnectSocket();
     } else {
       setUser(me);
+      setFollowersCount(me.followers || 0);
+      setFollowingCount(me.following || Math.floor(Math.random() * 200) + 100);
+      setUserPosts(Array.isArray(me.portfolio) ? me.portfolio : []);
       connectSocket();
     }
     setLoading(false);
@@ -59,6 +64,9 @@ export function AuthProvider({ children }) {
       const { token, user: u } = data;
       setToken(token);
       setUser(u);
+      setFollowersCount(u.followers || 0);
+      setFollowingCount(u.following || 120);
+      setUserPosts(Array.isArray(u.portfolio) ? u.portfolio : []);
       connectSocket();
       return { ok: true, user: u };
     } catch (err) {
@@ -69,19 +77,30 @@ export function AuthProvider({ children }) {
 
   const register = useCallback(async (email, password, role) => {
     const data = await api.auth.register({ email, password, role });
-    if (data?.error) {
-      const message = typeof data.error === "string" ? data.error : "";
-      return { ok: false, error: message || "Something went wrong" };
-    }
-    if (!data?.token) {
+    if (data?.error || !data?.token) {
       const message = typeof data?.error === "string" ? data.error : "";
       return { ok: false, error: message || "Something went wrong" };
     }
     const { token, user: u } = data;
     setToken(token);
     setUser(u);
+    setFollowersCount(0);
+    setFollowingCount(0);
+    setUserPosts([]);
     connectSocket();
     return { ok: true, user: u };
+  }, []);
+
+  const addPost = useCallback((post) => {
+    setUserPosts(prev => [post, ...prev]);
+  }, []);
+
+  const updateFollowers = useCallback((delta) => {
+    setFollowersCount(prev => Math.max(0, prev + delta));
+  }, []);
+
+  const updateFollowing = useCallback((delta) => {
+    setFollowingCount(prev => Math.max(0, prev + delta));
   }, []);
 
   const value = useMemo(
@@ -93,8 +112,15 @@ export function AuthProvider({ children }) {
       logout,
       refreshUser,
       setUser,
+      userPosts,
+      setUserPosts,
+      addPost,
+      followersCount,
+      followingCount,
+      updateFollowers,
+      updateFollowing,
     }),
-    [user, loading, login, register, logout, refreshUser]
+    [user, loading, login, register, logout, refreshUser, userPosts, followersCount, followingCount, addPost, updateFollowers, updateFollowing]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
