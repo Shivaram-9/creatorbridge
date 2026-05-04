@@ -16,23 +16,8 @@ import Notifications from "./pages/Notifications.jsx";
 import Settings from "./pages/Settings.jsx";
 
 export default function App() {
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  useEffect(() => {
-    // Detect page refresh (Modern + Legacy fallback)
-    const entries = performance.getEntriesByType("navigation");
-    const isModernReload = entries.length > 0 && entries[0].type === "reload";
-    const isLegacyReload = window.performance && window.performance.navigation && window.performance.navigation.type === 1;
-
-    if ((isModernReload || isLegacyReload) && location.pathname !== "/") {
-      console.log("Reload detected, redirecting to Splash...");
-      navigate("/", { replace: true });
-    }
-  }, [navigate, location.pathname]);
-
-
   return (
+
 
     <Routes>
       <Route path="/" element={<SplashScreen />} />
