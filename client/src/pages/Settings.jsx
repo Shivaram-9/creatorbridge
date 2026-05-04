@@ -96,7 +96,7 @@ export default function Settings() {
 
           <Link to="/connections" className="settings-row settings-row--link">
             <div className="settings-row__left">
-              <span className="settings-row__icon" aria-hidden="true">🤝</span>
+              <span className="settings-row__icon" aria-hidden="true">👥</span>
               <div>
                 <p className="settings-row__label">Connections</p>
                 <p className="settings-row__sub">Manage your network and accept requests</p>
