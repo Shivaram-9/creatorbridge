@@ -3046,3 +3046,135 @@ textarea.input {
   border-radius: 999px;
 }
 
+
+/* ??? Feed & Post Cards ??? */
+.feed-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.post-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.post-card:hover {
+  box-shadow: var(--shadow-card);
+}
+
+.post-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+}
+
+.post-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--accent-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.post-avatar__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.post-avatar__initials {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.post-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.post-username {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.post-time {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.post-content {
+  padding: 0 1rem 1rem;
+}
+
+.post-text {
+  margin: 0 0 1rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--text);
+  white-space: pre-wrap;
+}
+
+.post-image-wrapper {
+  margin: 0 -1rem -1rem;
+  background: #f1f5f9;
+}
+
+.post-image {
+  width: 100%;
+  max-height: 500px;
+  object-fit: cover;
+  display: block;
+}
+
+.post-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.post-action-btn {
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.4rem 0.6rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.post-action-btn:hover {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+
+.post-action-btn--liked {
+  color: #ef4444;
+}
+
+.post-action-icon {
+  font-size: 1.1rem;
+}
+
+.post-action-count {
+  font-variant-numeric: tabular-nums;
+}
