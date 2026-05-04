@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { useAuth } from "../context/AuthContext.jsx";
 import PostCard from "../components/PostCard.jsx";
+import CreatePost from "../components/CreatePost.jsx";
 
 const DUMMY_POSTS = [
   {
@@ -54,6 +56,21 @@ const DUMMY_POSTS = [
 
 export default function Home() {
   const { user } = useAuth();
+  const [posts, setPosts] = useState(DUMMY_POSTS);
+
+  const handleAddPost = (newPostData) => {
+    const newPost = {
+      id: Date.now(),
+      username: user?.name || user?.email?.split('@')[0] || "You",
+      avatar: user?.avatar || null,
+      content: newPostData.content,
+      image: newPostData.image,
+      time: "Just now",
+      likes: 0,
+      comments: 0
+    };
+    setPosts([newPost, ...posts]);
+  };
 
   return (
     <div className="container">
@@ -63,7 +80,8 @@ export default function Home() {
       </header>
 
       <div className="feed-container">
-        {DUMMY_POSTS.map((post) => (
+        <CreatePost onPost={handleAddPost} user={user} />
+        {posts.map((post) => (
           <PostCard key={post.id} post={post} />
         ))}
       </div>
