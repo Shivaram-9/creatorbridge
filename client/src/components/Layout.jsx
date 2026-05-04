@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { Link, NavLink, Outlet } from "react-router-dom";
+import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 import OfflineBanner from "./OfflineBanner.jsx";
 import { api } from "../services/api.js";
@@ -25,8 +25,10 @@ function BottomNavItem({ to, icon, label, badgeCount }) {
 
 export default function Layout() {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [unreadCount, setUnreadCount] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const menuRef = useRef(null);
 
   /* Poll notifications count */
@@ -35,10 +37,11 @@ export default function Layout() {
     async function fetchCount() {
       try {
         const data = await api.notifications.list();
-        if (Array.isArray(data)) setUnreadCount(data.length);
-      } catch {
-        // silent
-      }
+        if (Array.isArray(data)) {
+          const unread = data.filter(n => !n.read).length;
+          setUnreadCount(unread || data.length);
+        }
+      } catch { /* silent */ }
     }
     fetchCount();
     const interval = setInterval(fetchCount, 60_000);
@@ -56,6 +59,14 @@ export default function Layout() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [menuOpen]);
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/discover?q=${encodeURIComponent(searchQuery)}`);
+      setSearchQuery("");
+    }
+  };
+
   return (
     <div className="layout">
       <OfflineBanner />
@@ -64,23 +75,53 @@ export default function Layout() {
           <Link to="/home" className="logo">
             CreatorBridge
           </Link>
+
           {user && (
-            <div className="top-menu-container" ref={menuRef}>
-              <button 
-                className="menu-toggle" 
-                onClick={() => setMenuOpen(!menuOpen)}
-                aria-label="Menu"
-              >
-                ☰
-              </button>
-              {menuOpen && (
-                <div className="dropdown-menu">
-                  <Link to="/profile" className="dropdown-item" onClick={() => setMenuOpen(false)}>👤 Profile</Link>
-                  <Link to="/settings" className="dropdown-item" onClick={() => setMenuOpen(false)}>⚙ Settings</Link>
-                  <button className="dropdown-item text-danger" onClick={() => { setMenuOpen(false); logout(); }}>🚪 Logout</button>
+            <>
+              <form className="search-container" onSubmit={handleSearch}>
+                <span className="search-icon">🔍</span>
+                <input
+                  type="text"
+                  className="search-input"
+                  placeholder="Search creators & brands..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </form>
+
+              <div className="header-actions">
+                <Link to="/notifications" className="nav-icon-btn" aria-label="Notifications">
+                  🔔
+                  {unreadCount > 0 && <span className="nav-badge">{unreadCount}</span>}
+                </Link>
+
+                <div className="top-menu-container" ref={menuRef}>
+                  <button
+                    className="nav-icon-btn"
+                    onClick={() => setMenuOpen(!menuOpen)}
+                    aria-label="Menu"
+                  >
+                    ☰
+                  </button>
+                  {menuOpen && (
+                    <div className="dropdown-menu">
+                      <Link to="/settings" className="dropdown-item" onClick={() => setMenuOpen(false)}>
+                        ⚙ Settings
+                      </Link>
+                      <button
+                        className="dropdown-item text-danger"
+                        onClick={() => {
+                          setMenuOpen(false);
+                          logout();
+                        }}
+                      >
+                        🚪 Logout
+                      </button>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
+              </div>
+            </>
           )}
         </div>
       </header>
@@ -91,11 +132,14 @@ export default function Layout() {
 
       {user && (
         <nav className="bottom-nav">
-          <BottomNavItem to="/discover" icon="🔍" label="Discover" />
+          <BottomNavItem to="/home" icon="🏠" label="Home" />
+          <BottomNavItem to="/reels" icon="🎬" label="Reels" />
           <BottomNavItem to="/connections" icon="🤝" label="Connections" />
-          <BottomNavItem to="/notifications" icon="🔔" label="Alerts" badgeCount={unreadCount} />
+          <BottomNavItem to="/messages" icon="💬" label="Messages" />
+          <BottomNavItem to="/profile" icon="👤" label="Profile" />
         </nav>
       )}
     </div>
   );
 }
+

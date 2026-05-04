@@ -397,37 +397,102 @@ textarea.input {
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding-top: calc(0.9rem + var(--safe-top)) !important;
-  padding-bottom: 0.9rem !important;
-  max-width: 960px;
+  padding: 0.75rem 1.25rem !important;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
+
 .logo {
-  font-weight: 700;
-  font-size: 1.125rem;
+  font-weight: 800;
+  font-size: 1.25rem;
   color: var(--text);
-  letter-spacing: -0.03em;
+  letter-spacing: -0.04em;
   flex-shrink: 0;
+  text-decoration: none;
 }
 
 .logo:hover {
   color: var(--accent-hover);
 }
 
-.nav {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.2rem 0.35rem;
+/* Search Bar */
+.search-container {
+  flex: 1;
+  max-width: 400px;
+  margin: 0 1rem;
+  position: relative;
 }
 
-.nav-link {
-  padding: 0.5rem 0.75rem;
-  border-radius: 10px;
+.search-input {
+  width: 100%;
+  padding: 0.55rem 1rem 0.55rem 2.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: #f1f5f9;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.search-input:focus {
+  background: #ffffff;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  outline: none;
+}
+
+.search-icon {
+  position: absolute;
+  left: 0.9rem;
+  top: 50%;
+  transform: translateY(-50%);
   color: var(--muted);
-  font-size: 0.875rem;
-  font-weight: 600;
-  white-space: nowrap;
+  font-size: 0.9rem;
+  pointer-events: none;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.nav-icon-btn {
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-size: 1.4rem;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border-radius: 50%;
+  transition: background 0.15s ease;
+}
+
+.nav-icon-btn:hover {
+  background: #f1f5f9;
+  color: var(--accent);
+}
+
+.nav-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: var(--danger);
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 800;
+  min-width: 1rem;
+  height: 1rem;
+  padding: 0 0.2rem;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #ffffff;
 }
 
 .nav-link:hover {

@@ -14,6 +14,8 @@ import Connections from "./pages/Connections.jsx";
 import Chat from "./pages/Chat.jsx";
 import Notifications from "./pages/Notifications.jsx";
 import Settings from "./pages/Settings.jsx";
+import Placeholder from "./pages/Placeholder.jsx";
+
 
 export default function App() {
   return (
@@ -49,7 +51,10 @@ export default function App() {
         <Route path="/notifications" element={<Notifications />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/chat/:userId" element={<Chat />} />
+        <Route path="/reels" element={<Placeholder title="Reels" />} />
+        <Route path="/messages" element={<Placeholder title="Messages" />} />
       </Route>
+
 
       <Route path="*" element={<Navigate to="/home" replace />} />
     </Routes>
