@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { auth } from "../config/firebase";
 import { useNavigate } from "react-router-dom";
 import { api, setToken, getToken, registerAuthFailureHandler } from "../services/api.js";
 import { connectSocket, disconnectSocket } from "../services/socket.js";
@@ -49,16 +50,21 @@ export function AuthProvider({ children }) {
   }, [refreshUser]);
 
   const login = useCallback(async (email, password) => {
-    const data = await api.auth.login({ email, password });
-    if (data?.error || !data?.token) {
-      const message = typeof data?.error === "string" ? data.error : "";
-      return { ok: false, error: message || "Something went wrong" };
+    try {
+      const data = await api.auth.login({ email, password });
+      if (data?.error || !data?.token) {
+        const message = typeof data?.error === "string" ? data.error : "";
+        return { ok: false, error: message || "Invalid email or password" };
+      }
+      const { token, user: u } = data;
+      setToken(token);
+      setUser(u);
+      connectSocket();
+      return { ok: true, user: u };
+    } catch (err) {
+      console.error("AuthContext Login Error:", err);
+      return { ok: false, error: "Network error. Please try again later." };
     }
-    const { token, user: u } = data;
-    setToken(token);
-    setUser(u);
-    connectSocket();
-    return { ok: true, user: u };
   }, []);
 
   const register = useCallback(async (email, password, role) => {
