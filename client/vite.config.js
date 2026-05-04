@@ -4,6 +4,7 @@ import react from "@vitejs/plugin-react";
 const BACKEND = process.env.VITE_API_URL || "https://creatorbridge-tn9r.onrender.com";
 
 export default defineConfig({
+  base: "/",
   plugins: [react()],
   server: {
     port: 5173,

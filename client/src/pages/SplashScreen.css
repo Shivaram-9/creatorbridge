@@ -4,28 +4,29 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background: linear-gradient(135deg, #000000 0%, #0a192f 100%);
-  color: #e8eef5;
+  background: #ffffff;
+  color: #0f172a;
   animation: fadeIn 1s ease-in-out forwards;
 }
 
 .splash-title {
   font-size: 3.5rem;
   font-weight: bold;
-  background: linear-gradient(90deg, #5b8cff, #3dd68c);
+  background: linear-gradient(90deg, #3b82f6, #10b981);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   color: transparent;
-  filter: drop-shadow(0 0 12px rgba(91, 140, 255, 0.7));
+  filter: drop-shadow(0 2px 8px rgba(59, 130, 246, 0.2));
   margin: 0;
 }
 
 .splash-subtitle {
   font-size: 1.2rem;
-  color: #8b9cb3;
+  color: #64748b;
   margin-top: 1rem;
 }
+
 
 @keyframes fadeIn {
   0% {

@@ -101,11 +101,10 @@ export default function Login() {
               style={{
                 background: "transparent",
                 border: "none",
-                color: "var(--primary, #5b8cff)",
+                color: "var(--primary, #3b82f6)",
                 cursor: "pointer",
                 fontSize: "0.95rem",
-                textDecoration: "underline",
-                padding: "0.5rem"
+                textDecoration: "underline"
               }}
             >
               {loginMethod === "email" ? "Login with Phone Instead" : "Login with Email Instead"}

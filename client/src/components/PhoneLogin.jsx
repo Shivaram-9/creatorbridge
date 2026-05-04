@@ -135,7 +135,7 @@ export default function PhoneLogin() {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  background: "rgba(255, 255, 255, 0.05)"
+                  background: "#f1f5f9"
                 }}
               >
                 +91

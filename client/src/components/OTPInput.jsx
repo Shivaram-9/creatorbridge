@@ -64,7 +64,7 @@ export default function OTPInput({ phoneNumber, onSuccess, onResend }) {
 
   return (
     <div style={{ textAlign: "center" }}>
-      <p style={{ marginBottom: "1.5rem", color: "var(--muted, #8b9cb3)" }}>
+      <p style={{ marginBottom: "1.5rem", color: "var(--muted, #64748b)" }}>
         Enter OTP sent to +91 {phoneNumber}
       </p>
 
@@ -107,7 +107,7 @@ export default function OTPInput({ phoneNumber, onSuccess, onResend }) {
             style={{
               background: "transparent",
               border: "none",
-              color: "var(--primary, #5b8cff)",
+              color: "var(--primary, #3b82f6)",
               cursor: "pointer",
               fontSize: "0.95rem",
               textDecoration: "underline"
