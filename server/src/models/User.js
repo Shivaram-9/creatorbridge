@@ -22,7 +22,8 @@ const userSchema = new mongoose.Schema(
     avatar: { type: String, default: "" },
     instagram: { type: String, default: "" },
     youtube: { type: String, default: "" },
-    followers: { type: Number, default: 0 },
+    followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    following: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     portfolio: { type: [portfolioItemSchema], default: [] },
   },
   { timestamps: true }

@@ -30,7 +30,6 @@ export default function Profile() {
   const { 
     user, setUser, 
     userPosts, setUserPosts,
-    followersCount, followingCount,
     refreshUser
   } = useAuth();
 
@@ -119,7 +118,6 @@ export default function Profile() {
         bio: editBio,
         location: editLocation,
         avatar: editAvatar,
-        followers: followersCount,
       };
       const me = await api.users.updateMe(body);
       if (me?.error) {
@@ -222,8 +220,8 @@ export default function Profile() {
               
               <div className="profile-v2-stats">
                 <div className="profile-v2-stat"><strong>{userPosts.length}</strong> posts</div>
-                <div className="profile-v2-stat"><strong>{fmtFollowers(followersCount)}</strong> followers</div>
-                <div className="profile-v2-stat"><strong>{fmtFollowers(followingCount)}</strong> following</div>
+                <div className="profile-v2-stat"><strong>{fmtFollowers(user?.followers?.length)}</strong> followers</div>
+                <div className="profile-v2-stat"><strong>{fmtFollowers(user?.following?.length)}</strong> following</div>
               </div>
               
               <div className="profile-v2-bio-wrap">

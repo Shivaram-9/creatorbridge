@@ -69,7 +69,7 @@ export default function Settings() {
               <span className="settings-row__icon" aria-hidden="true">🔔</span>
               <div>
                 <p className="settings-row__label">Notifications</p>
-                <p className="settings-row__sub">View your connection requests and messages</p>
+                <p className="settings-row__sub">View your messages and activities</p>
               </div>
             </div>
             <span className="settings-row__chevron" aria-hidden="true">›</span>
@@ -92,18 +92,6 @@ export default function Settings() {
             <span className="settings-row__chevron" aria-hidden="true">›</span>
           </Link>
 
-          <div className="settings-divider" />
-
-          <Link to="/connections" className="settings-row settings-row--link">
-            <div className="settings-row__left">
-              <span className="settings-row__icon" aria-hidden="true">👥</span>
-              <div>
-                <p className="settings-row__label">Connections</p>
-                <p className="settings-row__sub">Manage your network and accept requests</p>
-              </div>
-            </div>
-            <span className="settings-row__chevron" aria-hidden="true">›</span>
-          </Link>
         </div>
       </section>
 

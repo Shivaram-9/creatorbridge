@@ -155,16 +155,10 @@ export const api = {
     },
     search: (q) => request(`/users/search?q=${encodeURIComponent(q || "")}`),
     get: (id) => request(`/users/${id}`),
+    follow: (id) => request(`/users/follow/${id}`, { method: "POST" }),
+    unfollow: (id) => request(`/users/unfollow/${id}`, { method: "POST" }),
     addPortfolioItem: (body) => request("/users/me/portfolio", { method: "POST", body }),
     removePortfolioItem: (itemId) => request(`/users/me/portfolio/${itemId}`, { method: "DELETE" }),
-  },
-  connections: {
-    request: (toUserId) => request("/connections/request", { method: "POST", body: { toUserId } }),
-    incoming: () => request("/connections/incoming"),
-    outgoing: () => request("/connections/outgoing"),
-    accepted: () => request("/connections/accepted"),
-    accept: (id) => request(`/connections/${id}/accept`, { method: "PATCH" }),
-    reject: (id) => request(`/connections/${id}/reject`, { method: "PATCH" }),
   },
   messages: {
     conversation: (otherUserId) => request(`/messages/conversation/${otherUserId}`),

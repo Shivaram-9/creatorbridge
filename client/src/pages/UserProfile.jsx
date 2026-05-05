@@ -28,7 +28,7 @@ export default function UserProfile() {
   const { user: me } = useAuth();
 
   const [profile, setProfile] = useState(null);
-  const [connState, setConnState] = useState("none"); // "none" | "pending" | "connected"
+  const [isFollowing, setIsFollowing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [actionBusy, setActionBusy] = useState(false);
@@ -39,16 +39,7 @@ export default function UserProfile() {
     setLoading(true);
     setError("");
     try {
-      const reqs = [api.users.get(userId)];
-
-      /* Only fetch connection status for other users */
-      if (!isOwn) {
-        reqs.push(api.connections.outgoing());
-        reqs.push(api.connections.accepted());
-      }
-
-      const results = await Promise.all(reqs);
-      const data = results[0];
+      const data = await api.users.get(userId);
       if (data?.error) {
         setError(typeof data.error === "string" ? data.error : "Something went wrong");
         setLoading(false);
@@ -56,40 +47,42 @@ export default function UserProfile() {
       }
       setProfile(data);
 
-      if (!isOwn) {
-        const outgoing = results[1];
-        const accepted = results[2];
-        const errMsg = firstApiError(outgoing, accepted);
-        if (!errMsg) {
-          const outArr = Array.isArray(outgoing) ? outgoing : [];
-          const accArr = Array.isArray(accepted) ? accepted : [];
-          const outSet = new Set(outArr.map((o) => o.to?._id || o.to).filter(Boolean));
-          const accSet = new Set(accArr.map((a) => a.user?._id || a.user).filter(Boolean));
-          if (accSet.has(userId)) setConnState("connected");
-          else if (outSet.has(userId)) setConnState("pending");
-          else setConnState("none");
-        }
+      if (!isOwn && me) {
+        const followingArr = Array.isArray(me.following) ? me.following : [];
+        setIsFollowing(followingArr.includes(userId));
       }
     } catch {
       setError("Something went wrong");
     } finally {
       setLoading(false);
     }
-  }, [userId, isOwn]);
+  }, [userId, isOwn, me]);
 
   useEffect(() => {
     load();
   }, [load]);
 
-  async function sendAlignRequest() {
+  async function handleFollowToggle() {
+    if (!me) return;
     setActionBusy(true);
     setError("");
     try {
-      const result = await api.connections.request(userId);
+      const action = isFollowing ? api.users.unfollow : api.users.follow;
+      const result = await action(userId);
       if (result?.error) {
         setError(typeof result.error === "string" ? result.error : "Something went wrong");
       } else {
-        setConnState("pending");
+        setIsFollowing(!isFollowing);
+        // Refresh me to update our following array
+        // We can also optimistically update profile followers count
+        setProfile(prev => {
+          if (!prev) return prev;
+          const currentFollowers = Array.isArray(prev.followers) ? prev.followers : [];
+          const newFollowers = isFollowing 
+            ? currentFollowers.filter(id => id !== me._id)
+            : [...currentFollowers, me._id];
+          return { ...prev, followers: newFollowers };
+        });
       }
     } catch {
       setError("Something went wrong");
@@ -127,7 +120,8 @@ export default function UserProfile() {
 
   const displayName = profile.name || profile.email || "User";
   const roleClass = roleBadgeClass(profile.role);
-  const fl = fmtFollowers(profile.followers);
+  const followersArray = Array.isArray(profile.followers) ? profile.followers : [];
+  const fl = fmtFollowers(followersArray.length);
   const portfolio = Array.isArray(profile.portfolio) ? profile.portfolio : [];
   const hasSocials = profile.instagram || profile.youtube;
   const hasDetails = profile.location || fl || hasSocials;
@@ -168,22 +162,19 @@ export default function UserProfile() {
           <div className="up-actions">
             {isOwn ? (
               <Link to="/profile" className="btn btn-primary">✏️ Edit profile</Link>
-            ) : connState === "connected" ? (
-              <>
-                <span className="up-status up-status--connected">🤝 Aligned</span>
-                <Link to={`/chat/${userId}`} className="btn btn-primary">💬 Message</Link>
-              </>
-            ) : connState === "pending" ? (
-              <span className="up-status up-status--pending">⏳ Request Pending</span>
             ) : (
-              <button
-                type="button"
-                className="align-btn align-btn--lg"
-                disabled={actionBusy}
-                onClick={sendAlignRequest}
-              >
-                {actionBusy ? "Sending…" : "🤝 Align"}
-              </button>
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <button
+                  type="button"
+                  className={`align-btn align-btn--lg ${isFollowing ? 'align-btn--active' : ''}`}
+                  disabled={actionBusy}
+                  onClick={handleFollowToggle}
+                  style={isFollowing ? { backgroundColor: '#f0f0f0', color: '#333' } : {}}
+                >
+                  {actionBusy ? "..." : isFollowing ? "Following" : "Follow"}
+                </button>
+                <Link to={`/chat/${userId}`} className="btn btn-primary">💬 Message</Link>
+              </div>
             )}
           </div>
         </div>

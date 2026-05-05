@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 import { Router } from "express";
 import { Message } from "../models/Message.js";
 import { authMiddleware } from "../middleware/auth.js";
-import { hasAcceptedConnection } from "../lib/connectionHelpers.js";
 
 export const messagesRouter = Router();
 
@@ -16,10 +15,6 @@ messagesRouter.get("/conversation/:otherUserId", async (req, res) => {
     }
     if (otherUserId === req.userId) {
       return res.status(400).json({ error: "Invalid conversation" });
-    }
-    const ok = await hasAcceptedConnection(req.userId, otherUserId);
-    if (!ok) {
-      return res.status(403).json({ error: "You must be connected to message this user" });
     }
     const uid = new mongoose.Types.ObjectId(req.userId);
     const oid = new mongoose.Types.ObjectId(otherUserId);
@@ -54,10 +49,6 @@ messagesRouter.post("/", async (req, res) => {
     }
     if (receiverId === req.userId) {
       return res.status(400).json({ error: "Invalid receiver" });
-    }
-    const ok = await hasAcceptedConnection(req.userId, receiverId);
-    if (!ok) {
-      return res.status(403).json({ error: "You must be connected to message this user" });
     }
     const msg = await Message.create({
       sender: req.userId,

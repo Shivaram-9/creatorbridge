@@ -7,11 +7,9 @@ import { Server } from "socket.io";
 import jwt from "jsonwebtoken";
 import { authRouter } from "./routes/auth.js";
 import { usersRouter } from "./routes/users.js";
-import { connectionsRouter } from "./routes/connections.js";
 import { messagesRouter } from "./routes/messages.js";
 import { notificationsRouter } from "./routes/notifications.js";
 import { Message } from "./models/Message.js";
-import { hasAcceptedConnection } from "./lib/connectionHelpers.js";
 
 const PORT = Number(process.env.PORT) || 5000;
 
@@ -30,7 +28,6 @@ app.get("/api/health", (_, res) => {
 
 app.use("/api/auth", authRouter);
 app.use("/api/users", usersRouter);
-app.use("/api/connections", connectionsRouter);
 app.use("/api/messages", messagesRouter);
 app.use("/api/notifications", notificationsRouter);
 
@@ -69,11 +66,6 @@ io.on("connection", (socket) => {
       }
       if (receiverId === uid) {
         ack?.({ error: "Invalid receiver" });
-        return;
-      }
-      const ok = await hasAcceptedConnection(uid, receiverId);
-      if (!ok) {
-        ack?.({ error: "Not connected" });
         return;
       }
       const msg = await Message.create({

@@ -29,8 +29,8 @@ export default function Discover() {
   const { user } = useAuth();
   const [filter, setFilter] = useState("");
   const [users, setUsers] = useState([]);
-  const [outgoingTo, setOutgoingTo] = useState(new Set());
-  const [acceptedWith, setAcceptedWith] = useState(new Set());
+  const [filter, setFilter] = useState("");
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [actionId, setActionId] = useState(null);
@@ -40,21 +40,12 @@ export default function Discover() {
     setLoading(true);
     try {
       const q = filter.trim() || undefined;
-      const [list, out, acc] = await Promise.all([
-        q ? api.users.search(q) : api.users.list(""),
-        api.connections.outgoing(),
-        api.connections.accepted(),
-      ]);
-      const errMsg = firstApiError(list, out, acc);
-      if (errMsg) {
-        setError(errMsg);
+      const list = q ? await api.users.search(q) : await api.users.list("");
+      if (list?.error) {
+        setError(typeof list.error === "string" ? list.error : "Something went wrong");
       } else {
         const usersArr = Array.isArray(list) ? list : [];
         setUsers(usersArr);
-        const outArr = Array.isArray(out) ? out : [];
-        const accArr = Array.isArray(acc) ? acc : [];
-        setOutgoingTo(new Set(outArr.map((o) => o.to?._id || o.to).filter(Boolean)));
-        setAcceptedWith(new Set(accArr.map((a) => a.user?._id || a.user).filter(Boolean)));
       }
     } catch {
       setError("Something went wrong");
@@ -72,15 +63,30 @@ export default function Discover() {
 
   const headingFilter = useMemo(() => filter.trim() || "Everyone", [filter]);
 
-  async function sendRequest(targetId) {
+  async function handleFollowToggle(targetId, isFollowing) {
+    if (!user) return;
     setActionId(targetId);
     setError("");
     try {
-      const result = await api.connections.request(targetId);
+      const action = isFollowing ? api.users.unfollow : api.users.follow;
+      const result = await action(targetId);
       if (result?.error) {
         setError(typeof result.error === "string" ? result.error : "Something went wrong");
       } else {
-        setOutgoingTo((prev) => new Set(prev).add(targetId));
+        // Update user state (following array)
+        const updatedFollowing = isFollowing 
+          ? user.following.filter(id => id !== targetId)
+          : [...(user.following || []), targetId];
+        // We might want to refresh the whole user or just update the following array
+        // Since we are in Discover, we just need to update the UI local state
+        // Actually, AuthContext should be updated to make it persistent across pages
+        // For now, let's just trigger a reload or use a local state for Following
+        await api.users.me().then(me => {
+          if (!me.error) {
+            // This is a bit slow, but ensures consistency
+            window.location.reload(); // Quick fix for Discover page consistency
+          }
+        });
       }
     } catch {
       setError("Something went wrong");
@@ -134,9 +140,10 @@ export default function Discover() {
           {users.map((u) => {
             const id = u._id;
             const isSelf = id === user?._id;
-            const connected = acceptedWith.has(id);
-            const pending = outgoingTo.has(id);
-            const fl = fmtFollowers(u.followers);
+            const followingArr = Array.isArray(user?.following) ? user.following : [];
+            const isFollowing = followingArr.includes(id);
+            const followersArr = Array.isArray(u.followers) ? u.followers : [];
+            const fl = fmtFollowers(followersArr.length);
             return (
               <article key={id} className="card user-card">
                 <div className="user-card__body">
@@ -222,23 +229,15 @@ export default function Discover() {
                   <Link to={`/user/${id}`} className="btn btn-ghost btn-sm">View Profile</Link>
                   {isSelf ? (
                     <span className="status-pill--muted">You</span>
-                  ) : connected ? (
-                    <>
-                      <span className="status-pill">🤝 Aligned</span>
-                      <Link to={`/chat/${id}`} className="msg-btn">
-                        💬 Message
-                      </Link>
-                    </>
-                  ) : pending ? (
-                    <span className="pending-btn">⏳ Pending</span>
                   ) : (
                     <button
                       type="button"
-                      className="align-btn"
+                      className={`align-btn ${isFollowing ? 'align-btn--active' : ''}`}
                       disabled={actionId === id}
-                      onClick={() => sendRequest(id)}
+                      onClick={() => handleFollowToggle(id, isFollowing)}
+                      style={isFollowing ? { backgroundColor: '#f0f0f0', color: '#333' } : {}}
                     >
-                      {actionId === id ? "Sending…" : "🤝 Align"}
+                      {actionId === id ? "..." : isFollowing ? "Following" : "Follow"}
                     </button>
                   )}
                 </div>

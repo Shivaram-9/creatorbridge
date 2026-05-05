@@ -24,7 +24,7 @@ export default function BottomNav() {
   return (
     <nav className="bottom-nav">
       <BottomNavItem to="/home" icon={<HomeIcon />} label="Home" />
-      <BottomNavItem to="/connections" icon={<UsersIcon />} label="Connections" />
+      <BottomNavItem to="/discover" icon={<UsersIcon />} label="Discover" />
       <BottomNavItem to="/messages" icon={<MessageIcon />} label="Messages" />
       <BottomNavItem to="/profile" icon={<ProfileIcon />} label="Profile" />
     </nav>

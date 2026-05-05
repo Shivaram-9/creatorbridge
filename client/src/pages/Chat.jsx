@@ -256,7 +256,7 @@ export default function Chat() {
           <h2 className="empty-state__title">Could not open chat</h2>
           <p className="empty-state__text">{error}</p>
           <div className="empty-state__action">
-            <Link to="/connections" className="btn btn-secondary btn-sm">Back to connections</Link>
+            <Link to="/messages" className="btn btn-secondary btn-sm">Back to messages</Link>
             <Link to="/discover" className="btn btn-primary btn-sm">Explore</Link>
           </div>
         </div>
@@ -267,7 +267,7 @@ export default function Chat() {
   return (
     <div className="container chat-page">
       <header className="chat-header-bar" style={{ marginBottom: 0 }}>
-        <Link to="/connections" className="btn btn-secondary btn-sm">← Back</Link>
+        <Link to="/messages" className="btn btn-secondary btn-sm">← Back</Link>
         <div>
           <div className="row" style={{ alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
             <h1 className="page-title" style={{ fontSize: "1.35rem", margin: 0 }}>Chat</h1>

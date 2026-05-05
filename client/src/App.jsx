@@ -9,7 +9,6 @@ import RoleSelect from "./pages/RoleSelect.jsx";
 import Profile from "./pages/Profile.jsx";
 import UserProfile from "./pages/UserProfile.jsx";
 import Discover from "./pages/Discover.jsx";
-import Connections from "./pages/Connections.jsx";
 import Messages from "./pages/Messages.jsx";
 import Notifications from "./pages/Notifications.jsx";
 import Settings from "./pages/Settings.jsx";
@@ -43,7 +42,6 @@ export default function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/user/:userId" element={<UserProfile />} />
         <Route path="/discover" element={<Discover />} />
-        <Route path="/connections" element={<Connections />} />
         <Route path="/notifications" element={<Notifications />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/chat/:userId" element={<Chat />} />

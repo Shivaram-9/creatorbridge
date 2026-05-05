@@ -19,7 +19,7 @@ usersRouter.get("/me", async (req, res) => {
 
 usersRouter.patch("/me", async (req, res) => {
   try {
-    const { name, username, category, bio, location, role, avatar, instagram, youtube, followers } = req.body;
+    const { name, username, category, bio, location, role, avatar, instagram, youtube } = req.body;
     const updates = {};
     if (name !== undefined) updates.name = String(name).slice(0, 120);
     if (username !== undefined) updates.username = String(username).slice(0, 60);
@@ -30,16 +30,69 @@ usersRouter.patch("/me", async (req, res) => {
     if (avatar !== undefined) updates.avatar = String(avatar).slice(0, 500);
     if (instagram !== undefined) updates.instagram = String(instagram).slice(0, 200);
     if (youtube !== undefined) updates.youtube = String(youtube).slice(0, 200);
-    if (followers !== undefined) {
-      const n = Number(followers);
-      updates.followers = Number.isFinite(n) && n >= 0 ? Math.floor(n) : 0;
-    }
+
     const user = await User.findByIdAndUpdate(req.userId, { $set: updates }, { new: true });
     if (!user) return res.status(404).json({ error: "User not found" });
     res.json(user);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to update profile" });
+  }
+});
+
+/* ── Follow / Unfollow endpoints ── */
+
+usersRouter.post("/follow/:id", async (req, res) => {
+  try {
+    const targetId = req.params.id;
+    const currentId = req.userId;
+
+    if (targetId === currentId) {
+      return res.status(400).json({ error: "You cannot follow yourself" });
+    }
+
+    // Add target to current user's following
+    const me = await User.findByIdAndUpdate(
+      currentId,
+      { $addToSet: { following: targetId } },
+      { new: true }
+    );
+
+    // Add current user to target user's followers
+    await User.findByIdAndUpdate(
+      targetId,
+      { $addToSet: { followers: currentId } }
+    );
+
+    res.json(me);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to follow user" });
+  }
+});
+
+usersRouter.post("/unfollow/:id", async (req, res) => {
+  try {
+    const targetId = req.params.id;
+    const currentId = req.userId;
+
+    // Remove target from current user's following
+    const me = await User.findByIdAndUpdate(
+      currentId,
+      { $pull: { following: targetId } },
+      { new: true }
+    );
+
+    // Remove current user from target user's followers
+    await User.findByIdAndUpdate(
+      targetId,
+      { $pull: { followers: currentId } }
+    );
+
+    res.json(me);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to unfollow user" });
   }
 });
 

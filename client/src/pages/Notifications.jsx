@@ -81,7 +81,7 @@ export default function Notifications() {
     <div className="container notif-page">
       <header className="page-header">
         <h1 className="page-title">Notifications</h1>
-        <p className="subtitle">Connection requests and recent messages.</p>
+        <p className="subtitle">Recent messages and activities.</p>
       </header>
 
       <ErrorBanner message={error} onDismiss={() => setError("")} />
@@ -93,7 +93,7 @@ export default function Notifications() {
           <div className="empty-state__illustration" aria-hidden="true">🔔</div>
           <h2 className="empty-state__title">All caught up!</h2>
           <p className="empty-state__text">
-            No new connection requests or messages. Start exploring creators and brands.
+            No new messages. Start exploring creators and brands.
           </p>
           <div className="empty-state__action">
             <Link to="/discover" className="btn btn-primary">Explore</Link>
@@ -104,25 +104,6 @@ export default function Notifications() {
           {items.map((n) => {
             const actorName = n.actor?.name || n.actor?.email || "Someone";
 
-            if (n.type === "connection_request") {
-              return (
-                <Link
-                  key={n.id}
-                  to="/connections"
-                  className="notif-item notif-item--request"
-                >
-                  <div className="notif-item__type-dot notif-item__type-dot--request" aria-hidden="true" />
-                  <Avatar actor={n.actor} />
-                  <div className="notif-item__body">
-                    <p className="notif-item__text">
-                      <strong>{actorName}</strong> sent you a connection request
-                    </p>
-                    <span className="notif-item__time">{timeAgo(n.createdAt)}</span>
-                  </div>
-                  <span className="notif-item__icon" aria-hidden="true">🤝</span>
-                </Link>
-              );
-            }
 
             if (n.type === "message") {
               const senderId = n.senderId?._id || n.senderId || n.actor?._id;
