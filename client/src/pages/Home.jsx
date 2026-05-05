@@ -89,7 +89,11 @@ export default function Home() {
           />
         ) : (
           posts.map((post) => (
-            <PostCard key={post._id} post={formatPost(post)} />
+            <PostCard 
+              key={post._id} 
+              post={formatPost(post)} 
+              onDelete={(id) => setPosts(prev => prev.filter(p => p._id !== id))}
+            />
           ))
         )}
       </div>

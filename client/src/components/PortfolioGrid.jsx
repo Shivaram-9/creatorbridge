@@ -2,9 +2,9 @@ import { useState } from "react";
 
 /**
  * Instagram-style portfolio grid with lightbox.
- *   <PortfolioGrid items={[{_id, url, caption, mediaType}]} />
+ *   <PortfolioGrid items={[{_id, url, caption, mediaType}]} onDelete={(id) => ...} />
  */
-export default function PortfolioGrid({ items = [] }) {
+export default function PortfolioGrid({ items = [], onDelete }) {
   const [viewIdx, setViewIdx] = useState(null);
 
   if (items.length === 0) return null;
@@ -86,6 +86,35 @@ export default function PortfolioGrid({ items = [] }) {
             {items.length > 1 && (
               <button type="button" className="lightbox__arrow lightbox__arrow--right" onClick={next} aria-label="Next">
                 ›
+              </button>
+            )}
+
+            {onDelete && (
+              <button 
+                className="lightbox__delete" 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (window.confirm("Delete this post?")) {
+                    onDelete(current._id || current.id);
+                    setViewIdx(null);
+                  }
+                }}
+                style={{
+                  position: 'absolute',
+                  top: '10px',
+                  left: '10px',
+                  background: 'rgba(239, 68, 68, 0.9)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  padding: '6px 12px',
+                  fontSize: '0.8rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  zIndex: 20
+                }}
+              >
+                🗑️ Delete
               </button>
             )}
 

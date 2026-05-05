@@ -33,10 +33,17 @@ postsRouter.post("/", upload.single("image"), async (req, res) => {
   }
 });
 
-// Get all posts (latest first)
+// Get feed posts (latest first) - from self and followed users
 postsRouter.get("/", async (req, res) => {
   try {
-    const posts = await Post.find()
+    const user = await User.findById(req.userId);
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    // Include self + following
+    const following = Array.isArray(user.following) ? user.following : [];
+    const userIds = [req.userId, ...following];
+
+    const posts = await Post.find({ user: { $in: userIds } })
       .populate("user", "name email avatar username role")
       .populate("comments.user", "name username avatar")
       .sort({ createdAt: -1 })
@@ -45,6 +52,24 @@ postsRouter.get("/", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to load posts" });
+  }
+});
+
+// Delete post
+postsRouter.delete("/:id", async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    if (!post) return res.status(404).json({ error: "Post not found" });
+
+    if (post.user.toString() !== req.userId) {
+      return res.status(403).json({ error: "You can only delete your own posts" });
+    }
+
+    await Post.findByIdAndDelete(req.params.id);
+    res.json({ ok: true, message: "Post deleted" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to delete post" });
   }
 });
 

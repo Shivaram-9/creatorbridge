@@ -184,5 +184,6 @@ export const api = {
       method: "POST", 
       body: { text } 
     }),
+    remove: (postId) => request(`/posts/${postId}`, { method: "DELETE" }),
   },
 };

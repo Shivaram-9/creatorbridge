@@ -93,6 +93,8 @@ export default function UserProfile() {
     load();
   }, [load]);
 
+  const [showAlignMenu, setShowAlignMenu] = useState(false);
+
   async function handleFollowToggle() {
     if (!me) return;
     setActionBusy(true);
@@ -104,6 +106,7 @@ export default function UserProfile() {
         setError(typeof result.error === "string" ? result.error : "Something went wrong");
       } else {
         setIsFollowing(!isFollowing);
+        setShowAlignMenu(false);
         setProfile(prev => {
           if (!prev) return prev;
           const currentFollowers = Array.isArray(prev.followers) ? prev.followers : [];
@@ -206,15 +209,34 @@ export default function UserProfile() {
               <Link to="/profile" className="btn btn-primary">✏️ Edit profile</Link>
             ) : (
               <>
-                <button
-                  type="button"
-                  className={`align-btn align-btn--lg ${isFollowing ? 'align-btn--active' : ''}`}
-                  disabled={actionBusy}
-                  onClick={handleFollowToggle}
-                  style={isFollowing ? { backgroundColor: '#f0f0f0', color: '#333' } : {}}
-                >
-                  {actionBusy ? "..." : isFollowing ? "Following" : "Follow"}
-                </button>
+                <div style={{ position: 'relative', display: 'flex' }}>
+                  <button
+                    type="button"
+                    className={`align-btn align-btn--lg ${isFollowing ? 'align-btn--active' : ''}`}
+                    disabled={actionBusy}
+                    onClick={isFollowing ? () => setShowAlignMenu(!showAlignMenu) : handleFollowToggle}
+                    style={isFollowing ? { backgroundColor: '#f0f0f0', color: '#333', borderRight: '1px solid #ddd', borderTopRightRadius: 0, borderBottomRightRadius: 0 } : {}}
+                  >
+                    {actionBusy ? "..." : isFollowing ? "Connected" : "Align"}
+                  </button>
+                  {isFollowing && (
+                    <button 
+                      className="align-btn align-btn--lg" 
+                      onClick={() => setShowAlignMenu(!showAlignMenu)}
+                      style={{ backgroundColor: '#f0f0f0', color: '#333', padding: '0 8px', borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
+                    >
+                      ▾
+                    </button>
+                  )}
+
+                  {showAlignMenu && (
+                    <div className="dropdown-menu show slide-in" style={{ position: 'absolute', top: '100%', left: 0, zIndex: 100, backgroundColor: 'white', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', borderRadius: '8px', minWidth: '150px', padding: '4px' }}>
+                      <button className="dropdown-item" style={{ color: '#ef4444' }} onClick={handleFollowToggle}>End Align</button>
+                      <button className="dropdown-item" onClick={() => setShowAlignMenu(false)}>Mute</button>
+                      <button className="dropdown-item" onClick={() => setShowAlignMenu(false)}>Restrict</button>
+                    </div>
+                  )}
+                </div>
                 <Link to={`/chat/${userId}`} className="btn btn-primary">💬 Message</Link>
               </>
             )}
@@ -240,7 +262,7 @@ export default function UserProfile() {
           style={{ cursor: 'pointer' }}
         >
           <span className="up-stat__value">{fl || "0"}</span>
-          <span className="up-stat__label">Followers</span>
+          <span className="up-stat__label">Aligners</span>
         </div>
         <div 
           className="up-stat" 
@@ -248,7 +270,7 @@ export default function UserProfile() {
           style={{ cursor: 'pointer' }}
         >
           <span className="up-stat__value">{Array.isArray(profile.following) ? profile.following.length : "0"}</span>
-          <span className="up-stat__label">Following</span>
+          <span className="up-stat__label">Aligned</span>
         </div>
         <div className="up-stat">
           <span className="up-stat__value">{userPosts.length}</span>

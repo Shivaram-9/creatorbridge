@@ -185,6 +185,19 @@ export default function Profile() {
 
   const displayName = user?.name || user?.email?.split('@')[0] || "User";
 
+  const handleDeletePost = async (postId) => {
+    try {
+      const res = await api.posts.remove(postId);
+      if (res?.error) {
+        alert(res.error);
+      } else {
+        setUserPosts(prev => prev.filter(p => p._id !== postId && p.id !== postId));
+      }
+    } catch {
+      alert("Failed to delete post");
+    }
+  };
+
   return (
     <div className="profile-v2">
       {isEditing ? (
@@ -270,14 +283,14 @@ export default function Profile() {
                   onClick={() => { setListType("followers"); setShowListModal(true); }}
                   style={{ cursor: 'pointer' }}
                 >
-                  <strong>{fmtFollowers(user?.followers?.length)}</strong> followers
+                  <strong>{fmtFollowers(user?.followers?.length)}</strong> aligners
                 </div>
                 <div 
                   className="profile-v2-stat" 
                   onClick={() => { setListType("following"); setShowListModal(true); }}
                   style={{ cursor: 'pointer' }}
                 >
-                  <strong>{fmtFollowers(user?.following?.length)}</strong> following
+                  <strong>{fmtFollowers(user?.following?.length)}</strong> aligned
                 </div>
               </div>
               
@@ -301,7 +314,7 @@ export default function Profile() {
 
           <div className="profile-v2-content">
             {activeTab === 'posts' ? (
-              <PortfolioGrid items={userPosts} />
+              <PortfolioGrid items={userPosts} onDelete={handleDeletePost} />
             ) : (
               <div className="empty-state" style={{ padding: '4rem 0' }}>
                 <div className="empty-state__illustration">🖼?️</div>

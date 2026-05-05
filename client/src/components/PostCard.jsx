@@ -1,9 +1,9 @@
 import { useState, useMemo } from "react";
-import { HeartIcon, MessageCircleIcon, SendIcon, BookmarkIcon } from "./Icons.jsx";
+import { HeartIcon, MessageCircleIcon, SendIcon, BookmarkIcon, MoreHorizontalIcon } from "./Icons.jsx";
 import { api } from "../services/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
 
-export default function PostCard({ post }) {
+export default function PostCard({ post, onDelete }) {
   const { user } = useAuth();
   
   // Initial liked state based on whether current user's ID is in post.likes array
@@ -19,6 +19,27 @@ export default function PostCard({ post }) {
   const [commentText, setCommentText] = useState("");
   const [comments, setComments] = useState(Array.isArray(post.comments) ? post.comments : []);
   const [shareStatus, setShareStatus] = useState("Share");
+  const [showDeleteMenu, setShowDeleteMenu] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const isOwner = user?._id === (post.user?._id || post.user);
+
+  const handleDelete = async () => {
+    if (!window.confirm("Are you sure you want to delete this post?")) return;
+    setIsDeleting(true);
+    try {
+      const res = await api.posts.remove(post._id);
+      if (res?.error) {
+        alert(res.error);
+        setIsDeleting(false);
+      } else {
+        onDelete?.(post._id);
+      }
+    } catch {
+      alert("Failed to delete post");
+      setIsDeleting(false);
+    }
+  };
 
   const handleLike = async () => {
     if (!user) return;
@@ -82,6 +103,43 @@ export default function PostCard({ post }) {
           <h3 className="post-username">{post.username}</h3>
           <span className="post-time">{post.time}</span>
         </div>
+
+        {isOwner && (
+          <div className="post-menu-container" style={{ marginLeft: 'auto', position: 'relative' }}>
+            <button 
+              className="btn btn-ghost btn-sm" 
+              onClick={() => setShowDeleteMenu(!showDeleteMenu)}
+              aria-label="Options"
+            >
+              <MoreHorizontalIcon />
+            </button>
+            {showDeleteMenu && (
+              <div 
+                className="dropdown-menu show" 
+                style={{ 
+                  position: 'absolute', 
+                  right: 0, 
+                  top: '100%', 
+                  zIndex: 10, 
+                  backgroundColor: 'white',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                  borderRadius: '8px',
+                  padding: '4px',
+                  minWidth: '120px'
+                }}
+              >
+                <button 
+                  className="dropdown-item text-danger" 
+                  onClick={handleDelete}
+                  disabled={isDeleting}
+                  style={{ color: '#ef4444', width: '100%', textAlign: 'left', padding: '8px 12px' }}
+                >
+                  {isDeleting ? "Deleting..." : "Delete Post"}
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="post-content">
