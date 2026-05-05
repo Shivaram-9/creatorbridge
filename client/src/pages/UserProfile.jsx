@@ -7,6 +7,7 @@ import { BASE_URL } from "../config/api.js";
 import ErrorBanner from "../components/ErrorBanner.jsx";
 import PortfolioGrid from "../components/PortfolioGrid.jsx";
 import { ShareIcon } from "../components/Icons.jsx";
+import UserListModal from "../components/UserListModal.jsx";
 
 function initials(name, email) {
   if (name) {
@@ -40,6 +41,8 @@ export default function UserProfile() {
   const [loadingPosts, setLoadingPosts] = useState(true);
 
   const isOwn = me?._id === userId;
+  const [showListModal, setShowListModal] = useState(false);
+  const [listType, setListType] = useState("followers");
 
   const loadPosts = useCallback(async () => {
     setLoadingPosts(true);
@@ -231,9 +234,21 @@ export default function UserProfile() {
       <ErrorBanner message={error} onDismiss={() => setError("")} />
 
       <div className="up-stats">
-        <div className="up-stat">
+        <div 
+          className="up-stat" 
+          onClick={() => { setListType("followers"); setShowListModal(true); }}
+          style={{ cursor: 'pointer' }}
+        >
           <span className="up-stat__value">{fl || "0"}</span>
           <span className="up-stat__label">Followers</span>
+        </div>
+        <div 
+          className="up-stat" 
+          onClick={() => { setListType("following"); setShowListModal(true); }}
+          style={{ cursor: 'pointer' }}
+        >
+          <span className="up-stat__value">{Array.isArray(profile.following) ? profile.following.length : "0"}</span>
+          <span className="up-stat__label">Following</span>
         </div>
         <div className="up-stat">
           <span className="up-stat__value">{userPosts.length}</span>
@@ -321,6 +336,14 @@ export default function UserProfile() {
           </div>
         )}
       </section>
+      
+      {showListModal && (
+        <UserListModal 
+          userId={userId} 
+          type={listType} 
+          onClose={() => setShowListModal(false)} 
+        />
+      )}
     </div>
   );
 }

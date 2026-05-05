@@ -201,3 +201,29 @@ usersRouter.get("/:id", async (req, res) => {
     res.status(500).json({ error: "Failed to load user" });
   }
 });
+
+usersRouter.get("/:id/followers", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id)
+      .populate("followers", "name username avatar role")
+      .lean();
+    if (!user) return res.status(404).json({ error: "User not found" });
+    res.json(user.followers || []);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to load followers" });
+  }
+});
+
+usersRouter.get("/:id/following", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id)
+      .populate("following", "name username avatar role")
+      .lean();
+    if (!user) return res.status(404).json({ error: "User not found" });
+    res.json(user.following || []);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to load following" });
+  }
+});

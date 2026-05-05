@@ -6,6 +6,7 @@ import { BASE_URL } from "../config/api.js";
 import ErrorBanner from "../components/ErrorBanner.jsx";
 import PortfolioGrid from "../components/PortfolioGrid.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
+import UserListModal from "../components/UserListModal.jsx";
 
 import { ShareIcon } from "../components/Icons.jsx";
 
@@ -79,6 +80,8 @@ export default function Profile() {
   const [showPhotoOptions, setShowPhotoOptions] = useState(false);
   const [activeTab, setActiveTab] = useState("posts");
   const [copyStatus, setCopyStatus] = useState(false);
+  const [showListModal, setShowListModal] = useState(false);
+  const [listType, setListType] = useState("followers");
 
   const fileRef = useRef(null);
 
@@ -262,8 +265,20 @@ export default function Profile() {
               
               <div className="profile-v2-stats">
                 <div className="profile-v2-stat"><strong>{userPosts.length}</strong> posts</div>
-                <div className="profile-v2-stat"><strong>{fmtFollowers(user?.followers?.length)}</strong> followers</div>
-                <div className="profile-v2-stat"><strong>{fmtFollowers(user?.following?.length)}</strong> following</div>
+                <div 
+                  className="profile-v2-stat" 
+                  onClick={() => { setListType("followers"); setShowListModal(true); }}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <strong>{fmtFollowers(user?.followers?.length)}</strong> followers
+                </div>
+                <div 
+                  className="profile-v2-stat" 
+                  onClick={() => { setListType("following"); setShowListModal(true); }}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <strong>{fmtFollowers(user?.following?.length)}</strong> following
+                </div>
               </div>
               
               <div className="profile-v2-bio-wrap">
@@ -311,6 +326,14 @@ export default function Profile() {
             <input type="file" ref={fileRef} hidden accept="image/*" onChange={handleImageUpload} />
           </div>
         </div>
+      )}
+
+      {showListModal && (
+        <UserListModal 
+          userId={user._id} 
+          type={listType} 
+          onClose={() => setShowListModal(false)} 
+        />
       )}
     </div>
   );

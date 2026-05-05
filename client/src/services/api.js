@@ -157,6 +157,8 @@ export const api = {
     get: (id) => request(`/users/${id}`),
     follow: (id) => request(`/users/follow/${id}`, { method: "POST" }),
     unfollow: (id) => request(`/users/unfollow/${id}`, { method: "POST" }),
+    getFollowers: (id) => request(`/users/${id}/followers`),
+    getFollowing: (id) => request(`/users/${id}/following`),
     addPortfolioItem: (body) => request("/users/me/portfolio", { method: "POST", body }),
     removePortfolioItem: (itemId) => request(`/users/me/portfolio/${itemId}`, { method: "DELETE" }),
   },
