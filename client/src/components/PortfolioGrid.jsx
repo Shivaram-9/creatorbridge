@@ -37,7 +37,21 @@ export default function PortfolioGrid({ items = [] }) {
                 <span className="portfolio-cell__play" aria-hidden="true">▶</span>
               </div>
             ) : (
-              <img src={item.url} alt={item.caption || ""} className="portfolio-cell__img" loading="lazy" />
+              <img 
+                src={item.url} 
+                alt={item.caption || ""} 
+                className="portfolio-cell__img" 
+                loading="lazy" 
+                style={{ transition: 'opacity 0.3s' }}
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.style.opacity = '0';
+                  setTimeout(() => {
+                    e.target.src = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=400";
+                    e.target.style.opacity = '1';
+                  }, 100);
+                }}
+              />
             )}
           </button>
         ))}
@@ -57,7 +71,15 @@ export default function PortfolioGrid({ items = [] }) {
               {current.mediaType === "video" ? (
                 <video src={current.url} controls className="lightbox__video" />
               ) : (
-                <img src={current.url} alt={current.caption || ""} className="lightbox__img" />
+                <img 
+                  src={current.url} 
+                  alt={current.caption || ""} 
+                  className="lightbox__img" 
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=800";
+                  }}
+                />
               )}
             </div>
 
