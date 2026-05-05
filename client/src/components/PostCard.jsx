@@ -88,7 +88,15 @@ export default function PostCard({ post }) {
         <p className="post-text">{post.content}</p>
         {post.image && (
           <div className="post-image-wrapper">
-            <img src={post.image} alt="Post content" className="post-image" />
+            <img 
+              src={post.image} 
+              alt="Post content" 
+              className="post-image" 
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=800"; // Clean abstract fallback
+              }}
+            />
           </div>
         )}
       </div>

@@ -5,6 +5,8 @@ import { BASE_URL } from "../config/api.js";
 import PostCard from "../components/PostCard.jsx";
 import CreatePost from "../components/CreatePost.jsx";
 import ErrorBanner from "../components/ErrorBanner.jsx";
+import LoadingSpinner from "../components/LoadingSpinner.jsx";
+import EmptyState from "../components/EmptyState.jsx";
 
 export default function Home() {
   const { user } = useAuth();
@@ -78,11 +80,13 @@ export default function Home() {
         <ErrorBanner message={error} onDismiss={() => setError("")} />
 
         {loading ? (
-          <p className="loading-line">Loading feed...</p>
+          <LoadingSpinner centered />
         ) : posts.length === 0 ? (
-          <div className="empty-state">
-            <p className="empty-state__text">No posts yet. Be the first to share something!</p>
-          </div>
+          <EmptyState 
+            icon="📭" 
+            title="Your feed is empty" 
+            description="Start following creators or create your own post to see something here!"
+          />
         ) : (
           posts.map((post) => (
             <PostCard key={post._id} post={formatPost(post)} />

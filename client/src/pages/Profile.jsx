@@ -5,6 +5,7 @@ import { CATEGORIES } from "../constants/categories.js";
 import { BASE_URL } from "../config/api.js";
 import ErrorBanner from "../components/ErrorBanner.jsx";
 import PortfolioGrid from "../components/PortfolioGrid.jsx";
+import LoadingSpinner from "../components/LoadingSpinner.jsx";
 
 import { ShareIcon } from "../components/Icons.jsx";
 
@@ -210,7 +211,11 @@ export default function Profile() {
             {saved && <div className="success-banner">Profile updated.</div>}
             
             <button type="submit" className="btn btn-primary w-full" disabled={saving}>
-              {saving ? "Saving..." : "Save Changes"}
+              {saving ? (
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                  <LoadingSpinner size="sm" color="white" /> Saving...
+                </div>
+              ) : "Save Changes"}
             </button>
           </form>
         </div>

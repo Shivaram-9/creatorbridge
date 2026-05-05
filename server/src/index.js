@@ -38,6 +38,14 @@ app.use("/uploads", express.static("uploads"));
 
 const server = http.createServer(app);
 
+// Global Error Handler
+app.use((err, req, res, next) => {
+  console.error("GLOBAL ERROR:", err);
+  const status = err.status || 500;
+  const message = err.message || "Internal Server Error";
+  res.status(status).json({ error: message });
+});
+
 const io = new Server(server, {
   cors: { origin: true, methods: ["GET", "POST"] },
 });

@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { BellIcon, MenuIcon, SearchIcon } from "./Icons.jsx";
+import { getSocket } from "../services/socket.js";
 
 export default function Navbar({ 
   user, searchQuery, setSearchQuery, handleSearch, 
@@ -8,8 +9,26 @@ export default function Navbar({
   menuOpen, setMenuOpen, menuRef, logout 
 }) {
   const [notifOpen, setNotifOpen] = useState(false);
+  const [socketStatus, setSocketStatus] = useState("connecting");
   const notifRef = useRef(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const socket = getSocket();
+    if (!socket) return;
+
+    const updateStatus = () => setSocketStatus(socket.connected ? "online" : "offline");
+    updateStatus();
+
+    socket.on("connect", updateStatus);
+    socket.on("disconnect", updateStatus);
+    socket.on("connect_error", () => setSocketStatus("error"));
+
+    return () => {
+      socket.off("connect", updateStatus);
+      socket.off("disconnect", updateStatus);
+    };
+  }, []);
 
   const handleNotifClick = (n) => {
     onMarkRead(n._id);
@@ -108,8 +127,23 @@ export default function Navbar({
                   className="nav-icon-btn"
                   onClick={() => setMenuOpen(!menuOpen)}
                   aria-label="Menu"
+                  style={{ position: 'relative' }}
                 >
                   <MenuIcon />
+                  <span 
+                    className={`status-dot status-dot--${socketStatus}`}
+                    title={`Real-time status: ${socketStatus}`}
+                    style={{
+                      position: 'absolute',
+                      bottom: '4px',
+                      right: '4px',
+                      width: '10px',
+                      height: '10px',
+                      borderRadius: '50%',
+                      border: '2px solid white',
+                      backgroundColor: socketStatus === 'online' ? '#22c55e' : socketStatus === 'connecting' ? '#eab308' : '#ef4444'
+                    }}
+                  />
                 </button>
                 {menuOpen && (
                   <div className="dropdown-menu slide-in">
