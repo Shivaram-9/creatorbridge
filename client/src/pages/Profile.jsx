@@ -165,8 +165,17 @@ export default function Profile() {
 
   if (loading && !user) {
     return (
-      <div className="container">
-        <p className="loading-line">Loading profile</p>
+      <div className="profile-v2">
+        <header className="profile-v2-header" style={{ opacity: 0.5 }}>
+          <div className="profile-v2-avatar-col">
+            <div className="profile-v2-avatar skeleton" style={{ backgroundColor: '#e5e7eb' }}></div>
+          </div>
+          <div className="profile-v2-info-col">
+            <div className="skeleton" style={{ height: '2rem', width: '200px', backgroundColor: '#e5e7eb', marginBottom: '1rem' }}></div>
+            <div className="skeleton" style={{ height: '1rem', width: '150px', backgroundColor: '#e5e7eb' }}></div>
+          </div>
+        </header>
+        <LoadingSpinner centered />
       </div>
     );
   }

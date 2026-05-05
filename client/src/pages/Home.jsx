@@ -24,7 +24,7 @@ export default function Home() {
         setPosts(Array.isArray(data) ? data : []);
       }
     } catch {
-      setError("Failed to load posts");
+      setError("We couldn't reach the server to load your feed. Please check your internet connection.");
     } finally {
       setLoading(false);
     }

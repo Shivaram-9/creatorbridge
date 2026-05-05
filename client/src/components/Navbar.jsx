@@ -132,19 +132,28 @@ export default function Navbar({
                   <MenuIcon />
                   <span 
                     className={`status-dot status-dot--${socketStatus}`}
-                    title={`Real-time status: ${socketStatus}`}
+                    title={`Live status: ${socketStatus.charAt(0).toUpperCase() + socketStatus.slice(1)}`}
                     style={{
                       position: 'absolute',
-                      bottom: '4px',
-                      right: '4px',
-                      width: '10px',
-                      height: '10px',
+                      bottom: '2px',
+                      right: '2px',
+                      width: '12px',
+                      height: '12px',
                       borderRadius: '50%',
                       border: '2px solid white',
-                      backgroundColor: socketStatus === 'online' ? '#22c55e' : socketStatus === 'connecting' ? '#eab308' : '#ef4444'
+                      backgroundColor: socketStatus === 'online' ? '#10b981' : socketStatus === 'connecting' ? '#f59e0b' : '#ef4444',
+                      boxShadow: socketStatus === 'online' ? '0 0 8px rgba(16, 185, 129, 0.6)' : 'none',
+                      animation: socketStatus === 'connecting' ? 'pulse 1.5s infinite' : 'none'
                     }}
                   />
                 </button>
+                <style>{`
+                  @keyframes pulse {
+                    0% { transform: scale(0.95); opacity: 0.8; }
+                    50% { transform: scale(1.1); opacity: 1; }
+                    100% { transform: scale(0.95); opacity: 0.8; }
+                  }
+                `}</style>
                 {menuOpen && (
                   <div className="dropdown-menu slide-in">
                     <Link to="/settings" className="dropdown-item" onClick={() => setMenuOpen(false)}>

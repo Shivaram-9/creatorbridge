@@ -87,14 +87,19 @@ export default function PostCard({ post }) {
       <div className="post-content">
         <p className="post-text">{post.content}</p>
         {post.image && (
-          <div className="post-image-wrapper">
+          <div className="post-image-wrapper" style={{ backgroundColor: '#f3f4f6', minHeight: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <img 
               src={post.image} 
               alt="Post content" 
               className="post-image" 
+              style={{ transition: 'opacity 0.3s ease-in-out' }}
               onError={(e) => {
                 e.target.onerror = null;
-                e.target.src = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=800"; // Clean abstract fallback
+                e.target.style.opacity = '0';
+                setTimeout(() => {
+                  e.target.src = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=800";
+                  e.target.style.opacity = '1';
+                }, 100);
               }}
             />
           </div>
