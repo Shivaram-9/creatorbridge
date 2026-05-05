@@ -6,6 +6,7 @@ import { roleBadgeClass } from "../utils/badges.js";
 import { BASE_URL } from "../config/api.js";
 import ErrorBanner from "../components/ErrorBanner.jsx";
 import PortfolioGrid from "../components/PortfolioGrid.jsx";
+import { ShareIcon } from "../components/Icons.jsx";
 
 function initials(name, email) {
   if (name) {
@@ -33,6 +34,7 @@ export default function UserProfile() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [actionBusy, setActionBusy] = useState(false);
+  const [copyStatus, setCopyStatus] = useState(false);
   
   const [userPosts, setUserPosts] = useState([]);
   const [loadingPosts, setLoadingPosts] = useState(true);
@@ -115,6 +117,30 @@ export default function UserProfile() {
     }
   }
 
+  const handleShareProfile = async () => {
+    const shareData = {
+      title: "CreatorBridge Profile",
+      text: `Check out ${profile?.name || profile?.username || 'this profile'} on CreatorBridge!`,
+      url: `${window.location.origin}/user/${userId}`,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(shareData.url);
+        setCopyStatus(true);
+        setTimeout(() => setCopyStatus(false), 2000);
+      }
+    } catch (err) {
+      if (err.name !== 'AbortError') {
+        await navigator.clipboard.writeText(shareData.url);
+        setCopyStatus(true);
+        setTimeout(() => setCopyStatus(false), 2000);
+      }
+    }
+  };
+
   if (loading) {
     return (
       <div className="container">
@@ -187,6 +213,14 @@ export default function UserProfile() {
                   {actionBusy ? "..." : isFollowing ? "Following" : "Follow"}
                 </button>
                 <Link to={`/chat/${userId}`} className="btn btn-primary">💬 Message</Link>
+                <button 
+                  className={`btn btn-secondary ${copyStatus ? 'btn-success' : ''}`} 
+                  onClick={handleShareProfile}
+                  style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+                >
+                  <ShareIcon />
+                  {copyStatus ? "Copied!" : "Share profile"}
+                </button>
               </div>
             )}
           </div>

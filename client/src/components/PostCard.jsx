@@ -43,7 +43,8 @@ export default function PostCard({ post }) {
   };
 
   const handleShare = () => {
-    navigator.clipboard.writeText(window.location.href);
+    const profileUrl = `${window.location.origin}/user/${post.user?._id || post.user}`;
+    navigator.clipboard.writeText(profileUrl);
     setShareStatus("Copied!");
     setTimeout(() => setShareStatus("Share"), 2000);
   };

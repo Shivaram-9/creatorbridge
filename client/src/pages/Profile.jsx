@@ -111,7 +111,7 @@ export default function Profile() {
     const shareData = {
       title: "CreatorBridge Profile",
       text: `Check out ${user?.name || user?.username || 'this profile'} on CreatorBridge!`,
-      url: window.location.href,
+      url: `${window.location.origin}/user/${user?._id}`,
     };
 
     try {
