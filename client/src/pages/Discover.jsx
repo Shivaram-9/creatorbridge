@@ -26,7 +26,7 @@ function initials(name, email) {
 }
 
 export default function Discover() {
-  const { user } = useAuth();
+  const { user, setUser, refreshUser } = useAuth();
   const [filter, setFilter] = useState("");
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -71,20 +71,26 @@ export default function Discover() {
       if (result?.error) {
         setError(typeof result.error === "string" ? result.error : "Something went wrong");
       } else {
-        // Update user state (following array)
+        // Update logged-in user's following list (affects button state)
         const updatedFollowing = isFollowing 
-          ? user.following.filter(id => id !== targetId)
+          ? (user.following || []).filter(fid => fid !== targetId)
           : [...(user.following || []), targetId];
-        // We might want to refresh the whole user or just update the following array
-        // Since we are in Discover, we just need to update the UI local state
-        // Actually, AuthContext should be updated to make it persistent across pages
-        // For now, let's just trigger a reload or use a local state for Following
-        await api.users.me().then(me => {
-          if (!me.error) {
-            // This is a bit slow, but ensures consistency
-            window.location.reload(); // Quick fix for Discover page consistency
+        setUser({ ...user, following: updatedFollowing });
+
+        // Update local users list (affects followers count display)
+        setUsers(prev => prev.map(u => {
+          if (u._id === targetId) {
+            const currentFollowers = Array.isArray(u.followers) ? u.followers : [];
+            const newFollowers = isFollowing 
+              ? currentFollowers.filter(fid => fid !== user._id)
+              : [...currentFollowers, user._id];
+            return { ...u, followers: newFollowers };
           }
-        });
+          return u;
+        }));
+        
+        // Sync with server in background
+        refreshUser();
       }
     } catch {
       setError("Something went wrong");
@@ -169,7 +175,7 @@ export default function Discover() {
                     </div>
                     {fl && (
                       <div className="user-card__meta-row">
-                        <dt>Followers</dt>
+                        <dt>Aligners</dt>
                         <dd>{fl}</dd>
                       </div>
                     )}
@@ -235,7 +241,7 @@ export default function Discover() {
                       onClick={() => handleFollowToggle(id, isFollowing)}
                       style={isFollowing ? { backgroundColor: '#f0f0f0', color: '#333' } : {}}
                     >
-                      {actionId === id ? "..." : isFollowing ? "Following" : "Follow"}
+                      {actionId === id ? "..." : isFollowing ? "Connected" : "Align"}
                     </button>
                   )}
                 </div>

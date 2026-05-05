@@ -21,6 +21,7 @@ export default function PostCard({ post, onDelete }) {
   const [shareStatus, setShareStatus] = useState("Share");
   const [showDeleteMenu, setShowDeleteMenu] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [showLightbox, setShowLightbox] = useState(false);
 
   const isOwner = user?._id === (post.user?._id || post.user);
 
@@ -145,7 +146,11 @@ export default function PostCard({ post, onDelete }) {
       <div className="post-content">
         <p className="post-text">{post.content}</p>
         {post.image && (
-          <div className="post-image-wrapper" style={{ backgroundColor: '#f3f4f6', minHeight: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div 
+            className="post-image-wrapper" 
+            style={{ backgroundColor: '#f3f4f6', minHeight: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+            onClick={() => setShowLightbox(true)}
+          >
             <img 
               src={post.image} 
               alt="Post content" 
@@ -163,6 +168,36 @@ export default function PostCard({ post, onDelete }) {
           </div>
         )}
       </div>
+
+      {showLightbox && (
+        <div 
+          className="modal-overlay" 
+          style={{ zIndex: 2000, backgroundColor: 'rgba(0,0,0,0.9)' }} 
+          onClick={() => setShowLightbox(false)}
+        >
+          <div 
+            className="lightbox-content slide-in" 
+            style={{ maxWidth: '95vw', maxHeight: '95vh', position: 'relative' }}
+            onClick={e => e.stopPropagation()}
+          >
+            <button 
+              className="btn btn-ghost" 
+              style={{ position: 'absolute', top: '-40px', right: '0', color: 'white', fontSize: '1.5rem' }}
+              onClick={() => setShowLightbox(false)}
+            >
+              ✕
+            </button>
+            <img 
+              src={post.image} 
+              alt="" 
+              style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: '8px' }} 
+              onError={(e) => {
+                e.target.src = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=1200";
+              }}
+            />
+          </div>
+        </div>
+      )}
 
       <div className="post-actions">
         <div className="post-actions__left">
