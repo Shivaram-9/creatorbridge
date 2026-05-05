@@ -1,22 +1,45 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { HeartIcon, MessageCircleIcon, SendIcon, BookmarkIcon } from "./Icons.jsx";
+import { api } from "../services/api.js";
+import { useAuth } from "../context/AuthContext.jsx";
 
 export default function PostCard({ post }) {
-  const [liked, setLiked] = useState(false);
-  const [likesCount, setLikesCount] = useState(post.likes || 0);
+  const { user } = useAuth();
+  
+  // Initial liked state based on whether current user's ID is in post.likes array
+  const initialLiked = useMemo(() => {
+    if (!user || !post.likes) return false;
+    return post.likes.includes(user._id);
+  }, [user, post.likes]);
+
+  const [liked, setLiked] = useState(initialLiked);
+  const [likesCount, setLikesCount] = useState(Array.isArray(post.likes) ? post.likes.length : 0);
   const [saved, setSaved] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [commentText, setCommentText] = useState("");
-  const [comments, setComments] = useState([]);
+  const [comments, setComments] = useState(Array.isArray(post.comments) ? post.comments : []);
   const [shareStatus, setShareStatus] = useState("Share");
 
-  const handleLike = () => {
-    if (liked) {
-      setLikesCount(likesCount - 1);
-    } else {
-      setLikesCount(likesCount + 1);
+  const handleLike = async () => {
+    if (!user) return;
+    
+    // Optimistic UI update
+    const newLiked = !liked;
+    setLiked(newLiked);
+    setLikesCount(prev => newLiked ? prev + 1 : prev - 1);
+
+    try {
+      const res = await api.posts.like(post._id);
+      if (res?.error) {
+        // Rollback on error
+        setLiked(!newLiked);
+        setLikesCount(prev => !newLiked ? prev + 1 : prev - 1);
+      }
+    } catch {
+      // Rollback on error
+      setLiked(!newLiked);
+      setLikesCount(prev => !newLiked ? prev + 1 : prev - 1);
     }
-    setLiked(!liked);
   };
 
   const handleShare = () => {
@@ -25,11 +48,22 @@ export default function PostCard({ post }) {
     setTimeout(() => setShareStatus("Share"), 2000);
   };
 
-  const handleCommentSubmit = (e) => {
+  const handleCommentSubmit = async (e) => {
     e.preventDefault();
-    if (commentText.trim()) {
-      setComments([...comments, { id: Date.now(), text: commentText, user: "You" }]);
-      setCommentText("");
+    if (!commentText.trim() || !user) return;
+
+    const text = commentText;
+    setCommentText(""); // Clear input immediately
+
+    try {
+      const res = await api.posts.comment(post._id, text);
+      if (res?.error) {
+        console.error(res.error);
+      } else {
+        setComments(prev => [...prev, res]);
+      }
+    } catch (err) {
+      console.error("Failed to add comment", err);
     }
   };
 
@@ -78,7 +112,7 @@ export default function PostCard({ post }) {
             <span className="post-action-icon">
               <MessageCircleIcon />
             </span>
-            <span className="post-action-count">{(post.comments || 0) + comments.length}</span>
+            <span className="post-action-count">{comments.length}</span>
           </button>
           <button className="post-action-btn" onClick={handleShare} aria-label="Share">
             <span className="post-action-icon">
@@ -102,9 +136,9 @@ export default function PostCard({ post }) {
         <div className="post-comments-section">
           {comments.length > 0 && (
             <div className="post-comments-list">
-              {comments.map((c) => (
-                <div key={c.id} className="post-comment-item">
-                  <strong>{c.user}</strong> {c.text}
+              {comments.map((c, i) => (
+                <div key={c._id || i} className="post-comment-item">
+                  <strong>{c.user?.username || c.user?.name || "User"}:</strong> {c.text}
                 </div>
               ))}
             </div>

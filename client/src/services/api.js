@@ -174,5 +174,10 @@ export const api = {
       method: "POST", 
       body: formData 
     }),
+    like: (postId) => request(`/posts/like/${postId}`, { method: "POST" }),
+    comment: (postId, text) => request(`/posts/comment/${postId}`, { 
+      method: "POST", 
+      body: { text } 
+    }),
   },
 };
