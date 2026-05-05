@@ -161,8 +161,9 @@ export const api = {
     removePortfolioItem: (itemId) => request(`/users/me/portfolio/${itemId}`, { method: "DELETE" }),
   },
   messages: {
+    list: () => request("/messages"),
     conversation: (otherUserId) => request(`/messages/conversation/${otherUserId}`),
-    send: (receiverId, content) => request("/messages", { method: "POST", body: { receiverId, content } }),
+    send: (payload) => request("/messages", { method: "POST", body: payload }),
   },
   notifications: {
     list: () => request("/notifications"),

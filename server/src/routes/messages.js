@@ -7,6 +7,69 @@ export const messagesRouter = Router();
 
 messagesRouter.use(authMiddleware);
 
+// Get list of conversations
+messagesRouter.get("/", async (req, res) => {
+  try {
+    const uid = new mongoose.Types.ObjectId(req.userId);
+    
+    // Aggregate to find unique partners and their last message
+    const conversations = await Message.aggregate([
+      {
+        $match: {
+          $or: [{ sender: uid }, { receiver: uid }],
+        },
+      },
+      {
+        $sort: { createdAt: -1 },
+      },
+      {
+        $group: {
+          _id: {
+            $cond: [
+              { $eq: ["$sender", uid] },
+              "$receiver",
+              "$sender",
+            ],
+          },
+          lastMessage: { $first: "$$ROOT" },
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "_id",
+          foreignField: "_id",
+          as: "partner",
+        },
+      },
+      {
+        $unwind: "$partner",
+      },
+      {
+        $project: {
+          _id: 1,
+          partner: {
+            _id: 1,
+            name: 1,
+            username: 1,
+            avatar: 1,
+            role: 1,
+          },
+          lastMessage: 1,
+        },
+      },
+      {
+        $sort: { "lastMessage.createdAt": -1 },
+      },
+    ]);
+
+    res.json(conversations);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to load conversations" });
+  }
+});
+
 messagesRouter.get("/conversation/:otherUserId", async (req, res) => {
   try {
     const { otherUserId } = req.params;
