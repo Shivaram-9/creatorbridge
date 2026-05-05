@@ -9,27 +9,35 @@ import { api } from "../services/api.js";
 export default function Layout() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const [unreadCount, setUnreadCount] = useState(0);
+  const [notifications, setNotifications] = useState([]);
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const menuRef = useRef(null);
 
-  /* Poll notifications count */
+  /* Poll notifications */
   useEffect(() => {
     if (!user) return;
-    async function fetchCount() {
+    async function fetchNotifications() {
       try {
         const data = await api.notifications.list();
         if (Array.isArray(data)) {
-          const unread = data.filter(n => !n.read).length;
-          setUnreadCount(unread || data.length);
+          setNotifications(data);
         }
       } catch { /* silent */ }
     }
-    fetchCount();
-    const interval = setInterval(fetchCount, 60_000);
+    fetchNotifications();
+    const interval = setInterval(fetchNotifications, 30_000);
     return () => clearInterval(interval);
   }, [user]);
+
+  const unreadCount = notifications.filter(n => !n.read).length;
+
+  const handleMarkRead = async (id) => {
+    try {
+      await api.notifications.markRead(id);
+      setNotifications(prev => prev.map(n => n._id === id ? { ...n, read: true } : n));
+    } catch { /* silent */ }
+  };
 
   /* Close menu on click outside */
   useEffect(() => {
@@ -60,6 +68,8 @@ export default function Layout() {
         setSearchQuery={setSearchQuery}
         handleSearch={handleSearch}
         unreadCount={unreadCount}
+        notifications={notifications}
+        onMarkRead={handleMarkRead}
         menuOpen={menuOpen}
         setMenuOpen={setMenuOpen}
         menuRef={menuRef}

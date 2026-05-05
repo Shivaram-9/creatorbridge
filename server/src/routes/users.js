@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { User } from "../models/User.js";
+import { Notification } from "../models/Notification.js";
 import { authMiddleware } from "../middleware/auth.js";
 
 export const usersRouter = Router();
@@ -63,6 +64,14 @@ usersRouter.post("/follow/:id", async (req, res) => {
       targetId,
       { $addToSet: { followers: currentId } }
     );
+
+    // Create notification
+    await Notification.create({
+      user: targetId,
+      sender: currentId,
+      type: "follow",
+      message: `${me.username || me.name || "Someone"} started following you`,
+    });
 
     res.json(me);
   } catch (err) {

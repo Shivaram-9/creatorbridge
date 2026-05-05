@@ -1,5 +1,7 @@
 import { Router } from "express";
 import { Post } from "../models/Post.js";
+import { User } from "../models/User.js";
+import { Notification } from "../models/Notification.js";
 import { authMiddleware } from "../middleware/auth.js";
 import { upload } from "../middleware/upload.js";
 
@@ -75,6 +77,19 @@ postsRouter.post("/like/:id", async (req, res) => {
     }
 
     await post.save();
+
+    // Create notification for like
+    if (post.user.toString() !== req.userId && !isLiked) {
+      const me = await User.findById(req.userId);
+      await Notification.create({
+        user: post.user,
+        sender: req.userId,
+        type: "like",
+        post: post._id,
+        message: `${me.username || me.name} liked your post`,
+      });
+    }
+
     res.json({ likes: post.likes, liked: !isLiked });
   } catch (err) {
     console.error(err);
@@ -98,6 +113,18 @@ postsRouter.post("/comment/:id", async (req, res) => {
 
     post.comments.push(newComment);
     await post.save();
+
+    // Create notification for comment
+    if (post.user.toString() !== req.userId) {
+      const me = await User.findById(req.userId);
+      await Notification.create({
+        user: post.user,
+        sender: req.userId,
+        type: "comment",
+        post: post._id,
+        message: `${me.username || me.name} commented on your post`,
+      });
+    }
 
     // Populate the newly added comment's user info
     const updatedPost = await Post.findById(req.params.id)

@@ -166,6 +166,8 @@ export const api = {
   },
   notifications: {
     list: () => request("/notifications"),
+    markRead: (id) => request(`/notifications/read/${id}`, { method: "POST" }),
+    markAllRead: () => request("/notifications/read-all", { method: "POST" }),
   },
   posts: {
     list: () => request("/posts"),

@@ -102,32 +102,40 @@ export default function Notifications() {
       ) : (
         <div className="notif-list">
           {items.map((n) => {
-            const actorName = n.actor?.name || n.actor?.email || "Someone";
+            const actor = n.sender;
+            const actorName = actor?.name || actor?.username || "Someone";
+            const isRead = n.read;
 
+            let link = "/home";
+            let icon = "🔔";
 
-            if (n.type === "message") {
-              const senderId = n.senderId?._id || n.senderId || n.actor?._id;
-              return (
-                <Link
-                  key={n.id}
-                  to={`/chat/${senderId}`}
-                  className="notif-item notif-item--message"
-                >
-                  <div className="notif-item__type-dot notif-item__type-dot--message" aria-hidden="true" />
-                  <Avatar actor={n.actor} />
-                  <div className="notif-item__body">
-                    <p className="notif-item__text">
-                      <strong>{actorName}</strong> sent you a message
-                    </p>
-                    <p className="notif-item__preview">{previewContent(n.preview)}</p>
-                    <span className="notif-item__time">{timeAgo(n.createdAt)}</span>
-                  </div>
-                  <span className="notif-item__icon" aria-hidden="true">💬</span>
-                </Link>
-              );
+            if (n.type === "follow") {
+              link = `/user/${actor?._id || actor}`;
+              icon = "👤";
+            } else if (n.type === "like") {
+              icon = "❤️";
+            } else if (n.type === "comment") {
+              icon = "💬";
             }
 
-            return null;
+            return (
+              <Link
+                key={n._id}
+                to={link}
+                className={`notif-item ${!isRead ? 'notif-item--unread' : ''}`}
+                onClick={() => !isRead && api.notifications.markRead(n._id)}
+              >
+                {!isRead && <div className="notif-item__type-dot" aria-hidden="true" />}
+                <Avatar actor={actor} />
+                <div className="notif-item__body">
+                  <p className="notif-item__text">
+                    <strong>{actorName}</strong> {n.message.replace(actorName, "").trim()}
+                  </p>
+                  <span className="notif-item__time">{timeAgo(n.createdAt)}</span>
+                </div>
+                <span className="notif-item__icon" aria-hidden="true">{icon}</span>
+              </Link>
+            );
           })}
         </div>
       )}
