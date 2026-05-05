@@ -9,13 +9,11 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [userPosts, setUserPosts] = useState([]);
   const navigate = useNavigate();
 
   const logout = useCallback(() => {
     setToken(null);
     setUser(null);
-    setUserPosts([]);
     disconnectSocket();
     navigate("/login", { replace: true });
   }, [navigate]);
@@ -40,7 +38,6 @@ export function AuthProvider({ children }) {
       disconnectSocket();
     } else {
       setUser(me);
-      setUserPosts(Array.isArray(me.portfolio) ? me.portfolio : []);
       connectSocket();
     }
     setLoading(false);
@@ -60,7 +57,6 @@ export function AuthProvider({ children }) {
       const { token, user: u } = data;
       setToken(token);
       setUser(u);
-      setUserPosts(Array.isArray(u.portfolio) ? u.portfolio : []);
       connectSocket();
       return { ok: true, user: u };
     } catch (err) {
@@ -78,14 +74,10 @@ export function AuthProvider({ children }) {
     const { token, user: u } = data;
     setToken(token);
     setUser(u);
-    setUserPosts([]);
     connectSocket();
     return { ok: true, user: u };
   }, []);
 
-  const addPost = useCallback((post) => {
-    setUserPosts(prev => [post, ...prev]);
-  }, []);
 
 
   const value = useMemo(
@@ -97,11 +89,8 @@ export function AuthProvider({ children }) {
       logout,
       refreshUser,
       setUser,
-      userPosts,
-      setUserPosts,
-      addPost,
     }),
-    [user, loading, login, register, logout, refreshUser, userPosts, addPost]
+    [user, loading, login, register, logout, refreshUser]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

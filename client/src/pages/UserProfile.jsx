@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { api, firstApiError } from "../services/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import { roleBadgeClass } from "../utils/badges.js";
+import { BASE_URL } from "../config/api.js";
 import ErrorBanner from "../components/ErrorBanner.jsx";
 import PortfolioGrid from "../components/PortfolioGrid.jsx";
 
@@ -32,8 +33,31 @@ export default function UserProfile() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [actionBusy, setActionBusy] = useState(false);
+  
+  const [userPosts, setUserPosts] = useState([]);
+  const [loadingPosts, setLoadingPosts] = useState(true);
 
   const isOwn = me?._id === userId;
+
+  const loadPosts = useCallback(async () => {
+    setLoadingPosts(true);
+    try {
+      const data = await api.posts.userPosts(userId);
+      if (!data?.error) {
+        const formatted = (data || []).map(p => ({
+          ...p,
+          id: p._id,
+          url: p.image ? (p.image.startsWith('http') ? p.image : `${BASE_URL}${p.image}`) : null,
+          mediaType: "image"
+        }));
+        setUserPosts(formatted);
+      }
+    } catch (err) {
+      console.error("Failed to load posts", err);
+    } finally {
+      setLoadingPosts(false);
+    }
+  }, [userId]);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -51,12 +75,14 @@ export default function UserProfile() {
         const followingArr = Array.isArray(me.following) ? me.following : [];
         setIsFollowing(followingArr.includes(userId));
       }
+      
+      loadPosts();
     } catch {
       setError("Something went wrong");
     } finally {
       setLoading(false);
     }
-  }, [userId, isOwn, me]);
+  }, [userId, isOwn, me, loadPosts]);
 
   useEffect(() => {
     load();
@@ -73,8 +99,6 @@ export default function UserProfile() {
         setError(typeof result.error === "string" ? result.error : "Something went wrong");
       } else {
         setIsFollowing(!isFollowing);
-        // Refresh me to update our following array
-        // We can also optimistically update profile followers count
         setProfile(prev => {
           if (!prev) return prev;
           const currentFollowers = Array.isArray(prev.followers) ? prev.followers : [];
@@ -91,7 +115,6 @@ export default function UserProfile() {
     }
   }
 
-  /* ── Loading ── */
   if (loading) {
     return (
       <div className="container">
@@ -100,7 +123,6 @@ export default function UserProfile() {
     );
   }
 
-  /* ── Error / not found ── */
   if (error && !profile) {
     return (
       <div className="container">
@@ -122,24 +144,17 @@ export default function UserProfile() {
   const roleClass = roleBadgeClass(profile.role);
   const followersArray = Array.isArray(profile.followers) ? profile.followers : [];
   const fl = fmtFollowers(followersArray.length);
-  const portfolio = Array.isArray(profile.portfolio) ? profile.portfolio : [];
   const hasSocials = profile.instagram || profile.youtube;
   const hasDetails = profile.location || fl || hasSocials;
 
   return (
     <div className="container up-container">
-      {/* Back nav */}
       <Link to="/discover" className="up-back">← Discover</Link>
 
-      {/* ═══════════════════════════════
-          HERO CARD
-         ═══════════════════════════════ */}
       <div className="up-hero">
-        {/* Decorative gradient strip */}
         <div className="up-hero__gradient" aria-hidden="true" />
 
         <div className="up-hero__content">
-          {/* Avatar */}
           <div className="up-avatar">
             {profile.avatar ? (
               <img src={profile.avatar} alt="" className="up-avatar__img" />
@@ -149,7 +164,6 @@ export default function UserProfile() {
             <span className={`up-avatar__role-dot ${profile.role === "brand" ? "up-avatar__role-dot--brand" : ""}`} aria-label={profile.role} />
           </div>
 
-          {/* Identity */}
           <h1 className="up-name">{displayName}</h1>
           {profile.username && <p className="up-username">@{profile.username}</p>}
 
@@ -158,7 +172,6 @@ export default function UserProfile() {
             {profile.category && <span className="up-cat-badge">{profile.category}</span>}
           </div>
 
-          {/* Action buttons */}
           <div className="up-actions">
             {isOwn ? (
               <Link to="/profile" className="btn btn-primary">✏️ Edit profile</Link>
@@ -182,29 +195,17 @@ export default function UserProfile() {
 
       <ErrorBanner message={error} onDismiss={() => setError("")} />
 
-      {/* ═══════════════════════════════
-          STATS ROW
-         ═══════════════════════════════ */}
-      {(fl || portfolio.length > 0) && (
-        <div className="up-stats">
-          {fl && (
-            <div className="up-stat">
-              <span className="up-stat__value">{fl}</span>
-              <span className="up-stat__label">Followers</span>
-            </div>
-          )}
-          {portfolio.length > 0 && (
-            <div className="up-stat">
-              <span className="up-stat__value">{portfolio.length}</span>
-              <span className="up-stat__label">Post</span>
-            </div>
-          )}
+      <div className="up-stats">
+        <div className="up-stat">
+          <span className="up-stat__value">{fl || "0"}</span>
+          <span className="up-stat__label">Followers</span>
         </div>
-      )}
+        <div className="up-stat">
+          <span className="up-stat__value">{userPosts.length}</span>
+          <span className="up-stat__label">Posts</span>
+        </div>
+      </div>
 
-      {/* ═══════════════════════════════
-          ABOUT
-         ═══════════════════════════════ */}
       {(profile.bio || hasDetails) && (
         <section className="up-section">
           <h2 className="up-section__title">About</h2>
@@ -260,32 +261,31 @@ export default function UserProfile() {
         </section>
       )}
 
-      {/* ═══════════════════════════════
-          PORTFOLIO
-         ═══════════════════════════════ */}
-      {portfolio.length > 0 && (
-        <section className="up-section">
-          <h2 className="up-section__title">Post</h2>
+      <section className="up-section">
+        <h2 className="up-section__title">Posts</h2>
+        {loadingPosts ? (
+          <p className="loading-line">Loading posts...</p>
+        ) : userPosts.length > 0 ? (
           <div className="up-section__card up-section__card--flush">
-            <PortfolioGrid items={portfolio} />
+            <PortfolioGrid items={userPosts} />
           </div>
-        </section>
-      )}
-
-      {/* Empty portfolio state for own profile */}
-      {isOwn && portfolio.length === 0 && (
-        <section className="up-section">
-          <h2 className="up-section__title">Post</h2>
+        ) : (
           <div className="empty-state empty-state--compact">
             <div className="empty-state__icon" aria-hidden="true">🖼️</div>
             <h3 className="empty-state__title">No posts yet</h3>
-            <p className="empty-state__text">Upload images and videos to showcase your work.</p>
-            <div className="empty-state__action">
-              <Link to="/profile" className="btn btn-primary btn-sm">Add from profile</Link>
-            </div>
+            {isOwn ? (
+              <>
+                <p className="empty-state__text">Share your work with the world!</p>
+                <div className="empty-state__action">
+                  <Link to="/home" className="btn btn-primary btn-sm">Create Post</Link>
+                </div>
+              </>
+            ) : (
+              <p className="empty-state__text">This user hasn't posted anything yet.</p>
+            )}
           </div>
-        </section>
-      )}
+        )}
+      </section>
     </div>
   );
 }

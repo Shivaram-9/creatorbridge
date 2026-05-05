@@ -24,6 +24,7 @@ export default function CreatePost({ onPost, user }) {
 
     onPost({
       content,
+      imageFile: image,
       image: preview,
     });
 

@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { api } from "../services/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import { CATEGORIES } from "../constants/categories.js";
+import { BASE_URL } from "../config/api.js";
 import ErrorBanner from "../components/ErrorBanner.jsx";
 import PortfolioGrid from "../components/PortfolioGrid.jsx";
 
@@ -29,11 +30,38 @@ function fmtFollowers(n) {
 export default function Profile() {
   const { 
     user, setUser, 
-    userPosts, setUserPosts,
     refreshUser
   } = useAuth();
 
-  // Local state for editing to prevent side effects on actual data
+  const [userPosts, setUserPosts] = useState([]);
+  const [loadingPosts, setLoadingPosts] = useState(true);
+
+  const loadPosts = useCallback(async () => {
+    if (!user?._id) return;
+    setLoadingPosts(true);
+    try {
+      const data = await api.posts.userPosts(user._id);
+      if (!data?.error) {
+        const formatted = (data || []).map(p => ({
+          ...p,
+          id: p._id,
+          url: p.image ? (p.image.startsWith('http') ? p.image : `${BASE_URL}${p.image}`) : null,
+          mediaType: "image"
+        }));
+        setUserPosts(formatted);
+      }
+    } catch (err) {
+      console.error("Failed to load posts", err);
+    } finally {
+      setLoadingPosts(false);
+    }
+  }, [user?._id]);
+
+  useEffect(() => {
+    loadPosts();
+  }, [loadPosts]);
+
+  // Local state for editing
   const [editName, setEditName] = useState("");
   const [editUsername, setEditUsername] = useState("");
   const [editCategory, setEditCategory] = useState("");

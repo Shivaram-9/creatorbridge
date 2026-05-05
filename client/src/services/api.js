@@ -167,4 +167,12 @@ export const api = {
   notifications: {
     list: () => request("/notifications"),
   },
+  posts: {
+    list: () => request("/posts"),
+    userPosts: (userId) => request(`/posts/user/${userId}`),
+    create: (formData) => request("/posts", { 
+      method: "POST", 
+      body: formData 
+    }),
+  },
 };
