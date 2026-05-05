@@ -198,11 +198,11 @@ export default function UserProfile() {
             {profile.category && <span className="up-cat-badge">{profile.category}</span>}
           </div>
 
-          <div className="up-actions">
+          <div className="up-actions" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
             {isOwn ? (
               <Link to="/profile" className="btn btn-primary">✏️ Edit profile</Link>
             ) : (
-              <div style={{ display: 'flex', gap: '10px' }}>
+              <>
                 <button
                   type="button"
                   className={`align-btn align-btn--lg ${isFollowing ? 'align-btn--active' : ''}`}
@@ -213,16 +213,17 @@ export default function UserProfile() {
                   {actionBusy ? "..." : isFollowing ? "Following" : "Follow"}
                 </button>
                 <Link to={`/chat/${userId}`} className="btn btn-primary">💬 Message</Link>
-                <button 
-                  className={`btn btn-secondary ${copyStatus ? 'btn-success' : ''}`} 
-                  onClick={handleShareProfile}
-                  style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
-                >
-                  <ShareIcon />
-                  {copyStatus ? "Copied!" : "Share profile"}
-                </button>
-              </div>
+              </>
             )}
+            
+            <button 
+              className={`btn btn-secondary ${copyStatus ? 'btn-success' : ''}`} 
+              onClick={handleShareProfile}
+              style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+            >
+              <ShareIcon />
+              {copyStatus ? "Copied!" : "Share profile"}
+            </button>
           </div>
         </div>
       </div>
