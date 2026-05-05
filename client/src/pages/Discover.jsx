@@ -29,8 +29,6 @@ export default function Discover() {
   const { user } = useAuth();
   const [filter, setFilter] = useState("");
   const [users, setUsers] = useState([]);
-  const [filter, setFilter] = useState("");
-  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [actionId, setActionId] = useState(null);
