@@ -168,27 +168,26 @@ postsRouter.post("/comment/:id", async (req, res) => {
 postsRouter.post("/save/:id", async (req, res) => {
   try {
     const postId = req.params.id;
+    const uid = req.userId;
+
     const post = await Post.findById(postId);
     if (!post) return res.status(404).json({ error: "Post not found" });
 
-    const user = await User.findById(req.userId);
+    const user = await User.findById(uid);
     if (!user) return res.status(404).json({ error: "User not found" });
 
-    if (!user.savedPosts) user.savedPosts = [];
-    
-    const isSaved = user.savedPosts.some(id => id.toString() === postId);
+    const isSaved = (user.savedPosts || []).some(id => id.toString() === postId);
 
     if (isSaved) {
-      user.savedPosts = user.savedPosts.filter(id => id.toString() !== postId);
+      await User.findByIdAndUpdate(uid, { $pull: { savedPosts: postId } });
+      res.json({ saved: false, message: "Removed from saved" });
     } else {
-      user.savedPosts.push(postId);
+      await User.findByIdAndUpdate(uid, { $addToSet: { savedPosts: postId } });
+      res.json({ saved: true, message: "Post saved" });
     }
-
-    await user.save();
-    res.json({ saved: !isSaved });
   } catch (err) {
     console.error("Save error:", err);
-    res.status(500).json({ error: "Failed to save post" });
+    res.status(500).json({ error: "Server error while saving post" });
   }
 });
 
