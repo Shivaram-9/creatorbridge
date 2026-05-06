@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { HeartIcon, MessageCircleIcon, SendIcon, BookmarkIcon, MoreHorizontalIcon } from "./Icons.jsx";
 import { api } from "../services/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
