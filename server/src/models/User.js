@@ -23,6 +23,7 @@ const userSchema = new mongoose.Schema(
     avatar: { type: String, default: "" },
     instagram: { type: String, default: "" },
     youtube: { type: String, default: "" },
+    profileViews: { type: Number, default: 0 },
     followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     following: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     savedPosts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post", default: [] }],

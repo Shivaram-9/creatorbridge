@@ -214,4 +214,9 @@ export const api = {
     toggleBan: (id) => request(`/admin/ban/${id}`, { method: "PATCH" }),
     deletePost: (id) => request(`/admin/posts/${id}`, { method: "DELETE" }),
   },
+  analytics: {
+    getProfile: () => request("/analytics/profile"),
+    viewProfile: (userId) => request(`/analytics/view/profile/${userId}`, { method: "POST" }),
+    viewPost: (postId) => request(`/analytics/view/post/${postId}`, { method: "POST" }),
+  },
 };

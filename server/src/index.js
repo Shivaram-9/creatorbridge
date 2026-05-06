@@ -13,6 +13,7 @@ import { postsRouter } from "./routes/posts.js";
 import { searchRouter } from "./routes/search.js";
 import { storiesRouter } from "./routes/stories.js";
 import { adminRouter } from "./routes/admin.js";
+import { analyticsRouter } from "./routes/analytics.js";
 import { Message } from "./models/Message.js";
 
 const PORT = Number(process.env.PORT) || 5000;
@@ -38,6 +39,7 @@ app.use("/api/posts", postsRouter);
 app.use("/api/search", searchRouter);
 app.use("/api/stories", storiesRouter);
 app.use("/api/admin", adminRouter);
+app.use("/api/analytics", analyticsRouter);
 
 // Serve static uploads
 app.use("/uploads", express.static("uploads"));

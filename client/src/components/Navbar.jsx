@@ -203,6 +203,9 @@ export default function Navbar({
                       <Link to="/saved" className="dropdown-item" onClick={() => setMenuOpen(false)}>
                         Saved Posts
                       </Link>
+                      <Link to="/analytics" className="dropdown-item" onClick={() => setMenuOpen(false)}>
+                        Analytics
+                      </Link>
                       <Link to="/settings" className="dropdown-item" onClick={() => setMenuOpen(false)}>
                         Settings
                       </Link>

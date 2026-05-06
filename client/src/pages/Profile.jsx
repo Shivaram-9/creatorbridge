@@ -54,7 +54,11 @@ export default function Profile() {
 
   useEffect(() => {
     loadPosts();
-  }, [loadPosts]);
+    // Track profile view
+    if (user?._id) {
+      api.analytics.viewProfile(user._id);
+    }
+  }, [loadPosts, user?._id]);
 
   // Local state for editing
   const [editName, setEditName] = useState("");

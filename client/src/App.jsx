@@ -17,6 +17,7 @@ import Chat from "./pages/Chat.jsx";
 import Saved from "./pages/Saved.jsx";
 import AdminDashboard from "./pages/AdminDashboard.jsx";
 import AdminRoute from "./components/AdminRoute.jsx";
+import Analytics from "./pages/Analytics.jsx";
 
 export default function App() {
   return (
@@ -56,6 +57,7 @@ export default function App() {
             <AdminDashboard />
           </AdminRoute>
         } />
+        <Route path="/analytics" element={<Analytics />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/home" replace />} />
