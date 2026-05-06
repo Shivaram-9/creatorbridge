@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 import { Router } from "express";
 import { Message } from "../models/Message.js";
 import { authMiddleware } from "../middleware/auth.js";
+import { chatUpload } from "../middleware/upload.js";
+import { io } from "../index.js";
 
 export const messagesRouter = Router();
 
@@ -99,15 +101,15 @@ messagesRouter.get("/conversation/:otherUserId", async (req, res) => {
 
 messagesRouter.post("/", async (req, res) => {
   try {
-    const { receiverId, content, mediaUrl: rawMediaUrl, mediaType: rawMediaType } = req.body;
+    const { receiverId, content, media: rawMedia, mediaUrl: rawMediaUrl, mediaType: rawMediaType } = req.body;
     if (!receiverId || !mongoose.isValidObjectId(receiverId)) {
       return res.status(400).json({ error: "Valid receiverId is required" });
     }
     const text = typeof content === "string" ? content.trim() : "";
-    const mediaUrl = typeof rawMediaUrl === "string" ? rawMediaUrl.trim() : "";
+    const media = (typeof rawMedia === "string" ? rawMedia.trim() : "") || (typeof rawMediaUrl === "string" ? rawMediaUrl.trim() : "");
     const mediaType = rawMediaType === "video" ? "video" : "image";
 
-    if (!text && !mediaUrl) {
+    if (!text && !media) {
       return res.status(400).json({ error: "Message content or media is required" });
     }
     if (receiverId === req.userId) {
@@ -117,14 +119,60 @@ messagesRouter.post("/", async (req, res) => {
       sender: req.userId,
       receiver: receiverId,
       content: text.slice(0, 5000),
-      mediaUrl: mediaUrl.slice(0, 1000) || undefined,
-      mediaType: mediaUrl ? mediaType : undefined,
+      media: media.slice(0, 1000) || undefined,
+      mediaUrl: media.slice(0, 1000) || undefined,
+      mediaType: media ? mediaType : undefined,
     });
     await msg.populate("sender", "name email role");
     await msg.populate("receiver", "name email role");
-    res.status(201).json(msg);
+    
+    const plain = msg.toObject();
+    if (io) {
+      io.to(`user:${receiverId}`).emit("message", plain);
+      io.to(`user:${req.userId}`).emit("message", plain);
+    }
+    
+    res.status(201).json(plain);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to send message" });
+  }
+});
+
+messagesRouter.post("/media", chatUpload.single("media"), async (req, res) => {
+  try {
+    const { receiverId, content } = req.body;
+    if (!receiverId || !mongoose.isValidObjectId(receiverId)) {
+      return res.status(400).json({ error: "Valid receiverId is required" });
+    }
+    if (!req.file) {
+      return res.status(400).json({ error: "Media file is required" });
+    }
+
+    const mediaType = req.file.mimetype.startsWith("video") ? "video" : "image";
+    const mediaPath = `/uploads/chat/${req.file.filename}`;
+
+    const msg = await Message.create({
+      sender: req.userId,
+      receiver: receiverId,
+      content: content ? content.trim().slice(0, 5000) : "",
+      media: mediaPath,
+      mediaUrl: mediaPath,
+      mediaType,
+    });
+
+    await msg.populate("sender", "name email role");
+    await msg.populate("receiver", "name email role");
+
+    const plain = msg.toObject();
+    if (io) {
+      io.to(`user:${receiverId}`).emit("message", plain);
+      io.to(`user:${req.userId}`).emit("message", plain);
+    }
+
+    res.status(201).json(plain);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to upload media message" });
   }
 });

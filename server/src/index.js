@@ -46,7 +46,7 @@ app.use((err, req, res, next) => {
   res.status(status).json({ error: message });
 });
 
-const io = new Server(server, {
+export const io = new Server(server, {
   cors: { origin: true, methods: ["GET", "POST"] },
 });
 
@@ -70,11 +70,11 @@ io.on("connection", (socket) => {
     try {
       const receiverId = payload?.receiverId;
       const content = typeof payload?.content === "string" ? payload.content.trim() : "";
-      const mediaUrl = typeof payload?.mediaUrl === "string" ? payload.mediaUrl.trim() : "";
+      const media = (typeof payload?.media === "string" ? payload.media.trim() : "") || (typeof payload?.mediaUrl === "string" ? payload.mediaUrl.trim() : "");
       const mediaType = payload?.mediaType === "video" ? "video" : "image";
 
-      if (!receiverId || (!content && !mediaUrl)) {
-        ack?.({ error: "receiverId and either content or mediaUrl are required" });
+      if (!receiverId || (!content && !media)) {
+        ack?.({ error: "receiverId and either content or media are required" });
         return;
       }
       if (receiverId === uid) {
@@ -85,8 +85,9 @@ io.on("connection", (socket) => {
         sender: uid,
         receiver: receiverId,
         content: content.slice(0, 5000),
-        mediaUrl: mediaUrl.slice(0, 1000) || undefined,
-        mediaType: mediaUrl ? mediaType : undefined,
+        media: media.slice(0, 1000) || undefined,
+        mediaUrl: media.slice(0, 1000) || undefined,
+        mediaType: media ? mediaType : undefined,
       });
       await msg.populate("sender", "name email role");
       await msg.populate("receiver", "name email role");

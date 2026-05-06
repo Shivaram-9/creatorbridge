@@ -29,3 +29,33 @@ export const upload = multer({
   fileFilter,
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
 });
+
+// Chat media storage
+const chatStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadPath = "uploads/chat/";
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const sanitized = file.originalname.replace(/[^a-z0-9.]/gi, "_").toLowerCase();
+    cb(null, uniqueSuffix + "-" + sanitized);
+  },
+});
+
+const chatFileFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith("image/") || file.mimetype.startsWith("video/")) {
+    cb(null, true);
+  } else {
+    cb(new Error("Only images and videos are allowed"), false);
+  }
+};
+
+export const chatUpload = multer({
+  storage: chatStorage,
+  fileFilter: chatFileFilter,
+  limits: { fileSize: 50 * 1024 * 1024 }, // 50MB
+});

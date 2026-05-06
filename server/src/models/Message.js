@@ -9,10 +9,11 @@ const messageSchema = new mongoose.Schema(
       trim: true,
       maxlength: 5000,
       required: function () {
-        return !this.mediaUrl;
+        return !this.media && !this.mediaUrl;
       },
     },
-    mediaUrl: { type: String, trim: true, maxlength: 1000 },
+    media: { type: String, trim: true, maxlength: 1000 },
+    mediaUrl: { type: String, trim: true, maxlength: 1000 }, // Legacy support
     mediaType: { type: String, enum: ["image", "video"] },
   },
   { timestamps: true }

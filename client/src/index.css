@@ -1102,6 +1102,31 @@ textarea.input {
   color: var(--text);
 }
 
+.chat-media-container {
+  overflow: hidden;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.chat-media-display {
+  width: 100%;
+  max-width: 100%;
+  max-height: 380px;
+  object-fit: cover;
+  display: block;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.chat-media-display:hover {
+  opacity: 0.92;
+}
+
+video.chat-media-display {
+  object-fit: contain;
+  background: #000;
+}
+
 .chat-form {
   display: flex;
   gap: 0.65rem;

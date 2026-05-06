@@ -4,6 +4,7 @@ import { api, firstApiError } from "../services/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import { connectSocket, getSocket } from "../services/socket.js";
 import { roleBadgeClass } from "../utils/badges.js";
+import { BASE_URL } from "../config/api.js";
 import ErrorBanner from "../components/ErrorBanner.jsx";
 
 /* Removed collab message helpers */
@@ -26,8 +27,9 @@ export default function Chat() {
 
   /* Media attachment state */
   const [showMedia, setShowMedia] = useState(false);
-  const [mediaUrl, setMediaUrl] = useState("");
-  const [mediaType, setMediaType] = useState("image");
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState("");
+  const fileInputRef = useRef(null);
 
   const seenIdsRef = useRef(new Set());
   const bottomRef = useRef(null);
@@ -206,7 +208,15 @@ export default function Chat() {
   function handleSubmit(e) {
     e.preventDefault();
     const txt = input.trim();
-    if (!txt || sending) return;
+    if (sending) return;
+    
+    if (selectedFile) {
+      handleMediaUpload(e);
+      return;
+    }
+
+    if (!txt) return;
+    
     setSending(true);
     setError("");
     sendContent(txt, null, null, () => {
@@ -215,20 +225,62 @@ export default function Chat() {
     });
   }
 
-  /* Media message */
-  function handleMediaSubmit(e) {
-    e.preventDefault();
-    const url = mediaUrl.trim();
-    if (!url || sending) return;
-    
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/") && !file.type.startsWith("video/")) {
+      setError("Only images and videos are allowed");
+      return;
+    }
+
+    if (file.size > 50 * 1024 * 1024) {
+      setError("File size exceeds 50MB limit");
+      return;
+    }
+
+    setSelectedFile(file);
+    setPreviewUrl(URL.createObjectURL(file));
+    setShowMedia(true);
+  };
+
+  const handleMediaUpload = async (e) => {
+    e?.preventDefault();
+    if (!selectedFile || sending) return;
+
     setSending(true);
     setError("");
-    sendContent("", url, mediaType, () => {
+
+    try {
+      const formData = new FormData();
+      formData.append("media", selectedFile);
+      formData.append("receiverId", receiverId);
+      if (input.trim()) {
+        formData.append("content", input.trim());
+      }
+
+      const res = await api.messages.sendMedia(formData);
+      if (res.error) {
+        setError(res.error);
+      } else {
+        pushMessage(res);
+        setInput("");
+        setSelectedFile(null);
+        setPreviewUrl("");
+        setShowMedia(false);
+      }
+    } catch (err) {
+      setError("Failed to upload media");
+    } finally {
       setSending(false);
-      setShowMedia(false);
-      setMediaUrl("");
-    });
-  }
+    }
+  };
+
+  const getMediaUrl = (path) => {
+    if (!path) return "";
+    if (path.startsWith("http")) return path;
+    return `${BASE_URL}${path}`;
+  };
 
   const senderLabelFor = useCallback(
     (m, mine) => {
@@ -308,21 +360,35 @@ export default function Chat() {
               </p>
             </div>
           ) : (
-            messages.map((m) => {
+            messages.map((m, idx) => {
               const sid = m.sender?._id || m.sender;
               const mine = sid === user?._id;
+              const media = m.media || m.mediaUrl;
 
               return (
-                <div key={m._id || m.content || m.mediaUrl} className={`chat-bubble ${mine ? "chat-bubble-mine" : "chat-bubble-theirs"}`}>
+                <div key={m._id || idx} className={`chat-bubble ${mine ? "chat-bubble-mine" : "chat-bubble-theirs"}`}>
                   <span className="chat-bubble__sender">{senderLabelFor(m, mine)}</span>
-                  {m.mediaUrl ? (
-                    m.mediaType === "video" ? (
-                      <video src={m.mediaUrl} controls className="chat-media-preview" style={{ maxWidth: '100%', borderRadius: '8px', marginTop: '0.25rem' }} />
-                    ) : (
-                      <img src={m.mediaUrl} alt="attachment" className="chat-media-preview" style={{ maxWidth: '100%', borderRadius: '8px', marginTop: '0.25rem' }} />
-                    )
-                  ) : null}
-                  {m.content && <div className="chat-bubble__text">{m.content}</div>}
+                  {media && (
+                    <div className="chat-media-container" style={{ marginTop: '0.25rem' }}>
+                      {m.mediaType === "video" ? (
+                        <video 
+                          src={getMediaUrl(media)} 
+                          controls 
+                          className="chat-media-display" 
+                          playsInline
+                          style={{ maxWidth: '100%', borderRadius: '8px', display: 'block' }} 
+                        />
+                      ) : (
+                        <img 
+                          src={getMediaUrl(media)} 
+                          alt="attachment" 
+                          className="chat-media-display" 
+                          style={{ maxWidth: '100%', borderRadius: '8px', display: 'block' }} 
+                        />
+                      )}
+                    </div>
+                  )}
+                  {m.content && <div className="chat-bubble__text" style={{ marginTop: media ? '0.5rem' : 0 }}>{m.content}</div>}
                 </div>
               );
             })
@@ -332,18 +398,26 @@ export default function Chat() {
 
         {/* Input row + Media button */}
         <form className="chat-form" onSubmit={handleSubmit}>
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            accept="image/*,video/*"
+            style={{ display: 'none' }}
+          />
           <button
             type="button"
             className="chat-collab-trigger"
-            onClick={() => setShowMedia(true)}
+            onClick={() => fileInputRef.current?.click()}
             title="Attach Media"
             aria-label="Attach Media"
+            disabled={sending}
           >
             📎
           </button>
           <input
             className="input"
-            placeholder="Type a message…"
+            placeholder={selectedFile ? "Add a caption…" : "Type a message…"}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             maxLength={5000}
@@ -351,8 +425,8 @@ export default function Chat() {
             enterKeyHint="send"
             aria-label="Message text"
           />
-          <button type="submit" className="btn btn-primary btn-sm" disabled={sending || !input.trim()} aria-busy={sending}>
-            Send
+          <button type="submit" className="btn btn-primary btn-sm" disabled={sending || (!input.trim() && !selectedFile)} aria-busy={sending}>
+            {sending ? "..." : (selectedFile ? "Send File" : "Send")}
           </button>
         </form>
       </div>
@@ -361,57 +435,45 @@ export default function Chat() {
           MEDIA MODAL
          ═══════════════════════════════ */}
       {showMedia && (
-        <div className="collab-overlay" onClick={() => !sending && setShowMedia(false)}>
+        <div className="collab-overlay" onClick={() => !sending && (setShowMedia(false), setSelectedFile(null), setPreviewUrl(""))}>
           <div className="collab-modal" onClick={(e) => e.stopPropagation()}>
             <div className="collab-modal__header">
               <div className="collab-modal__header-text">
-                <span className="collab-modal__header-icon" aria-hidden="true">📎</span>
-                <h2 className="collab-modal__title">Attach Media</h2>
+                <span className="collab-modal__header-icon" aria-hidden="true">🖼️</span>
+                <h2 className="collab-modal__title">Media Preview</h2>
               </div>
-              <button type="button" className="collab-modal__close" onClick={() => setShowMedia(false)} aria-label="Close" disabled={sending}>✕</button>
+              <button type="button" className="collab-modal__close" onClick={() => { setShowMedia(false); setSelectedFile(null); setPreviewUrl(""); }} aria-label="Close" disabled={sending}>✕</button>
             </div>
-            <p className="collab-modal__desc">
-              Paste an image or video URL to send it in the chat.
-            </p>
-            <form onSubmit={handleMediaSubmit}>
-              <div className="field">
-                <label htmlFor="media-url">Media URL</label>
-                <input
-                  id="media-url"
-                  className="input"
-                  value={mediaUrl}
-                  onChange={(e) => setMediaUrl(e.target.value)}
-                  placeholder="https://..."
-                  maxLength={1000}
-                  required
-                  autoFocus
-                />
-              </div>
-              <div className="field">
-                <label htmlFor="media-type">Type</label>
-                <select
-                  id="media-type"
-                  className="input"
-                  value={mediaType}
-                  onChange={(e) => setMediaType(e.target.value)}
-                >
-                  <option value="image">Image</option>
-                  <option value="video">Video</option>
-                </select>
-              </div>
-              <div className="collab-modal__actions">
-                <button type="button" className="btn btn-secondary" onClick={() => setShowMedia(false)} disabled={sending}>
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="btn btn-primary"
-                  disabled={sending || !mediaUrl.trim()}
-                >
-                  {sending ? "Sending…" : "Send Media"}
-                </button>
-              </div>
-            </form>
+            
+            <div className="media-preview-body" style={{ textAlign: 'center', padding: '1rem' }}>
+              {selectedFile?.type.startsWith("video") ? (
+                <video src={previewUrl} controls style={{ maxWidth: '100%', maxHeight: '300px', borderRadius: '8px' }} />
+              ) : (
+                <img src={previewUrl} alt="preview" style={{ maxWidth: '100%', maxHeight: '300px', borderRadius: '8px' }} />
+              )}
+              <p className="muted" style={{ marginTop: '0.5rem', fontSize: '0.85rem' }}>
+                {selectedFile?.name} ({(selectedFile?.size / (1024 * 1024)).toFixed(2)} MB)
+              </p>
+            </div>
+
+            <div className="collab-modal__actions">
+              <button 
+                type="button" 
+                className="btn btn-secondary" 
+                onClick={() => { setShowMedia(false); setSelectedFile(null); setPreviewUrl(""); }} 
+                disabled={sending}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handleMediaUpload}
+                disabled={sending}
+              >
+                {sending ? "Uploading…" : "Send Media"}
+              </button>
+            </div>
           </div>
         </div>
       )}

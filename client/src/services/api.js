@@ -166,6 +166,7 @@ export const api = {
     list: () => request("/messages"),
     conversation: (otherUserId) => request(`/messages/conversation/${otherUserId}`),
     send: (payload) => request("/messages", { method: "POST", body: payload }),
+    sendMedia: (formData) => request("/messages/media", { method: "POST", body: formData }),
   },
   notifications: {
     list: () => request("/notifications"),
