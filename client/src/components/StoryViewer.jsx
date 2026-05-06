@@ -9,11 +9,12 @@ export default function StoryViewer({ groups, initialGroupIndex, onClose }) {
   const [storyIndex, setStoryIndex] = useState(0);
   const [progress, setProgress] = useState(0);
 
-  const currentGroup = groups[groupIndex];
-  const currentStory = currentGroup.stories[storyIndex];
+  const currentGroup = groups?.[groupIndex] || {};
+  const currentStory = currentGroup?.stories?.[storyIndex] || {};
 
   const nextStory = useCallback(() => {
-    if (storyIndex < currentGroup.stories.length - 1) {
+    if (!currentGroup?.stories) return onClose();
+    if (storyIndex < (currentGroup?.stories?.length || 0) - 1) {
       setStoryIndex(prev => prev + 1);
       setProgress(0);
     } else if (groupIndex < groups.length - 1) {
@@ -26,15 +27,16 @@ export default function StoryViewer({ groups, initialGroupIndex, onClose }) {
   }, [storyIndex, currentGroup, groupIndex, groups, onClose]);
 
   const prevStory = useCallback(() => {
+    if (!currentGroup?.stories) return;
     if (storyIndex > 0) {
       setStoryIndex(prev => prev - 1);
       setProgress(0);
     } else if (groupIndex > 0) {
       setGroupIndex(prev => prev - 1);
-      setStoryIndex(groups[groupIndex - 1].stories.length - 1);
+      setStoryIndex((groups[groupIndex - 1]?.stories?.length || 0) - 1);
       setProgress(0);
     }
-  }, [storyIndex, groupIndex, groups]);
+  }, [storyIndex, groupIndex, groups, currentGroup]);
 
   useEffect(() => {
     if (!currentStory) return;

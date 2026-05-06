@@ -52,7 +52,7 @@ export default function StoriesBar() {
   };
 
   const isGroupViewed = (group) => {
-    if (!user) return true;
+    if (!user || !group?.stories) return true;
     return group.stories.every(s => s.viewers?.includes(user._id));
   };
 

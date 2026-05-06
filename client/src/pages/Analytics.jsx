@@ -46,11 +46,11 @@ export default function Analytics() {
         gap: '1.5rem',
         marginBottom: '3rem'
       }}>
-        <MetricCard title="Followers" value={overview.followers} color="#1d9bf0" trend="+12%" />
-        <MetricCard title="Total Posts" value={overview.posts} color="#10b981" />
-        <MetricCard title="Engagement" value={overview.engagementRate} color="#f59e0b" trend="Premium" />
-        <MetricCard title="Profile Views" value={overview.profileViews} color="#8b5cf6" />
-        <MetricCard title="Post Reach" value={overview.postViews} color="#ec4899" />
+        <MetricCard title="Followers" value={overview?.followers || 0} color="#1d9bf0" trend="+12%" />
+        <MetricCard title="Total Posts" value={overview?.posts || 0} color="#10b981" />
+        <MetricCard title="Engagement" value={overview?.engagementRate || "0%"} color="#f59e0b" trend="Premium" />
+        <MetricCard title="Profile Views" value={overview?.profileViews || 0} color="#8b5cf6" />
+        <MetricCard title="Post Reach" value={overview?.postViews || 0} color="#ec4899" />
       </div>
 
       {/* Main Charts */}
@@ -65,7 +65,7 @@ export default function Analytics() {
           <h3 style={{ marginBottom: '1.5rem', fontWeight: 700 }}>Follower Growth</h3>
           <div style={{ width: '100%', height: 300 }}>
             <ResponsiveContainer>
-              <AreaChart data={charts.growth}>
+              <AreaChart data={charts?.growth || []}>
                 <defs>
                   <linearGradient id="colorFollowers" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#1d9bf0" stopOpacity={0.1}/>
@@ -94,7 +94,7 @@ export default function Analytics() {
           <h3 style={{ marginBottom: '1.5rem', fontWeight: 700 }}>Daily Engagement</h3>
           <div style={{ width: '100%', height: 300 }}>
             <ResponsiveContainer>
-              <BarChart data={charts.growth}>
+              <BarChart data={charts?.growth || []}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
                 <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{fill: '#999', fontSize: 12}} dy={10} />
                 <YAxis axisLine={false} tickLine={false} tick={{fill: '#999', fontSize: 12}} />
@@ -113,7 +113,7 @@ export default function Analytics() {
       <section>
         <h3 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '1.5rem' }}>Top Performing Content</h3>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1.5rem' }}>
-          {topPosts.map(post => (
+          {(topPosts || []).map(post => (
             <div key={post._id} style={{ 
               background: 'white', 
               borderRadius: '20px', 
