@@ -1,243 +1,120 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { api, firstApiError } from "../services/api.js";
+import { api } from "../services/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
-import { CATEGORIES } from "../constants/categories.js";
-import { roleBadgeClass } from "../utils/badges.js";
-import ErrorBanner from "../components/ErrorBanner.jsx";
 import Avatar from "../components/Avatar.jsx";
-
-/** Format followers count */
-function fmtFollowers(n) {
-  if (!n || n <= 0) return null;
-  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1).replace(/\.0$/, "")}M`;
-  if (n >= 1_000) return `${(n / 1_000).toFixed(1).replace(/\.0$/, "")}K`;
-  return String(n);
-}
-
-
+import LoadingSpinner from "../components/LoadingSpinner.jsx";
+import ErrorBanner from "../components/ErrorBanner.jsx";
+import { BASE_URL } from "../config/api.js";
 
 export default function Discover() {
-  const { user, setUser, refreshUser } = useAuth();
-  const [filter, setFilter] = useState("");
-  const [users, setUsers] = useState([]);
+  const { user } = useAuth();
+  const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [actionId, setActionId] = useState(null);
-
-  const load = useCallback(async () => {
-    setError("");
-    setLoading(true);
-    try {
-      const q = filter.trim() || undefined;
-      const list = q ? await api.users.search(q) : await api.users.list("");
-      if (list?.error) {
-        setError(typeof list.error === "string" ? list.error : "Something went wrong");
-      } else {
-        const usersArr = Array.isArray(list) ? list : [];
-        setUsers(usersArr);
-      }
-    } catch {
-      setError("Something went wrong");
-    } finally {
-      setLoading(false);
-    }
-  }, [filter]);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      load();
-    }, 300); // debounce search
-    return () => clearTimeout(timer);
-  }, [load]);
-
-  const headingFilter = useMemo(() => filter.trim() || "Everyone", [filter]);
-
-  async function handleFollowToggle(targetId, isFollowing) {
-    if (!user) return;
-    setActionId(targetId);
-    setError("");
-    try {
-      const action = isFollowing ? api.users.unfollow : api.users.follow;
-      const result = await action(targetId);
-      if (result?.error) {
-        setError(typeof result.error === "string" ? result.error : "Something went wrong");
-      } else {
-        // Update logged-in user's following list (affects button state)
-        const updatedFollowing = isFollowing 
-          ? (user.following || []).filter(fid => fid !== targetId)
-          : [...(user.following || []), targetId];
-        setUser({ ...user, following: updatedFollowing });
-
-        // Update local users list (affects followers count display)
-        setUsers(prev => prev.map(u => {
-          if (u._id === targetId) {
-            const currentFollowers = Array.isArray(u.followers) ? u.followers : [];
-            const newFollowers = isFollowing 
-              ? currentFollowers.filter(fid => fid !== user._id)
-              : [...currentFollowers, user._id];
-            return { ...u, followers: newFollowers };
-          }
-          return u;
-        }));
-        
-        // Sync with server in background
-        refreshUser();
+    async function load() {
+      try {
+        const res = await api.search.discover();
+        if (res?.error) {
+          setError(res.error);
+        } else {
+          setData(res);
+        }
+      } catch {
+        setError("Failed to load discovery data");
+      } finally {
+        setLoading(false);
       }
-    } catch {
-      setError("Something went wrong");
-    } finally {
-      setActionId(null);
     }
-  }
+    load();
+  }, []);
+
+  if (loading) return <LoadingSpinner centered />;
 
   return (
-    <div className="container">
-      <header className="page-header">
-        <h1 className="page-title">Discover</h1>
-        <p className="subtitle">Search for creators and brands by name or username.</p>
+    <div className="discover-page container">
+      <header className="discover-header">
+        <h1 className="discover-title">Explore</h1>
+        <p className="discover-subtitle">Discover creators, brands, and trending content</p>
       </header>
-
-      <div className="filter-bar field" style={{ marginBottom: 0 }}>
-        <input 
-          type="search" 
-          className="input" 
-          placeholder="Search name or @username..." 
-          value={filter} 
-          onChange={(e) => setFilter(e.target.value)} 
-        />
-      </div>
-      <p className="filter-hint">
-        Showing results for <strong>{headingFilter}</strong>
-      </p>
 
       <ErrorBanner message={error} onDismiss={() => setError("")} />
 
-      {loading ? (
-        <p className="loading-line">Loading people</p>
-      ) : users.length === 0 ? (
-        <div className="empty-state empty-state--hero" role="status">
-          <div className="empty-state__illustration" aria-hidden="true">🔍</div>
-          <h2 className="empty-state__title">No creators or brands found</h2>
-          <p className="empty-state__text">
-            Try clearing the category filter or pick a different niche to discover more people on CreatorBridge.
-          </p>
-          <div className="empty-state__action">
-            {filter && (
-              <button type="button" className="btn btn-secondary btn-sm" onClick={() => setFilter("")}>
-                Clear filter
-              </button>
-            )}
-            <Link to="/profile" className="btn btn-primary btn-sm">Complete your profile</Link>
+      {/* Suggested Creators */}
+      <section className="discover-section">
+        <div className="section-header">
+          <h2 className="section-title">Suggested Creators</h2>
+          <Link to="/discover" className="section-link">See all</Link>
+        </div>
+        <div className="creator-grid">
+          {data?.suggested?.map(u => (
+            <div key={u._id} className="creator-card">
+              <Link to={`/user/${u._id}`} className="creator-card__link">
+                <Avatar user={u} size="xl" />
+                <h3 className="creator-card__name">{u.name || u.username}</h3>
+                <p className="creator-card__username">@{u.username}</p>
+                <span className="creator-card__category">{u.category || 'Creator'}</span>
+              </Link>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Trending Section */}
+      <div className="discover-row">
+        <section className="discover-section trending-users">
+          <h2 className="section-title">Trending Users</h2>
+          <div className="trending-list">
+            {data?.trending?.map((u, idx) => (
+              <Link key={u._id} to={`/user/${u._id}`} className="trending-item">
+                <span className="trending-idx">{idx + 1}</span>
+                <Avatar user={u} size="sm" />
+                <div className="trending-info">
+                  <span className="trending-name">{u.name || u.username}</span>
+                  <span className="trending-meta">{u.followers?.length || 0} Aligners</span>
+                </div>
+              </Link>
+            ))}
           </div>
-        </div>
-      ) : (
-        <div className="list-gap">
-          {users.map((u) => {
-            const id = u._id;
-            const isSelf = id === user?._id;
-            const followingArr = Array.isArray(user?.following) ? user.following : [];
-            const isFollowing = followingArr.includes(id);
-            const followersArr = Array.isArray(u.followers) ? u.followers : [];
-            const fl = fmtFollowers(followersArr.length);
-            return (
-              <article key={id} className="card user-card">
-                <div className="user-card__body">
-                  <div className="user-card__heading">
-                    {/* Avatar */}
-                    <div className="user-card__avatar">
-                      <Avatar user={u} size="md" />
-                    </div>
-                    <div className="user-card__heading-text">
-                      <div className="user-card__name-row">
-                        <h2 className="user-card__name"><Link to={`/user/${id}`}>{u.name || u.email}</Link></h2>
-                        <span className={`badge ${roleBadgeClass(u.role)}`}>{u.role}</span>
-                      </div>
-                      {u.username && <p className="user-card__username">@{u.username}</p>}
-                    </div>
+        </section>
+
+        <section className="discover-section popular-posts">
+          <h2 className="section-title">Popular Posts</h2>
+          <div className="popular-post-grid">
+            {data?.popularPosts?.map(p => (
+              <div key={p._id} className="popular-post-card">
+                {p.image ? (
+                  <img src={p.image.startsWith('http') ? p.image : `${BASE_URL}${p.image}`} alt="" className="popular-post-img" />
+                ) : (
+                  <div className="popular-post-text-fallback">{p.text?.slice(0, 40)}</div>
+                )}
+                <div className="popular-post-overlay">
+                  <div className="popular-post-user">
+                    <Avatar user={p.user} size="xs" />
+                    <span>{p.user?.username}</span>
                   </div>
-                  <dl className="user-card__meta">
-                    <div className="user-card__meta-row">
-                      <dt>Category</dt>
-                      <dd className={u.category ? "" : "muted-pill"}>{u.category || "Not set yet"}</dd>
-                    </div>
-                    {fl && (
-                      <div className="user-card__meta-row">
-                        <dt>Aligners</dt>
-                        <dd>{fl}</dd>
-                      </div>
-                    )}
-                  </dl>
-                  {u.location && (
-                    <p className="user-card__location">
-                      <span aria-hidden="true">📍</span>
-                      {u.location}
-                    </p>
-                  )}
-                  {u.bio && <p className="user-card__bio">{u.bio}</p>}
-                  {(u.instagram || u.youtube) && (
-                    <div className="user-card__socials">
-                      {u.instagram && (
-                        <a
-                          href={u.instagram.startsWith("http") ? u.instagram : `https://instagram.com/${u.instagram.replace(/^@/, "")}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="social-chip"
-                        >
-                          📸 Instagram
-                        </a>
-                      )}
-                      {u.youtube && (
-                        <a
-                          href={u.youtube.startsWith("http") ? u.youtube : `https://youtube.com/@${u.youtube.replace(/^@/, "")}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="social-chip"
-                        >
-                          ▶️ YouTube
-                        </a>
-                      )}
-                    </div>
-                  )}
-                  {/* Portfolio thumbnails */}
-                  {Array.isArray(u.portfolio) && u.portfolio.length > 0 && (
-                    <div className="user-card__portfolio-strip">
-                      {u.portfolio.slice(0, 4).map((p, pi) => (
-                        <div key={p._id || pi} className="user-card__portfolio-thumb">
-                          {p.mediaType === "video" ? (
-                            <span className="user-card__portfolio-play">▶</span>
-                          ) : (
-                            <img src={p.url} alt="" className="user-card__portfolio-img" loading="lazy" />
-                          )}
-                        </div>
-                      ))}
-                      {u.portfolio.length > 4 && (
-                        <span className="user-card__portfolio-more">+{u.portfolio.length - 4}</span>
-                      )}
-                    </div>
-                  )}
+                  <div className="popular-post-likes">❤️ {p.likes?.length || 0}</div>
                 </div>
-                <div className="user-card__aside">
-                  <Link to={`/user/${id}`} className="btn btn-ghost btn-sm">View Profile</Link>
-                  {isSelf ? (
-                    <span className="status-pill--muted">You</span>
-                  ) : (
-                    <button
-                      type="button"
-                      className={`align-btn ${isFollowing ? 'align-btn--active' : ''}`}
-                      disabled={actionId === id}
-                      onClick={() => handleFollowToggle(id, isFollowing)}
-                      style={isFollowing ? { backgroundColor: '#f0f0f0', color: '#333' } : {}}
-                    >
-                      {actionId === id ? "..." : isFollowing ? "Connected" : "Align"}
-                    </button>
-                  )}
-                </div>
-              </article>
-            );
-          })}
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
+
+      {/* Recently Active */}
+      <section className="discover-section">
+        <h2 className="section-title">Recently Active Profiles</h2>
+        <div className="active-row">
+          {data?.recentlyActive?.map(u => (
+            <Link key={u._id} to={`/user/${u._id}`} className="active-user">
+              <Avatar user={u} size="md" />
+              <div className="active-dot" />
+            </Link>
+          ))}
         </div>
-      )}
+      </section>
     </div>
   );
 }

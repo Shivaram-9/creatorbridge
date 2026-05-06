@@ -10,6 +10,7 @@ import { usersRouter } from "./routes/users.js";
 import { messagesRouter } from "./routes/messages.js";
 import { notificationsRouter } from "./routes/notifications.js";
 import { postsRouter } from "./routes/posts.js";
+import { searchRouter } from "./routes/search.js";
 import { Message } from "./models/Message.js";
 
 const PORT = Number(process.env.PORT) || 5000;
@@ -32,6 +33,7 @@ app.use("/api/users", usersRouter);
 app.use("/api/messages", messagesRouter);
 app.use("/api/notifications", notificationsRouter);
 app.use("/api/posts", postsRouter);
+app.use("/api/search", searchRouter);
 
 // Serve static uploads
 app.use("/uploads", express.static("uploads"));

@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { BellIcon, MenuIcon, SearchIcon } from "./Icons.jsx";
 import { getSocket } from "../services/socket.js";
 import Avatar from "./Avatar.jsx";
+import SearchDropdown from "./SearchDropdown.jsx";
+import { api } from "../services/api.js";
 
 export default function Navbar({ 
   user, searchQuery, setSearchQuery, handleSearch, 
@@ -11,8 +13,36 @@ export default function Navbar({
 }) {
   const [notifOpen, setNotifOpen] = useState(false);
   const [socketStatus, setSocketStatus] = useState("connecting");
+  const [searchResults, setSearchResults] = useState(null);
+  const [searchLoading, setSearchLoading] = useState(false);
   const notifRef = useRef(null);
+  const searchRef = useRef(null);
   const navigate = useNavigate();
+
+  // Live search with debounce
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setSearchResults(null);
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      setSearchLoading(true);
+      try {
+        const [users, posts] = await Promise.all([
+          api.search.users(searchQuery),
+          api.search.posts(searchQuery)
+        ]);
+        setSearchResults({ users, posts });
+      } catch (err) {
+        console.error("Search failed", err);
+      } finally {
+        setSearchLoading(false);
+      }
+    }, 400);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
   useEffect(() => {
     const socket = getSocket();
@@ -58,6 +88,9 @@ export default function Navbar({
       if (notifOpen && notifRef.current && !notifRef.current.contains(e.target)) {
         setNotifOpen(false);
       }
+      if (searchResults && searchRef.current && !searchRef.current.contains(e.target)) {
+        setSearchResults(null);
+      }
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
@@ -72,7 +105,7 @@ export default function Navbar({
 
         {user && (
           <>
-            <form className="search-container" onSubmit={handleSearch}>
+            <form className="search-container" onSubmit={handleSearch} ref={searchRef}>
               <span className="search-icon">
                 <SearchIcon />
               </span>
@@ -82,6 +115,11 @@ export default function Navbar({
                 placeholder="Search creators & brands..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <SearchDropdown 
+                results={searchResults} 
+                loading={searchLoading} 
+                onClose={() => setSearchResults(null)} 
               />
             </form>
 

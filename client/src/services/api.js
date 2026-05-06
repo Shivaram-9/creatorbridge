@@ -188,4 +188,9 @@ export const api = {
     }),
     remove: (postId) => request(`/posts/${postId}`, { method: "DELETE" }),
   },
+  search: {
+    users: (q) => request(`/search/users?q=${encodeURIComponent(q)}`),
+    posts: (q) => request(`/search/posts?q=${encodeURIComponent(q)}`),
+    discover: () => request("/search/discover"),
+  },
 };
