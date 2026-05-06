@@ -130,10 +130,10 @@ export default function PostCard({ post, onDelete }) {
   };
 
   useEffect(() => {
-    if (post._id) {
-      api.analytics.viewPost(post._id);
+    if (post?._id && api?.analytics?.viewPost) {
+      api.analytics.viewPost(post._id).catch(() => {});
     }
-  }, [post._id]);
+  }, [post?._id]);
 
   return (
     <div className="post-card">

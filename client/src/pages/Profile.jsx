@@ -54,9 +54,9 @@ export default function Profile() {
 
   useEffect(() => {
     loadPosts();
-    // Track profile view
-    if (user?._id) {
-      api.analytics.viewProfile(user._id);
+    // Track profile view safely
+    if (user?._id && api?.analytics?.viewProfile) {
+      api.analytics.viewProfile(user._id).catch(() => {});
     }
   }, [loadPosts, user?._id]);
 

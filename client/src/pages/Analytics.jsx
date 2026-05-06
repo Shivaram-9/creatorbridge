@@ -28,9 +28,16 @@ export default function Analytics() {
   }, []);
 
   if (loading) return <LoadingSpinner centered />;
-  if (!data) return <div className="container">Failed to load analytics.</div>;
+  if (!data || !data.overview) {
+    return (
+      <div className="container" style={{ paddingTop: '2rem', textAlign: 'center' }}>
+        <h2>Analytics currently unavailable</h2>
+        <p>We're collecting your growth data. Check back in a few minutes!</p>
+      </div>
+    );
+  }
 
-  const { overview, topPosts, charts } = data;
+  const { overview = {}, topPosts = [], charts = {} } = data;
 
   return (
     <div className="container" style={{ paddingTop: '2rem', paddingBottom: '4rem' }}>
