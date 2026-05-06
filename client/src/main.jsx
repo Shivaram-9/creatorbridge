@@ -6,9 +6,7 @@ import ErrorBoundary from "./components/ErrorBoundary.jsx";
 import App from "./App.jsx";
 import "./index.css";
 
-ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-// Temporarily disabled ErrorBoundary for debugging
+// Temporarily disabling ErrorBoundary to find the REAL runtime crash
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     {/* <ErrorBoundary> */}
@@ -21,7 +19,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   </React.StrictMode>
 );
 
-// Global debug listener
+// Global debug listener to catch raw errors
 window.addEventListener('error', (event) => {
   console.log('--- DEBUG CRASH DETECTED ---');
   console.log('Error Message:', event.message);
@@ -29,5 +27,3 @@ window.addEventListener('error', (event) => {
   console.log('Stack Trace:', event.error?.stack);
   console.log('----------------------------');
 });
-  </React.StrictMode>
-);
