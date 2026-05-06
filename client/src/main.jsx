@@ -8,12 +8,26 @@ import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <ErrorBoundary>
+// Temporarily disabled ErrorBoundary for debugging
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <React.StrictMode>
+    {/* <ErrorBoundary> */}
       <BrowserRouter>
         <AuthProvider>
           <App />
         </AuthProvider>
       </BrowserRouter>
-    </ErrorBoundary>
+    {/* </ErrorBoundary> */}
+  </React.StrictMode>
+);
+
+// Global debug listener
+window.addEventListener('error', (event) => {
+  console.log('--- DEBUG CRASH DETECTED ---');
+  console.log('Error Message:', event.message);
+  console.log('Source:', event.filename, 'Line:', event.lineno);
+  console.log('Stack Trace:', event.error?.stack);
+  console.log('----------------------------');
+});
   </React.StrictMode>
 );
