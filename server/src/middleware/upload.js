@@ -59,3 +59,25 @@ export const chatUpload = multer({
   fileFilter: chatFileFilter,
   limits: { fileSize: 50 * 1024 * 1024 }, // 50MB
 });
+
+// Profile avatar storage
+const profileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadPath = "uploads/avatars/";
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const sanitized = file.originalname.replace(/[^a-z0-9.]/gi, "_").toLowerCase();
+    cb(null, `avatar-${uniqueSuffix}-${sanitized}`);
+  },
+});
+
+export const profileUpload = multer({
+  storage: profileStorage,
+  fileFilter, // Only images
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+});

@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { BellIcon, MenuIcon, SearchIcon } from "./Icons.jsx";
 import { getSocket } from "../services/socket.js";
+import Avatar from "./Avatar.jsx";
 
 export default function Navbar({ 
   user, searchQuery, setSearchQuery, handleSearch, 
@@ -127,9 +128,9 @@ export default function Navbar({
                   className="nav-icon-btn"
                   onClick={() => setMenuOpen(!menuOpen)}
                   aria-label="Menu"
-                  style={{ position: 'relative' }}
+                  style={{ position: 'relative', padding: '0.25rem' }}
                 >
-                  <MenuIcon />
+                  <Avatar user={user} size="sm" />
                   <span 
                     className={`status-dot status-dot--${socketStatus}`}
                     title={`Live status: ${socketStatus.charAt(0).toUpperCase() + socketStatus.slice(1)}`}

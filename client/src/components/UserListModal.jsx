@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../services/api.js";
 import LoadingSpinner from "./LoadingSpinner.jsx";
+import Avatar from "./Avatar.jsx";
 
 export default function UserListModal({ userId, type, onClose }) {
   const [users, setUsers] = useState([]);
@@ -49,15 +50,7 @@ export default function UserListModal({ userId, type, onClose }) {
               {users.map(u => (
                 <div key={u._id} className="user-list-item" style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '1rem' }}>
                   <Link to={`/user/${u._id}`} onClick={onClose}>
-                    <div className="avatar" style={{ width: '40px', height: '40px', borderRadius: '50%', overflow: 'hidden', backgroundColor: '#f3f4f6' }}>
-                      {u.avatar ? (
-                        <img src={u.avatar} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                      ) : (
-                        <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 600 }}>
-                          {u.name?.[0]?.toUpperCase() || "?"}
-                        </div>
-                      )}
-                    </div>
+                    <Avatar user={u} size="md" />
                   </Link>
                   <div className="user-info">
                     <Link to={`/user/${u._id}`} onClick={onClose} style={{ textDecoration: 'none', color: 'inherit' }}>

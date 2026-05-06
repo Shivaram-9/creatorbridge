@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { HeartIcon, MessageCircleIcon, SendIcon, BookmarkIcon, MoreHorizontalIcon } from "./Icons.jsx";
 import { api } from "../services/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
+import Avatar from "./Avatar.jsx";
 
 export default function PostCard({ post, onDelete }) {
   const { user } = useAuth();
@@ -92,15 +93,16 @@ export default function PostCard({ post, onDelete }) {
 
   return (
     <div className="post-card">
-      <div className="post-header">
-        <div className="post-avatar">
-          {post.avatar ? (
-            <img src={post.avatar} alt={post.username} className="post-avatar__img" />
-          ) : (
-            <span className="post-avatar__initials">{post.username?.slice(0, 2).toUpperCase()}</span>
-          )}
-        </div>
-        <div className="post-info">
+        <div className="post-header">
+          <Avatar 
+            user={{ 
+              _id: post.user?._id || post.user, 
+              name: post.username, 
+              avatar: post.avatar 
+            }} 
+            size="md" 
+          />
+          <div className="post-info">
           <h3 className="post-username">{post.username}</h3>
           <span className="post-time">{post.time}</span>
         </div>

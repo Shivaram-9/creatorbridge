@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../services/api.js";
 import ErrorBanner from "../components/ErrorBanner.jsx";
+import Avatar from "../components/Avatar.jsx";
 
 /** Relative timestamp — e.g. "2 min ago", "3 days ago" */
 function timeAgo(dateStr) {
@@ -18,29 +19,7 @@ function timeAgo(dateStr) {
   return `${months}mo ago`;
 }
 
-/** Avatar circle */
-function Avatar({ actor }) {
-  const name = actor?.name || actor?.email || "?";
-  const initials = (() => {
-    if (actor?.name) {
-      const parts = actor.name.trim().split(/\s+/);
-      return parts.length >= 2
-        ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
-        : actor.name.slice(0, 2).toUpperCase();
-    }
-    return (actor?.email || "?").slice(0, 2).toUpperCase();
-  })();
 
-  return (
-    <div className="notif-avatar">
-      {actor?.avatar ? (
-        <img src={actor.avatar} alt={name} className="notif-avatar__img" />
-      ) : (
-        <span className="notif-avatar__initials">{initials}</span>
-      )}
-    </div>
-  );
-}
 
 /** Collab prefix detection (reused from Chat) */
 const COLLAB_PREFIX = "📋 COLLABORATION PROPOSAL\n";
@@ -126,7 +105,7 @@ export default function Notifications() {
                 onClick={() => !isRead && api.notifications.markRead(n._id)}
               >
                 {!isRead && <div className="notif-item__type-dot" aria-hidden="true" />}
-                <Avatar actor={actor} />
+                <Avatar user={actor} size="md" />
                 <div className="notif-item__body">
                   <p className="notif-item__text">
                     <strong>{actorName}</strong> {n.message.replace(actorName, "").trim()}

@@ -8,16 +8,9 @@ import ErrorBanner from "../components/ErrorBanner.jsx";
 import PortfolioGrid from "../components/PortfolioGrid.jsx";
 import { ShareIcon } from "../components/Icons.jsx";
 import UserListModal from "../components/UserListModal.jsx";
+import Avatar from "../components/Avatar.jsx";
 
-function initials(name, email) {
-  if (name) {
-    const parts = name.trim().split(/\s+/);
-    return parts.length >= 2
-      ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
-      : name.slice(0, 2).toUpperCase();
-  }
-  return email ? email.slice(0, 2).toUpperCase() : "?";
-}
+
 
 function fmtFollowers(n) {
   if (!n || n <= 0) return null;
@@ -187,12 +180,8 @@ export default function UserProfile() {
         <div className="up-hero__gradient" aria-hidden="true" />
 
         <div className="up-hero__content">
-          <div className="up-avatar">
-            {profile.avatar ? (
-              <img src={profile.avatar} alt="" className="up-avatar__img" />
-            ) : (
-              <span className="up-avatar__initials">{initials(profile.name, profile.email)}</span>
-            )}
+          <div className="up-avatar" style={{ position: 'relative' }}>
+            <Avatar user={profile} size="xl" className="up-avatar-main" />
             <span className={`up-avatar__role-dot ${profile.role === "brand" ? "up-avatar__role-dot--brand" : ""}`} aria-label={profile.role} />
           </div>
 

@@ -2,6 +2,7 @@ import { Router } from "express";
 import { User } from "../models/User.js";
 import { Notification } from "../models/Notification.js";
 import { authMiddleware } from "../middleware/auth.js";
+import { profileUpload } from "../middleware/upload.js";
 
 export const usersRouter = Router();
 
@@ -18,6 +19,19 @@ usersRouter.get("/me", async (req, res) => {
   }
 });
 
+usersRouter.post("/me/avatar", profileUpload.single("avatar"), async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ error: "Avatar file is required" });
+    const avatarPath = `/uploads/avatars/${req.file.filename}`;
+    const user = await User.findByIdAndUpdate(req.userId, { $set: { avatar: avatarPath } }, { new: true });
+    if (!user) return res.status(404).json({ error: "User not found" });
+    res.json(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to upload avatar" });
+  }
+});
+
 usersRouter.patch("/me", async (req, res) => {
   try {
     const { name, username, category, bio, location, role, avatar, instagram, youtube } = req.body;
@@ -28,7 +42,7 @@ usersRouter.patch("/me", async (req, res) => {
     if (bio !== undefined) updates.bio = String(bio).slice(0, 2000);
     if (location !== undefined) updates.location = String(location).slice(0, 120);
     if (role !== undefined && ["influencer", "brand"].includes(role)) updates.role = role;
-    if (avatar !== undefined) updates.avatar = String(avatar).slice(0, 500);
+    if (avatar !== undefined) updates.avatar = String(avatar).slice(0, 1000); // Allow longer paths or base64 if needed
     if (instagram !== undefined) updates.instagram = String(instagram).slice(0, 200);
     if (youtube !== undefined) updates.youtube = String(youtube).slice(0, 200);
 

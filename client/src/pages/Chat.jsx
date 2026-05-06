@@ -6,6 +6,7 @@ import { connectSocket, getSocket } from "../services/socket.js";
 import { roleBadgeClass } from "../utils/badges.js";
 import { BASE_URL } from "../config/api.js";
 import ErrorBanner from "../components/ErrorBanner.jsx";
+import Avatar from "../components/Avatar.jsx";
 
 /* Removed collab message helpers */
 
@@ -320,18 +321,21 @@ export default function Chat() {
     <div className="container chat-page">
       <header className="chat-header-bar" style={{ marginBottom: 0 }}>
         <Link to="/messages" className="btn btn-secondary btn-sm">← Back</Link>
-        <div>
-          <div className="row" style={{ alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
-            <h1 className="page-title" style={{ fontSize: "1.35rem", margin: 0 }}>Chat</h1>
-            <span className="muted" style={{ fontSize: "1rem", fontWeight: 600 }}>
-              · {partner?.name || partner?.email || "Conversation"}
-            </span>
-          </div>
-          <div className="row" style={{ alignItems: "center", gap: "0.65rem", marginTop: "0.35rem" }}>
-            {partner?.role && <span className={`badge ${roleBadgeClass(partner.role)}`}>{partner.role}</span>}
-            <p className="muted" style={{ margin: 0, fontSize: "0.85rem" }}>
-              {partner?.category ? <>Category · {partner.category}</> : <span>Category not set</span>}
-            </p>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <Avatar user={partner} size="md" />
+          <div>
+            <div className="row" style={{ alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
+              <h1 className="page-title" style={{ fontSize: "1.35rem", margin: 0 }}>Chat</h1>
+              <span className="muted" style={{ fontSize: "1rem", fontWeight: 600 }}>
+                · {partner?.name || partner?.email || "Conversation"}
+              </span>
+            </div>
+            <div className="row" style={{ alignItems: "center", gap: "0.65rem", marginTop: "0.35rem" }}>
+              {partner?.role && <span className={`badge ${roleBadgeClass(partner.role)}`}>{partner.role}</span>}
+              <p className="muted" style={{ margin: 0, fontSize: "0.85rem" }}>
+                {partner?.category ? <>Category · {partner.category}</> : <span>Category not set</span>}
+              </p>
+            </div>
           </div>
         </div>
       </header>
@@ -367,7 +371,10 @@ export default function Chat() {
 
               return (
                 <div key={m._id || idx} className={`chat-bubble ${mine ? "chat-bubble-mine" : "chat-bubble-theirs"}`}>
-                  <span className="chat-bubble__sender">{senderLabelFor(m, mine)}</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.25rem' }}>
+                    <Avatar user={mine ? user : m.sender || partner} size="xs" />
+                    <span className="chat-bubble__sender" style={{ marginBottom: 0 }}>{senderLabelFor(m, mine)}</span>
+                  </div>
                   {media && (
                     <div className="chat-media-container" style={{ marginTop: '0.25rem' }}>
                       {m.mediaType === "video" ? (

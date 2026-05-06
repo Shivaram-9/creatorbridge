@@ -7,19 +7,11 @@ import ErrorBanner from "../components/ErrorBanner.jsx";
 import PortfolioGrid from "../components/PortfolioGrid.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import UserListModal from "../components/UserListModal.jsx";
+import Avatar from "../components/Avatar.jsx";
 
 import { ShareIcon } from "../components/Icons.jsx";
 
-/** Generate initials from name or email */
-function initials(name, email) {
-  if (name) {
-    const parts = name.trim().split(/\s+/);
-    return parts.length >= 2
-      ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
-      : name.slice(0, 2).toUpperCase();
-  }
-  return email ? email.slice(0, 2).toUpperCase() : "?";
-}
+
 
 /** Format followers count nicely */
 function fmtFollowers(n) {
@@ -99,15 +91,30 @@ export default function Profile() {
   }, [user, isEditing]);
 
   /* Handle real image upload */
-  const handleImageUpload = (e) => {
+  const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (file) {
+      // 1. Show instant preview using base64 (local only)
       const reader = new FileReader();
       reader.onloadend = () => {
         setEditAvatar(reader.result);
         setShowPhotoOptions(false);
       };
       reader.readAsDataURL(file);
+
+      // 2. Upload to server
+      try {
+        const formData = new FormData();
+        formData.append("avatar", file);
+        const res = await api.users.updateAvatar(formData);
+        if (res?.error) {
+          setError(res.error);
+        } else {
+          setUser(res); // Update global user state
+        }
+      } catch (err) {
+        setError("Failed to upload avatar");
+      }
     }
   };
 
@@ -149,7 +156,6 @@ export default function Profile() {
         category: editCategory,
         bio: editBio,
         location: editLocation,
-        avatar: editAvatar,
       };
       const me = await api.users.updateMe(body);
       if (me?.error) {
@@ -248,13 +254,12 @@ export default function Profile() {
         <>
           <header className="profile-v2-header">
             <div className="profile-v2-avatar-col">
-              <div className="profile-v2-avatar" onClick={() => setShowPhotoOptions(true)}>
-                {user?.avatar ? (
-                  <img src={user.avatar} alt="" className="profile-v2-avatar-img" />
-                ) : (
-                  <span className="profile-preview__avatar-initials" style={{ fontSize: '2rem' }}>{initials(user?.name, user?.email)}</span>
-                )}
-              </div>
+              <Avatar 
+                user={isEditing ? { ...user, avatar: editAvatar } : user} 
+                size="xl" 
+                className="profile-v2-avatar" 
+                onClick={() => setShowPhotoOptions(true)} 
+              />
             </div>
             
             <div className="profile-v2-info-col">

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "../services/api.js";
 import ErrorBanner from "../components/ErrorBanner.jsx";
+import Avatar from "../components/Avatar.jsx";
 
 export default function Messages() {
   const [conversations, setConversations] = useState([]);
@@ -68,11 +69,7 @@ export default function Messages() {
                 onClick={() => navigate(`/chat/${conv.partner._id}`)}
               >
                 <div className="chat-item-avatar">
-                  {conv.partner.avatar ? (
-                    <img src={conv.partner.avatar} alt="" />
-                  ) : (
-                    <div className="avatar-initials">{conv.partner.name?.[0]?.toUpperCase() || "?"}</div>
-                  )}
+                  <Avatar user={conv.partner} size="md" />
                 </div>
                 <div className="chat-item-info">
                   <div className="chat-item-name">{conv.partner.name || conv.partner.username}</div>

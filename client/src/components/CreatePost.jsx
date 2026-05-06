@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import Avatar from "./Avatar.jsx";
 
 export default function CreatePost({ onPost, user }) {
   const [content, setContent] = useState("");
@@ -37,13 +38,7 @@ export default function CreatePost({ onPost, user }) {
   return (
     <div className="card create-post-card">
       <div className="create-post-header">
-        <div className="post-avatar">
-          {user?.avatar ? (
-            <img src={user.avatar} alt="" className="post-avatar__img" />
-          ) : (
-            <span className="post-avatar__initials">{user?.name?.slice(0, 2).toUpperCase() || "ME"}</span>
-          )}
-        </div>
+        <Avatar user={user} size="md" />
         <div className="create-post-info">
           <p className="create-post-label">Share something with your network</p>
         </div>

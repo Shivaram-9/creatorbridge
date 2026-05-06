@@ -5,6 +5,7 @@ import { useAuth } from "../context/AuthContext.jsx";
 import { CATEGORIES } from "../constants/categories.js";
 import { roleBadgeClass } from "../utils/badges.js";
 import ErrorBanner from "../components/ErrorBanner.jsx";
+import Avatar from "../components/Avatar.jsx";
 
 /** Format followers count */
 function fmtFollowers(n) {
@@ -14,16 +15,7 @@ function fmtFollowers(n) {
   return String(n);
 }
 
-/** Generate initials */
-function initials(name, email) {
-  if (name) {
-    const parts = name.trim().split(/\s+/);
-    return parts.length >= 2
-      ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
-      : name.slice(0, 2).toUpperCase();
-  }
-  return email ? email.slice(0, 2).toUpperCase() : "?";
-}
+
 
 export default function Discover() {
   const { user, setUser, refreshUser } = useAuth();
@@ -154,11 +146,7 @@ export default function Discover() {
                   <div className="user-card__heading">
                     {/* Avatar */}
                     <div className="user-card__avatar">
-                      {u.avatar ? (
-                        <img src={u.avatar} alt="" className="user-card__avatar-img" />
-                      ) : (
-                        <span className="user-card__avatar-initials">{initials(u.name, u.email)}</span>
-                      )}
+                      <Avatar user={u} size="md" />
                     </div>
                     <div className="user-card__heading-text">
                       <div className="user-card__name-row">
