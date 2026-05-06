@@ -167,25 +167,27 @@ postsRouter.post("/comment/:id", async (req, res) => {
 // Toggle Save post
 postsRouter.post("/save/:id", async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id);
+    const postId = req.params.id;
+    const post = await Post.findById(postId);
     if (!post) return res.status(404).json({ error: "Post not found" });
 
     const user = await User.findById(req.userId);
     if (!user) return res.status(404).json({ error: "User not found" });
 
-    const savedPosts = Array.isArray(user.savedPosts) ? user.savedPosts : [];
-    const isSaved = savedPosts.some(id => id.toString() === req.params.id);
+    if (!user.savedPosts) user.savedPosts = [];
+    
+    const isSaved = user.savedPosts.some(id => id.toString() === postId);
 
     if (isSaved) {
-      user.savedPosts = savedPosts.filter(id => id.toString() !== req.params.id);
+      user.savedPosts = user.savedPosts.filter(id => id.toString() !== postId);
     } else {
-      user.savedPosts.push(req.params.id);
+      user.savedPosts.push(postId);
     }
 
     await user.save();
     res.json({ saved: !isSaved });
   } catch (err) {
-    console.error(err);
+    console.error("Save error:", err);
     res.status(500).json({ error: "Failed to save post" });
   }
 });
@@ -195,15 +197,21 @@ postsRouter.get("/saved", async (req, res) => {
   try {
     const user = await User.findById(req.userId).populate({
       path: "savedPosts",
-      populate: { path: "user", select: "name username avatar" },
-      options: { sort: { createdAt: -1 } }
+      populate: { path: "user", select: "name username avatar" }
     });
 
     if (!user) return res.status(404).json({ error: "User not found" });
 
-    res.json(user.savedPosts || []);
+    // Filter out nulls (deleted posts)
+    const validPosts = (user.savedPosts || []).filter(p => p !== null);
+    
+    // Sort manually if needed, or rely on original order. 
+    // Mongoose populate might not preserve order with options.sort easily in some versions.
+    validPosts.reverse(); // Show latest saved first
+
+    res.json(validPosts);
   } catch (err) {
-    console.error(err);
+    console.error("Get saved error:", err);
     res.status(500).json({ error: "Failed to load saved posts" });
   }
 });

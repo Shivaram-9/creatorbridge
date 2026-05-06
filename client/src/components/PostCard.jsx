@@ -18,7 +18,7 @@ export default function PostCard({ post, onDelete }) {
   
   const initialSaved = useMemo(() => {
     if (!user || !user.savedPosts) return false;
-    return user.savedPosts.includes(post._id);
+    return user.savedPosts.some(id => id.toString() === post._id);
   }, [user, post._id]);
 
   const [saved, setSaved] = useState(initialSaved);
@@ -113,7 +113,7 @@ export default function PostCard({ post, onDelete }) {
         // Sync global user state
         const updatedSaved = newSaved 
           ? [...(user.savedPosts || []), post._id] 
-          : (user.savedPosts || []).filter(id => id !== post._id);
+          : (user.savedPosts || []).filter(id => id.toString() !== post._id);
         
         setUser({ ...user, savedPosts: updatedSaved });
       }
