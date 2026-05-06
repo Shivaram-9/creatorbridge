@@ -55,16 +55,18 @@ export default function Home() {
   };
 
   const formatPost = (post) => {
+    if (!post) return null;
     return {
       ...post,
       id: post._id,
-      username: post.user?.username || post.user?.name || "User",
-      avatar: post.user?.avatar || null,
-      content: post.text,
+      username: post.user?.username || post.user?.name || post.username || "User",
+      avatar: post.user?.avatar || post.avatar || null,
+      isVerified: post.user?.isVerified || post.isVerified || false,
+      content: post.text || post.content || "",
       image: post.image ? (post.image.startsWith('http') ? post.image : `${BASE_URL}${post.image}`) : null,
-      time: new Date(post.createdAt).toLocaleString(),
-      likes: 0,
-      comments: 0
+      time: post.createdAt ? new Date(post.createdAt).toLocaleString() : "Just now",
+      likes: post.likes || [],
+      comments: post.comments || []
     };
   };
 
@@ -76,7 +78,7 @@ export default function Home() {
       </header>
 
       <div className="feed-container">
-        <CreatePost onPostCreated={(newPost) => setPosts([formatPost(newPost), ...posts])} />
+        <CreatePost onPost={handleAddPost} user={user} />
         
         <StoriesBar />
 
