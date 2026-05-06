@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { api } from "../services/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import Avatar from "../components/Avatar.jsx";
@@ -8,30 +8,100 @@ import ErrorBanner from "../components/ErrorBanner.jsx";
 import { BASE_URL } from "../config/api.js";
 
 export default function Discover() {
+  const [searchParams] = useSearchParams();
+  const query = searchParams.get("q");
+  
   const { user } = useAuth();
   const [data, setData] = useState(null);
+  const [searchResults, setSearchResults] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
     async function load() {
+      setLoading(true);
+      setError("");
       try {
-        const res = await api.search.discover();
-        if (res?.error) {
-          setError(res.error);
+        if (query) {
+          const [users, posts] = await Promise.all([
+            api.search.users(query),
+            api.search.posts(query)
+          ]);
+          setSearchResults({ users, posts });
         } else {
-          setData(res);
+          const res = await api.search.discover();
+          if (res?.error) {
+            setError(res.error);
+          } else {
+            setData(res);
+          }
         }
-      } catch {
+      } catch (err) {
         setError("Failed to load discovery data");
       } finally {
         setLoading(false);
       }
     }
     load();
-  }, []);
+  }, [query]);
 
   if (loading) return <LoadingSpinner centered />;
+
+  if (query) {
+    return (
+      <div className="discover-page container">
+        <header className="discover-header">
+          <h1 className="discover-title">Search Results</h1>
+          <p className="discover-subtitle">Found for "{query}"</p>
+        </header>
+
+        <section className="discover-section">
+          <h2 className="section-title">Users</h2>
+          {searchResults?.users?.length > 0 ? (
+            <div className="creator-grid">
+              {searchResults.users.map(u => (
+                <div key={u._id} className="creator-card">
+                  <Link to={`/user/${u._id}`} className="creator-card__link">
+                    <Avatar user={u} size="xl" />
+                    <h3 className="creator-card__name">{u.name || u.username}</h3>
+                    <p className="creator-card__username">@{u.username}</p>
+                    <span className="creator-card__category">{u.category || 'Creator'}</span>
+                  </Link>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="empty-text">No users found for this search.</p>
+          )}
+        </section>
+
+        <section className="discover-section">
+          <h2 className="section-title">Posts</h2>
+          {searchResults?.posts?.length > 0 ? (
+            <div className="popular-post-grid">
+              {searchResults.posts.map(p => (
+                <div key={p._id} className="popular-post-card">
+                  {p.image ? (
+                    <img src={p.image.startsWith('http') ? p.image : `${BASE_URL}${p.image}`} alt="" className="popular-post-img" />
+                  ) : (
+                    <div className="popular-post-text-fallback">{p.text?.slice(0, 100)}...</div>
+                  )}
+                  <div className="popular-post-overlay" style={{ opacity: 1 }}>
+                    <div className="popular-post-user">
+                      <Avatar user={p.user} size="xs" />
+                      <span>{p.user?.username}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="empty-text">No posts found for this search.</p>
+          )}
+        </section>
+      </div>
+    );
+  }
 
   return (
     <div className="discover-page container">
@@ -46,7 +116,7 @@ export default function Discover() {
       <section className="discover-section">
         <div className="section-header">
           <h2 className="section-title">Suggested Creators</h2>
-          <Link to="/discover" className="section-link">See all</Link>
+          <Link to="/discover?q=" className="section-link">See all</Link>
         </div>
         <div className="creator-grid">
           {data?.suggested?.map(u => (

@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { Router } from "express";
 import { User } from "../models/User.js";
 import { Post } from "../models/Post.js";
@@ -14,21 +15,19 @@ searchRouter.use(authMiddleware);
 searchRouter.get("/users", async (req, res) => {
   try {
     const { q } = req.query;
-    if (!q || typeof q !== "string") return res.json([]);
+    const keyword = typeof q === "string" ? q.trim() : "";
+    const regex = keyword ? new RegExp(keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i") : null;
     
-    const keyword = q.trim();
-    if (!keyword) return res.json([]);
-
-    const regex = new RegExp(keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
-    
-    const users = await User.find({
+    const query = regex ? {
       $or: [
         { name: regex },
         { username: regex },
         { category: regex },
         { location: regex }
       ]
-    })
+    } : {};
+
+    const users = await User.find(query)
     .select("name username avatar category followers following role")
     .limit(20)
     .lean();
@@ -47,18 +46,14 @@ searchRouter.get("/users", async (req, res) => {
 searchRouter.get("/posts", async (req, res) => {
   try {
     const { q } = req.query;
-    if (!q || typeof q !== "string") return res.json([]);
+    const keyword = typeof q === "string" ? q.trim() : "";
+    const regex = keyword ? new RegExp(keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i") : null;
     
-    const keyword = q.trim();
-    if (!keyword) return res.json([]);
+    const query = regex ? {
+      $or: [{ text: regex }]
+    } : {};
 
-    const regex = new RegExp(keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
-    
-    const posts = await Post.find({
-      $or: [
-        { text: regex }
-      ]
-    })
+    const posts = await Post.find(query)
     .populate("user", "name username avatar")
     .sort({ createdAt: -1 })
     .limit(20)
@@ -77,7 +72,7 @@ searchRouter.get("/posts", async (req, res) => {
  */
 searchRouter.get("/discover", async (req, res) => {
   try {
-    const uid = req.userId;
+    const uid = new mongoose.Types.ObjectId(req.userId);
 
     // 1. Suggested Creators (Random recent ones, excluding self)
     const suggested = await User.find({ _id: { $ne: uid } })
@@ -101,7 +96,7 @@ searchRouter.get("/discover", async (req, res) => {
       { $sort: { likeCount: -1, createdAt: -1 } },
       { $limit: 8 },
       { $lookup: { from: "users", localField: "user", foreignField: "_id", as: "user" } },
-      { $unwind: "$user" },
+      { $unwind: { path: "$user", preserveNullAndEmptyArrays: true } },
       { $project: { text: 1, image: 1, likes: 1, "user.name": 1, "user.username": 1, "user.avatar": 1 } }
     ]);
 
@@ -112,7 +107,7 @@ searchRouter.get("/discover", async (req, res) => {
       .limit(30)
       .lean();
     
-    const recentUserIds = [...new Set(recentPosts.map(p => p.user.toString()))].slice(0, 8);
+    const recentUserIds = [...new Set(recentPosts.filter(p => p.user).map(p => p.user.toString()))].slice(0, 8);
     const recentlyActive = await User.find({ _id: { $in: recentUserIds, $ne: uid } })
       .select("name username avatar category role")
       .limit(6)
