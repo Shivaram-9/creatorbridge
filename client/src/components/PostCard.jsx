@@ -5,7 +5,7 @@ import { useAuth } from "../context/AuthContext.jsx";
 import Avatar from "./Avatar.jsx";
 
 export default function PostCard({ post, onDelete }) {
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
   
   // Initial liked state based on whether current user's ID is in post.likes array
   const initialLiked = useMemo(() => {
@@ -15,7 +15,13 @@ export default function PostCard({ post, onDelete }) {
 
   const [liked, setLiked] = useState(initialLiked);
   const [likesCount, setLikesCount] = useState(Array.isArray(post.likes) ? post.likes.length : 0);
-  const [saved, setSaved] = useState(false);
+  
+  const initialSaved = useMemo(() => {
+    if (!user || !user.savedPosts) return false;
+    return user.savedPosts.includes(post._id);
+  }, [user, post._id]);
+
+  const [saved, setSaved] = useState(initialSaved);
   const [showComments, setShowComments] = useState(false);
   const [commentText, setCommentText] = useState("");
   const [comments, setComments] = useState(Array.isArray(post.comments) ? post.comments : []);
@@ -88,6 +94,31 @@ export default function PostCard({ post, onDelete }) {
       }
     } catch (err) {
       console.error("Failed to add comment", err);
+    }
+  };
+
+  const handleSave = async () => {
+    if (!user) return;
+    
+    // Optimistic UI
+    const newSaved = !saved;
+    setSaved(newSaved);
+
+    try {
+      const res = await api.posts.save(post._id);
+      if (res?.error) {
+        setSaved(!newSaved);
+        console.error(res.error);
+      } else {
+        // Sync global user state
+        const updatedSaved = newSaved 
+          ? [...(user.savedPosts || []), post._id] 
+          : (user.savedPosts || []).filter(id => id !== post._id);
+        
+        setUser({ ...user, savedPosts: updatedSaved });
+      }
+    } catch (err) {
+      setSaved(!newSaved);
     }
   };
 
@@ -232,7 +263,7 @@ export default function PostCard({ post, onDelete }) {
         </div>
         <button 
           className={`post-action-btn ${saved ? "post-action-btn--saved" : ""}`} 
-          onClick={() => setSaved(!saved)}
+          onClick={handleSave}
           aria-label="Save"
         >
           <span className="post-action-icon">

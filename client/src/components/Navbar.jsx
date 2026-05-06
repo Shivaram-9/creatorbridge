@@ -194,10 +194,13 @@ export default function Navbar({
                   }
                 `}</style>
                 {menuOpen && (
-                  <div className="dropdown-menu slide-in">
-                    <Link to="/settings" className="dropdown-item" onClick={() => setMenuOpen(false)}>
-                      Settings
-                    </Link>
+                    <div className="dropdown-menu slide-in">
+                      <Link to="/saved" className="dropdown-item" onClick={() => setMenuOpen(false)}>
+                        Saved Posts
+                      </Link>
+                      <Link to="/settings" className="dropdown-item" onClick={() => setMenuOpen(false)}>
+                        Settings
+                      </Link>
                     <button
                       className="dropdown-item text-danger"
                       onClick={() => {

@@ -163,3 +163,47 @@ postsRouter.post("/comment/:id", async (req, res) => {
     res.status(500).json({ error: "Failed to add comment" });
   }
 });
+
+// Toggle Save post
+postsRouter.post("/save/:id", async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    if (!post) return res.status(404).json({ error: "Post not found" });
+
+    const user = await User.findById(req.userId);
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    const savedPosts = Array.isArray(user.savedPosts) ? user.savedPosts : [];
+    const isSaved = savedPosts.some(id => id.toString() === req.params.id);
+
+    if (isSaved) {
+      user.savedPosts = savedPosts.filter(id => id.toString() !== req.params.id);
+    } else {
+      user.savedPosts.push(req.params.id);
+    }
+
+    await user.save();
+    res.json({ saved: !isSaved });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to save post" });
+  }
+});
+
+// Get saved posts
+postsRouter.get("/saved", async (req, res) => {
+  try {
+    const user = await User.findById(req.userId).populate({
+      path: "savedPosts",
+      populate: { path: "user", select: "name username avatar" },
+      options: { sort: { createdAt: -1 } }
+    });
+
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    res.json(user.savedPosts || []);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to load saved posts" });
+  }
+});

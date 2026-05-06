@@ -24,6 +24,7 @@ const userSchema = new mongoose.Schema(
     youtube: { type: String, default: "" },
     followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     following: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    savedPosts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
     portfolio: { type: [portfolioItemSchema], default: [] },
   },
   { timestamps: true }

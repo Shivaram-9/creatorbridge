@@ -187,6 +187,8 @@ export const api = {
       body: { text } 
     }),
     remove: (postId) => request(`/posts/${postId}`, { method: "DELETE" }),
+    save: (postId) => request(`/posts/save/${postId}`, { method: "POST" }),
+    getSaved: () => request("/posts/saved"),
   },
   search: {
     users: (q) => request(`/search/users?q=${encodeURIComponent(q)}`),
