@@ -19,6 +19,40 @@ usersRouter.get("/me", async (req, res) => {
   }
 });
 
+// GET /api/users/saved - Fetch populated saved posts
+usersRouter.get("/saved", async (req, res) => {
+  try {
+    const user = await User.findById(req.userId).populate({
+      path: "savedPosts",
+      populate: { path: "user", select: "name username avatar isVerified" }
+    });
+
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    // Filter out deleted posts and reverse to show latest first
+    const saved = (user.savedPosts || []).filter(p => p !== null).reverse();
+    res.json(saved);
+  } catch (err) {
+    console.error("Get saved error:", err);
+    res.status(500).json({ error: "Failed to load saved posts" });
+  }
+});
+
+// PATCH /api/users/verify/:id - Toggle verification status
+usersRouter.patch("/verify/:id", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    user.isVerified = !user.isVerified;
+    await user.save();
+    res.json({ verified: user.isVerified });
+  } catch (err) {
+    console.error("Verification error:", err);
+    res.status(500).json({ error: "Failed to toggle verification" });
+  }
+});
+
 usersRouter.post("/me/avatar", profileUpload.single("avatar"), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: "Avatar file is required" });

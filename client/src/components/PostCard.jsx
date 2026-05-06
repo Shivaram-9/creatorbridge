@@ -3,6 +3,7 @@ import { HeartIcon, MessageCircleIcon, SendIcon, BookmarkIcon, MoreHorizontalIco
 import { api } from "../services/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import Avatar from "./Avatar.jsx";
+import VerifiedBadge from "./VerifiedBadge.jsx";
 
 export default function PostCard({ post, onDelete }) {
   const { user, setUser } = useAuth();
@@ -108,7 +109,7 @@ export default function PostCard({ post, onDelete }) {
       const res = await api.posts.save(post._id);
       if (res?.error) {
         setSaved(!newSaved);
-        console.error(res.error);
+        alert(res.error);
       } else {
         // Sync global user state
         const updatedSaved = newSaved 
@@ -116,9 +117,13 @@ export default function PostCard({ post, onDelete }) {
           : (user.savedPosts || []).filter(id => id.toString() !== post._id);
         
         setUser({ ...user, savedPosts: updatedSaved });
+        
+        // Simple toast feedback
+        console.log(newSaved ? "Post Saved" : "Removed from Saved");
       }
     } catch (err) {
       setSaved(!newSaved);
+      console.error("Save error:", err);
     }
   };
 
@@ -134,9 +139,12 @@ export default function PostCard({ post, onDelete }) {
             size="md" 
           />
           <div className="post-info">
-          <h3 className="post-username">{post.username}</h3>
-          <span className="post-time">{post.time}</span>
-        </div>
+            <h3 className="post-username">
+              {post.username}
+              {post.user?.isVerified && <VerifiedBadge size="sm" />}
+            </h3>
+            <span className="post-time">{post.time}</span>
+          </div>
 
         {isOwner && (
           <div className="post-menu-container" style={{ marginLeft: 'auto', position: 'relative' }}>

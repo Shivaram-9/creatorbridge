@@ -25,6 +25,7 @@ const userSchema = new mongoose.Schema(
     followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     following: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     savedPosts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post", default: [] }],
+    isVerified: { type: Boolean, default: false },
     portfolio: { type: [portfolioItemSchema], default: [] },
   },
   { timestamps: true }

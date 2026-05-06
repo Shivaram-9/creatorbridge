@@ -8,6 +8,7 @@ import PortfolioGrid from "../components/PortfolioGrid.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import UserListModal from "../components/UserListModal.jsx";
 import Avatar from "../components/Avatar.jsx";
+import VerifiedBadge from "../components/VerifiedBadge.jsx";
 
 import { ShareIcon } from "../components/Icons.jsx";
 
@@ -264,7 +265,10 @@ export default function Profile() {
             
             <div className="profile-v2-info-col">
               <div className="profile-v2-top-row">
-                <h1 className="profile-v2-username">{user?.username || displayName}</h1>
+                <h1 className="profile-v2-username">
+                  {user?.username || displayName}
+                  {user?.isVerified && <VerifiedBadge size="md" />}
+                </h1>
                 <div className="profile-v2-actions">
                   <button className="profile-v2-btn" onClick={() => setIsEditing(true)}>Edit profile</button>
                   <button 

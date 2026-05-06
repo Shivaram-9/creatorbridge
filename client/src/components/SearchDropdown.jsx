@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import Avatar from "./Avatar.jsx";
+import VerifiedBadge from "./VerifiedBadge.jsx";
 import { BASE_URL } from "../config/api.js";
 
 export default function SearchDropdown({ results, loading, onClose }) {
@@ -28,7 +29,10 @@ export default function SearchDropdown({ results, loading, onClose }) {
                   >
                     <Avatar user={u} size="sm" />
                     <div className="search-result-info">
-                      <span className="search-result-name">{u.name || u.username}</span>
+                      <span className="search-result-name">
+                        {u.name || u.username}
+                        {u.isVerified && <VerifiedBadge size="xs" />}
+                      </span>
                       <span className="search-result-meta">@{u.username} • {u.category || 'Creator'}</span>
                     </div>
                   </Link>
@@ -62,7 +66,10 @@ export default function SearchDropdown({ results, loading, onClose }) {
                     </div>
                     <div className="search-result-info">
                       <span className="search-result-text">{p.text?.slice(0, 50)}...</span>
-                      <span className="search-result-meta">by {p.user?.username}</span>
+                      <span className="search-result-meta">
+                        by {p.user?.username}
+                        {p.user?.isVerified && <VerifiedBadge size="xs" />}
+                      </span>
                     </div>
                   </Link>
                 ))}

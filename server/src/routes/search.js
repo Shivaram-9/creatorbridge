@@ -28,7 +28,7 @@ searchRouter.get("/users", async (req, res) => {
     } : {};
 
     const users = await User.find(query)
-    .select("name username avatar category followers following role")
+    .select("name username avatar category followers following role isVerified")
     .limit(20)
     .lean();
 
@@ -76,7 +76,7 @@ searchRouter.get("/discover", async (req, res) => {
 
     // 1. Suggested Creators (Random recent ones, excluding self)
     const suggested = await User.find({ _id: { $ne: uid } })
-      .select("name username avatar category followers role")
+      .select("name username avatar category followers role isVerified")
       .sort({ createdAt: -1 })
       .limit(6)
       .lean();
@@ -87,7 +87,7 @@ searchRouter.get("/discover", async (req, res) => {
       { $addFields: { followerCount: { $size: { $ifNull: ["$followers", []] } } } },
       { $sort: { followerCount: -1, createdAt: -1 } },
       { $limit: 6 },
-      { $project: { name: 1, username: 1, avatar: 1, category: 1, role: 1, followers: 1 } }
+      { $project: { name: 1, username: 1, avatar: 1, category: 1, role: 1, followers: 1, isVerified: 1 } }
     ]);
 
     // 3. Popular Posts (Most likes using aggregation)
@@ -97,7 +97,7 @@ searchRouter.get("/discover", async (req, res) => {
       { $limit: 8 },
       { $lookup: { from: "users", localField: "user", foreignField: "_id", as: "user" } },
       { $unwind: { path: "$user", preserveNullAndEmptyArrays: true } },
-      { $project: { text: 1, image: 1, likes: 1, "user.name": 1, "user.username": 1, "user.avatar": 1 } }
+      { $project: { text: 1, image: 1, likes: 1, "user.name": 1, "user.username": 1, "user.avatar": 1, "user.isVerified": 1 } }
     ]);
 
     // 4. Recently Active (Latest posts creators)
@@ -109,7 +109,7 @@ searchRouter.get("/discover", async (req, res) => {
     
     const recentUserIds = [...new Set(recentPosts.filter(p => p.user).map(p => p.user.toString()))].slice(0, 8);
     const recentlyActive = await User.find({ _id: { $in: recentUserIds, $ne: uid } })
-      .select("name username avatar category role")
+      .select("name username avatar category role isVerified")
       .limit(6)
       .lean();
 

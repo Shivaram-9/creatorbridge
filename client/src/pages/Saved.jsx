@@ -5,6 +5,7 @@ import PostCard from "../components/PostCard.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import ErrorBanner from "../components/ErrorBanner.jsx";
 import EmptyState from "../components/EmptyState.jsx";
+import VerifiedBadge from "../components/VerifiedBadge.jsx";
 
 export default function Saved() {
   const [posts, setPosts] = useState([]);
@@ -14,7 +15,7 @@ export default function Saved() {
   useEffect(() => {
     async function load() {
       try {
-        const data = await api.posts.getSaved();
+        const data = await api.users.saved();
         if (data?.error) {
           setError(data.error);
         } else {
@@ -35,6 +36,7 @@ export default function Saved() {
       id: post._id,
       username: post.user?.username || post.user?.name || "User",
       avatar: post.user?.avatar || null,
+      isVerified: post.user?.isVerified || false,
       content: post.text,
       image: post.image ? (post.image.startsWith('http') ? post.image : `${BASE_URL}${post.image}`) : null,
       time: new Date(post.createdAt).toLocaleString(),

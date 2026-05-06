@@ -5,6 +5,7 @@ import { useAuth } from "../context/AuthContext.jsx";
 import Avatar from "../components/Avatar.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import ErrorBanner from "../components/ErrorBanner.jsx";
+import VerifiedBadge from "../components/VerifiedBadge.jsx";
 import { BASE_URL } from "../config/api.js";
 
 export default function Discover() {
@@ -63,7 +64,10 @@ export default function Discover() {
                 <div key={u._id} className="creator-card">
                   <Link to={`/user/${u._id}`} className="creator-card__link">
                     <Avatar user={u} size="xl" />
-                    <h3 className="creator-card__name">{u.name || u.username}</h3>
+                    <h3 className="creator-card__name">
+                      {u.name || u.username}
+                      {u.isVerified && <VerifiedBadge size="sm" />}
+                    </h3>
                     <p className="creator-card__username">@{u.username}</p>
                     <span className="creator-card__category">{u.category || 'Creator'}</span>
                   </Link>
@@ -89,7 +93,10 @@ export default function Discover() {
                   <div className="popular-post-overlay" style={{ opacity: 1 }}>
                     <div className="popular-post-user">
                       <Avatar user={p.user} size="xs" />
-                      <span>{p.user?.username}</span>
+                      <span>
+                        {p.user?.username}
+                        {p.user?.isVerified && <VerifiedBadge size="xs" />}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -123,7 +130,10 @@ export default function Discover() {
             <div key={u._id} className="creator-card">
               <Link to={`/user/${u._id}`} className="creator-card__link">
                 <Avatar user={u} size="xl" />
-                <h3 className="creator-card__name">{u.name || u.username}</h3>
+                <h3 className="creator-card__name">
+                  {u.name || u.username}
+                  {u.isVerified && <VerifiedBadge size="sm" />}
+                </h3>
                 <p className="creator-card__username">@{u.username}</p>
                 <span className="creator-card__category">{u.category || 'Creator'}</span>
               </Link>
@@ -142,7 +152,10 @@ export default function Discover() {
                 <span className="trending-idx">{idx + 1}</span>
                 <Avatar user={u} size="sm" />
                 <div className="trending-info">
-                  <span className="trending-name">{u.name || u.username}</span>
+                  <span className="trending-name">
+                    {u.name || u.username}
+                    {u.isVerified && <VerifiedBadge size="xs" />}
+                  </span>
                   <span className="trending-meta">{u.followers?.length || 0} Aligners</span>
                 </div>
               </Link>
@@ -163,7 +176,10 @@ export default function Discover() {
                 <div className="popular-post-overlay">
                   <div className="popular-post-user">
                     <Avatar user={p.user} size="xs" />
-                    <span>{p.user?.username}</span>
+                    <span>
+                      {p.user?.username}
+                      {p.user?.isVerified && <VerifiedBadge size="xs" />}
+                    </span>
                   </div>
                   <div className="popular-post-likes">❤️ {p.likes?.length || 0}</div>
                 </div>
