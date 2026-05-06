@@ -81,3 +81,25 @@ export const profileUpload = multer({
   fileFilter, // Only images
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
 });
+
+// Story storage
+const storyStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadPath = "uploads/stories/";
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const sanitized = file.originalname.replace(/[^a-z0-9.]/gi, "_").toLowerCase();
+    cb(null, `story-${uniqueSuffix}-${sanitized}`);
+  },
+});
+
+export const storyUpload = multer({
+  storage: storyStorage,
+  fileFilter: chatFileFilter, // Allows images & videos
+  limits: { fileSize: 50 * 1024 * 1024 }, // 50MB
+});

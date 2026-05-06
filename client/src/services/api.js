@@ -197,4 +197,10 @@ export const api = {
     posts: (q) => request(`/search/posts?q=${encodeURIComponent(q)}`),
     discover: () => request("/search/discover"),
   },
+  stories: {
+    feed: () => request("/stories/feed"),
+    upload: (formData) => request("/stories", { method: "POST", body: formData }),
+    view: (id) => request(`/stories/view/${id}`, { method: "POST" }),
+    remove: (id) => request(`/stories/${id}`, { method: "DELETE" }),
+  },
 };

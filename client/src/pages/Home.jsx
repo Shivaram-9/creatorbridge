@@ -4,6 +4,7 @@ import { api } from "../services/api.js";
 import { BASE_URL } from "../config/api.js";
 import PostCard from "../components/PostCard.jsx";
 import CreatePost from "../components/CreatePost.jsx";
+import StoriesBar from "../components/StoriesBar.jsx";
 import ErrorBanner from "../components/ErrorBanner.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import EmptyState from "../components/EmptyState.jsx";
@@ -75,8 +76,10 @@ export default function Home() {
       </header>
 
       <div className="feed-container">
-        <CreatePost onPost={handleAddPost} user={user} />
+        <CreatePost onPostCreated={(newPost) => setPosts([formatPost(newPost), ...posts])} />
         
+        <StoriesBar />
+
         <ErrorBanner message={error} onDismiss={() => setError("")} />
 
         {loading ? (
