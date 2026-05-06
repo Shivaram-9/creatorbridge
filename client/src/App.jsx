@@ -15,6 +15,8 @@ import Notifications from "./pages/Notifications.jsx";
 import Settings from "./pages/Settings.jsx";
 import Chat from "./pages/Chat.jsx";
 import Saved from "./pages/Saved.jsx";
+import AdminDashboard from "./pages/AdminDashboard.jsx";
+import AdminRoute from "./components/AdminRoute.jsx";
 
 export default function App() {
   return (
@@ -49,6 +51,11 @@ export default function App() {
         <Route path="/chat/:userId" element={<Chat />} />
         <Route path="/messages" element={<Messages />} />
         <Route path="/saved" element={<Saved />} />
+        <Route path="/admin" element={
+          <AdminRoute>
+            <AdminDashboard />
+          </AdminRoute>
+        } />
       </Route>
 
       <Route path="*" element={<Navigate to="/home" replace />} />

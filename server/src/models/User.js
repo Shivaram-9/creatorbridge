@@ -13,7 +13,8 @@ const userSchema = new mongoose.Schema(
   {
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     password: { type: String, required: true, minlength: 6 },
-    role: { type: String, required: true, enum: ["influencer", "brand"] },
+    role: { type: String, required: true, enum: ["influencer", "brand", "admin"] },
+    isBanned: { type: Boolean, default: false },
     name: { type: String, default: "" },
     username: { type: String, default: "" },
     category: { type: String, default: "" },

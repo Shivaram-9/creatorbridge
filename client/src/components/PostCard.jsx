@@ -4,6 +4,7 @@ import { api } from "../services/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import Avatar from "./Avatar.jsx";
 import VerifiedBadge from "./VerifiedBadge.jsx";
+import ReportModal from "./ReportModal.jsx";
 
 export default function PostCard({ post, onDelete }) {
   const { user, setUser } = useAuth();
@@ -30,6 +31,7 @@ export default function PostCard({ post, onDelete }) {
   const [showDeleteMenu, setShowDeleteMenu] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [showLightbox, setShowLightbox] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
 
   const isOwner = user?._id === (post.user?._id || post.user);
 
@@ -146,30 +148,30 @@ export default function PostCard({ post, onDelete }) {
             <span className="post-time">{post.time}</span>
           </div>
 
-        {isOwner && (
-          <div className="post-menu-container" style={{ marginLeft: 'auto', position: 'relative' }}>
-            <button 
-              className="btn btn-ghost btn-sm" 
-              onClick={() => setShowDeleteMenu(!showDeleteMenu)}
-              aria-label="Options"
+        <div className="post-menu-container" style={{ marginLeft: 'auto', position: 'relative' }}>
+          <button 
+            className="btn btn-ghost btn-sm" 
+            onClick={() => setShowDeleteMenu(!showDeleteMenu)}
+            aria-label="Options"
+          >
+            <MoreHorizontalIcon />
+          </button>
+          {showDeleteMenu && (
+            <div 
+              className="dropdown-menu show" 
+              style={{ 
+                position: 'absolute', 
+                right: 0, 
+                top: '100%', 
+                zIndex: 10, 
+                backgroundColor: 'white',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                borderRadius: '8px',
+                padding: '4px',
+                minWidth: '120px'
+              }}
             >
-              <MoreHorizontalIcon />
-            </button>
-            {showDeleteMenu && (
-              <div 
-                className="dropdown-menu show" 
-                style={{ 
-                  position: 'absolute', 
-                  right: 0, 
-                  top: '100%', 
-                  zIndex: 10, 
-                  backgroundColor: 'white',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                  borderRadius: '8px',
-                  padding: '4px',
-                  minWidth: '120px'
-                }}
-              >
+              {isOwner ? (
                 <button 
                   className="dropdown-item text-danger" 
                   onClick={handleDelete}
@@ -178,10 +180,18 @@ export default function PostCard({ post, onDelete }) {
                 >
                   {isDeleting ? "Deleting..." : "Delete Post"}
                 </button>
-              </div>
-            )}
-          </div>
-        )}
+              ) : (
+                <button 
+                  className="dropdown-item" 
+                  onClick={() => { setShowReportModal(true); setShowDeleteMenu(false); }}
+                  style={{ width: '100%', textAlign: 'left', padding: '8px 12px' }}
+                >
+                  Report Post
+                </button>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="post-content">
@@ -304,6 +314,12 @@ export default function PostCard({ post, onDelete }) {
             </button>
           </form>
         </div>
+      )}
+      {showReportModal && (
+        <ReportModal 
+          targetPost={post._id} 
+          onClose={() => setShowReportModal(false)} 
+        />
       )}
     </div>
   );

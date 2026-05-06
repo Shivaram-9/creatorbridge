@@ -195,6 +195,11 @@ export default function Navbar({
                 `}</style>
                 {menuOpen && (
                     <div className="dropdown-menu slide-in">
+                      {user?.role === "admin" && (
+                        <Link to="/admin" className="dropdown-item" style={{ color: 'var(--accent)', fontWeight: 700 }} onClick={() => setMenuOpen(false)}>
+                          Admin Panel
+                        </Link>
+                      )}
                       <Link to="/saved" className="dropdown-item" onClick={() => setMenuOpen(false)}>
                         Saved Posts
                       </Link>

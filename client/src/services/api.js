@@ -203,4 +203,15 @@ export const api = {
     view: (id) => request(`/stories/view/${id}`, { method: "POST" }),
     remove: (id) => request(`/stories/${id}`, { method: "DELETE" }),
   },
+  reports: {
+    submit: (data) => request("/admin/reports", { method: "POST", body: data }),
+  },
+  admin: {
+    getStats: () => request("/admin/stats"),
+    getReports: () => request("/admin/reports"),
+    resolveReport: (id, status) => request(`/admin/reports/${id}`, { method: "PATCH", body: { status } }),
+    getUsers: () => request("/admin/users"),
+    toggleBan: (id) => request(`/admin/ban/${id}`, { method: "PATCH" }),
+    deletePost: (id) => request(`/admin/posts/${id}`, { method: "DELETE" }),
+  },
 };

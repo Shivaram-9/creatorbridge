@@ -12,6 +12,7 @@ import { notificationsRouter } from "./routes/notifications.js";
 import { postsRouter } from "./routes/posts.js";
 import { searchRouter } from "./routes/search.js";
 import { storiesRouter } from "./routes/stories.js";
+import { adminRouter } from "./routes/admin.js";
 import { Message } from "./models/Message.js";
 
 const PORT = Number(process.env.PORT) || 5000;
@@ -36,6 +37,7 @@ app.use("/api/notifications", notificationsRouter);
 app.use("/api/posts", postsRouter);
 app.use("/api/search", searchRouter);
 app.use("/api/stories", storiesRouter);
+app.use("/api/admin", adminRouter);
 
 // Serve static uploads
 app.use("/uploads", express.static("uploads"));
