@@ -10,7 +10,7 @@ export default function StoryViewer({ groups, initialGroupIndex, onClose }) {
   const [progress, setProgress] = useState(0);
 
   const currentGroup = groups?.[groupIndex] || {};
-  const currentStory = currentGroup?.stories?.[storyIndex] || {};
+  const currentStory = currentGroup?.stories?.[storyIndex];
 
   const nextStory = useCallback(() => {
     if (!currentGroup?.stories) return onClose();
@@ -39,10 +39,12 @@ export default function StoryViewer({ groups, initialGroupIndex, onClose }) {
   }, [storyIndex, groupIndex, groups, currentGroup]);
 
   useEffect(() => {
-    if (!currentStory) return;
+    if (!currentStory?._id) return;
 
-    // Mark as viewed
-    api.stories.view(currentStory._id);
+    // Mark as viewed safely
+    if (api?.stories?.view) {
+      api.stories.view(currentStory._id).catch(() => {});
+    }
 
     // Auto progress
     const duration = 5000; // 5 seconds per story
@@ -60,9 +62,9 @@ export default function StoryViewer({ groups, initialGroupIndex, onClose }) {
     }, intervalTime);
 
     return () => clearInterval(interval);
-  }, [currentStory, nextStory]);
+  }, [currentStory?._id, nextStory]);
 
-  if (!currentStory) return null;
+  if (!currentStory || !currentStory.media) return null;
 
   const mediaUrl = currentStory.media.startsWith("http") 
     ? currentStory.media 
@@ -73,7 +75,7 @@ export default function StoryViewer({ groups, initialGroupIndex, onClose }) {
       <div className="story-viewer-content" onClick={e => e.stopPropagation()}>
         {/* Progress Bars */}
         <div className="story-progress-bars">
-          {currentGroup.stories.map((_, idx) => (
+          {(currentGroup.stories || []).map((_, idx) => (
             <div key={idx} className="story-progress-bar">
               <div 
                 className="story-progress-fill" 
@@ -89,8 +91,8 @@ export default function StoryViewer({ groups, initialGroupIndex, onClose }) {
         <div className="story-header">
           <div className="story-viewer-user-info">
             <Avatar user={currentGroup.user} size="sm" />
-            <span>{currentGroup.user.username}</span>
-            {currentGroup.user.isVerified && <VerifiedBadge size="xs" />}
+            <span>{currentGroup.user?.username || "User"}</span>
+            {currentGroup.user?.isVerified && <VerifiedBadge size="xs" />}
           </div>
         </div>
 
