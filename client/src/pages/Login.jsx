@@ -89,6 +89,11 @@ export default function Login() {
               <button type="submit" className="btn btn-primary btn-block" disabled={submitting}>
                 {submitting ? "Loading..." : "Sign in"}
               </button>
+              <div style={{ marginTop: "1rem", textAlign: "center" }}>
+                <Link to="/forgot-password" style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>
+                  Forgot Password?
+                </Link>
+              </div>
             </form>
           ) : (
             <PhoneLogin />

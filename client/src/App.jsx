@@ -21,6 +21,9 @@ const Saved = lazy(() => import("./pages/Saved.jsx"));
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard.jsx"));
 const Analytics = lazy(() => import("./pages/Analytics.jsx"));
 const AdminRoute = lazy(() => import("./components/AdminRoute.jsx"));
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword.jsx"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword.jsx"));
+const VerifyEmail = lazy(() => import("./pages/VerifyEmail.jsx"));
 
 
 export default function App() {
@@ -30,6 +33,8 @@ export default function App() {
         <Route path="/" element={<SplashScreen />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
 
         {/* Role selection — protected but outside Layout (no nav bar) */}
         <Route
@@ -63,6 +68,7 @@ export default function App() {
             </AdminRoute>
           } />
           <Route path="/analytics" element={<Analytics />} />
+          <Route path="/verify-email" element={<VerifyEmail />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/home" replace />} />

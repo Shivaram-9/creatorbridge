@@ -5,6 +5,8 @@ import { getSocket } from "../services/socket.js";
 import Avatar from "./Avatar.jsx";
 import SearchDropdown from "./SearchDropdown.jsx";
 import { api } from "../services/api.js";
+import { useTheme } from "../context/ThemeContext.jsx";
+import { MoonIcon, SunIcon } from "./Icons.jsx";
 
 export default function Navbar({ 
   user, searchQuery, setSearchQuery, handleSearch, 
@@ -18,6 +20,7 @@ export default function Navbar({
   const notifRef = useRef(null);
   const searchRef = useRef(null);
   const navigate = useNavigate();
+  const { theme, toggleTheme } = useTheme();
 
   // Live search with debounce and cancellation
   useEffect(() => {
@@ -172,6 +175,14 @@ export default function Navbar({
                 )}
               </div>
 
+              <button 
+                className="nav-icon-btn" 
+                onClick={toggleTheme}
+                aria-label="Toggle theme"
+              >
+                {theme === "light" ? <MoonIcon /> : <SunIcon />}
+              </button>
+
               <div className="top-menu-container" ref={menuRef}>
                 <button
                   className="nav-icon-btn"
@@ -209,6 +220,11 @@ export default function Navbar({
                       {user && user.role === "admin" && (
                         <Link to="/admin" className="dropdown-item" style={{ color: 'var(--accent)', fontWeight: 700 }} onClick={() => setMenuOpen(false)}>
                           Admin Panel
+                        </Link>
+                      )}
+                      {!user.isEmailVerified && (
+                        <Link to="/verify-email" className="dropdown-item" style={{ color: 'var(--warning)', fontWeight: 600 }} onClick={() => setMenuOpen(false)}>
+                          ⚠️ Verify Email
                         </Link>
                       )}
                       <Link to="/saved" className="dropdown-item" onClick={() => setMenuOpen(false)}>

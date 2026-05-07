@@ -145,6 +145,10 @@ export const api = {
   auth: {
     register: (body) => request("/auth/register", { method: "POST", body }),
     login: (body) => login(body),
+    forgotPassword: (email) => request("/auth/forgot-password", { method: "POST", body: { email } }),
+    resetPassword: (token, password) => request(`/auth/reset-password/${token}`, { method: "POST", body: { password } }),
+    verifyEmail: (token) => request(`/auth/verify-email/${token}`, { method: "POST" }),
+    resendVerification: (email) => request("/auth/resend-verification", { method: "POST", body: { email } }),
   },
   users: {
     me: () => request("/users/me"),

@@ -27,7 +27,11 @@ const userSchema = new mongoose.Schema(
     followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     following: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     savedPosts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post", default: [] }],
-    isVerified: { type: Boolean, default: false },
+    isVerified: { type: Boolean, default: false }, // Platform verification (badge)
+    isEmailVerified: { type: Boolean, default: false }, // Email verification status
+    emailVerificationToken: { type: String },
+    resetPasswordToken: { type: String },
+    resetPasswordExpire: { type: Date },
     portfolio: { type: [portfolioItemSchema], default: [] },
   },
   { timestamps: true }
