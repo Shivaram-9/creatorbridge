@@ -25,7 +25,6 @@ export default function BottomNav({ msgUnreadCount, unreadCount }) {
     <nav className="bottom-nav">
       <BottomNavItem to="/home" icon={<HomeIcon />} label="Home" />
       <BottomNavItem to="/discover" icon={<UsersIcon />} label="Discover" />
-      <BottomNavItem to="/notifications" icon={<BellIcon />} label="Notifications" badgeCount={unreadCount} />
       <BottomNavItem to="/messages" icon={<MessageIcon />} label="Messages" badgeCount={msgUnreadCount} />
       <BottomNavItem to="/profile" icon={<ProfileIcon />} label="Profile" />
     </nav>

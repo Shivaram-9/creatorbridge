@@ -406,11 +406,28 @@ textarea.input {
   flex-direction: row !important;
   flex-wrap: nowrap !important;
   align-items: center !important;
-  justify-content: flex-start !important;
-  gap: 1.5rem;
+  justify-content: space-between !important;
   padding: 0.6rem 1.25rem !important;
   max-width: 1200px;
   margin: 0 auto;
+}
+
+.header-left, .header-right {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.header-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 2;
+  min-width: 0;
+}
+
+.header-right {
+  justify-content: flex-end;
 }
 
 @media (min-width: 769px) {
@@ -438,12 +455,27 @@ textarea.input {
 
 /* Search Bar */
 .search-container {
-  flex-shrink: 1;
-  max-width: 300px;
-  margin-left: auto;
+  width: 100%;
+  max-width: 320px;
   position: relative;
   display: flex;
   align-items: center;
+}
+
+@media (max-width: 768px) {
+  .header-left {
+    flex: 0 0 auto;
+  }
+  .header-center {
+    flex: 1;
+    margin: 0 0.5rem;
+  }
+  .header-right {
+    flex: 0 0 auto;
+  }
+  .search-container {
+    max-width: 100%;
+  }
 }
 
 @media (max-width: 640px) {
@@ -587,9 +619,8 @@ textarea.input {
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 1.25rem;
+  gap: 1rem;
   flex-shrink: 0;
-  margin-left: 2rem;
 }
 
 @media (max-width: 640px) {
@@ -3207,18 +3238,19 @@ video.chat-media-display {
 
 /* Bottom Nav */
 .bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(255, 255, 255, 0.98);
-  backdrop-filter: blur(10px);
-  border-top: 1px solid var(--border);
-  display: flex;
-  justify-content: space-around;
-  padding: 0.5rem 0.25rem calc(0.5rem + var(--safe-bottom));
-  z-index: 1000;
-  box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  background: #ffffff !important;
+  border-top: 1px solid var(--border) !important;
+  display: flex !important;
+  justify-content: space-around !important;
+  align-items: center !important;
+  height: calc(60px + var(--safe-bottom)) !important;
+  padding: 0 0.5rem var(--safe-bottom) !important;
+  z-index: 9999 !important;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.05) !important;
 }
 
 .bottom-nav-item {

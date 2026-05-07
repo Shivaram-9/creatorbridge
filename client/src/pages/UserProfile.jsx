@@ -350,8 +350,6 @@ export default function UserProfile() {
           </div>
         )}
       </section>
-      
-      )}
     </div>
   );
 }
