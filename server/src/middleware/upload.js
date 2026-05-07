@@ -1,105 +1,67 @@
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import { v4 as uuidv4 } from "uuid";
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadPath = "uploads/";
-    if (!fs.existsSync(uploadPath)) {
-      fs.mkdirSync(uploadPath, { recursive: true });
-    }
-    cb(null, uploadPath);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, uniqueSuffix + path.extname(file.originalname));
-  },
-});
+// Ensure upload directories exist
+const ensureDir = (dir) => {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+  return dir;
+};
 
-const fileFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith("image/")) {
+// Strict filename sanitization
+const sanitizeFilename = (file) => {
+  const ext = path.extname(file.originalname).toLowerCase();
+  return `${uuidv4()}${ext}`;
+};
+
+// Strict MIME type filters
+const imageFilter = (req, file, cb) => {
+  const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+  if (allowedTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error("Only images are allowed"), false);
+    cb(new Error("Invalid image type. Only JPG, PNG, WEBP and GIF are allowed."), false);
   }
 };
 
+const mediaFilter = (req, file, cb) => {
+  const allowedTypes = ["image/jpeg", "image/png", "image/webp", "video/mp4", "video/quicktime"];
+  if (allowedTypes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new Error("Invalid media type. Only safe images and MP4/MOV videos are allowed."), false);
+  }
+};
+
+const storageConfig = (folder) => multer.diskStorage({
+  destination: (req, file, cb) => cb(null, ensureDir(folder)),
+  filename: (req, file, cb) => cb(null, sanitizeFilename(file))
+});
+
+// Hardened Uploaders
 export const upload = multer({
-  storage,
-  fileFilter,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+  storage: storageConfig("uploads/"),
+  fileFilter: imageFilter,
+  limits: { fileSize: 5 * 1024 * 1024 } // 5MB
 });
-
-// Chat media storage
-const chatStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadPath = "uploads/chat/";
-    if (!fs.existsSync(uploadPath)) {
-      fs.mkdirSync(uploadPath, { recursive: true });
-    }
-    cb(null, uploadPath);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const sanitized = file.originalname.replace(/[^a-z0-9.]/gi, "_").toLowerCase();
-    cb(null, uniqueSuffix + "-" + sanitized);
-  },
-});
-
-const chatFileFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith("image/") || file.mimetype.startsWith("video/")) {
-    cb(null, true);
-  } else {
-    cb(new Error("Only images and videos are allowed"), false);
-  }
-};
 
 export const chatUpload = multer({
-  storage: chatStorage,
-  fileFilter: chatFileFilter,
-  limits: { fileSize: 50 * 1024 * 1024 }, // 50MB
-});
-
-// Profile avatar storage
-const profileStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadPath = "uploads/avatars/";
-    if (!fs.existsSync(uploadPath)) {
-      fs.mkdirSync(uploadPath, { recursive: true });
-    }
-    cb(null, uploadPath);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const sanitized = file.originalname.replace(/[^a-z0-9.]/gi, "_").toLowerCase();
-    cb(null, `avatar-${uniqueSuffix}-${sanitized}`);
-  },
+  storage: storageConfig("uploads/chat/"),
+  fileFilter: mediaFilter,
+  limits: { fileSize: 50 * 1024 * 1024 } // 50MB
 });
 
 export const profileUpload = multer({
-  storage: profileStorage,
-  fileFilter, // Only images
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
-});
-
-// Story storage
-const storyStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadPath = "uploads/stories/";
-    if (!fs.existsSync(uploadPath)) {
-      fs.mkdirSync(uploadPath, { recursive: true });
-    }
-    cb(null, uploadPath);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const sanitized = file.originalname.replace(/[^a-z0-9.]/gi, "_").toLowerCase();
-    cb(null, `story-${uniqueSuffix}-${sanitized}`);
-  },
+  storage: storageConfig("uploads/avatars/"),
+  fileFilter: imageFilter,
+  limits: { fileSize: 2 * 1024 * 1024 } // 2MB for avatars
 });
 
 export const storyUpload = multer({
-  storage: storyStorage,
-  fileFilter: chatFileFilter, // Allows images & videos
-  limits: { fileSize: 50 * 1024 * 1024 }, // 50MB
+  storage: storageConfig("uploads/stories/"),
+  fileFilter: mediaFilter,
+  limits: { fileSize: 50 * 1024 * 1024 } // 50MB
 });

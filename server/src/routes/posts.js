@@ -4,34 +4,49 @@ import { User } from "../models/User.js";
 import { Notification } from "../models/Notification.js";
 import { authMiddleware } from "../middleware/auth.js";
 import { upload } from "../middleware/upload.js";
+import { body, validationResult } from "express-validator";
+
+const validate = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+  next();
+};
 
 export const postsRouter = Router();
 
 postsRouter.use(authMiddleware);
 
 // Create new post
-postsRouter.post("/", upload.single("image"), async (req, res) => {
-  try {
-    const { text } = req.body;
-    let image = "";
+postsRouter.post(
+  "/", 
+  upload.single("image"), 
+  [
+    body("text").optional().trim().isLength({ max: 5000 }).withMessage("Post text too long (max 5000 chars)"),
+    validate
+  ],
+  async (req, res) => {
+    try {
+      const { text } = req.body;
+      let image = "";
 
-    if (req.file) {
-      image = `/uploads/${req.file.filename}`;
+      if (req.file) {
+        image = `/uploads/${req.file.filename}`;
+      }
+
+      const post = await Post.create({
+        user: req.userId,
+        text: text || "",
+        image,
+      });
+
+      await post.populate("user", "name email avatar username role");
+      res.status(201).json(post);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: "Failed to create post" });
     }
-
-    const post = await Post.create({
-      user: req.userId,
-      text: text || "",
-      image,
-    });
-
-    await post.populate("user", "name email avatar username role");
-    res.status(201).json(post);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to create post" });
   }
-});
+);
 
 // Get feed posts (latest first) - from self and followed users
 postsRouter.get("/", async (req, res) => {
@@ -123,46 +138,51 @@ postsRouter.post("/like/:id", async (req, res) => {
 });
 
 // Add comment
-postsRouter.post("/comment/:id", async (req, res) => {
-  try {
-    const { text } = req.body;
-    if (!text) return res.status(400).json({ error: "Comment text is required" });
+postsRouter.post(
+  "/comment/:id", 
+  [
+    body("text").trim().notEmpty().withMessage("Comment text is required").isLength({ max: 1000 }).withMessage("Comment too long"),
+    validate
+  ],
+  async (req, res) => {
+    try {
+      const { text } = req.body;
+      const post = await Post.findById(req.params.id);
+      if (!post) return res.status(404).json({ error: "Post not found" });
 
-    const post = await Post.findById(req.params.id);
-    if (!post) return res.status(404).json({ error: "Post not found" });
+      const newComment = {
+        user: req.userId,
+        text,
+      };
 
-    const newComment = {
-      user: req.userId,
-      text,
-    };
+      post.comments.push(newComment);
+      await post.save();
 
-    post.comments.push(newComment);
-    await post.save();
+      // Create notification for comment
+      if (post.user.toString() !== req.userId) {
+        const me = await User.findById(req.userId);
+        await Notification.create({
+          user: post.user,
+          sender: req.userId,
+          type: "comment",
+          post: post._id,
+          message: `${me.username || me.name} commented on your post`,
+        });
+      }
 
-    // Create notification for comment
-    if (post.user.toString() !== req.userId) {
-      const me = await User.findById(req.userId);
-      await Notification.create({
-        user: post.user,
-        sender: req.userId,
-        type: "comment",
-        post: post._id,
-        message: `${me.username || me.name} commented on your post`,
-      });
+      // Populate the newly added comment's user info
+      const updatedPost = await Post.findById(req.params.id)
+        .populate("comments.user", "name username avatar")
+        .lean();
+      
+      const addedComment = updatedPost.comments[updatedPost.comments.length - 1];
+      res.status(201).json(addedComment);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: "Failed to add comment" });
     }
-
-    // Populate the newly added comment's user info
-    const updatedPost = await Post.findById(req.params.id)
-      .populate("comments.user", "name username avatar")
-      .lean();
-    
-    const addedComment = updatedPost.comments[updatedPost.comments.length - 1];
-    res.status(201).json(addedComment);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to add comment" });
   }
-});
+);
 
 // Toggle Save post
 postsRouter.post("/save/:id", async (req, res) => {

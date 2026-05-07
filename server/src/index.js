@@ -15,6 +15,8 @@ import { storiesRouter } from "./routes/stories.js";
 import { adminRouter } from "./routes/admin.js";
 import { analyticsRouter } from "./routes/analytics.js";
 import { Message } from "./models/Message.js";
+import helmet from "helmet";
+import { apiLimiter } from "./middleware/security.js";
 
 const PORT = Number(process.env.PORT) || 5000;
 
@@ -24,20 +26,25 @@ if (!process.env.JWT_SECRET) {
 }
 
 const app = express();
+app.use(helmet());
 app.use(cors({ origin: true, credentials: true }));
-app.use(express.json({ limit: "5mb" }));
+app.use(express.json({ limit: "2mb" })); // Reduced limit for safety
+
+app.use("/api", apiLimiter);
 
 app.get("/api/health", (_, res) => {
   res.json({ ok: true, name: "CreatorBridge API" });
 });
 
-app.use("/api/auth", authRouter);
+import { authLimiter, contentLimiter } from "./middleware/security.js";
+
+app.use("/api/auth", authLimiter, authRouter);
 app.use("/api/users", usersRouter);
-app.use("/api/messages", messagesRouter);
+app.use("/api/messages", contentLimiter, messagesRouter);
 app.use("/api/notifications", notificationsRouter);
-app.use("/api/posts", postsRouter);
+app.use("/api/posts", contentLimiter, postsRouter);
 app.use("/api/search", searchRouter);
-app.use("/api/stories", storiesRouter);
+app.use("/api/stories", contentLimiter, storiesRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/analytics", analyticsRouter);
 
