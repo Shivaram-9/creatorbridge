@@ -65,6 +65,7 @@ const PostCard = memo(function PostCard({ post, onDelete }) {
 
     try {
       const res = await api.posts.like(post._id);
+      if (res?.error) {
         // Rollback on error
         setLiked(!newLiked);
       } else {
