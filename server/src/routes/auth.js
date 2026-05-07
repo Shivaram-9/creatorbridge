@@ -3,6 +3,8 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { body, validationResult } from "express-validator";
 import { User } from "../models/User.js";
+import { sendEmail } from "../utils/email.js";
+import crypto from "crypto";
 
 export const authRouter = Router();
 
@@ -35,11 +37,28 @@ authRouter.post(
         return res.status(409).json({ error: "Email already registered" });
       }
       const hashed = await bcrypt.hash(password, 10);
+      
+      const verificationToken = crypto.randomBytes(20).toString("hex");
+      const hashedVerificationToken = crypto.createHash("sha256").update(verificationToken).digest("hex");
+
       const user = await User.create({
         email,
         password: hashed,
         role,
+        emailVerificationToken: hashedVerificationToken,
       });
+
+      // Send verification email
+      const verifyUrl = `${process.env.CLIENT_URL}/verify-email?token=${verificationToken}`;
+      await sendEmail({
+        to: email,
+        subject: "Verify your CreatorBridge account",
+        html: `<h1>Welcome to CreatorBridge!</h1>
+               <p>Please click the link below to verify your email address:</p>
+               <a href="${verifyUrl}" style="padding: 10px 20px; background: #6366f1; color: white; text-decoration: none; border-radius: 5px;">Verify Email</a>
+               <p>If you did not request this, please ignore this email.</p>`
+      }).catch(err => console.error("Initial verification email failed:", err));
+
       const token = signToken(user._id.toString());
       res.status(201).json({ token, user });
     } catch (err) {
@@ -99,10 +118,16 @@ authRouter.post(
 
       await user.save();
 
-      console.log(`[AUTH] RESET TOKEN FOR ${email}: ${resetToken}`);
-      // In production, send email here.
+      const resetUrl = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
+      await sendEmail({
+        to: email,
+        subject: "Password Reset Request",
+        html: `<h1>Reset Your Password</h1>
+               <p>Click the link below to reset your password. This link expires in 30 minutes.</p>
+               <a href="${resetUrl}" style="padding: 10px 20px; background: #6366f1; color: white; text-decoration: none; border-radius: 5px;">Reset Password</a>`
+      });
       
-      res.json({ message: "Password reset instructions sent to your email", debugToken: resetToken });
+      res.json({ message: "Password reset instructions sent to your email" });
     } catch (err) {
       console.error(err);
       res.status(500).json({ error: "Failed to process forgot password" });
@@ -143,16 +168,18 @@ authRouter.post(
 // Verify Email
 authRouter.post("/verify-email/:token", async (req, res) => {
   try {
-    const user = await User.findOne({ emailVerificationToken: req.params.token });
+    const hashedToken = crypto.createHash("sha256").update(req.params.token).digest("hex");
+    const user = await User.findOne({ emailVerificationToken: hashedToken });
+    
     if (!user) {
-      return res.status(400).json({ error: "Invalid verification token" });
+      return res.status(400).json({ error: "Invalid or expired verification token" });
     }
 
     user.isEmailVerified = true;
     user.emailVerificationToken = undefined;
     await user.save();
 
-    res.json({ message: "Email verified successfully" });
+    res.json({ message: "Email verified successfully", user });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Verification failed" });
@@ -162,19 +189,27 @@ authRouter.post("/verify-email/:token", async (req, res) => {
 // Resend Verification
 authRouter.post("/resend-verification", async (req, res) => {
   try {
-    // Requires authentication usually, but we'll allow it via email for simplicity or check if user is logged in
     const { email } = req.body;
     const user = await User.findOne({ email });
     if (!user) return res.status(404).json({ error: "User not found" });
     if (user.isEmailVerified) return res.status(400).json({ error: "Email already verified" });
 
     const verificationToken = crypto.randomBytes(20).toString("hex");
-    user.emailVerificationToken = verificationToken;
+    const hashedToken = crypto.createHash("sha256").update(verificationToken).digest("hex");
+    
+    user.emailVerificationToken = hashedToken;
     await user.save();
 
-    console.log(`[AUTH] VERIFICATION TOKEN FOR ${email}: ${verificationToken}`);
+    const verifyUrl = `${process.env.CLIENT_URL}/verify-email?token=${verificationToken}`;
+    await sendEmail({
+      to: email,
+      subject: "Verify your CreatorBridge account",
+      html: `<h1>Verify Your Email</h1>
+             <p>Click the link below to verify your email address:</p>
+             <a href="${verifyUrl}" style="padding: 10px 20px; background: #6366f1; color: white; text-decoration: none; border-radius: 5px;">Verify Email</a>`
+    });
     
-    res.json({ message: "Verification email resent" });
+    res.json({ message: "Verification email sent successfully" });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to resend verification" });

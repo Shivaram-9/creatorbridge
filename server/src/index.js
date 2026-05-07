@@ -25,6 +25,13 @@ if (!process.env.JWT_SECRET) {
   process.env.JWT_SECRET = "dev-insecure-secret-change-me";
 }
 
+const smtpCheck = ["SMTP_HOST", "SMTP_PORT", "SMTP_USER", "SMTP_PASS", "CLIENT_URL"].filter(key => !process.env[key]);
+if (smtpCheck.length > 0) {
+  console.warn(`Warning: Missing email configuration for: ${smtpCheck.join(", ")}. Email verification and password recovery will not work.`);
+} else {
+  console.log("Email system configuration detected. ✅");
+}
+
 const app = express();
 app.use(helmet());
 app.use(cors({ origin: true, credentials: true }));

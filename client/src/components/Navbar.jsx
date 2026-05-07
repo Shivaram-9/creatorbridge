@@ -5,8 +5,6 @@ import { getSocket } from "../services/socket.js";
 import Avatar from "./Avatar.jsx";
 import SearchDropdown from "./SearchDropdown.jsx";
 import { api } from "../services/api.js";
-import { useTheme } from "../context/ThemeContext.jsx";
-import { MoonIcon, SunIcon } from "./Icons.jsx";
 
 export default function Navbar({ 
   user, searchQuery, setSearchQuery, handleSearch, 
@@ -20,7 +18,6 @@ export default function Navbar({
   const notifRef = useRef(null);
   const searchRef = useRef(null);
   const navigate = useNavigate();
-  const { theme, toggleTheme } = useTheme();
 
   // Live search with debounce and cancellation
   useEffect(() => {
@@ -174,14 +171,6 @@ export default function Navbar({
                   </div>
                 )}
               </div>
-
-              <button 
-                className="nav-icon-btn" 
-                onClick={toggleTheme}
-                aria-label="Toggle theme"
-              >
-                {theme === "light" ? <MoonIcon /> : <SunIcon />}
-              </button>
 
               <div className="top-menu-container" ref={menuRef}>
                 <button
