@@ -116,6 +116,24 @@ export default function Navbar({
 
         {user && (
           <>
+            <form className="search-container" onSubmit={handleSearch} ref={searchRef}>
+              <span className="search-icon">
+                <SearchIcon />
+              </span>
+              <input
+                type="text"
+                className="search-input"
+                placeholder="Search creators & brands..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <SearchDropdown 
+                results={searchResults} 
+                loading={searchLoading} 
+                onClose={() => setSearchResults(null)} 
+              />
+            </form>
+
             <div className="header-actions">
               <div className="top-menu-container" ref={notifRef}>
                 <button 
@@ -224,24 +242,6 @@ export default function Navbar({
                 )}
               </div>
             </div>
-
-            <form className="search-container" onSubmit={handleSearch} ref={searchRef}>
-              <span className="search-icon">
-                <SearchIcon />
-              </span>
-              <input
-                type="text"
-                className="search-input"
-                placeholder="Search creators & brands..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              <SearchDropdown 
-                results={searchResults} 
-                loading={searchLoading} 
-                onClose={() => setSearchResults(null)} 
-              />
-            </form>
           </>
         )}
       </div>

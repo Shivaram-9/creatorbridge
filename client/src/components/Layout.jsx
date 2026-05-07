@@ -96,7 +96,7 @@ export default function Layout() {
         <Outlet />
       </main>
 
-      {user && <BottomNav msgUnreadCount={msgUnreadTotal} />}
+      {user && <BottomNav msgUnreadCount={msgUnreadTotal} unreadCount={unreadCount} />}
     </div>
   );
 }
