@@ -406,7 +406,7 @@ textarea.input {
   flex-direction: row !important;
   flex-wrap: nowrap !important;
   align-items: center !important;
-  justify-content: space-between !important;
+  justify-content: flex-start !important;
   gap: 1.5rem;
   padding: 0.6rem 1.25rem !important;
   max-width: 1200px;
