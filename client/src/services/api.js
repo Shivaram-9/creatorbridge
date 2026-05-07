@@ -159,7 +159,11 @@ export const api = {
       if (params.role) sp.append("role", params.role);
       if (params.verified) sp.append("verified", params.verified);
       if (params.category) sp.append("category", params.category);
-      return request(`/users/search?${sp.toString()}`);
+      
+      const options = {};
+      if (params.signal) options.signal = params.signal;
+      
+      return request(`/users/search?${sp.toString()}`, options);
     },
     get: (id) => request(`/users/${id}`),
     follow: (id) => request(`/users/follow/${id}`, { method: "POST" }),
@@ -203,9 +207,9 @@ export const api = {
     getSaved: () => request("/posts/saved"),
   },
   search: {
-    users: (q) => request(`/search/users?q=${encodeURIComponent(q)}`),
-    posts: (q) => request(`/search/posts?q=${encodeURIComponent(q)}`),
-    discover: () => request("/search/discover"),
+    users: (q, options = {}) => request(`/search/users?q=${encodeURIComponent(q || "")}`, options),
+    posts: (q, options = {}) => request(`/search/posts?q=${encodeURIComponent(q || "")}`, options),
+    discover: (options = {}) => request("/search/discover", options),
   },
   stories: {
     feed: () => request("/stories/feed"),

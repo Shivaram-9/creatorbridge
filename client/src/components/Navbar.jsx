@@ -19,29 +19,40 @@ export default function Navbar({
   const searchRef = useRef(null);
   const navigate = useNavigate();
 
-  // Live search with debounce
+  // Live search with debounce and cancellation
   useEffect(() => {
     if (!searchQuery.trim()) {
       setSearchResults(null);
       return;
     }
 
+    const abortController = new AbortController();
+
     const timer = setTimeout(async () => {
       setSearchLoading(true);
       try {
         const [users, posts] = await Promise.all([
-          api.users.search(searchQuery),
-          api.search.posts(searchQuery)
+          api.users.search(searchQuery, { signal: abortController.signal }),
+          api.search.posts(searchQuery, { signal: abortController.signal })
         ]);
-        setSearchResults({ users, posts });
+        if (!abortController.signal.aborted) {
+          setSearchResults({ users, posts });
+        }
       } catch (err) {
-        console.error("Search failed", err);
+        if (err.name !== 'AbortError') {
+          console.error("Search failed", err);
+        }
       } finally {
-        setSearchLoading(false);
+        if (!abortController.signal.aborted) {
+          setSearchLoading(false);
+        }
       }
     }, 300);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      abortController.abort();
+    };
   }, [searchQuery]);
 
   useEffect(() => {

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useAuth } from "../context/AuthContext.jsx";
 import { api } from "../services/api.js";
 import { BASE_URL } from "../config/api.js";

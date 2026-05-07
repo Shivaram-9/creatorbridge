@@ -1,19 +1,18 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
 
-const BACKEND = process.env.VITE_API_URL || "https://creatorbridge-tn9r.onrender.com";
-
+// https://vitejs.dev/config/
 export default defineConfig({
-  base: "/",
   plugins: [react()],
-  server: {
-    port: 5173,
-    proxy: {
-      "/api": { target: BACKEND, changeOrigin: true },
-      "/socket.io": { target: BACKEND, ws: true },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          'vendor-ui': ['recharts', 'socket.io-client'],
+        }
+      }
     },
-  },
-  esbuild: {
-    drop: ["console", "debugger"],
-  },
-});
+    chunkSizeWarningLimit: 1000,
+  }
+})
