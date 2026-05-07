@@ -402,13 +402,24 @@ textarea.input {
 }
 
 .header-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: space-between !important;
   gap: 1rem;
-  padding: 0.75rem 1.25rem !important;
+  padding: 0.6rem 1.25rem !important;
   max-width: 1200px;
   margin: 0 auto;
+}
+
+@media (min-width: 769px) {
+  .bottom-nav {
+    display: none !important;
+  }
+  .container {
+    padding-bottom: 2rem !important;
+  }
 }
 
 
