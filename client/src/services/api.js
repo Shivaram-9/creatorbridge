@@ -154,7 +154,13 @@ export const api = {
       const q = category ? `?category=${encodeURIComponent(category)}` : "";
       return request(`/users${q}`);
     },
-    search: (q) => request(`/users/search?q=${encodeURIComponent(q || "")}`),
+    search: (q, params = {}) => {
+      const sp = new URLSearchParams({ q: q || "" });
+      if (params.role) sp.append("role", params.role);
+      if (params.verified) sp.append("verified", params.verified);
+      if (params.category) sp.append("category", params.category);
+      return request(`/users/search?${sp.toString()}`);
+    },
     get: (id) => request(`/users/${id}`),
     follow: (id) => request(`/users/follow/${id}`, { method: "POST" }),
     unfollow: (id) => request(`/users/unfollow/${id}`, { method: "POST" }),
@@ -162,6 +168,10 @@ export const api = {
     saved: () => request("/users/saved"),
     getFollowers: (id) => request(`/users/${id}/followers`),
     getFollowing: (id) => request(`/users/${id}/following`),
+    getTrending: () => request("/users/discover/trending"),
+    getVerified: () => request("/users/discover/verified"),
+    getBrands: () => request("/users/discover/brands"),
+    getSuggested: () => request("/users/discover/suggested"),
     addPortfolioItem: (body) => request("/users/me/portfolio", { method: "POST", body }),
     removePortfolioItem: (itemId) => request(`/users/me/portfolio/${itemId}`, { method: "DELETE" }),
   },

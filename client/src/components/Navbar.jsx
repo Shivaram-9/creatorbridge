@@ -30,7 +30,7 @@ export default function Navbar({
       setSearchLoading(true);
       try {
         const [users, posts] = await Promise.all([
-          api.search.users(searchQuery),
+          api.users.search(searchQuery),
           api.search.posts(searchQuery)
         ]);
         setSearchResults({ users, posts });
@@ -39,7 +39,7 @@ export default function Navbar({
       } finally {
         setSearchLoading(false);
       }
-    }, 400);
+    }, 300);
 
     return () => clearTimeout(timer);
   }, [searchQuery]);

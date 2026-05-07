@@ -1,206 +1,187 @@
-import { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { api } from "../services/api.js";
-import { useAuth } from "../context/AuthContext.jsx";
-import Avatar from "../components/Avatar.jsx";
+import UserCard from "../components/UserCard.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import ErrorBanner from "../components/ErrorBanner.jsx";
-import VerifiedBadge from "../components/VerifiedBadge.jsx";
-import { BASE_URL } from "../config/api.js";
+import { CATEGORIES } from "../constants/categories.js";
 
 export default function Discover() {
-  const [searchParams] = useSearchParams();
-  const query = searchParams.get("q");
-  
-  const { user } = useAuth();
-  const [data, setData] = useState(null);
-  const [searchResults, setSearchResults] = useState(null);
+  const [trending, setTrending] = useState([]);
+  const [verified, setVerified] = useState([]);
+  const [brands, setBrands] = useState([]);
+  const [suggested, setSuggested] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  
+  // Filters
+  const [activeCategory, setActiveCategory] = useState("All");
+  const [activeRole, setActiveRole] = useState("all");
+  const [onlyVerified, setOnlyVerified] = useState(false);
 
   useEffect(() => {
-    async function load() {
+    async function loadDiscoverData() {
       setLoading(true);
-      setError("");
       try {
-        if (query) {
-          const [users, posts] = await Promise.all([
-            api.search.users(query),
-            api.search.posts(query)
-          ]);
-          setSearchResults({ users, posts });
-        } else {
-          const res = await api.search.discover();
-          if (res?.error) {
-            setError(res.error);
-          } else {
-            setData(res);
-          }
-        }
+        const [t, v, b, s, a] = await Promise.all([
+          api.users.getTrending(),
+          api.users.getVerified(),
+          api.users.getBrands(),
+          api.users.getSuggested(),
+          api.users.list()
+        ]);
+        
+        setTrending(Array.isArray(t) ? t : []);
+        setVerified(Array.isArray(v) ? v : []);
+        setBrands(Array.isArray(b) ? b : []);
+        setSuggested(Array.isArray(s) ? s : []);
+        setAllUsers(Array.isArray(a) ? a : []);
       } catch (err) {
-        setError("Failed to load discovery data");
+        setError("Failed to load discovery data. Please try again.");
       } finally {
         setLoading(false);
       }
     }
-    load();
-  }, [query]);
+    loadDiscoverData();
+  }, []);
+
+  const filteredUsers = allUsers.filter(u => {
+    const matchCategory = activeCategory === "All" || u.category === activeCategory;
+    const matchRole = activeRole === "all" || u.role === activeRole;
+    const matchVerified = !onlyVerified || u.isVerified;
+    return matchCategory && matchRole && matchVerified;
+  });
 
   if (loading) return <LoadingSpinner centered />;
 
-  if (query) {
-    return (
-      <div className="discover-page container">
-        <header className="discover-header">
-          <h1 className="discover-title">Search Results</h1>
-          <p className="discover-subtitle">Found for "{query}"</p>
-        </header>
-
-        <section className="discover-section">
-          <h2 className="section-title">Users</h2>
-          {searchResults?.users?.length > 0 ? (
-            <div className="creator-grid">
-              {searchResults.users.map(u => (
-                <div key={u._id} className="creator-card">
-                  <Link to={`/user/${u._id}`} className="creator-card__link">
-                    <Avatar user={u} size="xl" />
-                    <h3 className="creator-card__name">
-                      {u.name || u.username}
-                      {u.isVerified && <VerifiedBadge size="sm" />}
-                    </h3>
-                    <p className="creator-card__username">@{u.username}</p>
-                    <span className="creator-card__category">{u.category || 'Creator'}</span>
-                  </Link>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="empty-text">No users found for this search.</p>
-          )}
-        </section>
-
-        <section className="discover-section">
-          <h2 className="section-title">Posts</h2>
-          {searchResults?.posts?.length > 0 ? (
-            <div className="popular-post-grid">
-              {searchResults.posts.map(p => (
-                <div key={p._id} className="popular-post-card">
-                  {p.image ? (
-                    <img src={p.image.startsWith('http') ? p.image : `${BASE_URL}${p.image}`} alt="" className="popular-post-img" />
-                  ) : (
-                    <div className="popular-post-text-fallback">{p.text?.slice(0, 100)}...</div>
-                  )}
-                  <div className="popular-post-overlay" style={{ opacity: 1 }}>
-                    <div className="popular-post-user">
-                      <Avatar user={p.user} size="xs" />
-                      <span>
-                        {p.user?.username}
-                        {p.user?.isVerified && <VerifiedBadge size="xs" />}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="empty-text">No posts found for this search.</p>
-          )}
-        </section>
-      </div>
-    );
-  }
-
   return (
-    <div className="discover-page container">
-      <header className="discover-header">
-        <h1 className="discover-title">Explore</h1>
-        <p className="discover-subtitle">Discover creators, brands, and trending content</p>
+    <div className="container" style={{ paddingTop: '2rem', paddingBottom: '5rem' }}>
+      <header style={{ marginBottom: '3rem' }}>
+        <h1 style={{ fontSize: '2.5rem', fontWeight: 900, letterSpacing: '-0.02em', color: '#1a1a1a', marginBottom: '0.5rem' }}>Discover</h1>
+        <p style={{ color: '#64748b', fontSize: '1.1rem' }}>Find your next collaboration partner in the marketplace.</p>
       </header>
 
       <ErrorBanner message={error} onDismiss={() => setError("")} />
 
-      {/* Suggested Creators */}
-      <section className="discover-section">
-        <div className="section-header">
-          <h2 className="section-title">Suggested Creators</h2>
-          <Link to="/discover?q=" className="section-link">See all</Link>
-        </div>
-        <div className="creator-grid">
-          {data?.suggested?.map(u => (
-            <div key={u._id} className="creator-card">
-              <Link to={`/user/${u._id}`} className="creator-card__link">
-                <Avatar user={u} size="xl" />
-                <h3 className="creator-card__name">
-                  {u.name || u.username}
-                  {u.isVerified && <VerifiedBadge size="sm" />}
-                </h3>
-                <p className="creator-card__username">@{u.username}</p>
-                <span className="creator-card__category">{u.category || 'Creator'}</span>
-              </Link>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Trending Section */}
-      <div className="discover-row">
-        <section className="discover-section trending-users">
-          <h2 className="section-title">Trending Users</h2>
-          <div className="trending-list">
-            {data?.trending?.map((u, idx) => (
-              <Link key={u._id} to={`/user/${u._id}`} className="trending-item">
-                <span className="trending-idx">{idx + 1}</span>
-                <Avatar user={u} size="sm" />
-                <div className="trending-info">
-                  <span className="trending-name">
-                    {u.name || u.username}
-                    {u.isVerified && <VerifiedBadge size="xs" />}
-                  </span>
-                  <span className="trending-meta">{u.followers?.length || 0} Aligners</span>
-                </div>
-              </Link>
-            ))}
+      {/* Discovery Sections */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '4rem' }}>
+        
+        {/* Trending */}
+        <section>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#1a1a1a' }}>Trending Creators</h2>
+            <div style={{ width: '40px', height: '2px', backgroundColor: '#e2e8f0' }}></div>
+          </div>
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', 
+            gap: '1.5rem' 
+          }}>
+            {trending.map(u => <UserCard key={u._id} user={u} />)}
           </div>
         </section>
 
-        <section className="discover-section popular-posts">
-          <h2 className="section-title">Popular Posts</h2>
-          <div className="popular-post-grid">
-            {data?.popularPosts?.map(p => (
-              <div key={p._id} className="popular-post-card">
-                {p.image ? (
-                  <img src={p.image.startsWith('http') ? p.image : `${BASE_URL}${p.image}`} alt="" className="popular-post-img" />
-                ) : (
-                  <div className="popular-post-text-fallback">{p.text?.slice(0, 40)}</div>
-                )}
-                <div className="popular-post-overlay">
-                  <div className="popular-post-user">
-                    <Avatar user={p.user} size="xs" />
-                    <span>
-                      {p.user?.username}
-                      {p.user?.isVerified && <VerifiedBadge size="xs" />}
-                    </span>
-                  </div>
-                  <div className="popular-post-likes">❤️ {p.likes?.length || 0}</div>
-                </div>
-              </div>
-            ))}
+        {/* Verified Marketplace */}
+        <section>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#1a1a1a' }}>Verified Marketplace</h2>
+            <div style={{ width: '40px', height: '2px', backgroundColor: '#e2e8f0' }}></div>
           </div>
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', 
+            gap: '1.5rem' 
+          }}>
+            {verified.map(u => <UserCard key={u._id} user={u} />)}
+          </div>
+        </section>
+
+        {/* Brands */}
+        <section>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#1a1a1a' }}>Popular Brands</h2>
+            <div style={{ width: '40px', height: '2px', backgroundColor: '#e2e8f0' }}></div>
+          </div>
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', 
+            gap: '1.5rem' 
+          }}>
+            {brands.map(u => <UserCard key={u._id} user={u} />)}
+          </div>
+        </section>
+
+        {/* Suggested */}
+        <section>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#1a1a1a' }}>Suggested For You</h2>
+            <div style={{ width: '40px', height: '2px', backgroundColor: '#e2e8f0' }}></div>
+          </div>
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', 
+            gap: '1.5rem' 
+          }}>
+            {suggested.map(u => <UserCard key={u._id} user={u} />)}
+          </div>
+        </section>
+
+        {/* Explore All with Filters */}
+        <section style={{ borderTop: '1px solid #f1f5f9', paddingTop: '4rem' }}>
+          <div style={{ marginBottom: '2.5rem' }}>
+            <h2 style={{ fontSize: '1.75rem', fontWeight: 900, marginBottom: '1.5rem' }}>Explore Marketplace</h2>
+            
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'center' }}>
+              <select 
+                className="filter-select" 
+                value={activeCategory} 
+                onChange={(e) => setActiveCategory(e.target.value)}
+                style={{ padding: '10px 16px', borderRadius: '12px', border: '1px solid #e2e8f0', outline: 'none', fontWeight: 600 }}
+              >
+                <option value="All">All Categories</option>
+                {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+              </select>
+
+              <select 
+                className="filter-select" 
+                value={activeRole} 
+                onChange={(e) => setActiveRole(e.target.value)}
+                style={{ padding: '10px 16px', borderRadius: '12px', border: '1px solid #e2e8f0', outline: 'none', fontWeight: 600 }}
+              >
+                <option value="all">All Roles</option>
+                <option value="influencer">Influencers</option>
+                <option value="brand">Brands</option>
+              </select>
+
+              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontWeight: 600 }}>
+                <input 
+                  type="checkbox" 
+                  checked={onlyVerified} 
+                  onChange={(e) => setOnlyVerified(e.target.checked)}
+                  style={{ width: '18px', height: '18px' }}
+                />
+                Verified Only
+              </label>
+            </div>
+          </div>
+
+          {filteredUsers.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '4rem 0', color: '#94a3b8' }}>
+              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🔍</div>
+              <h3>No users match your filters</h3>
+              <p>Try broadening your search criteria.</p>
+            </div>
+          ) : (
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', 
+              gap: '1.5rem' 
+            }}>
+              {filteredUsers.map(u => <UserCard key={u._id} user={u} />)}
+            </div>
+          )}
         </section>
       </div>
-
-      {/* Recently Active */}
-      <section className="discover-section">
-        <h2 className="section-title">Recently Active Profiles</h2>
-        <div className="active-row">
-          {data?.recentlyActive?.map(u => (
-            <Link key={u._id} to={`/user/${u._id}`} className="active-user">
-              <Avatar user={u} size="md" />
-              <div className="active-dot" />
-            </Link>
-          ))}
-        </div>
-      </section>
     </div>
   );
 }

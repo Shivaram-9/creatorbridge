@@ -197,12 +197,20 @@ usersRouter.delete("/me/portfolio/:itemId", async (req, res) => {
 /** Discovery: all users except self, optional ?category= */
 usersRouter.get("/", async (req, res) => {
   try {
-    const { category } = req.query;
-    const filter = { _id: { $ne: req.userId } };
+    const { category, role, verified } = req.query;
+    const filter = { _id: { $ne: req.userId }, isBanned: { $ne: true } };
+    
     if (category && String(category).trim()) {
-      filter.category = new RegExp(`^${String(category).trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i");
+      filter.category = new RegExp(String(category).trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
     }
-    const users = await User.find(filter).select("-password").sort({ name: 1, email: 1 }).lean();
+    if (role) filter.role = role;
+    if (verified === "true") filter.isVerified = true;
+
+    const users = await User.find(filter)
+      .select("-password")
+      .sort({ followers: -1, profileViews: -1 })
+      .limit(100)
+      .lean();
     res.json(users);
   } catch (err) {
     console.error(err);
@@ -210,19 +218,32 @@ usersRouter.get("/", async (req, res) => {
   }
 });
 
-/** Search: by name or username */
+/** Search: by name, username, bio, category, location */
 usersRouter.get("/search", async (req, res) => {
   try {
-    const { q } = req.query;
+    const { q, role, verified, category } = req.query;
     if (!q || typeof q !== "string") return res.json([]);
     const keyword = q.trim();
     if (!keyword) return res.json([]);
 
     const regex = new RegExp(keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
-    const users = await User.find({
+    const filter = {
       _id: { $ne: req.userId },
-      $or: [{ name: regex }, { username: regex }],
-    })
+      isBanned: { $ne: true },
+      $or: [
+        { name: regex },
+        { username: regex },
+        { bio: regex },
+        { category: regex },
+        { location: regex }
+      ],
+    };
+
+    if (role) filter.role = role;
+    if (verified === "true") filter.isVerified = true;
+    if (category) filter.category = category;
+
+    const users = await User.find(filter)
       .select("-password")
       .limit(50)
       .lean();
@@ -233,6 +254,84 @@ usersRouter.get("/search", async (req, res) => {
     res.status(500).json({ error: "Search failed" });
   }
 });
+
+/** Special Discovery Segments */
+usersRouter.get("/discover/trending", async (req, res) => {
+  try {
+    const users = await User.find({ _id: { $ne: req.userId }, isBanned: { $ne: true } })
+      .select("-password")
+      .sort({ followers: -1, profileViews: -1 })
+      .limit(10)
+      .lean();
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to load trending" });
+  }
+});
+
+usersRouter.get("/discover/verified", async (req, res) => {
+  try {
+    const users = await User.find({ 
+      _id: { $ne: req.userId }, 
+      isVerified: true,
+      isBanned: { $ne: true } 
+    })
+      .select("-password")
+      .limit(15)
+      .lean();
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to load verified" });
+  }
+});
+
+usersRouter.get("/discover/brands", async (req, res) => {
+  try {
+    const users = await User.find({ 
+      _id: { $ne: req.userId }, 
+      role: "brand",
+      isBanned: { $ne: true } 
+    })
+      .select("-password")
+      .limit(15)
+      .lean();
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to load brands" });
+  }
+});
+
+usersRouter.get("/discover/suggested", async (req, res) => {
+  try {
+    const me = await User.findById(req.userId);
+    const filter = { 
+      _id: { $ne: req.userId, $nin: me.following },
+      isBanned: { $ne: true } 
+    };
+    if (me.category) {
+      filter.category = me.category;
+    }
+    
+    let users = await User.find(filter).select("-password").limit(10).lean();
+    
+    // Fallback if no specific category match
+    if (users.length < 5) {
+      const more = await User.find({ 
+        _id: { $ne: req.userId, $nin: me.following },
+        isBanned: { $ne: true }
+      })
+      .select("-password")
+      .limit(10)
+      .lean();
+      users = [...users, ...more.filter(u => !users.find(x => x._id.toString() === u._id.toString()))].slice(0, 10);
+    }
+    
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to load suggestions" });
+  }
+});
+
 
 usersRouter.get("/:id", async (req, res) => {
   try {
