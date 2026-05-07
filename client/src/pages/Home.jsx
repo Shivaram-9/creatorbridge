@@ -80,9 +80,8 @@ export default function Home() {
       </header>
 
       <div className="feed-container">
-        <CreatePost onPost={handleAddPost} user={user} />
-        
         <StoriesBar />
+        <CreatePost onPost={handleAddPost} user={user} />
 
         <ErrorBanner message={error} onDismiss={() => setError("")} />
 
