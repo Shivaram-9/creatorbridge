@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { memo, useState, useMemo, useEffect } from "react";
 import { HeartIcon, MessageCircleIcon, SendIcon, BookmarkIcon, MoreHorizontalIcon } from "./Icons.jsx";
 import { api } from "../services/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
@@ -6,7 +6,7 @@ import Avatar from "./Avatar.jsx";
 import VerifiedBadge from "./VerifiedBadge.jsx";
 import ReportModal from "./ReportModal.jsx";
 
-export default function PostCard({ post, onDelete }) {
+const PostCard = memo(function PostCard({ post, onDelete }) {
   const { user, setUser } = useAuth();
   
   // Initial liked state based on whether current user's ID is in post.likes array
@@ -329,4 +329,6 @@ export default function PostCard({ post, onDelete }) {
       )}
     </div>
   );
-}
+});
+
+export default PostCard;

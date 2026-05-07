@@ -9,6 +9,7 @@ import PortfolioGrid from "../components/PortfolioGrid.jsx";
 import { ShareIcon } from "../components/Icons.jsx";
 import UserListModal from "../components/UserListModal.jsx";
 import Avatar from "../components/Avatar.jsx";
+import { PostSkeleton } from "../components/Skeleton.jsx";
 
 
 
@@ -325,7 +326,10 @@ export default function UserProfile() {
       <section className="up-section">
         <h2 className="up-section__title">Posts</h2>
         {loadingPosts ? (
-          <p className="loading-line">Loading posts...</p>
+          <div className="list-gap" style={{ marginTop: '1rem' }}>
+            <PostSkeleton />
+            <PostSkeleton />
+          </div>
         ) : userPosts.length > 0 ? (
           <div className="up-section__card up-section__card--flush">
             <PortfolioGrid items={userPosts} />

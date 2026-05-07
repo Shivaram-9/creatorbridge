@@ -8,6 +8,7 @@ import StoriesBar from "../components/StoriesBar.jsx";
 import ErrorBanner from "../components/ErrorBanner.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import EmptyState from "../components/EmptyState.jsx";
+import { PostSkeleton } from "../components/Skeleton.jsx";
 
 export default function Home() {
   const { user } = useAuth();
@@ -86,7 +87,11 @@ export default function Home() {
         <ErrorBanner message={error} onDismiss={() => setError("")} />
 
         {loading ? (
-          <LoadingSpinner centered />
+          <div className="list-gap">
+            <PostSkeleton />
+            <PostSkeleton />
+            <PostSkeleton />
+          </div>
         ) : posts.length === 0 ? (
           <EmptyState 
             icon="📭" 

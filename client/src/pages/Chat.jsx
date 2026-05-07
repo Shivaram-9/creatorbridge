@@ -25,6 +25,8 @@ export default function Chat() {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [socketOnline, setSocketOnline] = useState(false);
+  const [isPartnerTyping, setIsPartnerTyping] = useState(false);
+  const typingTimeoutRef = useRef(null);
 
   /* Media attachment state */
   const [showMedia, setShowMedia] = useState(false);
@@ -40,8 +42,9 @@ export default function Chat() {
   }, []);
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages, scrollToBottom]);
+    const timer = setTimeout(scrollToBottom, 100);
+    return () => clearTimeout(timer);
+  }, [messages, scrollToBottom, isPartnerTyping]);
 
   const pushMessage = useCallback((msg) => {
     if (!msg) return;
@@ -127,6 +130,16 @@ export default function Chat() {
     socket.on("disconnect", syncOnline);
     socket.on("connect_error", syncOnline);
 
+    const onTyping = (data) => {
+      if (data.senderId === partnerId) setIsPartnerTyping(true);
+    };
+    const onStopTyping = (data) => {
+      if (data.senderId === partnerId) setIsPartnerTyping(false);
+    };
+
+    socket.on("typing", onTyping);
+    socket.on("stop_typing", onStopTyping);
+
     const onReconnect = () => { syncOnline(); fetchConversation(); };
     socket.io.on("reconnect", onReconnect);
 
@@ -139,6 +152,7 @@ export default function Chat() {
       const involves = (sid === pid || rid === pid) && (sid === uid || rid === uid);
       if (!involves) return;
       pushMessage(msg);
+      setIsPartnerTyping(false); // Stop typing when message received
     }
 
     socket.on("message", onMessage);
@@ -154,6 +168,8 @@ export default function Chat() {
     return () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       socket.off("message", onMessage);
+      socket.off("typing", onTyping);
+      socket.off("stop_typing", onStopTyping);
       socket.off("connect", handleConnect);
       socket.off("disconnect", syncOnline);
       socket.off("connect_error", syncOnline);
@@ -218,6 +234,16 @@ export default function Chat() {
 
     if (!txt) return;
     
+    // Stop typing immediately when sending
+    const socket = getSocket();
+    if (socket?.connected) {
+      socket.emit("stop_typing", { receiverId });
+    }
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+      typingTimeoutRef.current = null;
+    }
+
     setSending(true);
     setError("");
     sendContent(txt, null, null, () => {
@@ -225,6 +251,25 @@ export default function Chat() {
       setSending(false);
     });
   }
+
+  const handleInputChange = (e) => {
+    const val = e.target.value;
+    setInput(val);
+
+    const socket = getSocket();
+    if (socket?.connected && receiverId) {
+      if (!typingTimeoutRef.current) {
+        socket.emit("typing", { receiverId });
+      } else {
+        clearTimeout(typingTimeoutRef.current);
+      }
+
+      typingTimeoutRef.current = setTimeout(() => {
+        socket.emit("stop_typing", { receiverId });
+        typingTimeoutRef.current = null;
+      }, 2000);
+    }
+  };
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -368,37 +413,48 @@ export default function Chat() {
               const sid = m.sender?._id || m.sender;
               const mine = sid === user?._id;
               const media = m.media || m.mediaUrl;
+              const msgTime = m.createdAt ? new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "";
 
               return (
-                <div key={m._id || idx} className={`chat-bubble ${mine ? "chat-bubble-mine" : "chat-bubble-theirs"}`}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.25rem' }}>
-                    <Avatar user={mine ? user : m.sender || partner} size="xs" />
-                    <span className="chat-bubble__sender" style={{ marginBottom: 0 }}>{senderLabelFor(m, mine)}</span>
-                  </div>
-                  {media && (
-                    <div className="chat-media-container" style={{ marginTop: '0.25rem' }}>
-                      {m.mediaType === "video" ? (
-                        <video 
-                          src={getMediaUrl(media)} 
-                          controls 
-                          className="chat-media-display" 
-                          playsInline
-                          style={{ maxWidth: '100%', borderRadius: '8px', display: 'block' }} 
-                        />
-                      ) : (
-                        <img 
-                          src={getMediaUrl(media)} 
-                          alt="attachment" 
-                          className="chat-media-display" 
-                          style={{ maxWidth: '100%', borderRadius: '8px', display: 'block' }} 
-                        />
-                      )}
+                <div key={m._id || idx} className={`chat-bubble-wrap ${mine ? "chat-bubble-wrap--mine" : "chat-bubble-wrap--theirs"}`}>
+                  <div className={`chat-bubble ${mine ? "chat-bubble-mine" : "chat-bubble-theirs"} fade-in`}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.25rem' }}>
+                      <Avatar user={mine ? user : m.sender || partner} size="xs" />
+                      <span className="chat-bubble__sender" style={{ marginBottom: 0 }}>{senderLabelFor(m, mine)}</span>
                     </div>
-                  )}
-                  {m.content && <div className="chat-bubble__text" style={{ marginTop: media ? '0.5rem' : 0 }}>{m.content}</div>}
+                    {media && (
+                      <div className="chat-media-container" style={{ marginTop: '0.25rem' }}>
+                        {m.mediaType === "video" ? (
+                          <video 
+                            src={getMediaUrl(media)} 
+                            controls 
+                            className="chat-media-display" 
+                            playsInline
+                            style={{ maxWidth: '100%', borderRadius: '8px', display: 'block' }} 
+                          />
+                        ) : (
+                          <img 
+                            src={getMediaUrl(media)} 
+                            alt="attachment" 
+                            className="chat-media-display" 
+                            style={{ maxWidth: '100%', borderRadius: '8px', display: 'block' }} 
+                          />
+                        )}
+                      </div>
+                    )}
+                    {m.content && <div className="chat-bubble__text" style={{ marginTop: media ? '0.5rem' : 0 }}>{m.content}</div>}
+                    {msgTime && <div className="chat-bubble__time">{msgTime}</div>}
+                  </div>
                 </div>
               );
             })
+          )}
+          {isPartnerTyping && (
+            <div className="chat-bubble-wrap chat-bubble-wrap--theirs fade-in">
+              <div className="chat-bubble chat-bubble-theirs typing-indicator">
+                <span></span><span></span><span></span>
+              </div>
+            </div>
           )}
           <div ref={bottomRef} />
         </div>
@@ -426,7 +482,7 @@ export default function Chat() {
             className="input"
             placeholder={selectedFile ? "Add a caption…" : "Type a message…"}
             value={input}
-            onChange={(e) => setInput(e.target.value)}
+            onChange={handleInputChange}
             maxLength={5000}
             disabled={sending}
             enterKeyHint="send"

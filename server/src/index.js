@@ -117,6 +117,20 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.on("typing", (payload) => {
+    const { receiverId } = payload;
+    if (receiverId) {
+      io.to(`user:${receiverId}`).emit("typing", { senderId: uid });
+    }
+  });
+
+  socket.on("stop_typing", (payload) => {
+    const { receiverId } = payload;
+    if (receiverId) {
+      io.to(`user:${receiverId}`).emit("stop_typing", { senderId: uid });
+    }
+  });
+
 });
 
 mongoose
