@@ -78,6 +78,9 @@ button:disabled {
   max-width: 960px;
   margin: 0 auto;
   padding: 1.25rem 1.25rem calc(4rem + var(--safe-bottom));
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
 }
 
 @media (min-width: 640px) {
@@ -4503,3 +4506,250 @@ video.chat-media-display {
 .mb-2 { margin-bottom: 0.5rem; }
 .mb-3 { margin-bottom: 0.75rem; }
 
+.profile-v2 {
+  max-width: 935px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.profile-v2-header {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 3rem;
+  align-items: center;
+}
+
+.profile-v2-avatar-col {
+  flex: 0 0 150px;
+  display: flex;
+  justify-content: center;
+}
+
+.profile-v2-info-col {
+  flex: 1;
+}
+
+.profile-v2-top-row {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.profile-v2-username {
+  font-size: 1.75rem;
+  font-weight: 300;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.profile-v2-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.profile-v2-btn {
+  background: #ffffff;
+  border: 1px solid var(--border-strong);
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.profile-v2-stats {
+  display: flex;
+  gap: 2.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.profile-v2-stat {
+  font-size: 1rem;
+}
+
+.profile-v2-bio-wrap {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.profile-v2-display-name {
+  font-weight: 700;
+  display: block;
+}
+
+/* UserProfile.jsx Fixes */
+.up-container {
+  max-width: 935px;
+  margin: 0 auto;
+}
+
+.up-hero {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+  padding: 2.5rem 2rem;
+}
+
+.up-hero__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.up-avatar {
+  margin-bottom: 1.5rem;
+}
+
+.up-name {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.up-username {
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+.up-actions {
+  margin-top: 1.5rem;
+}
+
+/* Responsive Mobile Fixes */
+@media (max-width: 768px) {
+  .profile-v2-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 1.5rem;
+  }
+  
+  .profile-v2-top-row {
+    justify-content: center;
+    gap: 1rem;
+  }
+  
+  .profile-v2-stats {
+    justify-content: center;
+    gap: 1.5rem;
+  }
+  
+  .profile-v2-avatar-col {
+    flex: 0 0 auto;
+  }
+}
+
+.user-list-row:hover {
+  background-color: var(--surface-hover);
+}
+
+.create-post-card {
+  padding: 1.25rem;
+  border-radius: 16px;
+  margin-bottom: 1.5rem;
+}
+
+.create-post-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.create-post-label {
+  font-weight: 600;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.create-post-textarea {
+  border: none;
+  background: #f8fafc;
+  padding: 1rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  resize: none;
+}
+
+.create-post-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #f1f5f9;
+}
+
+.stories-bar::-webkit-scrollbar {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .create-post-card {
+    padding: 1rem;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+  .stories-bar-container {
+    padding-left: 1rem;
+  }
+  .post-card {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+}
+
+.chat-window {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 120px); /* Adjust for header/nav */
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+@media (max-width: 600px) {
+  .chat-window {
+    height: calc(100vh - 110px);
+  }
+  .chat-form {
+    padding-bottom: calc(1rem + var(--safe-bottom));
+  }
+}
+
+.feed-container {
+  max-width: 600px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.list-gap {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.page-header {
+  max-width: 600px;
+  width: 100%;
+  margin: 0 auto 2rem;
+  text-align: left;
+}
+
+@media (max-width: 600px) {
+  .page-header {
+    text-align: center;
+    padding: 0 1rem;
+  }
+}

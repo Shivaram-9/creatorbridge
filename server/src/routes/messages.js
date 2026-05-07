@@ -34,6 +34,20 @@ messagesRouter.get("/", async (req, res) => {
             ],
           },
           lastMessage: { $first: "$$ROOT" },
+          unreadCount: {
+            $sum: {
+              $cond: [
+                {
+                  $and: [
+                    { $eq: ["$receiver", uid] },
+                    { $eq: ["$read", false] }
+                  ]
+                },
+                1,
+                0
+              ]
+            }
+          }
         },
       },
       {
@@ -58,6 +72,7 @@ messagesRouter.get("/", async (req, res) => {
             role: 1,
           },
           lastMessage: 1,
+          unreadCount: 1,
         },
       },
       {
@@ -174,5 +189,22 @@ messagesRouter.post("/media", chatUpload.single("media"), async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to upload media message" });
+  }
+});
+// Mark conversation as read
+messagesRouter.patch("/read/:partnerId", async (req, res) => {
+  try {
+    const { partnerId } = req.params;
+    const uid = req.userId;
+    
+    await Message.updateMany(
+      { sender: partnerId, receiver: uid, read: false },
+      { $set: { read: true } }
+    );
+    
+    res.json({ ok: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to mark messages as read" });
   }
 });

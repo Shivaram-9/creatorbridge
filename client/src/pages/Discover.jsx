@@ -55,10 +55,10 @@ export default function Discover() {
   if (loading) return <LoadingSpinner centered />;
 
   return (
-    <div className="container" style={{ paddingTop: '2rem', paddingBottom: '5rem' }}>
-      <header style={{ marginBottom: '3rem' }}>
-        <h1 style={{ fontSize: '2.5rem', fontWeight: 900, letterSpacing: '-0.02em', color: '#1a1a1a', marginBottom: '0.5rem' }}>Discover</h1>
-        <p style={{ color: '#64748b', fontSize: '1.1rem' }}>Find your next collaboration partner in the marketplace.</p>
+    <div className="container" style={{ paddingTop: '1rem' }}>
+      <header className="page-header" style={{ textAlign: 'left', marginBottom: '2.5rem' }}>
+        <h1 style={{ fontSize: '2rem', fontWeight: 800, letterSpacing: '-0.02em', color: '#1a1a1a', marginBottom: '0.25rem' }}>Discover</h1>
+        <p style={{ color: '#64748b', fontSize: '1rem' }}>Find your next collaboration partner.</p>
       </header>
 
       <ErrorBanner message={error} onDismiss={() => setError("")} />

@@ -24,6 +24,7 @@ const AdminRoute = lazy(() => import("./components/AdminRoute.jsx"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword.jsx"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword.jsx"));
 const VerifyEmail = lazy(() => import("./pages/VerifyEmail.jsx"));
+const UsersList = lazy(() => import("./pages/UsersList.jsx"));
 
 
 export default function App() {
@@ -69,6 +70,8 @@ export default function App() {
           } />
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/user/:userId/:type" element={<UsersList />} />
+          <Route path="/post/:postId/likes" element={<UsersList />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/home" replace />} />

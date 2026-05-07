@@ -30,6 +30,7 @@ const userSchema = new mongoose.Schema(
     isVerified: { type: Boolean, default: false }, // Platform verification (badge)
     isEmailVerified: { type: Boolean, default: false }, // Email verification status
     emailVerificationToken: { type: String },
+    verificationCode: { type: String },
     resetPasswordToken: { type: String },
     resetPasswordExpire: { type: Date },
     portfolio: { type: [portfolioItemSchema], default: [] },

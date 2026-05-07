@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { BellIcon, MenuIcon, SearchIcon } from "./Icons.jsx";
+import { BellIcon, MenuIcon, SearchIcon, MessageIcon } from "./Icons.jsx";
 import { getSocket } from "../services/socket.js";
 import Avatar from "./Avatar.jsx";
 import SearchDropdown from "./SearchDropdown.jsx";
@@ -8,7 +8,7 @@ import { api } from "../services/api.js";
 
 export default function Navbar({ 
   user, searchQuery, setSearchQuery, handleSearch, 
-  unreadCount, notifications, onMarkRead,
+  unreadCount, msgUnreadCount, notifications, onMarkRead,
   menuOpen, setMenuOpen, menuRef, logout 
 }) {
   const [notifOpen, setNotifOpen] = useState(false);
@@ -172,6 +172,10 @@ export default function Navbar({
                 )}
               </div>
 
+              <Link to="/messages" className="nav-icon-btn" aria-label="Messages">
+                <MessageIcon />
+                {msgUnreadCount > 0 && <span className="nav-badge">{msgUnreadCount}</span>}
+              </Link>
               <div className="top-menu-container" ref={menuRef}>
                 <button
                   className="nav-icon-btn"

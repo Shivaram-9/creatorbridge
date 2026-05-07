@@ -20,12 +20,12 @@ function BottomNavItem({ to, icon, label, badgeCount }) {
   );
 }
 
-export default function BottomNav() {
+export default function BottomNav({ msgUnreadCount }) {
   return (
     <nav className="bottom-nav">
       <BottomNavItem to="/home" icon={<HomeIcon />} label="Home" />
       <BottomNavItem to="/discover" icon={<UsersIcon />} label="Discover" />
-      <BottomNavItem to="/messages" icon={<MessageIcon />} label="Messages" />
+      <BottomNavItem to="/messages" icon={<MessageIcon />} label="Messages" badgeCount={msgUnreadCount} />
       <BottomNavItem to="/profile" icon={<ProfileIcon />} label="Profile" />
     </nav>
   );

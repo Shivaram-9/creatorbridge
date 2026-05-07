@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { api, firstApiError } from "../services/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import { roleBadgeClass } from "../utils/badges.js";
@@ -35,8 +35,7 @@ export default function UserProfile() {
   const [loadingPosts, setLoadingPosts] = useState(true);
 
   const isOwn = me?._id === userId;
-  const [showListModal, setShowListModal] = useState(false);
-  const [listType, setListType] = useState("followers");
+  const navigate = useNavigate();
 
   const loadPosts = useCallback(async () => {
     setLoadingPosts(true);
@@ -248,7 +247,7 @@ export default function UserProfile() {
       <div className="up-stats">
         <div 
           className="up-stat" 
-          onClick={() => { setListType("followers"); setShowListModal(true); }}
+          onClick={() => navigate(`/user/${userId}/followers`)}
           style={{ cursor: 'pointer' }}
         >
           <span className="up-stat__value">{fl || "0"}</span>
@@ -256,7 +255,7 @@ export default function UserProfile() {
         </div>
         <div 
           className="up-stat" 
-          onClick={() => { setListType("following"); setShowListModal(true); }}
+          onClick={() => navigate(`/user/${userId}/following`)}
           style={{ cursor: 'pointer' }}
         >
           <span className="up-stat__value">{Array.isArray(profile.following) ? profile.following.length : "0"}</span>
@@ -352,12 +351,6 @@ export default function UserProfile() {
         )}
       </section>
       
-      {showListModal && (
-        <UserListModal 
-          userId={userId} 
-          type={listType} 
-          onClose={() => setShowListModal(false)} 
-        />
       )}
     </div>
   );

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { api } from "../services/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import { CATEGORIES } from "../constants/categories.js";
@@ -27,6 +28,7 @@ export default function Profile() {
     user, setUser, 
     refreshUser
   } = useAuth();
+  const navigate = useNavigate();
 
   const [userPosts, setUserPosts] = useState([]);
   const [loadingPosts, setLoadingPosts] = useState(true);
@@ -77,8 +79,6 @@ export default function Profile() {
   const [showPhotoOptions, setShowPhotoOptions] = useState(false);
   const [activeTab, setActiveTab] = useState("posts");
   const [copyStatus, setCopyStatus] = useState(false);
-  const [showListModal, setShowListModal] = useState(false);
-  const [listType, setListType] = useState("followers");
 
   const fileRef = useRef(null);
 
@@ -293,14 +293,14 @@ export default function Profile() {
                 <div className="profile-v2-stat"><strong>{userPosts.length}</strong> posts</div>
                 <div 
                   className="profile-v2-stat" 
-                  onClick={() => { setListType("followers"); setShowListModal(true); }}
+                  onClick={() => navigate(`/user/${user._id}/followers`)}
                   style={{ cursor: 'pointer' }}
                 >
                   <strong>{fmtFollowers(user?.followers?.length)}</strong> aligners
                 </div>
                 <div 
                   className="profile-v2-stat" 
-                  onClick={() => { setListType("following"); setShowListModal(true); }}
+                  onClick={() => navigate(`/user/${user._id}/following`)}
                   style={{ cursor: 'pointer' }}
                 >
                   <strong>{fmtFollowers(user?.following?.length)}</strong> aligned
@@ -354,12 +354,6 @@ export default function Profile() {
         </div>
       )}
 
-      {showListModal && (
-        <UserListModal 
-          userId={user._id} 
-          type={listType} 
-          onClose={() => setShowListModal(false)} 
-        />
       )}
     </div>
   );

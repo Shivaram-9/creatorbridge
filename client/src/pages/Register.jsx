@@ -10,6 +10,7 @@ export default function Register() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
@@ -19,6 +20,12 @@ export default function Register() {
   async function handleSubmit(e) {
     e.preventDefault();
     setError("");
+    
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
     setSubmitting(true);
     try {
       /* Register with a default role; the user picks their real role next */
@@ -47,12 +54,12 @@ export default function Register() {
           <p className="subtitle">Join CreatorBridge and start connecting.</p>
           <form onSubmit={handleSubmit}>
             <div className="field">
-              <label htmlFor="reg-email">Email</label>
+              <label htmlFor="reg-email">Email / Username</label>
               <input
                 id="reg-email"
                 className="input"
-                type="email"
-                autoComplete="email"
+                type="text"
+                autoComplete="username"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -67,6 +74,19 @@ export default function Register() {
                 autoComplete="new-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={6}
+              />
+            </div>
+            <div className="field">
+              <label htmlFor="reg-confirm-password">Confirm Password</label>
+              <input
+                id="reg-confirm-password"
+                className="input"
+                type="password"
+                autoComplete="new-password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
                 required
                 minLength={6}
               />

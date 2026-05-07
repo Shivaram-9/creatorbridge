@@ -1,4 +1,5 @@
 import { memo, useState, useMemo, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { HeartIcon, MessageCircleIcon, SendIcon, BookmarkIcon, MoreHorizontalIcon } from "./Icons.jsx";
 import { api } from "../services/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
@@ -8,15 +9,17 @@ import ReportModal from "./ReportModal.jsx";
 
 const PostCard = memo(function PostCard({ post, onDelete }) {
   const { user, setUser } = useAuth();
+  const navigate = useNavigate();
   
   // Initial liked state based on whether current user's ID is in post.likes array
   const initialLiked = useMemo(() => {
     if (!user || !post.likes) return false;
-    return post.likes.includes(user._id);
+    return post.likes.some(l => (l._id || l) === user._id);
   }, [user, post.likes]);
 
   const [liked, setLiked] = useState(initialLiked);
-  const [likesCount, setLikesCount] = useState(Array.isArray(post.likes) ? post.likes.length : 0);
+  const [likes, setLikes] = useState(Array.isArray(post.likes) ? post.likes : []);
+  const likesCount = likes.length;
   
   const initialSaved = useMemo(() => {
     if (!user || !user.savedPosts) return false;
@@ -58,19 +61,18 @@ const PostCard = memo(function PostCard({ post, onDelete }) {
     // Optimistic UI update
     const newLiked = !liked;
     setLiked(newLiked);
-    setLikesCount(prev => newLiked ? prev + 1 : prev - 1);
+    // setLikesCount(prev => newLiked ? prev + 1 : prev - 1);
 
     try {
       const res = await api.posts.like(post._id);
-      if (res?.error) {
         // Rollback on error
         setLiked(!newLiked);
-        setLikesCount(prev => !newLiked ? prev + 1 : prev - 1);
+      } else {
+        setLikes(res.likes);
       }
     } catch {
       // Rollback on error
       setLiked(!newLiked);
-      setLikesCount(prev => !newLiked ? prev + 1 : prev - 1);
     }
   };
 
@@ -209,7 +211,7 @@ const PostCard = memo(function PostCard({ post, onDelete }) {
             onClick={() => setShowLightbox(true)}
           >
             <img 
-              src={post.image} 
+              src={post.image.startsWith('http') ? post.image : `${api.BASE_URL}${post.image}`} 
               alt="Post content" 
               className="post-image" 
               style={{ transition: 'opacity 0.3s ease-in-out' }}
@@ -295,6 +297,17 @@ const PostCard = memo(function PostCard({ post, onDelete }) {
           </span>
         </button>
       </div>
+      
+      {likes.length > 0 && (
+        <div 
+          className="post-likes-display" 
+          style={{ padding: '0 1rem 0.5rem', fontSize: '0.875rem', cursor: 'pointer' }}
+          onClick={() => navigate(`/post/${post._id}/likes`)}
+        >
+          Liked by <strong>{likes[0].username || likes[0].name}</strong>
+          {likes.length > 1 && <> and <strong>{likes.length - 1} others</strong></>}
+        </div>
+      )}
 
       {showComments && (
         <div className="post-comments-section">

@@ -61,6 +61,7 @@ postsRouter.get("/", async (req, res) => {
     const posts = await Post.find({ user: { $in: userIds } })
       .populate("user", "name email avatar username role")
       .populate("comments.user", "name username avatar")
+      .populate("likes", "name username avatar")
       .sort({ createdAt: -1 })
       .lean();
     res.json(posts);
@@ -94,6 +95,7 @@ postsRouter.get("/user/:id", async (req, res) => {
     const posts = await Post.find({ user: req.params.id })
       .populate("user", "name email avatar username role")
       .populate("comments.user", "name username avatar")
+      .populate("likes", "name username avatar")
       .sort({ createdAt: -1 })
       .lean();
     res.json(posts);
@@ -130,10 +132,26 @@ postsRouter.post("/like/:id", async (req, res) => {
       });
     }
 
-    res.json({ likes: post.likes, liked: !isLiked });
+    const updatedPost = await Post.findById(req.params.id)
+      .populate("likes", "name username avatar")
+      .lean();
+
+    res.json({ likes: updatedPost.likes, liked: !isLiked });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to like post" });
+  }
+});
+
+// Get users who liked a post
+postsRouter.get("/likes/:id", async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id).populate("likes", "name username avatar role category");
+    if (!post) return res.status(404).json({ error: "Post not found" });
+    res.json(post.likes || []);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to load likes" });
   }
 });
 

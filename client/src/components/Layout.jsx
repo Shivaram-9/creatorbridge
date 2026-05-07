@@ -10,6 +10,7 @@ export default function Layout() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [notifications, setNotifications] = useState([]);
+  const [msgUnreadTotal, setMsgUnreadTotal] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const menuRef = useRef(null);
@@ -20,14 +21,28 @@ export default function Layout() {
     async function fetchNotifications() {
       try {
         const data = await api.notifications.list();
-        if (Array.isArray(data)) {
-          setNotifications(data);
+        if (Array.isArray(data)) setNotifications(data);
+      } catch { /* silent */ }
+    }
+    
+    async function fetchUnreadMessages() {
+      try {
+        const conversations = await api.messages.list();
+        if (Array.isArray(conversations)) {
+          const total = conversations.reduce((sum, c) => sum + (c.unreadCount || 0), 0);
+          setMsgUnreadTotal(total);
         }
       } catch { /* silent */ }
     }
+
     fetchNotifications();
-    const interval = setInterval(fetchNotifications, 30_000);
-    return () => clearInterval(interval);
+    fetchUnreadMessages();
+    const intervalNotif = setInterval(fetchNotifications, 30_000);
+    const intervalMsg = setInterval(fetchUnreadMessages, 15_000); // Poll messages faster
+    return () => {
+      clearInterval(intervalNotif);
+      clearInterval(intervalMsg);
+    };
   }, [user]);
 
   const unreadCount = notifications.filter(n => !n.read).length;
@@ -68,6 +83,7 @@ export default function Layout() {
         setSearchQuery={setSearchQuery}
         handleSearch={handleSearch}
         unreadCount={unreadCount}
+        msgUnreadCount={msgUnreadTotal}
         notifications={notifications}
         onMarkRead={handleMarkRead}
         menuOpen={menuOpen}
@@ -80,7 +96,7 @@ export default function Layout() {
         <Outlet />
       </main>
 
-      {user && <BottomNav />}
+      {user && <BottomNav msgUnreadCount={msgUnreadTotal} />}
     </div>
   );
 }

@@ -106,7 +106,10 @@ export default function Chat() {
       setError("");
       setLoading(true);
       await fetchConversation();
-      if (!cancelled) setLoading(false);
+      if (!cancelled) {
+        setLoading(false);
+        api.messages.markAsRead(partnerId).catch(() => {});
+      }
     })();
     return () => { cancelled = true; };
   }, [fetchConversation]);
@@ -153,6 +156,9 @@ export default function Chat() {
       if (!involves) return;
       pushMessage(msg);
       setIsPartnerTyping(false); // Stop typing when message received
+      if (rid === user?._id) {
+        api.messages.markAsRead(partnerId).catch(() => {});
+      }
     }
 
     socket.on("message", onMessage);
@@ -426,18 +432,20 @@ export default function Chat() {
                       <div className="chat-media-container" style={{ marginTop: '0.25rem' }}>
                         {m.mediaType === "video" ? (
                           <video 
-                            src={getMediaUrl(media)} 
+                            src={media.startsWith('http') ? media : `${api.BASE_URL}${media}`} 
                             controls 
                             className="chat-media-display" 
                             playsInline
                             style={{ maxWidth: '100%', borderRadius: '8px', display: 'block' }} 
+                            onError={(e) => { e.target.style.display = 'none'; }}
                           />
                         ) : (
                           <img 
-                            src={getMediaUrl(media)} 
-                            alt="attachment" 
+                            src={media.startsWith('http') ? media : `${api.BASE_URL}${media}`} 
+                            alt="" 
                             className="chat-media-display" 
                             style={{ maxWidth: '100%', borderRadius: '8px', display: 'block' }} 
+                            onError={(e) => { e.target.style.display = 'none'; }}
                           />
                         )}
                       </div>

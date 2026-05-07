@@ -65,18 +65,25 @@ export default function Messages() {
             conversations.map(conv => (
               <div 
                 key={conv._id} 
-                className="chat-list-item" 
+                className={`chat-list-item ${conv.unreadCount > 0 ? 'chat-list-item--unread' : ''}`} 
                 onClick={() => navigate(`/chat/${conv.partner._id}`)}
               >
                 <div className="chat-item-avatar">
                   <Avatar user={conv.partner} size="md" />
                 </div>
                 <div className="chat-item-info">
-                  <div className="chat-item-name">{conv.partner.name || conv.partner.username}</div>
-                  <div className="chat-item-last">
-                    {conv.lastMessage.content || "Media attachment"} · {formatTime(conv.lastMessage.createdAt)}
+                  <div className="chat-item-name" style={{ fontWeight: conv.unreadCount > 0 ? 700 : 500 }}>
+                    {conv.partner.name || conv.partner.username}
+                  </div>
+                  <div className="chat-item-last" style={{ color: conv.unreadCount > 0 ? 'var(--text)' : 'var(--text-muted)' }}>
+                    {conv.lastMessage.content || (conv.lastMessage.media ? "📷 Photo" : "Media")} · {formatTime(conv.lastMessage.createdAt)}
                   </div>
                 </div>
+                {conv.unreadCount > 0 && (
+                  <div className="unread-badge">
+                    {conv.unreadCount}
+                  </div>
+                )}
               </div>
             ))
           )}

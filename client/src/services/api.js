@@ -148,7 +148,8 @@ export const api = {
     forgotPassword: (email) => request("/auth/forgot-password", { method: "POST", body: { email } }),
     resetPassword: (token, password) => request(`/auth/reset-password/${token}`, { method: "POST", body: { password } }),
     verifyEmail: (token) => request(`/auth/verify-email/${token}`, { method: "POST" }),
-    resendVerification: (email) => request("/auth/resend-verification", { method: "POST", body: { email } }),
+    sendOtp: (email) => request("/auth/send-otp", { method: "POST", body: { email } }),
+    verifyOtp: (email, otp) => request("/auth/verify-otp", { method: "POST", body: { email, otp } }),
   },
   users: {
     me: () => request("/users/me"),
@@ -185,9 +186,10 @@ export const api = {
   },
   messages: {
     list: () => request("/messages"),
-    conversation: (otherUserId) => request(`/messages/conversation/${otherUserId}`),
-    send: (payload) => request("/messages", { method: "POST", body: payload }),
+    conversation: (id) => request(`/messages/conversation/${id}`),
+    send: (body) => request("/messages", { method: "POST", body }),
     sendMedia: (formData) => request("/messages/media", { method: "POST", body: formData }),
+    markAsRead: (partnerId) => request(`/messages/read/${partnerId}`, { method: "PATCH" }),
   },
   notifications: {
     list: () => request("/notifications"),

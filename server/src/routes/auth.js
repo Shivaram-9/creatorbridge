@@ -186,32 +186,56 @@ authRouter.post("/verify-email/:token", async (req, res) => {
   }
 });
 
-// Resend Verification
-authRouter.post("/resend-verification", async (req, res) => {
+// Send OTP
+authRouter.post("/send-otp", async (req, res) => {
   try {
     const { email } = req.body;
     const user = await User.findOne({ email });
     if (!user) return res.status(404).json({ error: "User not found" });
     if (user.isEmailVerified) return res.status(400).json({ error: "Email already verified" });
 
-    const verificationToken = crypto.randomBytes(20).toString("hex");
-    const hashedToken = crypto.createHash("sha256").update(verificationToken).digest("hex");
-    
-    user.emailVerificationToken = hashedToken;
+    // Generate 6-digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    user.verificationCode = otp;
     await user.save();
 
-    const verifyUrl = `${process.env.CLIENT_URL}/verify-email?token=${verificationToken}`;
     await sendEmail({
       to: email,
-      subject: "Verify your CreatorBridge account",
+      subject: "Your CreatorBridge Verification Code",
       html: `<h1>Verify Your Email</h1>
-             <p>Click the link below to verify your email address:</p>
-             <a href="${verifyUrl}" style="padding: 10px 20px; background: #6366f1; color: white; text-decoration: none; border-radius: 5px;">Verify Email</a>`
+             <p>Your verification code is: <strong style="font-size: 24px; color: #6366f1;">${otp}</strong></p>
+             <p>This code will expire shortly. Do not share it with anyone.</p>`
     });
     
-    res.json({ message: "Verification email sent successfully" });
+    res.json({ message: "Verification code sent to your email" });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Failed to resend verification" });
+    res.status(500).json({ error: "Failed to send OTP" });
+  }
+});
+
+// Verify OTP
+authRouter.post("/verify-otp", async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+    const user = await User.findOne({ email });
+    
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    if (user.verificationCode !== otp) {
+      return res.status(400).json({ error: "Invalid verification code" });
+    }
+
+    user.isEmailVerified = true;
+    user.verificationCode = undefined;
+    user.emailVerificationToken = undefined;
+    await user.save();
+
+    res.json({ message: "Email verified successfully", user });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "OTP verification failed" });
   }
 });
