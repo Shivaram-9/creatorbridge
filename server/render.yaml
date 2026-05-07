@@ -12,3 +12,13 @@ services:
         generateValue: true
       - key: PORT
         value: 5000
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        sync: false
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: CLIENT_URL
+        sync: false
