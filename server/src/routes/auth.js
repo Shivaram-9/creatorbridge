@@ -3,6 +3,8 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { body, validationResult } from "express-validator";
 import { User } from "../models/User.js";
+import { Session } from "../models/Session.js";
+import { SecurityAlert } from "../models/SecurityAlert.js";
 import { sendEmail } from "../utils/email.js";
 import crypto from "crypto";
 
@@ -19,6 +21,33 @@ const validate = (req, res, next) => {
 
 function signToken(userId) {
   return jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: "7d" });
+}
+
+async function createSession(user, token, req) {
+  const ua = req.get("User-Agent") || "";
+  const ip = req.ip || req.connection.remoteAddress;
+  
+  await Session.create({
+    user: user._id,
+    token,
+    device: {
+      type: /mobile|android|iphone/i.test(ua) ? "mobile" : "desktop",
+      os: /windows/i.test(ua) ? "Windows" : /mac/i.test(ua) ? "MacOS" : /linux/i.test(ua) ? "Linux" : "Unknown",
+      browser: /chrome/i.test(ua) ? "Chrome" : /firefox/i.test(ua) ? "Firefox" : /safari/i.test(ua) ? "Safari" : "Unknown",
+      ip
+    }
+  });
+
+  // Security Alert for new login (if multiple sessions exist)
+  const sessionCount = await Session.countDocuments({ user: user._id, isRevoked: false });
+  if (sessionCount > 1) {
+    await SecurityAlert.create({
+      user: user._id,
+      type: "new_login",
+      message: `New login detected from a ${/mobile/i.test(ua) ? "mobile" : "desktop"} device.`,
+      metadata: { ip, userAgent: ua }
+    });
+  }
 }
 
 authRouter.post(
@@ -60,6 +89,8 @@ authRouter.post(
       }).catch(err => console.error("Initial verification email failed:", err));
 
       const token = signToken(user._id.toString());
+      await createSession(user, token, req);
+      
       res.status(201).json({ token, user });
     } catch (err) {
       console.error(err);
@@ -86,7 +117,14 @@ authRouter.post(
       if (!match) {
         return res.status(401).json({ error: "Invalid credentials" });
       }
+      
+      if (user.isBanned) {
+        return res.status(403).json({ error: "Your account has been suspended" });
+      }
+
       const token = signToken(user._id.toString());
+      await createSession(user, token, req);
+      
       res.json({ token, user });
     } catch (err) {
       console.error(err);
@@ -95,7 +133,7 @@ authRouter.post(
   }
 );
 
-// --- ENTERPRISE: FORGOT PASSWORD & EMAIL VERIFICATION ---
+// --- FORGOT PASSWORD & EMAIL VERIFICATION ---
 
 // Forgot Password
 authRouter.post(
@@ -106,7 +144,6 @@ authRouter.post(
       const { email } = req.body;
       const user = await User.findOne({ email });
       if (!user) {
-        // Don't reveal if user exists for security, but we'll be helpful for now
         return res.status(404).json({ error: "No account found with this email" });
       }
 
@@ -155,6 +192,13 @@ authRouter.post(
       user.resetPasswordExpire = undefined;
       await user.save();
 
+      // Security Alert
+      await SecurityAlert.create({
+        user: user._id,
+        type: "password_change",
+        message: "Your password was successfully reset."
+      });
+
       res.json({ message: "Password reset successful" });
     } catch (err) {
       console.error(err);
@@ -190,8 +234,7 @@ authRouter.post("/send-otp", async (req, res) => {
     const { email } = req.body;
     const user = await User.findOne({ email });
     if (!user) return res.status(404).json({ error: "User not found" });
-    if (user.isEmailVerified) return res.status(400).json({ error: "Email already verified" });
-
+    
     // Generate 6-digit OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     user.verificationCode = otp;
@@ -200,7 +243,7 @@ authRouter.post("/send-otp", async (req, res) => {
     await sendEmail({
       to: email,
       subject: "Your CreatorBridge Verification Code",
-      html: `<h1>Verify Your Email</h1>
+      html: `<h1>Verify Your Identity</h1>
              <p>Your verification code is: <strong style="font-size: 24px; color: #6366f1;">${otp}</strong></p>
              <p>This code will expire shortly. Do not share it with anyone.</p>`
     });

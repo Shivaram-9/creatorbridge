@@ -17,8 +17,8 @@ export default function SearchDropdown({ results, loading, onClose, onItemClick 
 
     // Load trending/suggested if no results
     if (!results && !loading) {
-      api.users.getTrending().then(res => setTrending(Array.isArray(res) ? res.slice(0, 3) : []));
-      api.users.getSuggested().then(res => setSuggested(Array.isArray(res) ? res.slice(0, 3) : []));
+      api.discovery.getTrending().then(res => setTrending(res.trendingCreators || []));
+      api.discovery.getSuggested().then(res => setSuggested(res.suggestedCreators || []));
     }
   }, [results, loading]);
 

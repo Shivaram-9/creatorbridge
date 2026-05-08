@@ -5,10 +5,10 @@ import { BASE_URL } from "../config/api.js";
 import PostCard from "../components/PostCard.jsx";
 import CreatePost from "../components/CreatePost.jsx";
 import StoriesBar from "../components/StoriesBar.jsx";
-import ErrorBanner from "../components/ErrorBanner.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import EmptyState from "../components/EmptyState.jsx";
 import { PostSkeleton } from "../components/Skeleton.jsx";
+import toast from "react-hot-toast";
 
 export default function Home() {
   const { user } = useAuth();
@@ -21,12 +21,12 @@ export default function Home() {
     try {
       const data = await api.posts.list();
       if (data?.error) {
-        setError(data.error);
+        toast.error(data.error);
       } else {
         setPosts(Array.isArray(data) ? data : []);
       }
     } catch {
-      setError("We couldn't reach the server to load your feed. Please check your internet connection.");
+      toast.error("We couldn't load your feed.");
     } finally {
       setLoading(false);
     }
@@ -40,12 +40,13 @@ export default function Home() {
     try {
       const res = await api.posts.create(formData);
       if (res?.error) {
-        setError(res.error);
+        toast.error(res.error);
       } else {
+        toast.success("Post published!");
         setPosts(prev => [res, ...prev]);
       }
     } catch {
-      setError("Failed to create post");
+      toast.error("Failed to create post");
     }
   };
 
@@ -60,7 +61,7 @@ export default function Home() {
   };
 
   return (
-    <div className="container">
+    <div className="container slide-in">
       <header className="page-header">
         <h1 className="page-title">Feed</h1>
         <p className="subtitle">Explore the latest from your network.</p>
@@ -69,8 +70,6 @@ export default function Home() {
       <div className="feed-container">
         <StoriesBar />
         <CreatePost onPost={handleAddPost} user={user} />
-
-        <ErrorBanner message={error} onDismiss={() => setError("")} />
 
         {loading ? (
           <div className="list-gap">

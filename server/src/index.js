@@ -17,7 +17,15 @@ import { analyticsRouter } from "./routes/analytics.js";
 import { campaignsRouter } from "./routes/campaigns.js";
 import { collaborationsRouter } from "./routes/collaborations.js";
 import { premiumRouter } from "./routes/premium.js";
+import { privacyRouter } from "./routes/privacy.js";
+import { securityRouter } from "./routes/security.js";
+import { moderationRouter } from "./routes/moderation.js";
+import { onboardingRouter } from "./routes/onboarding.js";
+import { discoveryRouter } from "./routes/discovery.js";
+import { dealsRouter } from "./routes/deals.js";
+import { aiRouter } from "./routes/ai.js";
 import { Message } from "./models/Message.js";
+import { Session } from "./models/Session.js";
 import helmet from "helmet";
 import { apiLimiter } from "./middleware/security.js";
 
@@ -60,6 +68,13 @@ app.use("/api/analytics", analyticsRouter);
 app.use("/api/campaigns", campaignsRouter);
 app.use("/api/collaborations", collaborationsRouter);
 app.use("/api/premium", premiumRouter);
+app.use("/api/privacy", privacyRouter);
+app.use("/api/security", securityRouter);
+app.use("/api/moderation", moderationRouter);
+app.use("/api/onboarding", onboardingRouter);
+app.use("/api/discovery", discoveryRouter);
+app.use("/api/deals", dealsRouter);
+app.use("/api/ai", aiRouter);
 
 // Serve static uploads
 app.use("/uploads", express.static("uploads"));
@@ -79,11 +94,16 @@ export const io = new Server(server, {
   cors: { origin: true, methods: ["GET", "POST"] },
 });
 
-io.use((socket, next) => {
+io.use(async (socket, next) => {
   try {
     const token = socket.handshake.auth?.token;
     if (!token) return next(new Error("Unauthorized"));
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    
+    // Session validation for Socket
+    const session = await Session.findOne({ token, isRevoked: false });
+    if (!session) return next(new Error("Session revoked"));
+
     socket.userId = decoded.userId;
     next();
   } catch {
@@ -120,6 +140,14 @@ io.on("connection", async (socket) => {
         ack?.({ error: "Invalid receiver" });
         return;
       }
+      
+      // Block Check (Prompt-6)
+      const receiver = await User.findById(receiverId);
+      if (!receiver || receiver.blockedUsers.includes(uid) || receiver.blockedBy.includes(uid)) {
+        ack?.({ error: "Cannot send message to this user" });
+        return;
+      }
+
       const msg = await Message.create({
         sender: uid,
         receiver: receiverId,

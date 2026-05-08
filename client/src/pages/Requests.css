@@ -1,0 +1,94 @@
+.requests-page {
+  padding: 40px 20px;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.requests-header {
+  margin-bottom: 40px;
+  text-align: left;
+}
+
+.requests-header h1 {
+  font-size: 32px;
+  font-weight: 900;
+  margin-bottom: 8px;
+  color: #0f172a;
+}
+
+.requests-header p {
+  color: #64748b;
+  font-size: 16px;
+}
+
+.requests-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.request-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background: white;
+  border-radius: 20px;
+  border: 1px solid #f1f5f9;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.request-user {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-info strong {
+  font-size: 16px;
+  color: #0f172a;
+}
+
+.user-info span {
+  font-size: 14px;
+  color: #64748b;
+}
+
+.request-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.request-actions button {
+  padding: 10px 20px;
+  font-weight: 700;
+}
+
+.empty-requests {
+  text-align: center;
+  padding: 80px 20px;
+  background: #f8fafc;
+  border-radius: 24px;
+  border: 2px dashed #e2e8f0;
+}
+
+.empty-requests .icon {
+  font-size: 48px;
+  display: block;
+  margin-bottom: 16px;
+}
+
+.empty-requests h3 {
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.empty-requests p {
+  color: #64748b;
+}

@@ -1,76 +1,88 @@
 import { useState } from "react";
 import { api } from "../services/api.js";
+import "./ReportModal.css";
 
-export default function ReportModal({ targetUser, targetPost, onClose }) {
+export default function ReportModal({ targetType, targetId, onClose }) {
   const [reason, setReason] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
+
+  const reasons = [
+    "Spam or misleading",
+    "Harassment or bullying",
+    "Inappropriate content",
+    "Hate speech",
+    "Scam or fraud",
+    "Intellectual property violation",
+    "Other"
+  ];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!reason) return;
-    setLoading(true);
 
+    setLoading(true);
     try {
-      await api.reports.submit({
-        targetUser,
-        targetPost,
+      const res = await api.moderation.report({
+        targetType,
+        targetId,
         reason,
         description
       });
-      setSuccess(true);
-      setTimeout(onClose, 2000);
-    } catch (err) {
-      alert("Failed to submit report. Please try again.");
+      if (res.error) setError(res.error);
+      else setSuccess(true);
+    } catch {
+      setError("Failed to submit report");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose} style={{ zIndex: 4000 }}>
-      <div className="modal-content slide-in" onClick={e => e.stopPropagation()} style={{ maxWidth: '400px' }}>
-        <h2 className="modal-title">Report Content</h2>
-        
+    <div className="report-modal-overlay">
+      <div className="report-modal slide-up">
+        <header className="report-modal-header">
+          <h2>Report {targetType === 'user' ? 'Profile' : 'Content'}</h2>
+          <button className="close-btn" onClick={onClose}>&times;</button>
+        </header>
+
         {success ? (
-          <div className="success-state" style={{ textAlign: 'center', padding: '2rem' }}>
-            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>✅</div>
-            <p>Thank you for your report. Our moderators will review it shortly.</p>
+          <div className="report-success">
+            <span className="icon">✅</span>
+            <h3>Thank you for reporting</h3>
+            <p>We use these reports to keep CreatorBridge safe. Our moderation team will review this shortly.</p>
+            <button className="btn btn-primary" onClick={onClose}>Close</button>
           </div>
         ) : (
           <form onSubmit={handleSubmit}>
-            <div className="vertical-field">
-              <label>Reason</label>
-              <select 
-                className="input" 
-                value={reason} 
-                onChange={e => setReason(e.target.value)}
-                required
-              >
-                <option value="">Select a reason</option>
-                <option value="Spam">Spam</option>
-                <option value="Abuse">Abuse / Harassment</option>
-                <option value="Fake account">Fake account</option>
-                <option value="Inappropriate content">Inappropriate content</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
+            <p className="report-intro">Why are you reporting this {targetType}?</p>
             
-            <div className="vertical-field">
-              <label>Additional Details (Optional)</label>
-              <textarea 
-                className="input" 
-                rows={3}
-                value={description}
-                onChange={e => setDescription(e.target.value)}
-                placeholder="Help us understand the issue..."
-              />
+            <div className="reason-grid">
+              {reasons.map(r => (
+                <div 
+                  key={r} 
+                  className={`reason-option ${reason === r ? 'active' : ''}`}
+                  onClick={() => setReason(r)}
+                >
+                  {r}
+                </div>
+              ))}
             </div>
-            
-            <div className="modal-actions" style={{ display: 'flex', gap: '12px', marginTop: '1.5rem' }}>
-              <button type="button" className="btn btn-ghost flex-1" onClick={onClose}>Cancel</button>
-              <button type="submit" className="btn btn-primary flex-1" disabled={loading || !reason}>
+
+            <textarea 
+              placeholder="Additional details (optional)..."
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="report-textarea"
+            />
+
+            {error && <p className="error-text">{error}</p>}
+
+            <div className="report-footer">
+              <button type="button" className="btn btn-secondary" onClick={onClose}>Cancel</button>
+              <button type="submit" className="btn btn-primary" disabled={loading || !reason}>
                 {loading ? "Submitting..." : "Submit Report"}
               </button>
             </div>

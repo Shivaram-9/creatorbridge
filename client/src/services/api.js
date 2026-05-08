@@ -188,6 +188,35 @@ export const api = {
     addPortfolioItem: (body) => request("/users/me/portfolio", { method: "POST", body }),
     removePortfolioItem: (itemId) => request(`/users/me/portfolio/${itemId}`, { method: "DELETE" }),
   },
+  discovery: {
+    getSuggested: () => request("/discovery/suggested"),
+    getTrending: () => request("/discovery/trending"),
+    search: (q, type) => request(`/discovery/search?q=${encodeURIComponent(q || "")}${type ? `&type=${type}` : ""}`),
+    trackView: (targetId, category) => request("/discovery/track-view", { method: "POST", body: { targetId, category } }),
+  },
+  privacy: {
+    getSettings: () => request("/privacy/settings"),
+    updateSettings: (body) => request("/privacy/settings", { method: "PATCH", body }),
+    getRequests: () => request("/privacy/requests"),
+    respondRequest: (id, action) => request(`/privacy/requests/${id}/${action}`, { method: "POST" }),
+  },
+  security: {
+    getSessions: () => request("/security/sessions"),
+    revokeSession: (id) => request(`/security/sessions/${id}`, { method: "DELETE" }),
+    logoutOthers: () => request("/security/sessions", { method: "DELETE" }),
+    getAlerts: () => request("/security/alerts"),
+    markAlertsRead: () => request("/security/alerts/read", { method: "POST" }),
+  },
+  moderation: {
+    report: (body) => request("/moderation/report", { method: "POST", body }),
+    block: (userId) => request(`/moderation/block/${userId}`, { method: "POST" }),
+    unblock: (userId) => request(`/moderation/unblock/${userId}`, { method: "POST" }),
+    getBlocked: () => request("/moderation/blocked"),
+  },
+  onboarding: {
+    complete: (body) => request("/onboarding/complete", { method: "POST", body }),
+    updateStep: (step) => request("/onboarding/step", { method: "PATCH", body: { step } }),
+  },
   messages: {
     list: () => request("/messages"),
     conversation: (id) => request(`/messages/conversation/${id}`),
@@ -231,9 +260,6 @@ export const api = {
     view: (id) => request(`/stories/view/${id}`, { method: "POST" }),
     remove: (id) => request(`/stories/${id}`, { method: "DELETE" }),
   },
-  reports: {
-    submit: (data) => request("/admin/reports", { method: "POST", body: data }),
-  },
   admin: {
     getStats: () => request("/admin/stats"),
     getReports: () => request("/admin/reports"),
@@ -241,11 +267,16 @@ export const api = {
     getUsers: () => request("/admin/users"),
     toggleBan: (id) => request(`/admin/ban/${id}`, { method: "PATCH" }),
     deletePost: (id) => request(`/admin/posts/${id}`, { method: "DELETE" }),
+    getWithdrawals: () => request("/admin/withdrawals"),
+    updateWithdrawal: (id, body) => request(`/admin/withdrawals/${id}`, { method: "PATCH", body }),
+    getVerifications: () => request("/admin/verifications"),
+    verifyUser: (id) => request(`/admin/verify/${id}`, { method: "PATCH" }),
   },
   analytics: {
     getProfile: () => request("/analytics/profile"),
     getPosts: () => request("/analytics/posts"),
     getCampaigns: () => request("/analytics/campaigns"),
+    getInsights: () => request("/analytics/insights"),
     viewProfile: (userId) => request(`/analytics/view/profile/${userId}`, { method: "POST" }),
     viewPost: (postId) => request(`/analytics/view/post/${postId}`, { method: "POST" }),
   },
@@ -261,6 +292,20 @@ export const api = {
   collaborations: {
     list: () => request("/collaborations"),
     updateStatus: (id, status) => request(`/collaborations/status/${id}`, { method: "PATCH", body: { status } }),
+  },
+  deals: {
+    list: () => request("/deals"),
+    get: (id) => request(`/deals/${id}`),
+    create: (body) => request("/deals", { method: "POST", body }),
+    negotiate: (id, body) => request(`/deals/${id}/negotiate`, { method: "PATCH", body }),
+    accept: (id) => request(`/deals/${id}/accept`, { method: "POST" }),
+    updateDeliverable: (dealId, delivId, body) => request(`/deals/${dealId}/deliverables/${delivId}`, { method: "PATCH", body }),
+    complete: (id) => request(`/deals/${id}/complete`, { method: "POST" }),
+    match: () => request("/deals/match"),
+  },
+  transactions: {
+    list: () => request("/premium/transactions"), // Unified for now or new endpoint
+    earnings: () => request("/premium/stats"), // Reuse existing or update
   },
   premium: {
     getStats: () => request("/premium/stats"),

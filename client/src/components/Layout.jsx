@@ -1,20 +1,29 @@
 import { useEffect, useState, useRef, useCallback } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 import OfflineBanner from "./OfflineBanner.jsx";
 import Navbar from "./Navbar.jsx";
 import BottomNav from "./BottomNav.jsx";
+import AIAssistant from "./AIAssistant.jsx";
 import { api } from "../services/api.js";
-import { connectSocket, getSocket } from "../services/socket.js";
+import { connectSocket } from "../services/socket.js";
 
 export default function Layout() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [notifications, setNotifications] = useState([]);
   const [msgUnreadTotal, setMsgUnreadTotal] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const menuRef = useRef(null);
+
+  /* Onboarding Guard (Prompt-6) */
+  useEffect(() => {
+    if (user && !user.onboardingComplete && location.pathname !== "/onboarding" && !location.pathname.startsWith("/select-role")) {
+      navigate("/onboarding");
+    }
+  }, [user, location.pathname, navigate]);
 
   const fetchUnreadMessages = useCallback(async () => {
     try {
@@ -40,7 +49,6 @@ export default function Layout() {
     if (!socket) return;
 
     const onMessage = (msg) => {
-      // If we receive a message that isn't from us, fetch unread count again
       if (msg.sender?._id !== user._id) {
         fetchUnreadMessages();
       }
@@ -121,7 +129,7 @@ export default function Layout() {
       </main>
 
       {user && <BottomNav msgUnreadCount={msgUnreadTotal} notifUnreadCount={unreadCount} />}
+      {user && <AIAssistant />}
     </div>
   );
 }
-

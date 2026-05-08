@@ -98,12 +98,22 @@ messagesRouter.get("/conversation/:otherUserId", async (req, res) => {
     }
     const uid = new mongoose.Types.ObjectId(req.userId);
     const oid = new mongoose.Types.ObjectId(otherUserId);
-    const msgs = await Message.find({
+    const dealId = req.query.dealId;
+
+    const filter = {
       $or: [
         { sender: uid, receiver: oid },
         { sender: oid, receiver: uid },
       ],
-    })
+    };
+
+    if (dealId && mongoose.isValidObjectId(dealId)) {
+      filter.deal = dealId;
+    } else {
+      filter.deal = { $exists: false }; // Normal chat
+    }
+
+    const msgs = await Message.find(filter)
       .sort({ createdAt: 1 })
       .populate("sender", "name email role")
       .lean();
@@ -116,7 +126,7 @@ messagesRouter.get("/conversation/:otherUserId", async (req, res) => {
 
 messagesRouter.post("/", async (req, res) => {
   try {
-    const { receiverId, content, media: rawMedia, mediaUrl: rawMediaUrl, mediaType: rawMediaType } = req.body;
+    const { receiverId, content, dealId, media: rawMedia, mediaUrl: rawMediaUrl, mediaType: rawMediaType } = req.body;
     if (!receiverId || !mongoose.isValidObjectId(receiverId)) {
       return res.status(400).json({ error: "Valid receiverId is required" });
     }
@@ -137,6 +147,7 @@ messagesRouter.post("/", async (req, res) => {
       media: media.slice(0, 1000) || undefined,
       mediaUrl: media.slice(0, 1000) || undefined,
       mediaType: media ? mediaType : undefined,
+      deal: dealId && mongoose.isValidObjectId(dealId) ? dealId : undefined,
     });
     await msg.populate("sender", "name email role");
     await msg.populate("receiver", "name email role");

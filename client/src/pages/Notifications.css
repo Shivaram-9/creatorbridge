@@ -165,3 +165,53 @@
     font-size: 20px;
   }
 }
+
+
+.requests-preview-notif {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  background: #f8fafc;
+  border-radius: 16px;
+  margin-bottom: 24px;
+  cursor: pointer;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s;
+}
+
+.requests-preview-notif:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.requests-avatar-stack {
+  display: flex;
+  align-items: center;
+}
+
+.requests-avatar-stack .avatar-container {
+  margin-right: -12px;
+  border: 2px solid #f8fafc;
+}
+
+.requests-preview-text {
+  flex: 1;
+}
+
+.requests-preview-text strong {
+  display: block;
+  font-size: 15px;
+  color: #0f172a;
+}
+
+.requests-preview-text span {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.requests-preview-notif .arrow {
+  color: #94a3b8;
+  font-size: 18px;
+}
+

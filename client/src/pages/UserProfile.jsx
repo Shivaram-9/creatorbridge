@@ -7,12 +7,9 @@ import { BASE_URL } from "../config/api.js";
 import ErrorBanner from "../components/ErrorBanner.jsx";
 import PortfolioGrid from "../components/PortfolioGrid.jsx";
 import { ShareIcon } from "../components/Icons.jsx";
-import UserListModal from "../components/UserListModal.jsx";
 import Avatar from "../components/Avatar.jsx";
 import VerifiedBadge from "../components/VerifiedBadge.jsx";
 import { PostSkeleton } from "../components/Skeleton.jsx";
-
-
 
 function fmtFollowers(n) {
   if (!n || n <= 0) return null;
@@ -27,6 +24,7 @@ export default function UserProfile() {
 
   const [profile, setProfile] = useState(null);
   const [isFollowing, setIsFollowing] = useState(false);
+  const [hasRequested, setHasRequested] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [actionBusy, setActionBusy] = useState(false);
@@ -69,13 +67,23 @@ export default function UserProfile() {
         return;
       }
       setProfile(data);
+      
+      // Track view for AI Discovery (Prompt-7)
+      if (!isOwn && me) {
+        api.discovery.trackView(userId, data.category);
+      }
 
       if (!isOwn && me) {
         const followingArr = Array.isArray(me.following) ? me.following : [];
         setIsFollowing(followingArr.includes(userId));
       }
       
-      loadPosts();
+      // If we can see posts (own, public, or following)
+      if (isOwn || !data.isPrivate || (me && Array.isArray(me.following) && me.following.includes(userId))) {
+        loadPosts();
+      } else {
+        setLoadingPosts(false);
+      }
     } catch {
       setError("Something went wrong");
     } finally {
@@ -94,71 +102,73 @@ export default function UserProfile() {
     setActionBusy(true);
     setError("");
     try {
-      const action = isFollowing ? api.users.unfollow : api.users.follow;
-      const result = await action(userId);
-      if (result?.error) {
-        setError(typeof result.error === "string" ? result.error : "Something went wrong");
+      if (isFollowing) {
+        const result = await api.users.unfollow(userId);
+        if (result.error) setError(result.error);
+        else setIsFollowing(false);
       } else {
-        setIsFollowing(!isFollowing);
-        setShowAlignMenu(false);
-        setProfile(prev => {
-          if (!prev) return prev;
-          const currentFollowers = Array.isArray(prev.followers) ? prev.followers : [];
-          const newFollowers = isFollowing 
-            ? currentFollowers.filter(id => id !== me._id)
-            : [...currentFollowers, me._id];
-          return { ...prev, followers: newFollowers };
-        });
+        const result = await api.users.follow(userId);
+        if (result.error) setError(result.error);
+        else if (result.requested) {
+          setHasRequested(true);
+        } else {
+          setIsFollowing(true);
+        }
       }
+      setShowAlignMenu(false);
+      load(); // Refresh profile state
     } catch {
-      setError("Something went wrong");
+      setError("Action failed");
     } finally {
       setActionBusy(false);
     }
   }
 
-  const handleShareProfile = async () => {
-    const shareData = {
-      title: "CreatorBridge Profile",
-      text: `Check out ${profile?.name || profile?.username || 'this profile'} on CreatorBridge!`,
-      url: `${window.location.origin}/user/${userId}`,
-    };
-
+  const handleBlock = async () => {
+    if (!window.confirm("Block this user? They won't be able to see your profile or message you.")) return;
     try {
-      if (navigator.share) {
-        await navigator.share(shareData);
-      } else {
-        await navigator.clipboard.writeText(shareData.url);
-        setCopyStatus(true);
-        setTimeout(() => setCopyStatus(false), 2000);
-      }
-    } catch (err) {
-      if (err.name !== 'AbortError') {
-        await navigator.clipboard.writeText(shareData.url);
-        setCopyStatus(true);
-        setTimeout(() => setCopyStatus(false), 2000);
-      }
+      await api.moderation.block(userId);
+      navigate("/home");
+    } catch {
+      setError("Failed to block user");
     }
   };
 
-  if (loading) {
-    return (
-      <div className="container">
-        <p className="loading-line">Loading profile</p>
-      </div>
-    );
-  }
+  const handleReport = async () => {
+    const reason = window.prompt("Reason for reporting this user?");
+    if (!reason) return;
+    try {
+      await api.moderation.report({
+        targetType: "user",
+        targetId: userId,
+        reason
+      });
+      alert("Report submitted. Thank you.");
+    } catch {
+      setError("Failed to submit report");
+    }
+  };
+
+  const handleShareProfile = async () => {
+    const url = `${window.location.origin}/user/${userId}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopyStatus(true);
+      setTimeout(() => setCopyStatus(false), 2000);
+    } catch {
+      setError("Failed to copy link");
+    }
+  };
+
+  if (loading) return <LoadingSpinner centered />;
 
   if (error && !profile) {
     return (
-      <div className="container">
-        <div className="empty-state empty-state--hero" style={{ marginTop: "2rem" }}>
-          <div className="empty-state__illustration" aria-hidden="true">😕</div>
-          <h2 className="empty-state__title">Could not load profile</h2>
-          <p className="empty-state__text">{error || "User not found"}</p>
-          <div className="empty-state__action">
-            <Link to="/discover" className="btn btn-primary btn-sm">Explore</Link>
-          </div>
+      <div className="container" style={{ paddingTop: '80px' }}>
+        <div className="empty-state">
+          <h2>Profile Unavailable</h2>
+          <p>{error}</p>
+          <button className="btn btn-primary" onClick={() => navigate("/discover")}>Discover Others</button>
         </div>
       </div>
     );
@@ -166,82 +176,61 @@ export default function UserProfile() {
 
   if (!profile) return null;
 
-  const displayName = profile.name || profile.email || "User";
+  const displayName = profile.name || profile.username || "User";
   const roleClass = roleBadgeClass(profile.role);
-  const followersArray = Array.isArray(profile.followers) ? profile.followers : [];
-  const fl = fmtFollowers(followersArray.length);
-  const hasSocials = profile.instagram || profile.youtube;
-  const hasDetails = profile.location || fl || hasSocials;
+  const followersCount = Array.isArray(profile.followers) ? profile.followers.length : 0;
+  const isPrivateAndHidden = profile.isPrivate && !isOwn && !isFollowing;
 
   return (
-    <div className="container up-container">
+    <div className="container up-container slide-in">
       <Link to="/discover" className="up-back">← Discover</Link>
 
       <div className="up-hero">
         <div className="up-hero__gradient" aria-hidden="true" />
-
         <div className="up-hero__content">
-          <div className="up-avatar" style={{ position: 'relative' }}>
+          <div className="up-avatar">
             <Avatar user={profile} size="xl" className="up-avatar-main" />
-            <span className={`up-avatar__role-dot ${profile.role === "brand" ? "up-avatar__role-dot--brand" : ""}`} aria-label={profile.role} />
+            <span className={`up-avatar__role-dot ${profile.role === "brand" ? "up-avatar__role-dot--brand" : ""}`} />
           </div>
 
           <h1 className="up-name">
             {displayName}
             {(profile.isVerified || profile.isPremium) && <VerifiedBadge size="md" tier={profile.premiumTier} />}
           </h1>
-          {profile.username && <p className="up-username">@{profile.username}</p>}
+          {profile.username && <p className="up-username">@{profile.username} {profile.isPrivate && "🔒"}</p>}
 
           <div className="up-tags">
             <span className={`badge ${roleClass}`}>{profile.role}</span>
             {profile.category && <span className="up-cat-badge">{profile.category}</span>}
           </div>
 
-          <div className="up-actions" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+          <div className="up-actions">
             {isOwn ? (
-              <Link to="/profile" className="btn btn-primary">✏️ Edit profile</Link>
+              <Link to="/profile" className="btn btn-primary">✏️ Edit Profile</Link>
             ) : (
               <>
-                <div style={{ position: 'relative', display: 'flex' }}>
-                  <button
-                    type="button"
-                    className={`align-btn align-btn--lg ${isFollowing ? 'align-btn--active' : ''}`}
-                    disabled={actionBusy}
-                    onClick={isFollowing ? () => setShowAlignMenu(!showAlignMenu) : handleFollowToggle}
-                    style={isFollowing ? { backgroundColor: '#f0f0f0', color: '#333', borderRight: '1px solid #ddd', borderTopRightRadius: 0, borderBottomRightRadius: 0 } : {}}
-                  >
-                    {actionBusy ? "..." : isFollowing ? "Connected" : "Align"}
-                  </button>
-                  {isFollowing && (
-                    <button 
-                      className="align-btn align-btn--lg" 
-                      onClick={() => setShowAlignMenu(!showAlignMenu)}
-                      style={{ backgroundColor: '#f0f0f0', color: '#333', padding: '0 8px', borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
-                    >
-                      ▾
-                    </button>
-                  )}
-
-                  {showAlignMenu && (
-                    <div className="dropdown-menu show slide-in" style={{ position: 'absolute', top: '100%', left: 0, zIndex: 100, backgroundColor: 'white', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', borderRadius: '8px', minWidth: '150px', padding: '4px' }}>
-                      <button className="dropdown-item" style={{ color: '#ef4444' }} onClick={handleFollowToggle}>End Align</button>
-                      <button className="dropdown-item" onClick={() => setShowAlignMenu(false)}>Mute</button>
-                      <button className="dropdown-item" onClick={() => setShowAlignMenu(false)}>Restrict</button>
-                    </div>
-                  )}
+                <button
+                  className={`btn ${isFollowing ? 'btn-secondary' : 'btn-primary'} ${hasRequested ? 'btn-outline' : ''}`}
+                  disabled={actionBusy || hasRequested}
+                  onClick={handleFollowToggle}
+                >
+                  {actionBusy ? "..." : hasRequested ? "Requested" : isFollowing ? "Aligned" : "Align"}
+                </button>
+                {!isPrivateAndHidden && (
+                  <Link to={`/chat/${userId}`} className="btn btn-primary">💬 Message</Link>
+                )}
+                <div className="profile-more-actions">
+                   <button className="btn btn-icon" onClick={() => setShowAlignMenu(!showAlignMenu)}>•••</button>
+                   {showAlignMenu && (
+                     <div className="dropdown-menu show slide-in">
+                        <button className="dropdown-item" onClick={handleShareProfile}>{copyStatus ? "Copied!" : "Share Profile"}</button>
+                        <button className="dropdown-item danger" onClick={handleBlock}>Block User</button>
+                        <button className="dropdown-item" onClick={handleReport}>Report User</button>
+                     </div>
+                   )}
                 </div>
-                <Link to={`/chat/${userId}`} className="btn btn-primary">💬 Message</Link>
               </>
             )}
-            
-            <button 
-              className={`btn btn-secondary ${copyStatus ? 'btn-success' : ''}`} 
-              onClick={handleShareProfile}
-              style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
-            >
-              <ShareIcon />
-              {copyStatus ? "Copied!" : "Share profile"}
-            </button>
           </div>
         </div>
       </div>
@@ -249,111 +238,57 @@ export default function UserProfile() {
       <ErrorBanner message={error} onDismiss={() => setError("")} />
 
       <div className="up-stats">
-        <div 
-          className="up-stat" 
-          onClick={() => navigate(`/user/${userId}/followers`)}
-          style={{ cursor: 'pointer' }}
-        >
-          <span className="up-stat__value">{fl || "0"}</span>
+        <div className="up-stat" onClick={() => !isPrivateAndHidden && navigate(`/user/${userId}/followers`)}>
+          <span className="up-stat__value">{fmtFollowers(followersCount) || "0"}</span>
           <span className="up-stat__label">Aligners</span>
         </div>
-        <div 
-          className="up-stat" 
-          onClick={() => navigate(`/user/${userId}/following`)}
-          style={{ cursor: 'pointer' }}
-        >
+        <div className="up-stat" onClick={() => !isPrivateAndHidden && navigate(`/user/${userId}/following`)}>
           <span className="up-stat__value">{Array.isArray(profile.following) ? profile.following.length : "0"}</span>
           <span className="up-stat__label">Aligned</span>
         </div>
         <div className="up-stat">
-          <span className="up-stat__value">{userPosts.length}</span>
+          <span className="up-stat__value">{isPrivateAndHidden ? "?" : userPosts.length}</span>
           <span className="up-stat__label">Posts</span>
         </div>
       </div>
 
-      {(profile.bio || hasDetails) && (
-        <section className="up-section">
-          <h2 className="up-section__title">About</h2>
-          <div className="up-section__card">
-            {profile.bio && <p className="up-bio">{profile.bio}</p>}
-
-            {(profile.location || fl) && (
-              <div className="up-detail-list">
-                {profile.location && (
-                  <div className="up-detail">
-                    <span className="up-detail__icon" aria-hidden="true">📍</span>
-                    <span className="up-detail__text">{profile.location}</span>
-                  </div>
-                )}
-                {profile.category && (
-                  <div className="up-detail">
-                    <span className="up-detail__icon" aria-hidden="true">🏷️</span>
-                    <span className="up-detail__text">{profile.category}</span>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {hasSocials && (
-              <div className="up-socials">
-                {profile.instagram && (
-                  <a
-                    href={profile.instagram.startsWith("http") ? profile.instagram : `https://instagram.com/${profile.instagram.replace(/^@/, "")}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="up-social-btn up-social-btn--ig"
-                  >
-                    <span className="up-social-btn__icon" aria-hidden="true">📸</span>
-                    <span className="up-social-btn__label">Instagram</span>
-                    <span className="up-social-btn__handle">{profile.instagram.startsWith("http") ? "View" : profile.instagram}</span>
-                  </a>
-                )}
-                {profile.youtube && (
-                  <a
-                    href={profile.youtube.startsWith("http") ? profile.youtube : `https://youtube.com/@${profile.youtube.replace(/^@/, "")}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="up-social-btn up-social-btn--yt"
-                  >
-                    <span className="up-social-btn__icon" aria-hidden="true">▶️</span>
-                    <span className="up-social-btn__label">YouTube</span>
-                    <span className="up-social-btn__handle">{profile.youtube.startsWith("http") ? "View" : profile.youtube}</span>
-                  </a>
-                )}
-              </div>
-            )}
-          </div>
-        </section>
-      )}
-
-      <section className="up-section">
-        <h2 className="up-section__title">Posts</h2>
-        {loadingPosts ? (
-          <div className="list-gap" style={{ marginTop: '1rem' }}>
-            <PostSkeleton />
-            <PostSkeleton />
-          </div>
-        ) : userPosts.length > 0 ? (
-          <div className="up-section__card up-section__card--flush">
-            <PortfolioGrid items={userPosts} />
-          </div>
-        ) : (
-          <div className="empty-state empty-state--compact">
-            <div className="empty-state__icon" aria-hidden="true">🖼️</div>
-            <h3 className="empty-state__title">No posts yet</h3>
-            {isOwn ? (
-              <>
-                <p className="empty-state__text">Share your work with the world!</p>
-                <div className="empty-state__action">
-                  <Link to="/home" className="btn btn-primary btn-sm">Create Post</Link>
+      {isPrivateAndHidden ? (
+        <div className="private-account-message">
+          <div className="icon">🔒</div>
+          <h3>This account is private</h3>
+          <p>Align with this user to see their posts and connections.</p>
+        </div>
+      ) : (
+        <>
+          {(profile.bio || profile.location) && (
+            <section className="up-section">
+              <h2 className="up-section__title">About</h2>
+              <div className="up-section__card">
+                {profile.bio && <p className="up-bio">{profile.bio}</p>}
+                <div className="up-detail-list">
+                  {profile.location && <div className="up-detail"><span>📍</span> {profile.location}</div>}
+                  {profile.category && <div className="up-detail"><span>🏷️</span> {profile.category}</div>}
                 </div>
-              </>
+              </div>
+            </section>
+          )}
+
+          <section className="up-section">
+            <h2 className="up-section__title">Posts</h2>
+            {loadingPosts ? (
+              <PostSkeleton />
+            ) : userPosts.length > 0 ? (
+              <div className="up-section__card up-section__card--flush">
+                <PortfolioGrid items={userPosts} />
+              </div>
             ) : (
-              <p className="empty-state__text">This user hasn't posted anything yet.</p>
+              <div className="empty-state">
+                <p>No posts yet.</p>
+              </div>
             )}
-          </div>
-        )}
-      </section>
+          </section>
+        </>
+      )}
     </div>
   );
 }

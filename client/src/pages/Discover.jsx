@@ -1,15 +1,20 @@
 import { useState, useEffect } from "react";
 import { api } from "../services/api.js";
 import UserCard from "../components/UserCard.jsx";
+import PostCard from "../components/PostCard.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import ErrorBanner from "../components/ErrorBanner.jsx";
 import { CATEGORIES } from "../constants/categories.js";
+import "./Discover.css";
 
 export default function Discover() {
-  const [trending, setTrending] = useState([]);
-  const [verified, setVerified] = useState([]);
-  const [brands, setBrands] = useState([]);
-  const [suggested, setSuggested] = useState([]);
+  const [discovery, setDiscovery] = useState({
+    suggestedCreators: [],
+    suggestedBrands: [],
+    trendingPosts: [],
+    trendingCreators: [],
+    trendingBrands: []
+  });
   const [allUsers, setAllUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -21,21 +26,38 @@ export default function Discover() {
 
   useEffect(() => {
     async function loadDiscoverData() {
+      // Caching logic (Prompt-7)
+      const cached = localStorage.getItem("cb_discovery_cache");
+      const cachedTime = localStorage.getItem("cb_discovery_time");
+      if (cached && cachedTime && (Date.now() - parseInt(cachedTime)) < 300000) { // 5 mins
+        setDiscovery(JSON.parse(cached));
+        setLoading(false);
+        // Still fetch all users as it might change more frequently or for search
+        const all = await api.users.list();
+        setAllUsers(Array.isArray(all) ? all : []);
+        return;
+      }
+
       setLoading(true);
       try {
-        const [t, v, b, s, a] = await Promise.all([
-          api.users.getTrending(),
-          api.users.getVerified(),
-          api.users.getBrands(),
-          api.users.getSuggested(),
+        const [suggested, trending, all] = await Promise.all([
+          api.discovery.getSuggested(),
+          api.discovery.getTrending(),
           api.users.list()
         ]);
         
-        setTrending(Array.isArray(t) ? t : []);
-        setVerified(Array.isArray(v) ? v : []);
-        setBrands(Array.isArray(b) ? b : []);
-        setSuggested(Array.isArray(s) ? s : []);
-        setAllUsers(Array.isArray(a) ? a : []);
+        const data = {
+          suggestedCreators: suggested.suggestedCreators || [],
+          suggestedBrands: suggested.suggestedBrands || [],
+          trendingPosts: trending.trendingPosts || [],
+          trendingCreators: trending.trendingCreators || [],
+          trendingBrands: trending.trendingBrands || []
+        };
+        setDiscovery(data);
+        setAllUsers(Array.isArray(all) ? all : []);
+        
+        localStorage.setItem("cb_discovery_cache", JSON.stringify(data));
+        localStorage.setItem("cb_discovery_time", Date.now().toString());
       } catch (err) {
         setError("Failed to load discovery data. Please try again.");
       } finally {
@@ -55,88 +77,68 @@ export default function Discover() {
   if (loading) return <LoadingSpinner centered />;
 
   return (
-    <div className="container" style={{ paddingTop: '1rem' }}>
-      <header className="page-header" style={{ textAlign: 'left', marginBottom: '2.5rem' }}>
-        <h1 style={{ fontSize: '2rem', fontWeight: 800, letterSpacing: '-0.02em', color: '#1a1a1a', marginBottom: '0.25rem' }}>Discover</h1>
-        <p style={{ color: '#64748b', fontSize: '1rem' }}>Find your next collaboration partner.</p>
+    <div className="discover-v2 container slide-in">
+      <header className="discover-header">
+        <div className="header-badge">AI DISCOVERY ACTIVE</div>
+        <h1>Intelligent Search</h1>
+        <p>Smart recommendations based on your behavior and interests.</p>
       </header>
 
       <ErrorBanner message={error} onDismiss={() => setError("")} />
 
-      {/* Discovery Sections */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '4rem' }}>
+      <div className="discover-content">
         
-        {/* Trending */}
-        <section>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#1a1a1a' }}>Trending Creators</h2>
-            <div style={{ width: '40px', height: '2px', backgroundColor: '#e2e8f0' }}></div>
+        {/* Trending Posts Milestone Section */}
+        {discovery.trendingPosts.length > 0 && (
+          <section className="discover-section">
+            <div className="section-header">
+              <h2>Trending Now</h2>
+              <span className="trend-label">LIVE ENGAGEMENT</span>
+            </div>
+            <div className="trending-posts-grid">
+              {discovery.trendingPosts.slice(0, 6).map(post => (
+                <PostCard 
+                  key={post._id} 
+                  post={post} 
+                  onDelete={() => {}} 
+                  onUpdate={() => {}} 
+                />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Suggested For You - Creators */}
+        <section className="discover-section">
+          <div className="section-header">
+            <h2>Suggested Creators</h2>
+            <p>Creators matching your niche and interests.</p>
           </div>
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', 
-            gap: '1.5rem' 
-          }}>
-            {trending.map(u => <UserCard key={u._id} user={u} />)}
+          <div className="user-grid">
+            {discovery.suggestedCreators.map(u => <UserCard key={u._id} user={u} />)}
           </div>
         </section>
 
-        {/* Verified Marketplace */}
-        <section>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#1a1a1a' }}>Verified Marketplace</h2>
-            <div style={{ width: '40px', height: '2px', backgroundColor: '#e2e8f0' }}></div>
+        {/* Suggested For You - Brands */}
+        <section className="discover-section">
+          <div className="section-header">
+            <h2>Suggested Brands</h2>
+            <p>Brands looking for creators like you.</p>
           </div>
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', 
-            gap: '1.5rem' 
-          }}>
-            {verified.map(u => <UserCard key={u._id} user={u} />)}
-          </div>
-        </section>
-
-        {/* Brands */}
-        <section>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#1a1a1a' }}>Popular Brands</h2>
-            <div style={{ width: '40px', height: '2px', backgroundColor: '#e2e8f0' }}></div>
-          </div>
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', 
-            gap: '1.5rem' 
-          }}>
-            {brands.map(u => <UserCard key={u._id} user={u} />)}
-          </div>
-        </section>
-
-        {/* Suggested */}
-        <section>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#1a1a1a' }}>Suggested For You</h2>
-            <div style={{ width: '40px', height: '2px', backgroundColor: '#e2e8f0' }}></div>
-          </div>
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', 
-            gap: '1.5rem' 
-          }}>
-            {suggested.map(u => <UserCard key={u._id} user={u} />)}
+          <div className="user-grid">
+            {discovery.suggestedBrands.map(u => <UserCard key={u._id} user={u} />)}
           </div>
         </section>
 
         {/* Explore All with Filters */}
-        <section style={{ borderTop: '1px solid #f1f5f9', paddingTop: '4rem' }}>
-          <div style={{ marginBottom: '2.5rem' }}>
-            <h2 style={{ fontSize: '1.75rem', fontWeight: 900, marginBottom: '1.5rem' }}>Explore Marketplace</h2>
-            
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'center' }}>
+        <section className="explore-section">
+          <div className="explore-header">
+            <h2>Global Marketplace</h2>
+            <div className="filter-bar">
               <select 
                 className="filter-select" 
                 value={activeCategory} 
                 onChange={(e) => setActiveCategory(e.target.value)}
-                style={{ padding: '10px 16px', borderRadius: '12px', border: '1px solid #e2e8f0', outline: 'none', fontWeight: 600 }}
               >
                 <option value="All">All Categories</option>
                 {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
@@ -146,19 +148,17 @@ export default function Discover() {
                 className="filter-select" 
                 value={activeRole} 
                 onChange={(e) => setActiveRole(e.target.value)}
-                style={{ padding: '10px 16px', borderRadius: '12px', border: '1px solid #e2e8f0', outline: 'none', fontWeight: 600 }}
               >
                 <option value="all">All Roles</option>
                 <option value="influencer">Influencers</option>
                 <option value="brand">Brands</option>
               </select>
 
-              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontWeight: 600 }}>
+              <label className="verified-toggle">
                 <input 
                   type="checkbox" 
                   checked={onlyVerified} 
                   onChange={(e) => setOnlyVerified(e.target.checked)}
-                  style={{ width: '18px', height: '18px' }}
                 />
                 Verified Only
               </label>
@@ -166,17 +166,13 @@ export default function Discover() {
           </div>
 
           {filteredUsers.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '4rem 0', color: '#94a3b8' }}>
-              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🔍</div>
-              <h3>No users match your filters</h3>
-              <p>Try broadening your search criteria.</p>
+            <div className="empty-results">
+              <div className="icon">🔍</div>
+              <h3>No creators found</h3>
+              <p>Try adjusting your smart filters.</p>
             </div>
           ) : (
-            <div style={{ 
-              display: 'grid', 
-              gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', 
-              gap: '1.5rem' 
-            }}>
+            <div className="user-grid">
               {filteredUsers.map(u => <UserCard key={u._id} user={u} />)}
             </div>
           )}

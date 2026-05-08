@@ -16,6 +16,7 @@ const messageSchema = new mongoose.Schema(
     mediaUrl: { type: String, trim: true, maxlength: 1000 }, // Legacy support
     mediaType: { type: String, enum: ["image", "video"] },
     read: { type: Boolean, default: false },
+    deal: { type: mongoose.Schema.Types.ObjectId, ref: "Deal" },
   },
   { timestamps: true }
 );

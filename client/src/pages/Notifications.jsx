@@ -21,17 +21,24 @@ function timeAgo(dateStr) {
 
 export default function Notifications() {
   const [items, setItems] = useState([]);
+  const [pendingRequests, setPendingRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [filter, setFilter] = useState("all");
   const navigate = useNavigate();
 
-  const loadNotifications = useCallback(async () => {
+  const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await api.notifications.list();
-      if (data?.error) setError(data.error);
-      else setItems(Array.isArray(data) ? data : []);
+      const [notifs, reqs] = await Promise.all([
+        api.notifications.list(),
+        api.privacy.getRequests()
+      ]);
+      
+      if (notifs?.error) setError(notifs.error);
+      else setItems(Array.isArray(notifs) ? notifs : []);
+      
+      if (reqs && !reqs.error) setPendingRequests(reqs);
     } catch {
       setError("Failed to load notifications");
     } finally {
@@ -40,8 +47,8 @@ export default function Notifications() {
   }, []);
 
   useEffect(() => {
-    loadNotifications();
-  }, [loadNotifications]);
+    loadData();
+  }, [loadData]);
 
   const markAllAsRead = async () => {
     try {
@@ -60,16 +67,18 @@ export default function Notifications() {
     
     // Redirect based on type
     if (n.type === "follow") navigate(`/user/${n.sender?._id || n.sender}`);
+    else if (n.type === "align_request") navigate(`/requests`);
     else if (n.type === "like" || n.type === "comment") navigate(`/post/${n.post?._id || n.post}`);
     else if (n.type === "campaign_invite" || n.type === "campaign_apply") navigate(`/collaborations`);
     else if (n.type === "chat" || n.type === "collab_message") navigate(`/chat/${n.sender?._id || n.sender}`);
     else if (n.type === "premium_upgrade") navigate(`/premium`);
+    else if (n.type === "security_alert") navigate(`/settings`);
   };
 
   const filteredItems = items.filter(n => {
     if (filter === "all") return true;
     if (filter === "interactions") return ["like", "comment"].includes(n.type);
-    if (filter === "connections") return ["follow"].includes(n.type);
+    if (filter === "connections") return ["follow", "align_request"].includes(n.type);
     return true;
   });
 
@@ -78,10 +87,12 @@ export default function Notifications() {
       case 'like': return '❤️';
       case 'comment': return '💬';
       case 'follow': return '👤';
+      case 'align_request': return '🔒';
       case 'campaign_invite':
       case 'campaign_apply': return '📋';
       case 'premium_upgrade': return '✨';
       case 'chat': return '✉️';
+      case 'security_alert': return '🛡️';
       default: return '🔔';
     }
   };
@@ -102,6 +113,21 @@ export default function Notifications() {
       </header>
 
       <ErrorBanner message={error} onDismiss={() => setError("")} />
+
+      {pendingRequests.length > 0 && filter === "all" && (
+        <div className="requests-preview-notif" onClick={() => navigate('/requests')}>
+          <div className="requests-avatar-stack">
+            {pendingRequests.slice(0, 3).map((r, i) => (
+              <Avatar key={r._id} user={r.sender} size="sm" />
+            ))}
+          </div>
+          <div className="requests-preview-text">
+            <strong>Align Requests</strong>
+            <span>{pendingRequests.length} pending requests</span>
+          </div>
+          <span className="arrow">→</span>
+        </div>
+      )}
 
       {loading ? (
         <div className="notif-skeleton">
@@ -127,7 +153,7 @@ export default function Notifications() {
               </div>
               <div className="notif-info">
                 <p className="notif-text">
-                  <span className="username">{n.sender?.username || n.sender?.name}</span> {n.message}
+                  <span className="username">{n.sender?.username || n.sender?.name || "System"}</span> {n.message}
                 </p>
                 <span className="notif-date">{timeAgo(n.createdAt)}</span>
               </div>

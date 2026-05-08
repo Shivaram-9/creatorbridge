@@ -1,19 +1,20 @@
+import { memo } from "react";
 import { Link } from "react-router-dom";
 import Avatar from "./Avatar.jsx";
 import VerifiedBadge from "./VerifiedBadge.jsx";
 
-export default function UserCard({ user }) {
+const UserCard = memo(({ user }) => {
   if (!user) return null;
 
   return (
     <Link 
       to={`/user/${user._id}`} 
-      className="user-card-premium"
+      className="user-card-premium slide-in"
       style={{
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        padding: '1.5rem',
+        padding: '1.25rem',
         backgroundColor: 'white',
         borderRadius: '24px',
         border: '1px solid #f1f5f9',
@@ -22,7 +23,9 @@ export default function UserCard({ user }) {
         position: 'relative',
         overflow: 'hidden',
         textAlign: 'center',
-        boxShadow: '0 4px 20px rgba(0,0,0,0.02)'
+        boxShadow: '0 4px 20px rgba(0,0,0,0.02)',
+        width: '100%',
+        maxWidth: '100%'
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = 'translateY(-6px)';
@@ -128,4 +131,6 @@ export default function UserCard({ user }) {
       </div>
     </Link>
   );
-}
+});
+
+export default UserCard;

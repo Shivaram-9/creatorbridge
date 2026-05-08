@@ -36,7 +36,11 @@ const userSchema = new mongoose.Schema(
     isVerified: { type: Boolean, default: false }, // Platform verification (badge)
     isPremium: { type: Boolean, default: false }, // Premium subscription status
     premiumTier: { type: String, enum: ["none", "silver", "gold", "platinum"], default: "none" },
-    earnings: { type: Number, default: 0 }, // Total creator earnings
+    premiumExpiry: { type: Date },
+    walletBalance: { type: Number, default: 0 },
+    earnings: { type: Number, default: 0 }, // Total lifetime earnings
+    pendingEarnings: { type: Number, default: 0 },
+    totalPayouts: { type: Number, default: 0 },
     subscriptionStatus: { type: String, enum: ["active", "expired", "none"], default: "none" },
     isOnline: { type: Boolean, default: false },
     lastActive: { type: Date, default: Date.now },
@@ -46,6 +50,32 @@ const userSchema = new mongoose.Schema(
     resetPasswordToken: { type: String },
     resetPasswordExpire: { type: Date },
     portfolio: { type: [portfolioItemSchema], default: [] },
+    
+    // Privacy & Security (Prompt-6)
+    isPrivate: { type: Boolean, default: false },
+    allowMessagesFrom: { type: String, enum: ["everyone", "following", "none"], default: "everyone" },
+    showActivityStatus: { type: Boolean, default: true },
+    isDiscoverable: { type: Boolean, default: true },
+    blockedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    blockedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    
+    // Onboarding (Prompt-6)
+    onboardingComplete: { type: Boolean, default: false },
+    onboardingStep: { type: Number, default: 1 },
+    
+    // Notification Preferences (Prompt-6)
+    notifSettings: {
+      likes: { type: Boolean, default: true },
+      comments: { type: Boolean, default: true },
+      follows: { type: Boolean, default: true },
+      messages: { type: Boolean, default: true },
+      campaigns: { type: Boolean, default: true }
+    },
+    
+    // AI Discovery Behavior (Prompt-7)
+    viewedProfiles: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    viewedCategories: [{ type: String }],
+    interests: [{ type: String }]
   },
   { timestamps: true }
 );
@@ -57,3 +87,12 @@ userSchema.methods.toJSON = function toJSON() {
 };
 
 export const User = mongoose.model("User", userSchema);
+
+// Enterprise Indexes
+userSchema.index({ username: 1 });
+userSchema.index({ email: 1 });
+userSchema.index({ role: 1, isDiscoverable: 1, category: 1 });
+userSchema.index({ isVerified: 1, profileViews: -1 });
+userSchema.index({ followers: 1 });
+userSchema.index({ following: 1 });
+userSchema.index({ isPremium: 1 });

@@ -33,7 +33,7 @@ export default function Navbar({
       setSearchLoading(true);
       try {
         const [users, posts] = await Promise.all([
-          api.users.search(searchQuery, { signal: abortController.signal }),
+          api.discovery.search(searchQuery, { signal: abortController.signal }),
           api.search.posts(searchQuery, { signal: abortController.signal })
         ]);
         if (!abortController.signal.aborted) {
@@ -78,8 +78,10 @@ export default function Navbar({
     setNotifOpen(false);
     if (n.type === "follow") {
       navigate(`/user/${n.sender?._id || n.sender}`);
+    } else if (n.type === "align_request") {
+      navigate(`/requests`);
     } else if (n.post) {
-      navigate(`/home`); // Could be a post detail page if we had one
+      navigate(`/home`); 
     }
   };
 
@@ -244,6 +246,12 @@ export default function Navbar({
                             ⚠️ Verify Email
                           </Link>
                         )}
+                        <Link to="/requests" className="dropdown-item" onClick={() => setMenuOpen(false)}>
+                           Align Requests
+                        </Link>
+                        <Link to="/deals" className="dropdown-item" style={{ fontWeight: 600 }} onClick={() => setMenuOpen(false)}>
+                           🤝 My Deals
+                        </Link>
                         <Link to="/saved" className="dropdown-item" onClick={() => setMenuOpen(false)}>
                           Saved Posts
                         </Link>
@@ -256,6 +264,11 @@ export default function Navbar({
                         <Link to="/analytics" className="dropdown-item" onClick={() => setMenuOpen(false)}>
                           Analytics
                         </Link>
+                        {user.role === "brand" && (
+                          <Link to="/brand-dashboard" className="dropdown-item" style={{ fontWeight: 700 }} onClick={() => setMenuOpen(false)}>
+                            🚀 Brand Dashboard
+                          </Link>
+                        )}
                         <Link to="/settings" className="dropdown-item" onClick={() => setMenuOpen(false)}>
                           Settings
                         </Link>

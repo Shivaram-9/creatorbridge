@@ -2,31 +2,49 @@ import { useState, useEffect } from "react";
 import { api } from "../services/api.js";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import Avatar from "../components/Avatar.jsx";
+import ErrorBanner from "../components/ErrorBanner.jsx";
+import { useNavigate } from "react-router-dom";
+import "./AdminDashboard.css";
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState(null);
   const [reports, setReports] = useState([]);
   const [users, setUsers] = useState([]);
+  const [withdrawals, setWithdrawals] = useState([]);
+  const [verifications, setVerifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("overview");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [activeTab]);
 
   const loadData = async () => {
     setLoading(true);
     try {
-      const [s, r, u] = await Promise.all([
-        api.admin.getStats(),
-        api.admin.getReports(),
-        api.admin.getUsers()
-      ]);
+      const s = await api.admin.getStats();
       setStats(s);
-      setReports(r);
-      setUsers(u);
+
+      if (activeTab === "overview" || activeTab === "reports") {
+        const r = await api.admin.getReports();
+        setReports(r);
+      }
+      if (activeTab === "users") {
+        const u = await api.admin.getUsers();
+        setUsers(u);
+      }
+      if (activeTab === "withdrawals") {
+        const w = await api.admin.getWithdrawals();
+        setWithdrawals(w);
+      }
+      if (activeTab === "verifications") {
+        const v = await api.admin.getVerifications();
+        setVerifications(v);
+      }
     } catch (err) {
-      console.error("Failed to load admin data", err);
+      setError("Failed to load admin data");
     } finally {
       setLoading(false);
     }
@@ -36,195 +54,227 @@ export default function AdminDashboard() {
     try {
       await api.admin.resolveReport(id, status);
       setReports(prev => prev.map(r => r._id === id ? { ...r, status } : r));
-    } catch (err) {
-      alert("Failed to update report");
+    } catch {
+      setError("Failed to update report");
     }
   };
 
   const handleToggleBan = async (userId) => {
-    if (!window.confirm("Are you sure you want to change this user's ban status?")) return;
+    if (!window.confirm("Change ban status for this user?")) return;
     try {
       const res = await api.admin.toggleBan(userId);
       setUsers(prev => prev.map(u => u._id === userId ? { ...u, isBanned: res.isBanned } : u));
-    } catch (err) {
-      alert("Failed to toggle ban");
+    } catch {
+      setError("Failed to toggle ban");
     }
   };
 
-  const handleDeletePost = async (postId) => {
-    if (!window.confirm("FORCE DELETE this post? This cannot be undone.")) return;
+  const handleWithdrawal = async (id, status) => {
+    const adminNotes = window.prompt("Add admin notes (optional):");
     try {
-      await api.admin.deletePost(postId);
-      alert("Post deleted successfully");
-    } catch (err) {
-      alert("Failed to delete post");
+      await api.admin.updateWithdrawal(id, { status, adminNotes });
+      setWithdrawals(prev => prev.map(w => w._id === id ? { ...w, status, adminNotes } : w));
+    } catch {
+      setError("Failed to update withdrawal");
     }
   };
 
-  if (loading) return <LoadingSpinner centered />;
+  const handleVerify = async (userId) => {
+    if (!window.confirm("Verify this creator?")) return;
+    try {
+      await api.admin.verifyUser(userId);
+      setVerifications(prev => prev.filter(v => v._id !== userId));
+      alert("Creator verified! ✅");
+    } catch {
+      setError("Verification failed");
+    }
+  };
+
+  if (loading && !stats) return <LoadingSpinner centered />;
 
   return (
-    <div className="container" style={{ paddingTop: '2rem', paddingBottom: '4rem' }}>
-      <header style={{ marginBottom: '2rem' }}>
-        <h1 style={{ fontSize: '2rem', fontWeight: 800, color: '#1a1a1a' }}>Moderation Panel</h1>
-        <p style={{ color: '#666' }}>Platform management and community safety</p>
+    <div className="admin-page container slide-in">
+      <header className="admin-header">
+        <div className="header-info">
+          <h1>Enterprise Control Panel</h1>
+          <p>Global platform oversight, revenue monitoring, and moderation</p>
+        </div>
+        <button className="btn btn-secondary" onClick={loadData}>🔄 Refresh</button>
       </header>
 
-      {/* Tabs */}
-      <div style={{ display: 'flex', gap: '2rem', borderBottom: '1px solid #eee', marginBottom: '2rem' }}>
-        {['overview', 'reports', 'users'].map(tab => (
-          <button 
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            style={{
-              padding: '1rem 0.5rem',
-              background: 'none',
-              border: 'none',
-              borderBottom: activeTab === tab ? '2px solid var(--accent)' : '2px solid transparent',
-              color: activeTab === tab ? 'var(--accent)' : '#666',
-              fontWeight: 600,
-              textTransform: 'capitalize',
-              cursor: 'pointer'
-            }}
-          >
-            {tab}
-          </button>
-        ))}
-      </div>
+      <ErrorBanner message={error} onDismiss={() => setError("")} />
 
-      {activeTab === 'overview' && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem' }}>
-          <StatCard title="Total Users" value={stats?.userCount} color="#1d9bf0" />
-          <StatCard title="Total Posts" value={stats?.postCount} color="#10b981" />
-          <StatCard title="Pending Reports" value={stats?.pendingReports} color="#f59e0b" />
-        </div>
-      )}
+      <nav className="admin-tabs">
+        <button className={activeTab === 'overview' ? 'active' : ''} onClick={() => setActiveTab('overview')}>Overview</button>
+        <button className={activeTab === 'users' ? 'active' : ''} onClick={() => setActiveTab('users')}>Users</button>
+        <button className={activeTab === 'reports' ? 'active' : ''} onClick={() => setActiveTab('reports')}>
+          Reports {stats?.pendingReports > 0 && <span className="tab-badge warning">{stats.pendingReports}</span>}
+        </button>
+        <button className={activeTab === 'withdrawals' ? 'active' : ''} onClick={() => setActiveTab('withdrawals')}>
+          Payouts {stats?.pendingWithdrawals > 0 && <span className="tab-badge">{stats.pendingWithdrawals}</span>}
+        </button>
+        <button className={activeTab === 'verifications' ? 'active' : ''} onClick={() => setActiveTab('verifications')}>Verifications</button>
+      </nav>
 
-      {activeTab === 'reports' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          {reports.length === 0 ? <p>No reports found.</p> : reports.map(report => (
-            <div key={report._id} style={{ padding: '1.5rem', background: 'white', borderRadius: '12px', border: '1px solid #eee' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
-                <div>
-                  <span style={{ 
-                    padding: '4px 10px', 
-                    borderRadius: '20px', 
-                    fontSize: '12px', 
-                    fontWeight: 700, 
-                    backgroundColor: report.status === 'pending' ? '#fff7ed' : '#f0fdf4',
-                    color: report.status === 'pending' ? '#9a3412' : '#166534',
-                    textTransform: 'uppercase'
-                  }}>
-                    {report.status}
-                  </span>
-                  <h3 style={{ margin: '8px 0 4px', fontSize: '16px' }}>Reason: {report.reason}</h3>
-                  <p style={{ color: '#666', fontSize: '14px' }}>{report.description}</p>
+      <div className="admin-content">
+        {activeTab === 'overview' && (
+          <div className="stats-grid">
+            <div className="stat-card">
+              <span className="stat-label">Total Revenue</span>
+              <span className="stat-value">₹{stats?.totalRevenue?.toLocaleString()}</span>
+              <div className="stat-sub">
+                <span className="pill gold">{stats?.premiumUsers} Premium Users</span>
+              </div>
+            </div>
+            <div className="stat-card">
+              <span className="stat-label">Platform Growth</span>
+              <span className="stat-value">{stats?.userCount}</span>
+              <div className="stat-sub">
+                <span className="pill">{stats?.influencerCount} Influencers</span>
+                <span className="pill">{stats?.brandCount} Brands</span>
+              </div>
+            </div>
+            <div className="stat-card warning">
+              <span className="stat-label">Moderation Queue</span>
+              <span className="stat-value">{stats?.pendingReports}</span>
+              <span className="stat-trend">Reports pending</span>
+            </div>
+            <div className="stat-card info">
+              <span className="stat-label">Marketplace Activity</span>
+              <span className="stat-value">{stats?.dealCount}</span>
+              <span className="stat-trend">Active Deals</span>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'users' && (
+          <div className="users-table-container card">
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>User</th>
+                  <th>Role</th>
+                  <th>Wallet</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {users.map(u => (
+                  <tr key={u._id}>
+                    <td>
+                      <div className="user-cell">
+                        <Avatar user={u} size="sm" />
+                        <div className="user-cell-info">
+                          <strong>{u.name || u.username}</strong>
+                          <span>@{u.username}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td><span className={`role-pill ${u.role}`}>{u.role}</span></td>
+                    <td>₹{u.walletBalance || 0}</td>
+                    <td>
+                      <span className={`status-pill ${u.isBanned ? 'banned' : 'active'}`}>
+                        {u.isBanned ? 'Banned' : 'Active'}
+                      </span>
+                    </td>
+                    <td>
+                      <div className="table-actions">
+                        <button className={`btn btn-sm ${u.isBanned ? 'btn-success' : 'btn-danger'}`} onClick={() => handleToggleBan(u._id)}>
+                          {u.isBanned ? 'Unban' : 'Ban'}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {activeTab === 'withdrawals' && (
+          <div className="withdrawals-list">
+            {withdrawals.length === 0 ? <div className="empty-state">No withdrawal requests.</div> : (
+              withdrawals.map(w => (
+                <div key={w._id} className={`payout-card ${w.status}`}>
+                  <div className="payout-info">
+                    <div className="user-mini">
+                      <Avatar user={w.user} size="sm" />
+                      <div>
+                        <strong>{w.user?.name}</strong>
+                        <span>@{w.user?.username}</span>
+                      </div>
+                    </div>
+                    <div className="payout-amount">
+                      <label>Requested Amount</label>
+                      <h3>₹{w.amount}</h3>
+                    </div>
+                    <div className="payout-method">
+                      <label>Payout via {w.payoutMethod}</label>
+                      <p>{w.payoutDetails}</p>
+                    </div>
+                  </div>
+                  <div className="payout-actions">
+                    {w.status === 'pending' ? (
+                      <>
+                        <button className="btn btn-success" onClick={() => handleWithdrawal(w._id, 'completed')}>Approve & Pay</button>
+                        <button className="btn btn-danger" onClick={() => handleWithdrawal(w._id, 'rejected')}>Reject</button>
+                      </>
+                    ) : (
+                      <span className={`status-badge ${w.status}`}>{w.status.toUpperCase()}</span>
+                    )}
+                  </div>
                 </div>
-                <div style={{ display: 'flex', gap: '8px' }}>
+              ))
+            )}
+          </div>
+        )}
+
+        {activeTab === 'verifications' && (
+          <div className="verifications-grid">
+            {verifications.length === 0 ? <div className="empty-state">No pending verifications.</div> : (
+              verifications.map(v => (
+                <div key={v._id} className="verification-card card">
+                  <Avatar user={v} size="lg" />
+                  <h3>{v.name}</h3>
+                  <p>@{v.username}</p>
+                  <div className="v-stats">
+                    <span>{v.followers?.length} Followers</span>
+                    <span>{v.category}</span>
+                  </div>
+                  <button className="btn btn-primary w-full" onClick={() => handleVerify(v._id)}>Verify Creator</button>
+                </div>
+              ))
+            )}
+          </div>
+        )}
+
+        {activeTab === 'reports' && (
+          <div className="reports-queue">
+            {reports.map(report => (
+              <div key={report._id} className={`report-card-admin status-${report.status}`}>
+                <div className="report-main">
+                  <div className="report-header-admin">
+                    <span className={`status-pill ${report.status}`}>{report.status}</span>
+                    <span className="report-type">{report.targetType} Report</span>
+                  </div>
+                  <h3 className="report-reason">{report.reason}</h3>
+                  <p className="report-desc">{report.description}</p>
+                </div>
+                <div className="report-actions-admin">
                   {report.status === 'pending' && (
                     <>
-                      <button className="btn btn-sm btn-success" onClick={() => handleResolveReport(report._id, 'resolved')}>Resolve</button>
-                      <button className="btn btn-sm btn-ghost" onClick={() => handleResolveReport(report._id, 'dismissed')}>Dismiss</button>
+                      <button className="btn btn-success" onClick={() => handleResolveReport(report._id, 'resolved')}>Resolve</button>
+                      <button className="btn btn-ghost" onClick={() => handleResolveReport(report._id, 'dismissed')}>Dismiss</button>
                     </>
                   )}
                 </div>
               </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', paddingTop: '1rem', borderTop: '1px solid #f5f5f5' }}>
-                <div>
-                  <label style={{ fontSize: '12px', color: '#999', display: 'block', marginBottom: '4px' }}>Reporter</label>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Avatar user={report.reporter} size="xs" />
-                    <span style={{ fontSize: '14px' }}>{report.reporter?.username}</span>
-                  </div>
-                </div>
-                {report.targetUser && (
-                  <div>
-                    <label style={{ fontSize: '12px', color: '#999', display: 'block', marginBottom: '4px' }}>Target User</label>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <Avatar user={report.targetUser} size="xs" />
-                      <span style={{ fontSize: '14px' }}>{report.targetUser?.username}</span>
-                      <button 
-                        className={`btn btn-xs ${report.targetUser.isBanned ? 'btn-success' : 'btn-danger'}`}
-                        onClick={() => handleToggleBan(report.targetUser._id)}
-                        style={{ marginLeft: 'auto' }}
-                      >
-                        {report.targetUser.isBanned ? 'Unban' : 'Ban'}
-                      </button>
-                    </div>
-                  </div>
-                )}
-                {report.targetPost && (
-                  <div style={{ gridColumn: 'span 2', marginTop: '8px' }}>
-                    <label style={{ fontSize: '12px', color: '#999', display: 'block', marginBottom: '4px' }}>Target Post</label>
-                    <div style={{ padding: '12px', background: '#f9fafb', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontSize: '13px', color: '#444' }}>{report.targetPost.text?.slice(0, 100)}...</span>
-                      <button className="btn btn-xs btn-danger" onClick={() => handleDeletePost(report.targetPost._id)}>Delete Post</button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {activeTab === 'users' && (
-        <div style={{ background: 'white', borderRadius: '12px', border: '1px solid #eee', overflow: 'hidden' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead>
-              <tr style={{ background: '#f9fafb', borderBottom: '1px solid #eee' }}>
-                <th style={{ padding: '1rem', textAlign: 'left', fontSize: '13px', color: '#666' }}>User</th>
-                <th style={{ padding: '1rem', textAlign: 'left', fontSize: '13px', color: '#666' }}>Role</th>
-                <th style={{ padding: '1rem', textAlign: 'left', fontSize: '13px', color: '#666' }}>Joined</th>
-                <th style={{ padding: '1rem', textAlign: 'right', fontSize: '13px', color: '#666' }}>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.map(u => (
-                <tr key={u._id} style={{ borderBottom: '1px solid #f5f5f5' }}>
-                  <td style={{ padding: '1rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <Avatar user={u} size="sm" />
-                      <div>
-                        <div style={{ fontWeight: 600, fontSize: '14px' }}>{u.name || u.username}</div>
-                        <div style={{ fontSize: '12px', color: '#888' }}>@{u.username}</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td style={{ padding: '1rem', fontSize: '14px', textTransform: 'capitalize' }}>{u.role}</td>
-                  <td style={{ padding: '1rem', fontSize: '14px', color: '#666' }}>{new Date(u.createdAt).toLocaleDateString()}</td>
-                  <td style={{ padding: '1rem', textAlign: 'right' }}>
-                    {u.role !== 'admin' && (
-                      <button 
-                        className={`btn btn-sm ${u.isBanned ? 'btn-success' : 'btn-danger'}`}
-                        onClick={() => handleToggleBan(u._id)}
-                      >
-                        {u.isBanned ? "Unban User" : "Ban User"}
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
 
-function StatCard({ title, value, color }) {
-  return (
-    <div style={{ 
-      padding: '1.5rem', 
-      background: 'white', 
-      borderRadius: '16px', 
-      border: '1px solid #eee',
-      boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
-    }}>
-      <h4 style={{ color: '#666', fontSize: '13px', marginBottom: '8px' }}>{title}</h4>
-      <div style={{ fontSize: '28px', fontWeight: 800, color: color }}>{value || 0}</div>
-    </div>
-  );
-}

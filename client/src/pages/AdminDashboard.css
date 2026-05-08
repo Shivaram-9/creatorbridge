@@ -1,0 +1,262 @@
+.admin-page {
+  padding: 40px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.admin-header h1 {
+  font-size: 32px;
+  font-weight: 900;
+  margin-bottom: 4px;
+}
+
+.admin-header p {
+  color: #64748b;
+  margin: 0;
+}
+
+.admin-tabs {
+  display: flex;
+  gap: 32px;
+  border-bottom: 2px solid #f1f5f9;
+  margin-bottom: 32px;
+}
+
+.admin-tabs button {
+  padding: 16px 8px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  font-weight: 700;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.admin-tabs button.active {
+  color: #3b82f6;
+  border-bottom-color: #3b82f6;
+}
+
+.tab-badge {
+  position: absolute;
+  top: 8px;
+  right: -12px;
+  background: #ef4444;
+  color: white;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 10px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.stat-card {
+  padding: 32px;
+  background: white;
+  border-radius: 24px;
+  border: 1px solid #f1f5f9;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.stat-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: #64748b;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.stat-value {
+  display: block;
+  font-size: 48px;
+  font-weight: 900;
+  color: #0f172a;
+  margin-bottom: 12px;
+}
+
+.stat-sub {
+  display: flex;
+  gap: 8px;
+}
+
+.pill {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  background: #f1f5f9;
+  border-radius: 100px;
+}
+
+/* Reports Queue */
+.reports-queue {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.report-card-admin {
+  background: white;
+  border-radius: 20px;
+  border: 1px solid #f1f5f9;
+  padding: 24px;
+  display: flex;
+  justify-content: space-between;
+  gap: 32px;
+}
+
+.report-card-admin.status-pending {
+  border-left: 6px solid #f59e0b;
+}
+
+.report-header-admin {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.status-pill {
+  padding: 4px 10px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.status-pill.pending { background: #fff7ed; color: #9a3412; }
+.status-pill.resolved { background: #f0fdf4; color: #166534; }
+.status-pill.banned { background: #fef2f2; color: #991b1b; }
+.status-pill.active { background: #f0fdf4; color: #166534; }
+
+.report-reason {
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.report-entities {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.entity label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: #94a3b8;
+  margin-bottom: 8px;
+}
+
+.user-mini {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ban-status {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: #dcfce7;
+  color: #166534;
+}
+
+.ban-status.banned {
+  background: #fecdd3;
+  color: #991b1b;
+}
+
+.report-actions-admin {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 150px;
+}
+
+/* User Table */
+.users-table-container {
+  background: white;
+  border-radius: 24px;
+  border: 1px solid #f1f5f9;
+  overflow: hidden;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-table th {
+  text-align: left;
+  padding: 20px;
+  background: #f8fafc;
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 700;
+}
+
+.admin-table td {
+  padding: 20px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.user-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-cell-info strong {
+  display: block;
+  font-size: 15px;
+}
+
+.user-cell-info span {
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+.role-pill {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 100px;
+  text-transform: capitalize;
+}
+
+.role-pill.influencer { background: #eff6ff; color: #3b82f6; }
+.role-pill.brand { background: #f0fdf4; color: #10b981; }
+
+.table-actions {
+  display: flex;
+  gap: 8px;
+}
+
+@media (max-width: 800px) {
+  .report-card-admin {
+    flex-direction: column;
+  }
+  .report-entities {
+    grid-template-columns: 1fr;
+  }
+}

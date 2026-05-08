@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { User } from "../models/User.js";
 import { Notification } from "../models/Notification.js";
+import { AlignRequest } from "../models/AlignRequest.js";
 import { authMiddleware } from "../middleware/auth.js";
 import { profileUpload } from "../middleware/upload.js";
 
@@ -98,6 +99,37 @@ usersRouter.post("/follow/:id", async (req, res) => {
 
     if (targetId === currentId) {
       return res.status(400).json({ error: "You cannot follow yourself" });
+    }
+
+    const targetUser = await User.findById(targetId);
+    if (!targetUser) return res.status(404).json({ error: "User not found" });
+
+    // Block Check (Prompt-6)
+    if (targetUser.blockedUsers.includes(currentId) || targetUser.blockedBy.includes(currentId)) {
+      return res.status(403).json({ error: "You cannot follow this user" });
+    }
+
+    // Private Account Check (Prompt-6)
+    if (targetUser.isPrivate) {
+      const existing = await AlignRequest.findOne({ sender: currentId, receiver: targetId });
+      if (existing) {
+        if (existing.status === "pending") return res.status(400).json({ error: "Request already pending" });
+        if (existing.status === "accepted") return res.status(400).json({ error: "Already aligned" });
+        // If rejected, allow re-requesting? For now yes.
+        existing.status = "pending";
+        await existing.save();
+      } else {
+        await AlignRequest.create({ sender: currentId, receiver: targetId });
+      }
+
+      await Notification.create({
+        user: targetId,
+        sender: currentId,
+        type: "align_request",
+        message: "requested to align with you",
+      });
+
+      return res.json({ message: "Align request sent", requested: true });
     }
 
     // Add target to current user's following
@@ -198,7 +230,13 @@ usersRouter.delete("/me/portfolio/:itemId", async (req, res) => {
 usersRouter.get("/", async (req, res) => {
   try {
     const { category, role, verified } = req.query;
-    const filter = { _id: { $ne: req.userId }, isBanned: { $ne: true } };
+    const filter = { 
+      _id: { $ne: req.userId }, 
+      isBanned: { $ne: true },
+      isDiscoverable: true,
+      blockedBy: { $ne: req.userId },
+      blockedUsers: { $ne: req.userId }
+    };
     
     if (category && String(category).trim()) {
       filter.category = new RegExp(String(category).trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
@@ -230,6 +268,8 @@ usersRouter.get("/search", async (req, res) => {
     const filter = {
       _id: { $ne: req.userId },
       isBanned: { $ne: true },
+      blockedBy: { $ne: req.userId },
+      blockedUsers: { $ne: req.userId },
       $or: [
         { name: regex },
         { username: regex },
@@ -259,7 +299,13 @@ usersRouter.get("/search", async (req, res) => {
 /** Special Discovery Segments */
 usersRouter.get("/discover/trending", async (req, res) => {
   try {
-    const users = await User.find({ _id: { $ne: req.userId }, isBanned: { $ne: true } })
+    const users = await User.find({ 
+      _id: { $ne: req.userId }, 
+      isBanned: { $ne: true },
+      isDiscoverable: true,
+      blockedBy: { $ne: req.userId },
+      blockedUsers: { $ne: req.userId }
+    })
       .select("-password")
       .sort({ followers: -1, profileViews: -1 })
       .limit(10)
@@ -275,7 +321,10 @@ usersRouter.get("/discover/verified", async (req, res) => {
     const users = await User.find({ 
       _id: { $ne: req.userId }, 
       isVerified: true,
-      isBanned: { $ne: true } 
+      isBanned: { $ne: true },
+      isDiscoverable: true,
+      blockedBy: { $ne: req.userId },
+      blockedUsers: { $ne: req.userId }
     })
       .select("-password")
       .limit(15)
@@ -291,7 +340,10 @@ usersRouter.get("/discover/brands", async (req, res) => {
     const users = await User.find({ 
       _id: { $ne: req.userId }, 
       role: "brand",
-      isBanned: { $ne: true } 
+      isBanned: { $ne: true },
+      isDiscoverable: true,
+      blockedBy: { $ne: req.userId },
+      blockedUsers: { $ne: req.userId }
     })
       .select("-password")
       .limit(15)
@@ -307,7 +359,10 @@ usersRouter.get("/discover/suggested", async (req, res) => {
     const me = await User.findById(req.userId);
     const filter = { 
       _id: { $ne: req.userId, $nin: me.following },
-      isBanned: { $ne: true } 
+      isBanned: { $ne: true },
+      isDiscoverable: true,
+      blockedBy: { $ne: req.userId },
+      blockedUsers: { $ne: req.userId }
     };
     if (me.category) {
       filter.category = me.category;
@@ -319,7 +374,10 @@ usersRouter.get("/discover/suggested", async (req, res) => {
     if (users.length < 5) {
       const more = await User.find({ 
         _id: { $ne: req.userId, $nin: me.following },
-        isBanned: { $ne: true }
+        isBanned: { $ne: true },
+        isDiscoverable: true,
+        blockedBy: { $ne: req.userId },
+        blockedUsers: { $ne: req.userId }
       })
       .select("-password")
       .limit(10)
@@ -343,6 +401,12 @@ usersRouter.get("/:id", async (req, res) => {
     }
     const user = await User.findById(req.params.id).select("-password");
     if (!user) return res.status(404).json({ error: "User not found" });
+
+    // Block Check (Prompt-6)
+    if (user.blockedUsers.includes(req.userId) || user.blockedBy.includes(req.userId)) {
+      return res.status(403).json({ error: "This user has blocked you or you have blocked them." });
+    }
+
     res.json(user);
   } catch (err) {
     console.error(err);
@@ -377,7 +441,7 @@ usersRouter.get("/:id/following", async (req, res) => {
 });
 
 // Collections
-usersRouter.get("/collections", authMiddleware, async (req, res) => {
+usersRouter.get("/collections", async (req, res) => {
   try {
     const user = await User.findById(req.userId).populate("collections.posts");
     res.json(user.collections || []);
@@ -386,7 +450,7 @@ usersRouter.get("/collections", authMiddleware, async (req, res) => {
   }
 });
 
-usersRouter.post("/collections", authMiddleware, async (req, res) => {
+usersRouter.post("/collections", async (req, res) => {
   try {
     const { name } = req.body;
     if (!name) return res.status(400).json({ error: "Name is required" });
@@ -401,7 +465,7 @@ usersRouter.post("/collections", authMiddleware, async (req, res) => {
   }
 });
 
-usersRouter.post("/collections/:colId/add", authMiddleware, async (req, res) => {
+usersRouter.post("/collections/:colId/add", async (req, res) => {
   try {
     const { postId } = req.body;
     const user = await User.findOneAndUpdate(
@@ -415,7 +479,7 @@ usersRouter.post("/collections/:colId/add", authMiddleware, async (req, res) => 
   }
 });
 
-usersRouter.delete("/collections/:colId/remove", authMiddleware, async (req, res) => {
+usersRouter.delete("/collections/:colId/remove", async (req, res) => {
   try {
     const { postId } = req.body;
     const user = await User.findOneAndUpdate(

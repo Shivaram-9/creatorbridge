@@ -27,6 +27,11 @@ const ForgotPassword = lazy(() => import("./pages/ForgotPassword.jsx"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword.jsx"));
 const VerifyEmail = lazy(() => import("./pages/VerifyEmail.jsx"));
 const UsersList = lazy(() => import("./pages/UsersList.jsx"));
+const Onboarding = lazy(() => import("./pages/Onboarding.jsx"));
+const Requests = lazy(() => import("./pages/Requests.jsx"));
+const Deals = lazy(() => import("./pages/Deals.jsx"));
+const DealDetail = lazy(() => import("./pages/DealDetail.jsx"));
+const BrandDashboard = lazy(() => import("./pages/BrandDashboard.jsx"));
 
 
 export default function App() {
@@ -39,12 +44,20 @@ export default function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
 
-        {/* Role selection — protected but outside Layout (no nav bar) */}
+        {/* Protected outside Layout */}
         <Route
           path="/select-role"
           element={
             <ProtectedRoute>
               <RoleSelect />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/onboarding"
+          element={
+            <ProtectedRoute>
+              <Onboarding />
             </ProtectedRoute>
           }
         />
@@ -76,6 +89,10 @@ export default function App() {
           <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/user/:userId/:type" element={<UsersList />} />
           <Route path="/post/:postId/likes" element={<UsersList />} />
+          <Route path="/requests" element={<Requests />} />
+          <Route path="/deals" element={<Deals />} />
+          <Route path="/deals/:dealId" element={<DealDetail />} />
+          <Route path="/brand-dashboard" element={<BrandDashboard />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/home" replace />} />

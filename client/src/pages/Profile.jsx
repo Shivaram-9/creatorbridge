@@ -9,6 +9,7 @@ import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import Avatar from "../components/Avatar.jsx";
 import VerifiedBadge from "../components/VerifiedBadge.jsx";
 import { ShareIcon, BriefcaseIcon } from "../components/Icons.jsx";
+import toast from "react-hot-toast";
 import "./Profile.css";
 
 function fmtFollowers(n) {
@@ -83,7 +84,7 @@ export default function Profile() {
       setCopyStatus(true);
       setTimeout(() => setCopyStatus(false), 2000);
     } catch {
-      alert("Failed to copy link");
+      toast.error("Failed to copy link");
     }
   };
 
@@ -107,7 +108,7 @@ export default function Profile() {
   if (loadingData) return <LoadingSpinner centered />;
 
   return (
-    <div className="profile-pro">
+    <div className="profile-pro container slide-in">
       <header className="profile-pro-header">
         <div className="profile-pro-avatar" style={{ cursor: "pointer", position: "relative" }}>
           <Avatar user={user} size="xl" />
@@ -123,10 +124,13 @@ export default function Profile() {
                 fd.append("avatar", file);
                 try {
                   const res = await api.users.updateAvatar(fd);
-                  if (!res.error) setUser(res);
-                  else alert(res.error);
+                  if (!res.error) {
+                    toast.success("Avatar updated!");
+                    setUser(res);
+                  }
+                  else toast.error(res.error);
                 } catch {
-                  alert("Failed to upload avatar");
+                  toast.error("Failed to upload avatar");
                 }
               }} 
             />

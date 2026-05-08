@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext.jsx";
 import { api } from "../services/api.js";
-import ErrorBanner from "../components/ErrorBanner.jsx";
-import LoadingSpinner from "../components/LoadingSpinner.jsx";
+import toast from "react-hot-toast";
 import "./Premium.css";
 
 const TIERS = [
@@ -36,7 +35,6 @@ const TIERS = [
 export default function Premium() {
   const { user, setUser } = useAuth();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [checkoutTier, setCheckoutTier] = useState(null);
   const [processing, setProcessing] = useState(false);
@@ -47,27 +45,60 @@ export default function Premium() {
 
   const processPayment = async () => {
     setProcessing(true);
-    setError("");
-    
-    // Simulate payment processing delay
-    await new Promise(r => setTimeout(r, 2000));
     
     try {
-      const res = await api.premium.upgrade(checkoutTier.id, `cb_txn_${Date.now()}`);
-      if (res.error) {
-        setError(res.error);
+      const order = await api.premium.createOrder(checkoutTier.id);
+      if (order.error) {
+        toast.error(order.error);
         setProcessing(false);
-      } else {
-        setUser(res);
-        setSuccess(true);
-        setCheckoutTier(null);
-        setProcessing(false);
+        return;
       }
-    } catch {
-      setError("Payment failed. Please try again.");
+
+      const options = {
+        key: "rzp_test_placeholder", // This should ideally come from backend or config
+        amount: order.amount,
+        currency: order.currency,
+        name: "CreatorBridge",
+        description: `${checkoutTier.name} Subscription`,
+        order_id: order.id,
+        handler: async (response) => {
+          const verifyRes = await api.premium.verifyPayment({
+            ...response,
+            tier: checkoutTier.id
+          });
+
+          if (verifyRes.ok) {
+            toast.success(`Successfully upgraded to ${checkoutTier.name}!`);
+            setUser(verifyRes.user);
+            setSuccess(true);
+            setCheckoutTier(null);
+          } else {
+            toast.error(verifyRes.error || "Payment verification failed");
+          }
+          setProcessing(false);
+        },
+        prefill: {
+          name: user.name,
+          email: user.email,
+        },
+        theme: {
+          color: "#0f172a",
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.on("payment.failed", (response) => {
+        toast.error("Payment failed: " + response.error.description);
+        setProcessing(false);
+      });
+      rzp.open();
+    } catch (err) {
+      console.error(err);
+      toast.error("Checkout failed. Please try again.");
       setProcessing(false);
     }
   };
+
 
   if (success) {
     return (
@@ -148,8 +179,6 @@ export default function Premium() {
         <h1>Elevate Your Presence</h1>
         <p>Join the elite tier of creators and brands on CreatorBridge.</p>
       </header>
-
-      <ErrorBanner message={error} onDismiss={() => setError("")} />
 
       {user?.isPremium && (
         <div className="current-plan-banner gold-gradient">

@@ -10,6 +10,7 @@ import MediaGallery from "./MediaGallery.jsx";
 import "./PostCard.css";
 import Lightbox from "./Lightbox.jsx";
 import CollectionModal from "./CollectionModal.jsx";
+import toast from "react-hot-toast";
 
 const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
   const { user, setUser } = useAuth();
@@ -51,13 +52,13 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
     try {
       const res = await api.posts.remove(post._id);
       if (res?.error) {
-        alert(res.error);
+        toast.error(res.error);
         setIsDeleting(false);
       } else {
         onDelete?.(post._id);
       }
     } catch {
-      alert("Failed to delete post");
+      toast.error("Failed to delete post");
       setIsDeleting(false);
     }
   };
@@ -65,8 +66,11 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
   const handlePin = async () => {
     try {
       const res = await api.posts.pin(post._id);
-      if (res.error) alert(res.error);
-      else onUpdate?.(res);
+      if (res.error) toast.error(res.error);
+      else {
+        toast.success(post.isPinned ? "Unpinned" : "Pinned to Profile");
+        onUpdate?.(res);
+      }
     } catch (err) {
       alert("Failed to pin post");
     }
@@ -113,6 +117,7 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
   const handleShare = () => {
     const postUrl = `${window.location.origin}/post/${post._id}`;
     navigator.clipboard.writeText(postUrl);
+    toast.success("Link copied to clipboard");
     setShareStatus("Copied!");
     setTimeout(() => setShareStatus("Share"), 2000);
   };
@@ -161,7 +166,7 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
   }, [post.media, post.image]);
 
   return (
-    <div className={`post-card ${post.isPinned ? "pinned" : ""}`}>
+    <div className={`post-card slide-in ${post.isPinned ? "pinned" : ""}`}>
       <div className="post-header">
         <Avatar user={post.user} size="md" onClick={() => navigate(`/user/${post.user?._id}`)} />
         <div className="post-info">
@@ -281,7 +286,7 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
         )}
       </div>
 
-      {showReportModal && <ReportModal targetPost={post._id} onClose={() => setShowReportModal(false)} />}
+      {showReportModal && <ReportModal targetType="post" targetId={post._id} onClose={() => setShowReportModal(false)} />}
       {showCollectionModal && <CollectionModal postId={post._id} onClose={() => setShowCollectionModal(false)} />}
     </div>
   );

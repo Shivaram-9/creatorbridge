@@ -14,19 +14,22 @@ export default function Analytics() {
   const [profileData, setProfileData] = useState(null);
   const [postsData, setPostsData] = useState(null);
   const [campaignsData, setCampaignsData] = useState(null);
+  const [aiInsights, setAiInsights] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const [profile, posts, campaigns] = await Promise.all([
+        const [profile, posts, campaigns, insights] = await Promise.all([
           api.analytics.getProfile(),
           api.analytics.getPosts(),
-          api.analytics.getCampaigns()
+          api.analytics.getCampaigns(),
+          api.analytics.getInsights()
         ]);
         setProfileData(profile);
         setPostsData(posts);
         setCampaignsData(campaigns);
+        setAiInsights(insights.insights || []);
       } catch (err) {
         console.error("Analytics fetch error:", err);
       } finally {
@@ -58,9 +61,9 @@ export default function Analytics() {
   return (
     <div className="analytics-dashboard container slide-in">
       <header className="dashboard-header">
-        <div className="header-badge">REAL-TIME DATA</div>
-        <h1>Professional Insights</h1>
-        <p>Real-time performance tracking and audience metrics</p>
+        <div className="header-badge">AI ANALYTICS ENABLED</div>
+        <h1>Performance Intelligence</h1>
+        <p>Real-time tracking powered by CreatorBridge AI Discovery.</p>
       </header>
 
       {/* Overview Cards */}
@@ -70,6 +73,26 @@ export default function Analytics() {
         <StatCard title="Followers" value={profileData?.followers || 0} change="+54" icon="👥" />
         <StatCard title="Profile Views" value={profileData?.profileViews || 0} change="+18%" icon="👤" />
       </div>
+
+      {/* AI Insight Cards (Prompt-7) */}
+      <section className="ai-insights-section">
+        <h2 className="section-title">AI Engagement Insights</h2>
+        <div className="insights-grid">
+          {aiInsights.map((insight, idx) => (
+            <div key={idx} className={`insight-card ${insight.type}`}>
+              <div className="insight-header">
+                <span className="insight-icon">
+                  {insight.type === 'time' ? '⏰' : insight.type === 'category' ? '🏷️' : '🚀'}
+                </span>
+                <span className="insight-type-label">{insight.type.toUpperCase()}</span>
+              </div>
+              <h3>{insight.title}</h3>
+              <div className="insight-value">{insight.value}</div>
+              <p>{insight.description}</p>
+            </div>
+          ))}
+        </div>
+      </section>
 
       <div className="charts-section">
         {/* Growth Chart */}
