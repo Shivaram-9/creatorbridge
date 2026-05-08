@@ -214,6 +214,7 @@ export const api = {
     pin: (postId) => request(`/posts/pin/${postId}`, { method: "PATCH" }),
     archive: (postId) => request(`/posts/archive/${postId}`, { method: "PATCH" }),
     update: (postId, body) => request(`/posts/${postId}`, { method: "PATCH", body }),
+    getLikes: (postId) => request(`/posts/${postId}/likes`),
   },
   search: {
     users: (q, options = {}) => request(`/search/users?q=${encodeURIComponent(q || "")}`, options),
@@ -256,6 +257,12 @@ export const api = {
   collaborations: {
     list: () => request("/collaborations"),
     updateStatus: (id, status) => request(`/collaborations/status/${id}`, { method: "PATCH", body: { status } }),
+  },
+  premium: {
+    getStats: () => request("/premium/stats"),
+    getTransactions: () => request("/premium/transactions"),
+    upgrade: (tier, transactionId) => request("/premium/upgrade", { method: "POST", body: { tier, transactionId } }),
+    addEarnings: (amount, description) => request("/premium/add-earnings", { method: "POST", body: { amount, description } }),
   },
   BASE_URL,
   getResolvedApiOrigin: () => BASE_URL,

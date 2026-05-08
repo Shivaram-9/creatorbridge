@@ -228,6 +228,12 @@ export default function Navbar({
                         <Link to="/saved" className="dropdown-item" onClick={() => setMenuOpen(false)}>
                           Saved Posts
                         </Link>
+                        <Link to="/premium" className="dropdown-item" style={{ color: 'var(--accent)', fontWeight: 600 }} onClick={() => setMenuOpen(false)}>
+                          ⭐ Upgrade to Premium
+                        </Link>
+                        <Link to="/earnings" className="dropdown-item" onClick={() => setMenuOpen(false)}>
+                          💰 My Earnings
+                        </Link>
                         <Link to="/analytics" className="dropdown-item" onClick={() => setMenuOpen(false)}>
                           Analytics
                         </Link>

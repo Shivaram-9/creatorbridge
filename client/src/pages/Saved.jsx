@@ -34,14 +34,9 @@ export default function Saved() {
     return {
       ...post,
       id: post._id,
-      username: post.user?.username || post.user?.name || "User",
-      avatar: post.user?.avatar || null,
-      isVerified: post.user?.isVerified || false,
-      content: post.text,
-      image: post.image ? (post.image.startsWith('http') ? post.image : `${BASE_URL}${post.image}`) : null,
-      time: new Date(post.createdAt).toLocaleString(),
-      likes: post.likes || [],
-      comments: post.comments || []
+      content: post.content || post.text,
+      // PostCard already handles BASE_URL for media, so we just pass the raw data
+      // but we need to ensure the structure is what PostCard expects if it's slightly different
     };
   };
 

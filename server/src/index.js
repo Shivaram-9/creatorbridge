@@ -16,6 +16,7 @@ import { adminRouter } from "./routes/admin.js";
 import { analyticsRouter } from "./routes/analytics.js";
 import { campaignsRouter } from "./routes/campaigns.js";
 import { collaborationsRouter } from "./routes/collaborations.js";
+import { premiumRouter } from "./routes/premium.js";
 import { Message } from "./models/Message.js";
 import helmet from "helmet";
 import { apiLimiter } from "./middleware/security.js";
@@ -58,6 +59,7 @@ app.use("/api/admin", adminRouter);
 app.use("/api/analytics", analyticsRouter);
 app.use("/api/campaigns", campaignsRouter);
 app.use("/api/collaborations", collaborationsRouter);
+app.use("/api/premium", premiumRouter);
 
 // Serve static uploads
 app.use("/uploads", express.static("uploads"));

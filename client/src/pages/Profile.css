@@ -12,6 +12,31 @@
 
 .profile-pro-avatar {
   flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.avatar-edit-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.profile-pro-avatar:hover .avatar-edit-overlay {
+  opacity: 1;
 }
 
 .profile-pro-info {

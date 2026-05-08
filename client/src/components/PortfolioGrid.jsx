@@ -1,8 +1,8 @@
 import { useState } from "react";
+import { BASE_URL } from "../config/api.js";
 
 /**
  * Instagram-style portfolio grid with lightbox.
- *   <PortfolioGrid items={[{_id, url, caption, mediaType}]} onDelete={(id) => ...} />
  */
 export default function PortfolioGrid({ items = [], onDelete }) {
   const [viewIdx, setViewIdx] = useState(null);
@@ -10,6 +10,13 @@ export default function PortfolioGrid({ items = [], onDelete }) {
   if (items.length === 0) return null;
 
   const current = viewIdx !== null ? items[viewIdx] : null;
+
+  const getMediaUrl = (item) => {
+    const url = item.url || (item.media && item.media[0]) || item.image;
+    if (!url) return "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=400";
+    if (url.startsWith("http")) return url;
+    return `${BASE_URL}${url}`;
+  };
 
   function prev(e) {
     e.stopPropagation();
@@ -30,7 +37,7 @@ export default function PortfolioGrid({ items = [], onDelete }) {
             type="button"
             className="portfolio-cell"
             onClick={() => setViewIdx(idx)}
-            aria-label={item.caption || `Post ${idx + 1}`}
+            aria-label={item.caption || item.content || `Post ${idx + 1}`}
           >
             {item.mediaType === "video" ? (
               <div className="portfolio-cell__video-thumb">
@@ -38,8 +45,8 @@ export default function PortfolioGrid({ items = [], onDelete }) {
               </div>
             ) : (
               <img 
-                src={item.url} 
-                alt={item.caption || ""} 
+                src={getMediaUrl(item)} 
+                alt={item.caption || item.content || ""} 
                 className="portfolio-cell__img" 
                 loading="lazy" 
                 style={{ transition: 'opacity 0.3s' }}
@@ -69,11 +76,11 @@ export default function PortfolioGrid({ items = [], onDelete }) {
 
             <div className="lightbox__media">
               {current.mediaType === "video" ? (
-                <video src={current.url} controls className="lightbox__video" />
+                <video src={getMediaUrl(current)} controls className="lightbox__video" />
               ) : (
                 <img 
-                  src={current.url} 
-                  alt={current.caption || ""} 
+                  src={getMediaUrl(current)} 
+                  alt={current.caption || current.content || ""} 
                   className="lightbox__img" 
                   onError={(e) => {
                     e.target.onerror = null;

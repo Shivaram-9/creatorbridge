@@ -4,6 +4,7 @@ import { api } from "../services/api.js";
 import Avatar from "../components/Avatar.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import ErrorBanner from "../components/ErrorBanner.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
 
 export default function UsersList() {
   const { userId, type, postId } = useParams(); // type can be 'followers', 'following', or 'likes' (for posts)
@@ -71,34 +72,67 @@ export default function UsersList() {
         ) : (
           <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
             {users.map(u => (
-              <div 
-                key={u._id} 
-                className="user-list-row" 
-                style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  padding: '1rem', 
-                  borderBottom: '1px solid var(--border)',
-                  cursor: 'pointer'
-                }}
-                onClick={() => navigate(`/user/${u._id}`)}
-              >
-                <Avatar user={u} size="md" />
-                <div style={{ marginLeft: '1rem', flex: 1 }}>
-                  <div style={{ fontWeight: 700, fontSize: '0.95rem' }}>{u.username || u.name}</div>
-                  <div className="muted" style={{ fontSize: '0.85rem' }}>{u.category || u.role}</div>
-                </div>
-                <button 
-                  className="btn btn-secondary btn-sm"
-                  onClick={(e) => { e.stopPropagation(); navigate(`/user/${u._id}`); }}
-                >
-                  View
-                </button>
-              </div>
+              <UserRow key={u._id} user={u} onUpdate={loadData} />
             ))}
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+function UserRow({ user, onUpdate }) {
+  const navigate = useNavigate();
+  const { user: me, setUser: setMe } = useAuth();
+  const [busy, setBusy] = useState(false);
+  const isFollowing = me?.following?.includes(user._id);
+
+  async function handleFollow(e) {
+    e.stopPropagation();
+    if (!me) return;
+    setBusy(true);
+    try {
+      const action = isFollowing ? api.users.unfollow : api.users.follow;
+      const res = await action(user._id);
+      if (!res.error) {
+        setMe(res);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div 
+      className="user-list-row" 
+      style={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        padding: '1rem', 
+        borderBottom: '1px solid var(--border)',
+        cursor: 'pointer'
+      }}
+      onClick={() => navigate(`/user/${user._id}`)}
+    >
+      <Avatar user={user} size="md" />
+      <div style={{ marginLeft: '1rem', flex: 1 }}>
+        <div style={{ fontWeight: 700, fontSize: '0.95rem' }}>{user.username || user.name}</div>
+        <div className="muted" style={{ fontSize: '0.8rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '200px' }}>
+          {user.bio || user.category || user.role}
+        </div>
+      </div>
+      {me && me._id !== user._id && (
+        <button 
+          className={`btn btn-sm ${isFollowing ? 'btn-secondary' : 'btn-primary'}`}
+          onClick={handleFollow}
+          disabled={busy}
+          style={{ minWidth: '80px' }}
+        >
+          {busy ? "..." : isFollowing ? "Aligned" : "Align"}
+        </button>
+      )}
     </div>
   );
 }

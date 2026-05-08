@@ -1,10 +1,11 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 import OfflineBanner from "./OfflineBanner.jsx";
 import Navbar from "./Navbar.jsx";
 import BottomNav from "./BottomNav.jsx";
 import { api } from "../services/api.js";
+import { connectSocket, getSocket } from "../services/socket.js";
 
 export default function Layout() {
   const { user, logout } = useAuth();
@@ -15,35 +16,58 @@ export default function Layout() {
   const [searchQuery, setSearchQuery] = useState("");
   const menuRef = useRef(null);
 
+  const fetchUnreadMessages = useCallback(async () => {
+    try {
+      const conversations = await api.messages.list();
+      if (Array.isArray(conversations)) {
+        const total = conversations.reduce((sum, c) => sum + (c.unreadCount || 0), 0);
+        setMsgUnreadTotal(total);
+      }
+    } catch { /* silent */ }
+  }, []);
+
+  const fetchNotifications = useCallback(async () => {
+    try {
+      const data = await api.notifications.list();
+      if (Array.isArray(data)) setNotifications(data);
+    } catch { /* silent */ }
+  }, []);
+
+  /* Socket integration */
+  useEffect(() => {
+    if (!user) return;
+    const socket = connectSocket();
+    if (!socket) return;
+
+    const onMessage = (msg) => {
+      // If we receive a message that isn't from us, fetch unread count again
+      if (msg.sender?._id !== user._id) {
+        fetchUnreadMessages();
+      }
+    };
+
+    socket.on("message", onMessage);
+    socket.on("notification", fetchNotifications);
+
+    return () => {
+      socket.off("message", onMessage);
+      socket.off("notification", fetchNotifications);
+    };
+  }, [user, fetchUnreadMessages, fetchNotifications]);
+
   /* Poll notifications */
   useEffect(() => {
     if (!user) return;
-    async function fetchNotifications() {
-      try {
-        const data = await api.notifications.list();
-        if (Array.isArray(data)) setNotifications(data);
-      } catch { /* silent */ }
-    }
     
-    async function fetchUnreadMessages() {
-      try {
-        const conversations = await api.messages.list();
-        if (Array.isArray(conversations)) {
-          const total = conversations.reduce((sum, c) => sum + (c.unreadCount || 0), 0);
-          setMsgUnreadTotal(total);
-        }
-      } catch { /* silent */ }
-    }
-
     fetchNotifications();
     fetchUnreadMessages();
-    const intervalNotif = setInterval(fetchNotifications, 30_000);
-    const intervalMsg = setInterval(fetchUnreadMessages, 15_000); // Poll messages faster
+    const intervalNotif = setInterval(fetchNotifications, 60_000);
+    const intervalMsg = setInterval(fetchUnreadMessages, 60_000); 
     return () => {
       clearInterval(intervalNotif);
       clearInterval(intervalMsg);
     };
-  }, [user]);
+  }, [user, fetchUnreadMessages, fetchNotifications]);
 
   const unreadCount = notifications.filter(n => !n.read).length;
 

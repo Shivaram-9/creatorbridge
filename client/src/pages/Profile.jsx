@@ -109,14 +109,35 @@ export default function Profile() {
   return (
     <div className="profile-pro">
       <header className="profile-pro-header">
-        <div className="profile-pro-avatar">
+        <div className="profile-pro-avatar" style={{ cursor: "pointer", position: "relative" }}>
           <Avatar user={user} size="xl" />
+          <label className="avatar-edit-overlay">
+            <input 
+              type="file" 
+              hidden 
+              accept="image/*" 
+              onChange={async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const fd = new FormData();
+                fd.append("avatar", file);
+                try {
+                  const res = await api.users.updateAvatar(fd);
+                  if (!res.error) setUser(res);
+                  else alert(res.error);
+                } catch {
+                  alert("Failed to upload avatar");
+                }
+              }} 
+            />
+            <span>Edit</span>
+          </label>
         </div>
         <div className="profile-pro-info">
           <div className="profile-pro-top">
             <h1 className="pro-username">
               {user?.username}
-              {user?.isVerified && <VerifiedBadge size="md" />}
+              {(user?.isVerified || user?.isPremium) && <VerifiedBadge size="md" tier={user?.premiumTier} />}
             </h1>
             <div className="pro-actions">
               <button className="btn-pro" onClick={() => setIsEditing(true)}>Edit Profile</button>
@@ -125,8 +146,12 @@ export default function Profile() {
           </div>
           <div className="pro-stats">
             <div className="pro-stat"><strong>{posts.length}</strong> posts</div>
-            <div className="pro-stat"><strong>{fmtFollowers(user?.followers?.length)}</strong> aligners</div>
-            <div className="pro-stat"><strong>{fmtFollowers(user?.following?.length)}</strong> aligned</div>
+            <div className="pro-stat clickable" onClick={() => navigate(`/user/${user._id}/followers`)}>
+              <strong>{fmtFollowers(user?.followers?.length)}</strong> aligners
+            </div>
+            <div className="pro-stat clickable" onClick={() => navigate(`/user/${user._id}/following`)}>
+              <strong>{fmtFollowers(user?.following?.length)}</strong> aligned
+            </div>
           </div>
           <div className="pro-bio">
             <span className="pro-name">{user?.name}</span>
@@ -140,6 +165,7 @@ export default function Profile() {
       <div className="profile-pro-tabs">
         <button className={activeTab === "posts" ? "active" : ""} onClick={() => setActiveTab("posts")}>POSTS</button>
         <button className={activeTab === "portfolio" ? "active" : ""} onClick={() => setActiveTab("portfolio")}>PORTFOLIO</button>
+        <button className={activeTab === "tagged" ? "active" : ""} onClick={() => setActiveTab("tagged")}>TAGGED</button>
         <button className={activeTab === "collabs" ? "active" : ""} onClick={() => setActiveTab("collabs")}>COLLABS</button>
       </div>
 

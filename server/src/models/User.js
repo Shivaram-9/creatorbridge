@@ -28,6 +28,10 @@ const userSchema = new mongoose.Schema(
     following: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     savedPosts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post", default: [] }],
     isVerified: { type: Boolean, default: false }, // Platform verification (badge)
+    isPremium: { type: Boolean, default: false }, // Premium subscription status
+    premiumTier: { type: String, enum: ["none", "silver", "gold", "platinum"], default: "none" },
+    earnings: { type: Number, default: 0 }, // Total creator earnings
+    subscriptionStatus: { type: String, enum: ["active", "expired", "none"], default: "none" },
     isEmailVerified: { type: Boolean, default: false }, // Email verification status
     emailVerificationToken: { type: String },
     verificationCode: { type: String },

@@ -168,4 +168,15 @@ router.delete("/:id", authMiddleware, async (req, res) => {
   }
 });
 
+// Get users who liked a post
+router.get("/:postId/likes", async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.postId).populate("likes", "name username avatar role bio");
+    if (!post) return res.status(404).json({ error: "Post not found" });
+    res.json(post.likes || []);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 export { router as postsRouter };

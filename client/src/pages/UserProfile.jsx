@@ -9,6 +9,7 @@ import PortfolioGrid from "../components/PortfolioGrid.jsx";
 import { ShareIcon } from "../components/Icons.jsx";
 import UserListModal from "../components/UserListModal.jsx";
 import Avatar from "../components/Avatar.jsx";
+import VerifiedBadge from "../components/VerifiedBadge.jsx";
 import { PostSkeleton } from "../components/Skeleton.jsx";
 
 
@@ -185,7 +186,10 @@ export default function UserProfile() {
             <span className={`up-avatar__role-dot ${profile.role === "brand" ? "up-avatar__role-dot--brand" : ""}`} aria-label={profile.role} />
           </div>
 
-          <h1 className="up-name">{displayName}</h1>
+          <h1 className="up-name">
+            {displayName}
+            {(profile.isVerified || profile.isPremium) && <VerifiedBadge size="md" tier={profile.premiumTier} />}
+          </h1>
           {profile.username && <p className="up-username">@{profile.username}</p>}
 
           <div className="up-tags">

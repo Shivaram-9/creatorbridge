@@ -20,14 +20,13 @@ const Chat = lazy(() => import("./pages/Chat.jsx"));
 const Saved = lazy(() => import("./pages/Saved.jsx"));
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard.jsx"));
 const Analytics = lazy(() => import("./pages/Analytics.jsx"));
+const Premium = lazy(() => import("./pages/Premium.jsx"));
+const Earnings = lazy(() => import("./pages/Earnings.jsx"));
 const AdminRoute = lazy(() => import("./components/AdminRoute.jsx"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword.jsx"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword.jsx"));
 const VerifyEmail = lazy(() => import("./pages/VerifyEmail.jsx"));
 const UsersList = lazy(() => import("./pages/UsersList.jsx"));
-const Campaigns = lazy(() => import("./pages/Campaigns.jsx"));
-const CreateCampaign = lazy(() => import("./pages/CreateCampaign.jsx"));
-const Collaborations = lazy(() => import("./pages/Collaborations.jsx"));
 
 
 export default function App() {
@@ -72,10 +71,9 @@ export default function App() {
             </AdminRoute>
           } />
           <Route path="/analytics" element={<Analytics />} />
+          <Route path="/premium" element={<Premium />} />
+          <Route path="/earnings" element={<Earnings />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
-          <Route path="/campaigns" element={<Campaigns />} />
-          <Route path="/campaigns/create" element={<CreateCampaign />} />
-          <Route path="/collaborations" element={<Collaborations />} />
           <Route path="/user/:userId/:type" element={<UsersList />} />
           <Route path="/post/:postId/likes" element={<UsersList />} />
         </Route>

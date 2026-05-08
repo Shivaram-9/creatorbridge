@@ -21,10 +21,18 @@ export default function MediaGallery({ media = [] }) {
       <div className="gallery-container" style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
         {media.map((url, i) => (
           <div key={i} className="gallery-item">
-            {url.endsWith(".mp4") || url.endsWith(".mov") ? (
-              <video src={url} controls muted loop />
+            {url.toLowerCase().split('?')[0].match(/\.(mp4|mov|webm)$/) ? (
+              <video src={url} controls muted loop playsInline />
             ) : (
-              <img src={url} alt={`Media ${i}`} loading="lazy" />
+              <img 
+                src={url} 
+                alt={`Media ${i}`} 
+                loading="lazy" 
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=800";
+                }}
+              />
             )}
           </div>
         ))}
