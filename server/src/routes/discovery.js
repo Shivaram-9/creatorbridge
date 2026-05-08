@@ -65,12 +65,20 @@ discoveryRouter.get("/suggested", async (req, res) => {
  * Real-time Trending Engine
  * GET /api/discovery/trending
  */
+let trendingCache = null;
+let lastCacheUpdate = 0;
+const CACHE_DURATION = 15 * 60 * 1000; // 15 minutes
+
 discoveryRouter.get("/trending", async (req, res) => {
   try {
-    // Engagement Score Formula: likes + (comments * 2) + (saves * 3) + (views) + (shares * 5)
-    // We fetch posts from the last 7 days to keep it fresh
+    const now = Date.now();
+    if (trendingCache && (now - lastCacheUpdate < CACHE_DURATION)) {
+      return res.json(trendingCache);
+    }
+
     const lastWeek = new Date();
     lastWeek.setDate(lastWeek.getDate() - 7);
+
 
     const trendingPosts = await Post.find({
       createdAt: { $gte: lastWeek },
@@ -100,11 +108,16 @@ discoveryRouter.get("/trending", async (req, res) => {
     .limit(10)
     .lean();
 
-    res.json({ trendingPosts, trendingCreators, trendingBrands });
+    const responseData = { trendingPosts, trendingCreators, trendingBrands };
+    trendingCache = responseData;
+    lastCacheUpdate = Date.now();
+
+    res.json(responseData);
   } catch (err) {
     res.status(500).json({ error: "Trending calculation failed" });
   }
 });
+
 
 /**
  * Smart Search Ranking
