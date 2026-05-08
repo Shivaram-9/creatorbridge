@@ -1,254 +1,137 @@
-import { Router } from "express";
+import express from "express";
 import { Post } from "../models/Post.js";
 import { User } from "../models/User.js";
-import { Notification } from "../models/Notification.js";
 import { authMiddleware } from "../middleware/auth.js";
-import { upload } from "../middleware/upload.js";
-import { body, validationResult } from "express-validator";
+import { postUpload } from "../middleware/upload.js";
 
-const validate = (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
-  next();
-};
+const router = express.Router();
 
-export const postsRouter = Router();
-
-postsRouter.use(authMiddleware);
-
-// Create new post
-postsRouter.post(
-  "/", 
-  upload.single("image"), 
-  [
-    body("text").optional().trim().isLength({ max: 5000 }).withMessage("Post text too long (max 5000 chars)"),
-    validate
-  ],
-  async (req, res) => {
-    try {
-      const { text } = req.body;
-      let image = "";
-
-      if (req.file) {
-        image = `/uploads/${req.file.filename}`;
-      }
-
-      const post = await Post.create({
-        user: req.userId,
-        text: text || "",
-        image,
-      });
-
-      await post.populate("user", "name email avatar username role");
-      res.status(201).json(post);
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ error: "Failed to create post" });
-    }
-  }
-);
-
-// Get feed posts (latest first) - from self and followed users
-postsRouter.get("/", async (req, res) => {
+// Create Post (Support multiple media)
+router.post("/", authMiddleware, postUpload.array("media", 10), async (req, res) => {
   try {
-    const user = await User.findById(req.userId);
-    if (!user) return res.status(404).json({ error: "User not found" });
-
-    // Include self + following
-    const following = Array.isArray(user.following) ? user.following : [];
-    const userIds = [req.userId, ...following];
-
-    const posts = await Post.find({ user: { $in: userIds } })
-      .populate("user", "name email avatar username role")
-      .populate("comments.user", "name username avatar")
-      .populate("likes", "name username avatar")
-      .sort({ createdAt: -1 })
-      .lean();
-    res.json(posts);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to load posts" });
-  }
-});
-
-// Delete post
-postsRouter.delete("/:id", async (req, res) => {
-  try {
-    const post = await Post.findById(req.params.id);
-    if (!post) return res.status(404).json({ error: "Post not found" });
-
-    if (post.user.toString() !== req.userId) {
-      return res.status(403).json({ error: "You can only delete your own posts" });
-    }
-
-    await Post.findByIdAndDelete(req.params.id);
-    res.json({ ok: true, message: "Post deleted" });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to delete post" });
-  }
-});
-
-// Get posts of specific user
-postsRouter.get("/user/:id", async (req, res) => {
-  try {
-    const posts = await Post.find({ user: req.params.id })
-      .populate("user", "name email avatar username role")
-      .populate("comments.user", "name username avatar")
-      .populate("likes", "name username avatar")
-      .sort({ createdAt: -1 })
-      .lean();
-    res.json(posts);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to load user posts" });
-  }
-});
-
-// Like/Unlike post
-postsRouter.post("/like/:id", async (req, res) => {
-  try {
-    const post = await Post.findById(req.params.id);
-    if (!post) return res.status(404).json({ error: "Post not found" });
-
-    const isLiked = post.likes.includes(req.userId);
-    if (isLiked) {
-      post.likes = post.likes.filter((id) => id.toString() !== req.userId);
-    } else {
-      post.likes.push(req.userId);
-    }
-
-    await post.save();
-
-    // Create notification for like
-    if (post.user.toString() !== req.userId && !isLiked) {
-      const me = await User.findById(req.userId);
-      await Notification.create({
-        user: post.user,
-        sender: req.userId,
-        type: "like",
-        post: post._id,
-        message: `${me.username || me.name} liked your post`,
-      });
-    }
-
-    const updatedPost = await Post.findById(req.params.id)
-      .populate("likes", "name username avatar")
-      .lean();
-
-    res.json({ likes: updatedPost.likes, liked: !isLiked });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to like post" });
-  }
-});
-
-// Get users who liked a post
-postsRouter.get("/likes/:id", async (req, res) => {
-  try {
-    const post = await Post.findById(req.params.id).populate("likes", "name username avatar role category");
-    if (!post) return res.status(404).json({ error: "Post not found" });
-    res.json(post.likes || []);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to load likes" });
-  }
-});
-
-// Add comment
-postsRouter.post(
-  "/comment/:id", 
-  [
-    body("text").trim().notEmpty().withMessage("Comment text is required").isLength({ max: 1000 }).withMessage("Comment too long"),
-    validate
-  ],
-  async (req, res) => {
-    try {
-      const { text } = req.body;
-      const post = await Post.findById(req.params.id);
-      if (!post) return res.status(404).json({ error: "Post not found" });
-
-      const newComment = {
-        user: req.userId,
-        text,
-      };
-
-      post.comments.push(newComment);
-      await post.save();
-
-      // Create notification for comment
-      if (post.user.toString() !== req.userId) {
-        const me = await User.findById(req.userId);
-        await Notification.create({
-          user: post.user,
-          sender: req.userId,
-          type: "comment",
-          post: post._id,
-          message: `${me.username || me.name} commented on your post`,
-        });
-      }
-
-      // Populate the newly added comment's user info
-      const updatedPost = await Post.findById(req.params.id)
-        .populate("comments.user", "name username avatar")
-        .lean();
-      
-      const addedComment = updatedPost.comments[updatedPost.comments.length - 1];
-      res.status(201).json(addedComment);
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ error: "Failed to add comment" });
-    }
-  }
-);
-
-// Toggle Save post
-postsRouter.post("/save/:id", async (req, res) => {
-  try {
-    const postId = req.params.id;
-    const uid = req.userId;
-
-    const post = await Post.findById(postId);
-    if (!post) return res.status(404).json({ error: "Post not found" });
-
-    const user = await User.findById(uid);
-    if (!user) return res.status(404).json({ error: "User not found" });
-
-    const isSaved = (user.savedPosts || []).some(id => id.toString() === postId);
-
-    if (isSaved) {
-      await User.findByIdAndUpdate(uid, { $pull: { savedPosts: postId } });
-      res.json({ saved: false, message: "Removed from saved" });
-    } else {
-      await User.findByIdAndUpdate(uid, { $addToSet: { savedPosts: postId } });
-      res.json({ saved: true, message: "Post saved" });
-    }
-  } catch (err) {
-    console.error("Save error:", err);
-    res.status(500).json({ error: "Server error while saving post" });
-  }
-});
-
-// Get saved posts
-postsRouter.get("/saved", async (req, res) => {
-  try {
-    const user = await User.findById(req.userId).populate({
-      path: "savedPosts",
-      populate: { path: "user", select: "name username avatar" }
-    });
-
-    if (!user) return res.status(404).json({ error: "User not found" });
-
-    // Filter out nulls (deleted posts)
-    const validPosts = (user.savedPosts || []).filter(p => p !== null);
+    const { content, category, location, hashtags, taggedUsers } = req.body;
+    const mediaFiles = req.files ? req.files.map(f => `/uploads/posts/${f.filename}`) : [];
     
-    // Sort manually if needed, or rely on original order. 
-    // Mongoose populate might not preserve order with options.sort easily in some versions.
-    validPosts.reverse(); // Show latest saved first
-
-    res.json(validPosts);
+    const post = await Post.create({
+      user: req.userId,
+      content,
+      media: mediaFiles,
+      mediaType: mediaFiles.length > 1 ? "gallery" : "image",
+      category,
+      location,
+      hashtags: hashtags ? hashtags.split(",").map(h => h.trim()) : [],
+      taggedUsers: taggedUsers ? taggedUsers.split(",") : [],
+    });
+    
+    await post.populate("user", "name avatar role");
+    res.status(201).json(post);
   } catch (err) {
-    console.error("Get saved error:", err);
-    res.status(500).json({ error: "Failed to load saved posts" });
+    res.status(400).json({ error: err.message });
   }
 });
+
+// Get Feed (exclude archived)
+router.get("/", async (req, res) => {
+  try {
+    const posts = await Post.find({ isArchived: false })
+      .populate("user", "name avatar role")
+      .sort("-isPinned -createdAt");
+    res.json(posts);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get User's Posts (including pinned first)
+router.get("/user/:userId", async (req, res) => {
+  try {
+    const posts = await Post.find({ user: req.params.userId, isArchived: false })
+      .populate("user", "name avatar role")
+      .sort("-isPinned -createdAt");
+    res.json(posts);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Pin/Unpin Post
+router.patch("/pin/:id", authMiddleware, async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    if (!post) return res.status(404).json({ error: "Post not found" });
+    if (post.user.toString() !== req.userId) return res.status(403).json({ error: "Unauthorized" });
+
+    post.isPinned = !post.isPinned;
+    await post.save();
+    res.json(post);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Archive/Unarchive Post
+router.patch("/archive/:id", authMiddleware, async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    if (!post) return res.status(404).json({ error: "Post not found" });
+    if (post.user.toString() !== req.userId) return res.status(403).json({ error: "Unauthorized" });
+
+    post.isArchived = !post.isArchived;
+    await post.save();
+    res.json(post);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Edit Post
+router.patch("/:id", authMiddleware, async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    if (!post) return res.status(404).json({ error: "Post not found" });
+    if (post.user.toString() !== req.userId) return res.status(403).json({ error: "Unauthorized" });
+
+    const { content, category, location } = req.body;
+    post.content = content || post.content;
+    post.category = category || post.category;
+    post.location = location || post.location;
+    
+    await post.save();
+    res.json(post);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Like Post
+router.post("/like/:postId", authMiddleware, async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.postId);
+    if (!post.likes.includes(req.userId)) {
+      post.likes.push(req.userId);
+      await post.save();
+    } else {
+      post.likes = post.likes.filter(id => id.toString() !== req.userId);
+      await post.save();
+    }
+    res.json(post);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Delete Post
+router.delete("/:id", authMiddleware, async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    if (!post) return res.status(404).json({ error: "Post not found" });
+    if (post.user.toString() !== req.userId) return res.status(403).json({ error: "Unauthorized" });
+
+    await post.deleteOne();
+    res.json({ message: "Post deleted" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+export { router as postsRouter };

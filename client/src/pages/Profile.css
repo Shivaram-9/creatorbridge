@@ -1,0 +1,226 @@
+.profile-pro {
+  padding: 30px;
+  max-width: 935px;
+  margin: 0 auto;
+}
+
+.profile-pro-header {
+  display: flex;
+  gap: 80px;
+  margin-bottom: 44px;
+}
+
+.profile-pro-avatar {
+  flex-shrink: 0;
+}
+
+.profile-pro-info {
+  flex: 1;
+}
+
+.profile-pro-top {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.pro-username {
+  font-size: 20px;
+  font-weight: 300;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pro-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-pro {
+  background: white;
+  border: 1px solid #dbdbdb;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pro-stats {
+  display: flex;
+  gap: 40px;
+  margin-bottom: 20px;
+}
+
+.pro-stat {
+  font-size: 16px;
+}
+
+.pro-stat strong {
+  font-weight: 600;
+}
+
+.pro-bio {
+  display: flex;
+  flex-direction: column;
+}
+
+.pro-name {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.pro-category {
+  color: #8e8e8e;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.pro-text {
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0 0 8px 0;
+}
+
+.pro-location {
+  font-size: 13px;
+  color: #8e8e8e;
+}
+
+.profile-pro-tabs {
+  border-top: 1px solid #dbdbdb;
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+}
+
+.profile-pro-tabs button {
+  background: none;
+  border: none;
+  border-top: 1px solid transparent;
+  padding: 12px 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: #8e8e8e;
+  cursor: pointer;
+  letter-spacing: 1px;
+  margin-top: -1px;
+}
+
+.profile-pro-tabs button.active {
+  color: #000;
+  border-top: 1px solid #000;
+}
+
+.pro-posts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding-top: 24px;
+}
+
+.pro-portfolio-grid {
+  padding-top: 24px;
+}
+
+.pro-collabs-list {
+  padding-top: 24px;
+}
+
+.pro-collab-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px;
+  border: 1px solid #efefef;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.pro-collab-item img {
+  width: 50px;
+  height: 50px;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.pro-collab-item h4 {
+  margin: 0 0 4px 0;
+  font-size: 15px;
+}
+
+.pro-collab-item span {
+  font-size: 12px;
+  color: #8e8e8e;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 0;
+  color: #8e8e8e;
+}
+
+.edit-modal {
+  background: white;
+  width: 90%;
+  max-width: 400px;
+  padding: 24px;
+  border-radius: 12px;
+}
+
+.edit-modal h2 {
+  margin-top: 0;
+  font-size: 20px;
+}
+
+.edit-modal form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.edit-modal input, .edit-modal textarea, .edit-modal select {
+  padding: 10px;
+  border: 1px solid #dbdbdb;
+  border-radius: 4px;
+  outline: none;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.modal-actions button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.modal-actions button:last-child {
+  background: #000;
+  color: white;
+  border: none;
+}
+
+@media (max-width: 768px) {
+  .profile-pro-header {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    text-align: center;
+  }
+  .pro-stats {
+    justify-content: center;
+    gap: 20px;
+  }
+  .profile-pro-tabs {
+    gap: 30px;
+  }
+}

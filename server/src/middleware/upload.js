@@ -65,3 +65,9 @@ export const storyUpload = multer({
   fileFilter: mediaFilter,
   limits: { fileSize: 50 * 1024 * 1024 } // 50MB
 });
+
+export const postUpload = multer({
+  storage: storageConfig("uploads/posts/"),
+  fileFilter: mediaFilter,
+  limits: { fileSize: 10 * 1024 * 1024 } // 10MB
+});

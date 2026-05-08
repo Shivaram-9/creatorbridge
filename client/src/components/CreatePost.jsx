@@ -1,93 +1,111 @@
 import { useState, useRef } from "react";
 import Avatar from "./Avatar.jsx";
+import "./CreatePost.css";
 
 export default function CreatePost({ onPost, user }) {
   const [content, setContent] = useState("");
-  const [image, setImage] = useState(null);
-  const [preview, setPreview] = useState(null);
+  const [category, setCategory] = useState("Lifestyle");
+  const [location, setLocation] = useState("");
+  const [mediaFiles, setMediaFiles] = useState([]);
+  const [previews, setPreviews] = useState([]);
   const fileInputRef = useRef(null);
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImage(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result);
-      };
-      reader.readAsDataURL(file);
+  const handleMediaChange = (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length > 0) {
+      setMediaFiles((prev) => [...prev, ...files].slice(0, 10));
+      
+      files.forEach(file => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setPreviews((prev) => [...prev, reader.result].slice(0, 10));
+        };
+        reader.readAsDataURL(file);
+      });
     }
+  };
+
+  const removeMedia = (index) => {
+    setMediaFiles(prev => prev.filter((_, i) => i !== index));
+    setPreviews(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!content.trim()) return;
+    if (!content.trim() && mediaFiles.length === 0) return;
 
-    onPost({
-      content,
-      imageFile: image,
-      image: preview,
-    });
+    const formData = new FormData();
+    formData.append("content", content);
+    formData.append("category", category);
+    formData.append("location", location);
+    mediaFiles.forEach(file => formData.append("media", file));
+
+    onPost(formData);
 
     setContent("");
-    setImage(null);
-    setPreview(null);
+    setCategory("Lifestyle");
+    setLocation("");
+    setMediaFiles([]);
+    setPreviews([]);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   return (
-    <div className="card create-post-card">
-      <div className="create-post-header">
+    <div className="create-post-pro">
+      <div className="cp-header">
         <Avatar user={user} size="md" />
-        <div className="create-post-info">
-          <p className="create-post-label">Share something with your network</p>
-        </div>
-      </div>
-      
-      <form onSubmit={handleSubmit} className="create-post-form">
         <textarea
-          className="input create-post-textarea"
-          placeholder="What's on your mind?"
+          placeholder="Share your latest project or lifestyle update..."
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          rows={3}
         />
-        
-        {preview && (
-          <div className="create-post-preview" style={{ position: 'relative', marginTop: '1rem' }}>
-            <img src={preview} alt="Preview" style={{ width: '100%', borderRadius: '8px', maxHeight: '300px', objectFit: 'cover' }} />
-            <button 
-              type="button" 
-              className="btn btn-ghost btn-sm" 
-              style={{ position: 'absolute', top: '10px', right: '10px', background: 'rgba(0,0,0,0.5)', color: 'white' }}
-              onClick={() => { setImage(null); setPreview(null); }}
-            >
-              ✕
-            </button>
-          </div>
-        )}
+      </div>
 
-        <div className="create-post-footer">
-          <div className="create-post-input-group">
-            <button 
-              type="button" 
-              className="btn btn-ghost" 
-              style={{ padding: '0.5rem' }} 
-              onClick={() => fileInputRef.current.click()}
-              aria-label="Upload image"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
-            </button>
-            <input
-              type="file"
-              ref={fileInputRef}
-              hidden
-              accept="image/*"
-              onChange={handleImageChange}
-            />
-          </div>
-          <button type="submit" className="btn btn-primary" disabled={!content.trim()}>
-            Post
+      {previews.length > 0 && (
+        <div className="cp-previews">
+          {previews.map((url, i) => (
+            <div key={i} className="cp-preview-item">
+              <img src={url} alt="" />
+              <button onClick={() => removeMedia(i)}>✕</button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="cp-form">
+        <div className="cp-options">
+          <select value={category} onChange={e => setCategory(e.target.value)}>
+            <option value="Lifestyle">Lifestyle</option>
+            <option value="Portfolio">Portfolio Project</option>
+            <option value="Collaboration">Collaboration</option>
+            <option value="Behind the Scenes">Behind the Scenes</option>
+          </select>
+          <input 
+            placeholder="Add location" 
+            value={location} 
+            onChange={e => setLocation(e.target.value)} 
+            className="cp-location-input"
+          />
+        </div>
+
+        <div className="cp-footer">
+          <button 
+            type="button" 
+            className="btn-media" 
+            onClick={() => fileInputRef.current.click()}
+          >
+            🖼️ Add Media
+          </button>
+          <input
+            type="file"
+            ref={fileInputRef}
+            hidden
+            multiple
+            accept="image/*,video/*"
+            onChange={handleMediaChange}
+          />
+          <button type="submit" className="btn-submit" disabled={!content.trim() && mediaFiles.length === 0}>
+            Post to Profile
           </button>
         </div>
       </form>

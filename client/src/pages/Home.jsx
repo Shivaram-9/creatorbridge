@@ -36,14 +36,8 @@ export default function Home() {
     loadPosts();
   }, [loadPosts]);
 
-  const handleAddPost = async (newPostData) => {
+  const handleAddPost = async (formData) => {
     try {
-      const formData = new FormData();
-      formData.append("text", newPostData.content);
-      if (newPostData.imageFile) {
-        formData.append("image", newPostData.imageFile);
-      }
-
       const res = await api.posts.create(formData);
       if (res?.error) {
         setError(res.error);
@@ -57,18 +51,11 @@ export default function Home() {
 
   const formatPost = (post) => {
     if (!post) return null;
-    const author = post.user || {};
     return {
       ...post,
-      id: post._id,
-      username: author.username || author.name || post.username || "User",
-      avatar: author.avatar || post.avatar || null,
-      isVerified: author.isVerified || post.isVerified || false,
-      content: post.text || post.content || "",
-      image: post.image ? (post.image.startsWith('http') ? post.image : `${BASE_URL}${post.image}`) : null,
-      time: post.createdAt ? new Date(post.createdAt).toLocaleString() : "Just now",
-      likes: Array.isArray(post.likes) ? post.likes : [],
-      comments: Array.isArray(post.comments) ? post.comments : []
+      username: post.user?.username || post.user?.name || "User",
+      avatar: post.user?.avatar || null,
+      isVerified: post.user?.isVerified || false,
     };
   };
 

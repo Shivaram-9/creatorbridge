@@ -1,21 +1,16 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../services/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import { CATEGORIES } from "../constants/categories.js";
-import { BASE_URL } from "../config/api.js";
 import ErrorBanner from "../components/ErrorBanner.jsx";
 import PortfolioGrid from "../components/PortfolioGrid.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
-import UserListModal from "../components/UserListModal.jsx";
 import Avatar from "../components/Avatar.jsx";
 import VerifiedBadge from "../components/VerifiedBadge.jsx";
+import { ShareIcon, BriefcaseIcon } from "../components/Icons.jsx";
+import "./Profile.css";
 
-import { ShareIcon } from "../components/Icons.jsx";
-
-
-
-/** Format followers count nicely */
 function fmtFollowers(n) {
   if (!n || n <= 0) return "0";
   if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1).replace(/\.0$/, "")}M`;
@@ -24,332 +19,182 @@ function fmtFollowers(n) {
 }
 
 export default function Profile() {
-  const { 
-    user, setUser, 
-    refreshUser
-  } = useAuth();
+  const { user, setUser } = useAuth();
   const navigate = useNavigate();
 
-  const [userPosts, setUserPosts] = useState([]);
-  const [loadingPosts, setLoadingPosts] = useState(true);
+  const [posts, setPosts] = useState([]);
+  const [collabs, setCollabs] = useState([]);
+  const [loadingData, setLoadingData] = useState(true);
+  const [activeTab, setActiveTab] = useState("posts");
+  const [isEditing, setIsEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+  const [copyStatus, setCopyStatus] = useState(false);
 
-  const loadPosts = useCallback(async () => {
+  const [editForm, setEditForm] = useState({
+    name: "",
+    username: "",
+    category: "",
+    bio: "",
+    location: "",
+  });
+
+  const loadData = useCallback(async () => {
     if (!user?._id) return;
-    setLoadingPosts(true);
+    setLoadingData(true);
     try {
-      const data = await api.posts.userPosts(user._id);
-      if (!data?.error) {
-        const formatted = (data || []).map(p => ({
-          ...p,
-          id: p._id,
-          url: p.image ? (p.image.startsWith('http') ? p.image : `${BASE_URL}${p.image}`) : null,
-          mediaType: "image"
-        }));
-        setUserPosts(formatted);
-      }
+      const [postsRes, collabsRes] = await Promise.all([
+        api.posts.userPosts(user._id),
+        api.collaborations.list()
+      ]);
+      if (!postsRes.error) setPosts(postsRes);
+      if (!collabsRes.error) setCollabs(collabsRes);
     } catch (err) {
-      console.error("Failed to load posts", err);
+      console.error(err);
     } finally {
-      setLoadingPosts(false);
+      setLoadingData(false);
     }
   }, [user?._id]);
 
   useEffect(() => {
-    loadPosts();
-    // Track profile view safely
-    if (user?._id && api?.analytics?.viewProfile) {
-      api.analytics.viewProfile(user._id).catch(() => {});
-    }
-  }, [loadPosts, user?._id]);
-
-  // Local state for editing
-  const [editName, setEditName] = useState("");
-  const [editUsername, setEditUsername] = useState("");
-  const [editCategory, setEditCategory] = useState("");
-  const [editBio, setEditBio] = useState("");
-  const [editLocation, setEditLocation] = useState("");
-  const [editAvatar, setEditAvatar] = useState("");
-
-  const [saved, setSaved] = useState(false);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  
-  const [isEditing, setIsEditing] = useState(false);
-  const [showPhotoOptions, setShowPhotoOptions] = useState(false);
-  const [activeTab, setActiveTab] = useState("posts");
-  const [copyStatus, setCopyStatus] = useState(false);
-
-  const fileRef = useRef(null);
-
-  /* Populate edit fields from user data */
-  useEffect(() => {
+    loadData();
     if (user) {
-      setEditName(user.name || "");
-      setEditUsername(user.username || "");
-      setEditCategory(user.category || "");
-      setEditBio(user.bio || "");
-      setEditLocation(user.location || "");
-      setEditAvatar(user.avatar || "");
-      setLoading(false);
+      setEditForm({
+        name: user.name || "",
+        username: user.username || "",
+        category: user.category || "",
+        bio: user.bio || "",
+        location: user.location || "",
+      });
     }
-  }, [user, isEditing]);
+  }, [loadData, user]);
 
-  /* Handle real image upload */
-  const handleImageUpload = async (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      // 1. Show instant preview using base64 (local only)
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setEditAvatar(reader.result);
-        setShowPhotoOptions(false);
-      };
-      reader.readAsDataURL(file);
-
-      // 2. Upload to server
-      try {
-        const formData = new FormData();
-        formData.append("avatar", file);
-        const res = await api.users.updateAvatar(formData);
-        if (res?.error) {
-          setError(res.error);
-        } else {
-          setUser(res); // Update global user state
-        }
-      } catch (err) {
-        setError("Failed to upload avatar");
-      }
-    }
+  const handleUpdate = (updatedPost) => {
+    setPosts(prev => prev.map(p => p._id === updatedPost._id ? updatedPost : p));
   };
 
-  const handleShareProfile = async () => {
-    const shareData = {
-      title: "CreatorBridge Profile",
-      text: `Check out ${user?.name || user?.username || 'this profile'} on CreatorBridge!`,
-      url: `${window.location.origin}/user/${user?._id}`,
-    };
+  const handleDelete = (postId) => {
+    setPosts(prev => prev.filter(p => p._id !== postId));
+  };
 
+  const handleShare = async () => {
     try {
-      if (navigator.share) {
-        await navigator.share(shareData);
-      } else {
-        await navigator.clipboard.writeText(window.location.href);
-        setCopyStatus(true);
-        setTimeout(() => setCopyStatus(false), 2000);
-      }
-    } catch (err) {
-      // If user cancels share, we don't need to show error
-      if (err.name !== 'AbortError') {
-        // Fallback to clipboard if share fails
-        await navigator.clipboard.writeText(window.location.href);
-        setCopyStatus(true);
-        setTimeout(() => setCopyStatus(false), 2000);
-      }
+      await navigator.clipboard.writeText(`${window.location.origin}/user/${user._id}`);
+      setCopyStatus(true);
+      setTimeout(() => setCopyStatus(false), 2000);
+    } catch {
+      alert("Failed to copy link");
     }
   };
 
-  async function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-    setSaved(false);
     setSaving(true);
     try {
-      const body = {
-        name: editName,
-        username: editUsername,
-        category: editCategory,
-        bio: editBio,
-        location: editLocation,
-      };
-      const me = await api.users.updateMe(body);
-      if (me?.error) {
-        setError(typeof me.error === "string" ? me.error : "Something went wrong");
-      } else {
-        setUser(me);
-        setSaved(true);
-        setTimeout(() => setIsEditing(false), 800);
+      const res = await api.users.updateMe(editForm);
+      if (res.error) setError(res.error);
+      else {
+        setUser(res);
+        setIsEditing(false);
       }
     } catch {
-      setError("Something went wrong");
+      setError("Failed to update profile");
     } finally {
       setSaving(false);
     }
-  }
-
-  if (loading && !user) {
-    return (
-      <div className="profile-v2">
-        <header className="profile-v2-header" style={{ opacity: 0.5 }}>
-          <div className="profile-v2-avatar-col">
-            <div className="profile-v2-avatar skeleton" style={{ backgroundColor: '#e5e7eb' }}></div>
-          </div>
-          <div className="profile-v2-info-col">
-            <div className="skeleton" style={{ height: '2rem', width: '200px', backgroundColor: '#e5e7eb', marginBottom: '1rem' }}></div>
-            <div className="skeleton" style={{ height: '1rem', width: '150px', backgroundColor: '#e5e7eb' }}></div>
-          </div>
-        </header>
-        <LoadingSpinner centered />
-      </div>
-    );
-  }
-
-  const displayName = user?.name || user?.email?.split('@')[0] || "User";
-
-  const handleDeletePost = async (postId) => {
-    try {
-      const res = await api.posts.remove(postId);
-      if (res?.error) {
-        alert(res.error);
-      } else {
-        setUserPosts(prev => prev.filter(p => p._id !== postId && p.id !== postId));
-      }
-    } catch {
-      alert("Failed to delete post");
-    }
   };
 
+  if (loadingData) return <LoadingSpinner centered />;
+
   return (
-    <div className="profile-v2">
-      {isEditing ? (
-        <div className="edit-profile-v2 slide-in">
-          <div className="header-inner container" style={{ padding: '0 0 1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h2 className="profile-preview__name">Edit Profile</h2>
-            <button className="btn btn-ghost" onClick={() => setIsEditing(false)}>Cancel</button>
-          </div>
-          
-          <form onSubmit={handleSubmit}>
-            <div className="vertical-field">
-              <label>Name</label>
-              <input className="input" value={editName} onChange={(e) => setEditName(e.target.value)} placeholder="Name" />
-            </div>
-            <div className="vertical-field">
-              <label>Username</label>
-              <input className="input" value={editUsername} onChange={(e) => setEditUsername(e.target.value.replace(/[^a-zA-Z0-9._-]/g, ""))} placeholder="Username" />
-            </div>
-            <div className="vertical-field">
-              <label>Category</label>
-              <select className="input" value={editCategory} onChange={(e) => setEditCategory(e.target.value)}>
-                <option value="">Select category</option>
-                {CATEGORIES.map((c) => (<option key={c} value={c}>{c}</option>))}
-              </select>
-            </div>
-            <div className="vertical-field">
-              <label>Location</label>
-              <input className="input" value={editLocation} onChange={(e) => setEditLocation(e.target.value)} placeholder="Location" />
-            </div>
-            <div className="vertical-field">
-              <label>Bio</label>
-              <textarea className="input" value={editBio} onChange={(e) => setEditBio(e.target.value)} rows={3} placeholder="Bio" />
-            </div>
-
-            <ErrorBanner message={error} onDismiss={() => setError("")} />
-            {saved && <div className="success-banner">Profile updated.</div>}
-            
-            <button type="submit" className="btn btn-primary w-full" disabled={saving}>
-              {saving ? (
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                  <LoadingSpinner size="sm" color="white" /> Saving...
-                </div>
-              ) : "Save Changes"}
-            </button>
-          </form>
+    <div className="profile-pro">
+      <header className="profile-pro-header">
+        <div className="profile-pro-avatar">
+          <Avatar user={user} size="xl" />
         </div>
-      ) : (
-        <>
-          <header className="profile-v2-header">
-            <div className="profile-v2-avatar-col">
-              <Avatar 
-                user={isEditing ? { ...user, avatar: editAvatar } : user} 
-                size="xl" 
-                className="profile-v2-avatar" 
-                onClick={() => setShowPhotoOptions(true)} 
-              />
-            </div>
-            
-            <div className="profile-v2-info-col">
-              <div className="profile-v2-top-row">
-                <h1 className="profile-v2-username">
-                  {user?.username || displayName}
-                  {user?.isVerified && <VerifiedBadge size="md" />}
-                </h1>
-                <div className="profile-v2-actions">
-                  <button className="profile-v2-btn" onClick={() => setIsEditing(true)}>Edit profile</button>
-                  <button 
-                    className={`profile-v2-btn ${copyStatus ? 'btn-success' : ''}`} 
-                    onClick={handleShareProfile}
-                    style={{ display: 'flex', alignItems: 'center', gap: '6px', transition: 'transform 0.1s' }}
-                    onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.95)'}
-                    onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1)'}
-                    onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-                  >
-                    <ShareIcon />
-                    {copyStatus ? "Copied!" : "Share profile"}
-                  </button>
-                </div>
-              </div>
-              
-              <div className="profile-v2-stats">
-                <div className="profile-v2-stat"><strong>{userPosts.length}</strong> posts</div>
-                <div 
-                  className="profile-v2-stat" 
-                  onClick={() => navigate(`/user/${user._id}/followers`)}
-                  style={{ cursor: 'pointer' }}
-                >
-                  <strong>{fmtFollowers(user?.followers?.length)}</strong> aligners
-                </div>
-                <div 
-                  className="profile-v2-stat" 
-                  onClick={() => navigate(`/user/${user._id}/following`)}
-                  style={{ cursor: 'pointer' }}
-                >
-                  <strong>{fmtFollowers(user?.following?.length)}</strong> aligned
-                </div>
-              </div>
-              
-              <div className="profile-v2-bio-wrap">
-                <span className="profile-v2-display-name">{displayName}</span>
-                {user?.category && <p className="muted" style={{ marginBottom: '0.25rem' }}>{user.category}</p>}
-                {user?.bio && <p style={{ whiteSpace: 'pre-wrap' }}>{user.bio}</p>}
-                {user?.location && <p className="muted" style={{ marginTop: '0.25rem' }}>📍 {user.location}</p>}
-              </div>
-            </div>
-          </header>
-
-          <div className="profile-v2-tabs">
-            <div className={`profile-v2-tab ${activeTab === 'posts' ? 'active' : ''}`} onClick={() => setActiveTab("posts")}>
-              <span>POSTS</span>
-            </div>
-            <div className={`profile-v2-tab ${activeTab === 'tagged' ? 'active' : ''}`} onClick={() => setActiveTab("tagged")}>
-              <span>MEDIA</span>
+        <div className="profile-pro-info">
+          <div className="profile-pro-top">
+            <h1 className="pro-username">
+              {user?.username}
+              {user?.isVerified && <VerifiedBadge size="md" />}
+            </h1>
+            <div className="pro-actions">
+              <button className="btn-pro" onClick={() => setIsEditing(true)}>Edit Profile</button>
+              <button className="btn-pro" onClick={handleShare}>{copyStatus ? "Copied!" : "Share"}</button>
             </div>
           </div>
+          <div className="pro-stats">
+            <div className="pro-stat"><strong>{posts.length}</strong> posts</div>
+            <div className="pro-stat"><strong>{fmtFollowers(user?.followers?.length)}</strong> aligners</div>
+            <div className="pro-stat"><strong>{fmtFollowers(user?.following?.length)}</strong> aligned</div>
+          </div>
+          <div className="pro-bio">
+            <span className="pro-name">{user?.name}</span>
+            <span className="pro-category">{user?.category}</span>
+            <p className="pro-text">{user?.bio}</p>
+            {user?.location && <span className="pro-location">📍 {user?.location}</span>}
+          </div>
+        </div>
+      </header>
 
-          <div className="profile-v2-content">
-            {activeTab === 'posts' ? (
-              <PortfolioGrid items={userPosts} onDelete={handleDeletePost} />
+      <div className="profile-pro-tabs">
+        <button className={activeTab === "posts" ? "active" : ""} onClick={() => setActiveTab("posts")}>POSTS</button>
+        <button className={activeTab === "portfolio" ? "active" : ""} onClick={() => setActiveTab("portfolio")}>PORTFOLIO</button>
+        <button className={activeTab === "collabs" ? "active" : ""} onClick={() => setActiveTab("collabs")}>COLLABS</button>
+      </div>
+
+      <div className="profile-pro-content">
+        {activeTab === "posts" && (
+          <div className="pro-posts-list">
+            {posts.map(p => <PortfolioGrid key={p._id} items={[p]} onDelete={handleDelete} onUpdate={handleUpdate} />)}
+          </div>
+        )}
+        {activeTab === "portfolio" && (
+          <div className="pro-portfolio-grid">
+            {posts.filter(p => p.category === "Portfolio").length > 0 ? (
+                <PortfolioGrid items={posts.filter(p => p.category === "Portfolio")} onDelete={handleDelete} />
             ) : (
-              <div className="empty-state" style={{ padding: '4rem 0' }}>
-                <div className="empty-state__illustration">🖼?️</div>
-                <p className="empty-state__text">No tagged media yet.</p>
-              </div>
+                <div className="empty-state">No portfolio projects yet.</div>
             )}
           </div>
-        </>
-      )}
-
-      {/* Photo Options Modal */}
-      {showPhotoOptions && (
-        <div className="modal-overlay" onClick={() => setShowPhotoOptions(false)}>
-          <div className="photo-options-modal slide-in" onClick={e => e.stopPropagation()}>
-            <div className="dropdown-header" style={{ textAlign: 'center', padding: '1.5rem', fontSize: '1rem' }}>Change Profile Photo</div>
-            <button className="photo-option" style={{ color: 'var(--accent)', fontWeight: 700 }} onClick={() => fileRef.current.click()}>Upload Photo</button>
-            <button className="photo-option" onClick={() => setShowPhotoOptions(false)}>Import from WhatsApp</button>
-            <button className="photo-option" onClick={() => setShowPhotoOptions(false)}>Take Photo</button>
-            {user?.avatar && (
-              <button className="photo-option photo-option--danger" onClick={() => { setUser({ ...user, avatar: "" }); setShowPhotoOptions(false); }}>Remove Current Photo</button>
+        )}
+        {activeTab === "collabs" && (
+          <div className="pro-collabs-list">
+            {collabs.length > 0 ? (
+                collabs.map(c => (
+                    <div key={c._id} className="pro-collab-item">
+                        <img src={c.campaign?.banner} alt="" />
+                        <div>
+                            <h4>{c.campaign?.title}</h4>
+                            <span>Status: {c.status}</span>
+                        </div>
+                    </div>
+                ))
+            ) : (
+                <div className="empty-state">No collaborations yet.</div>
             )}
-            <input type="file" ref={fileRef} hidden accept="image/*" onChange={handleImageUpload} />
+          </div>
+        )}
+      </div>
+
+      {isEditing && (
+        <div className="modal-overlay">
+          <div className="edit-modal slide-in">
+            <h2>Edit Profile</h2>
+            <form onSubmit={handleSubmit}>
+              <input value={editForm.name} onChange={e => setEditForm({...editForm, name: e.target.value})} placeholder="Name" />
+              <input value={editForm.username} onChange={e => setEditForm({...editForm, username: e.target.value})} placeholder="Username" />
+              <select value={editForm.category} onChange={e => setEditForm({...editForm, category: e.target.value})}>
+                <option value="">Category</option>
+                {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+              </select>
+              <textarea value={editForm.bio} onChange={e => setEditForm({...editForm, bio: e.target.value})} placeholder="Bio" />
+              <input value={editForm.location} onChange={e => setEditForm({...editForm, location: e.target.value})} placeholder="Location" />
+              <div className="modal-actions">
+                <button type="button" onClick={() => setIsEditing(false)}>Cancel</button>
+                <button type="submit" disabled={saving}>Save</button>
+              </div>
+            </form>
           </div>
         </div>
       )}

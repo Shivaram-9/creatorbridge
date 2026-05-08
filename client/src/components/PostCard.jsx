@@ -6,12 +6,13 @@ import { useAuth } from "../context/AuthContext.jsx";
 import Avatar from "./Avatar.jsx";
 import VerifiedBadge from "./VerifiedBadge.jsx";
 import ReportModal from "./ReportModal.jsx";
+import MediaGallery from "./MediaGallery.jsx";
+import "./PostCard.css";
 
-const PostCard = memo(function PostCard({ post, onDelete }) {
+const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
   const { user, setUser } = useAuth();
   const navigate = useNavigate();
   
-  // Initial liked state based on whether current user's ID is in post.likes array
   const initialLiked = useMemo(() => {
     if (!user || !post.likes) return false;
     return post.likes.some(l => (l._id || l) === user._id);
@@ -31,9 +32,8 @@ const PostCard = memo(function PostCard({ post, onDelete }) {
   const [commentText, setCommentText] = useState("");
   const [comments, setComments] = useState(Array.isArray(post.comments) ? post.comments : []);
   const [shareStatus, setShareStatus] = useState("Share");
-  const [showDeleteMenu, setShowDeleteMenu] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [showLightbox, setShowLightbox] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
 
   const isOwner = user?._id === (post.user?._id || post.user);
@@ -55,31 +55,44 @@ const PostCard = memo(function PostCard({ post, onDelete }) {
     }
   };
 
+  const handlePin = async () => {
+    try {
+      const res = await api.posts.pin(post._id);
+      if (res.error) alert(res.error);
+      else onUpdate?.(res);
+    } catch (err) {
+      alert("Failed to pin post");
+    }
+    setShowMenu(false);
+  };
+
+  const handleArchive = async () => {
+    try {
+      const res = await api.posts.archive(post._id);
+      if (res.error) alert(res.error);
+      else onUpdate?.(res);
+    } catch (err) {
+      alert("Failed to archive post");
+    }
+    setShowMenu(false);
+  };
+
   const handleLike = async () => {
     if (!user) return;
-    
-    // Optimistic UI update
     const newLiked = !liked;
     setLiked(newLiked);
-    // setLikesCount(prev => newLiked ? prev + 1 : prev - 1);
-
     try {
       const res = await api.posts.like(post._id);
-      if (res?.error) {
-        // Rollback on error
-        setLiked(!newLiked);
-      } else {
-        setLikes(res.likes);
-      }
+      if (res?.error) setLiked(!newLiked);
+      else setLikes(res.likes);
     } catch {
-      // Rollback on error
       setLiked(!newLiked);
     }
   };
 
   const handleShare = () => {
-    const profileUrl = `${window.location.origin}/user/${post.user?._id || post.user}`;
-    navigator.clipboard.writeText(profileUrl);
+    const postUrl = `${window.location.origin}/post/${post._id}`;
+    navigator.clipboard.writeText(postUrl);
     setShareStatus("Copied!");
     setTimeout(() => setShareStatus("Share"), 2000);
   };
@@ -87,17 +100,11 @@ const PostCard = memo(function PostCard({ post, onDelete }) {
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
     if (!commentText.trim() || !user) return;
-
     const text = commentText;
-    setCommentText(""); // Clear input immediately
-
+    setCommentText("");
     try {
       const res = await api.posts.comment(post._id, text);
-      if (res?.error) {
-        console.error(res.error);
-      } else {
-        setComments(prev => [...prev, res]);
-      }
+      if (!res?.error) setComments(prev => [...prev, res]);
     } catch (err) {
       console.error("Failed to add comment", err);
     }
@@ -105,30 +112,19 @@ const PostCard = memo(function PostCard({ post, onDelete }) {
 
   const handleSave = async () => {
     if (!user) return;
-    
-    // Optimistic UI
     const newSaved = !saved;
     setSaved(newSaved);
-
     try {
       const res = await api.posts.save(post._id);
-      if (res?.error) {
-        setSaved(!newSaved);
-        alert(res.error);
-      } else {
-        // Sync global user state
+      if (res?.error) setSaved(!newSaved);
+      else {
         const updatedSaved = newSaved 
           ? [...(user.savedPosts || []), post._id] 
           : (user.savedPosts || []).filter(id => id.toString() !== post._id);
-        
         setUser({ ...user, savedPosts: updatedSaved });
-        
-        // Simple toast feedback
-        console.log(newSaved ? "Post Saved" : "Removed from Saved");
       }
     } catch (err) {
       setSaved(!newSaved);
-      console.error("Save error:", err);
     }
   };
 
@@ -138,65 +134,42 @@ const PostCard = memo(function PostCard({ post, onDelete }) {
     }
   }, [post?._id]);
 
-  return (
-    <div className="post-card">
-        <div className="post-header">
-          <Avatar 
-            user={{ 
-              _id: post.user?._id || post.user, 
-              name: post.username, 
-              avatar: post.avatar 
-            }} 
-            size="md" 
-          />
-          <div className="post-info">
-            <h3 className="post-username">
-              {post.username}
-              {post.user?.isVerified && <VerifiedBadge size="sm" />}
-            </h3>
-            <span className="post-time">{post.time}</span>
-          </div>
+  const mediaList = useMemo(() => {
+    if (post.media && post.media.length > 0) return post.media.map(m => m.startsWith("http") ? m : `${api.getResolvedApiOrigin()}${m}`);
+    if (post.image) return [post.image.startsWith("http") ? post.image : `${api.getResolvedApiOrigin()}${post.image}`];
+    return [];
+  }, [post.media, post.image]);
 
-        <div className="post-menu-container" style={{ marginLeft: 'auto', position: 'relative' }}>
-          <button 
-            className="btn btn-ghost btn-sm" 
-            onClick={() => setShowDeleteMenu(!showDeleteMenu)}
-            aria-label="Options"
-          >
+  return (
+    <div className={`post-card ${post.isPinned ? "pinned" : ""}`}>
+      <div className="post-header">
+        <Avatar user={post.user} size="md" onClick={() => navigate(`/user/${post.user?._id}`)} />
+        <div className="post-info">
+          <h3 className="post-username" onClick={() => navigate(`/user/${post.user?._id}`)}>
+            {post.user?.name || post.username}
+            {post.user?.isVerified && <VerifiedBadge size="sm" />}
+          </h3>
+          <div className="post-meta">
+            <span className="post-time">{new Date(post.createdAt).toLocaleDateString()}</span>
+            {post.location && <span className="post-location">• {post.location}</span>}
+          </div>
+        </div>
+
+        <div className="post-menu-container">
+          {post.isPinned && <span className="pin-indicator">📌 Pinned</span>}
+          <button className="btn-menu" onClick={() => setShowMenu(!showMenu)}>
             <MoreHorizontalIcon />
           </button>
-          {showDeleteMenu && (
-            <div 
-              className="dropdown-menu show" 
-              style={{ 
-                position: 'absolute', 
-                right: 0, 
-                top: '100%', 
-                zIndex: 10, 
-                backgroundColor: 'white',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                borderRadius: '8px',
-                padding: '4px',
-                minWidth: '120px'
-              }}
-            >
+          {showMenu && (
+            <div className="dropdown-menu">
               {isOwner ? (
-                <button 
-                  className="dropdown-item text-danger" 
-                  onClick={handleDelete}
-                  disabled={isDeleting}
-                  style={{ color: '#ef4444', width: '100%', textAlign: 'left', padding: '8px 12px' }}
-                >
-                  {isDeleting ? "Deleting..." : "Delete Post"}
-                </button>
+                <>
+                  <button onClick={handlePin}>{post.isPinned ? "Unpin" : "Pin to Profile"}</button>
+                  <button onClick={handleArchive}>Archive</button>
+                  <button onClick={handleDelete} className="text-danger" disabled={isDeleting}>Delete</button>
+                </>
               ) : (
-                <button 
-                  className="dropdown-item" 
-                  onClick={() => { setShowReportModal(true); setShowDeleteMenu(false); }}
-                  style={{ width: '100%', textAlign: 'left', padding: '8px 12px' }}
-                >
-                  Report Post
-                </button>
+                <button onClick={() => { setShowReportModal(true); setShowMenu(false); }}>Report</button>
               )}
             </div>
           )}
@@ -204,143 +177,64 @@ const PostCard = memo(function PostCard({ post, onDelete }) {
       </div>
 
       <div className="post-content">
-        <p className="post-text">{post.content}</p>
-        {post.image && (
-          <div 
-            className="post-image-wrapper" 
-            style={{ backgroundColor: '#f3f4f6', minHeight: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
-            onClick={() => setShowLightbox(true)}
-          >
-            <img 
-              src={post.image.startsWith('http') ? post.image : `${api.BASE_URL}${post.image}`} 
-              alt="Post content" 
-              className="post-image" 
-              style={{ transition: 'opacity 0.3s ease-in-out' }}
-              onError={(e) => {
-                e.target.onerror = null;
-                e.target.style.opacity = '0';
-                setTimeout(() => {
-                  e.target.src = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=800";
-                  e.target.style.opacity = '1';
-                }, 100);
-              }}
-            />
+        <p className="post-text">
+          {post.content}
+          {post.hashtags?.length > 0 && (
+            <div className="post-hashtags">
+              {post.hashtags.map(h => <span key={h} className="hashtag">#{h} </span>)}
+            </div>
+          )}
+        </p>
+        <MediaGallery media={mediaList} />
+      </div>
+
+      <div className="post-actions">
+        <div className="post-actions__left">
+          <button className={`post-action-btn ${liked ? "liked" : ""}`} onClick={handleLike}>
+            <HeartIcon filled={liked} />
+            <span>{likesCount}</span>
+          </button>
+          <button className="post-action-btn" onClick={() => setShowComments(!showComments)}>
+            <MessageCircleIcon />
+            <span>{comments.length}</span>
+          </button>
+          <button className="post-action-btn" onClick={handleShare}>
+            <SendIcon />
+            <span>{shareStatus}</span>
+          </button>
+        </div>
+        <button className={`post-action-btn ${saved ? "saved" : ""}`} onClick={handleSave}>
+          <BookmarkIcon filled={saved} />
+        </button>
+      </div>
+
+      <div className="post-footer">
+        {likes.length > 0 && (
+          <div className="post-likes" onClick={() => navigate(`/post/${post._id}/likes`)}>
+            Liked by <strong>{likes[0].name || "User"}</strong> {likes.length > 1 && <>and {likes.length - 1} others</>}
+          </div>
+        )}
+        
+        {showComments && (
+          <div className="post-comments">
+            {comments.map((c, i) => (
+              <div key={i} className="comment-item">
+                <strong>{c.user?.name}:</strong> {c.text}
+              </div>
+            ))}
+            <form onSubmit={handleCommentSubmit} className="comment-form">
+              <input 
+                placeholder="Add a comment..." 
+                value={commentText} 
+                onChange={(e) => setCommentText(e.target.value)} 
+              />
+              <button disabled={!commentText.trim()}>Post</button>
+            </form>
           </div>
         )}
       </div>
 
-      {showLightbox && (
-        <div 
-          className="modal-overlay" 
-          style={{ zIndex: 2000, backgroundColor: 'rgba(0,0,0,0.9)' }} 
-          onClick={() => setShowLightbox(false)}
-        >
-          <div 
-            className="lightbox-content slide-in" 
-            style={{ maxWidth: '95vw', maxHeight: '95vh', position: 'relative' }}
-            onClick={e => e.stopPropagation()}
-          >
-            <button 
-              className="btn btn-ghost" 
-              style={{ position: 'absolute', top: '-40px', right: '0', color: 'white', fontSize: '1.5rem' }}
-              onClick={() => setShowLightbox(false)}
-            >
-              ✕
-            </button>
-            <img 
-              src={post.image} 
-              alt="" 
-              style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: '8px' }} 
-              onError={(e) => {
-                e.target.src = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=1200";
-              }}
-            />
-          </div>
-        </div>
-      )}
-
-      <div className="post-actions">
-        <div className="post-actions__left">
-          <button 
-            className={`post-action-btn ${liked ? "post-action-btn--liked" : ""}`} 
-            onClick={handleLike}
-            aria-label="Like"
-          >
-            <span className="post-action-icon">
-              <HeartIcon filled={liked} />
-            </span>
-            <span className="post-action-count">{likesCount}</span>
-          </button>
-          <button 
-            className="post-action-btn" 
-            onClick={() => setShowComments(!showComments)}
-            aria-label="Comment"
-          >
-            <span className="post-action-icon">
-              <MessageCircleIcon />
-            </span>
-            <span className="post-action-count">{comments.length}</span>
-          </button>
-          <button className="post-action-btn" onClick={handleShare} aria-label="Share">
-            <span className="post-action-icon">
-              <SendIcon />
-            </span>
-            <span className="post-action-count">{shareStatus}</span>
-          </button>
-        </div>
-        <button 
-          className={`post-action-btn ${saved ? "post-action-btn--saved" : ""}`} 
-          onClick={handleSave}
-          aria-label="Save"
-        >
-          <span className="post-action-icon">
-            <BookmarkIcon filled={saved} />
-          </span>
-        </button>
-      </div>
-      
-      {likes.length > 0 && (
-        <div 
-          className="post-likes-display" 
-          style={{ padding: '0 1rem 0.5rem', fontSize: '0.875rem', cursor: 'pointer' }}
-          onClick={() => navigate(`/post/${post._id}/likes`)}
-        >
-          Liked by <strong>{likes[0].username || likes[0].name}</strong>
-          {likes.length > 1 && <> and <strong>{likes.length - 1} others</strong></>}
-        </div>
-      )}
-
-      {showComments && (
-        <div className="post-comments-section">
-          {comments.length > 0 && (
-            <div className="post-comments-list">
-              {comments.map((c, i) => (
-                <div key={c._id || i} className="post-comment-item">
-                  <strong>{c.user?.username || c.user?.name || "User"}:</strong> {c.text}
-                </div>
-              ))}
-            </div>
-          )}
-          <form className="post-comment-form" onSubmit={handleCommentSubmit}>
-            <input 
-              type="text" 
-              className="post-comment-input" 
-              placeholder="Write a comment..." 
-              value={commentText}
-              onChange={(e) => setCommentText(e.target.value)}
-            />
-            <button type="submit" className="btn btn-primary btn-sm" disabled={!commentText.trim()}>
-              Post
-            </button>
-          </form>
-        </div>
-      )}
-      {showReportModal && (
-        <ReportModal 
-          targetPost={post._id} 
-          onClose={() => setShowReportModal(false)} 
-        />
-      )}
+      {showReportModal && <ReportModal targetPost={post._id} onClose={() => setShowReportModal(false)} />}
     </div>
   );
 });
