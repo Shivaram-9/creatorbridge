@@ -15,6 +15,7 @@ export default function Navbar({
   const [socketStatus, setSocketStatus] = useState("connecting");
   const [searchResults, setSearchResults] = useState(null);
   const [searchLoading, setSearchLoading] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const notifRef = useRef(null);
   const searchRef = useRef(null);
   const navigate = useNavigate();
@@ -99,13 +100,20 @@ export default function Navbar({
       if (notifOpen && notifRef.current && !notifRef.current.contains(e.target)) {
         setNotifOpen(false);
       }
-      if (searchResults && searchRef.current && !searchRef.current.contains(e.target)) {
-        setSearchResults(null);
+      if (isSearchOpen && searchRef.current && !searchRef.current.contains(e.target)) {
+        setIsSearchOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [notifOpen]);
+  }, [notifOpen, isSearchOpen]);
+
+  /* Reset on location change */
+  useEffect(() => {
+    setNotifOpen(false);
+    setMenuOpen(false);
+    setIsSearchOpen(false);
+  }, [navigate]);
 
   return (
     <header className="header">
@@ -129,20 +137,23 @@ export default function Navbar({
                   placeholder="Search creators & brands..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  onFocus={() => setIsSearchOpen(true)}
                 />
-                <SearchDropdown 
-                  results={searchResults} 
-                  loading={searchLoading} 
-                  onClose={() => setSearchResults(null)}
-                  onItemClick={(item) => {
-                    if (!item) return;
-                    const saved = JSON.parse(localStorage.getItem("cb_recent_searches") || "[]");
-                    const updated = [item, ...saved.filter(x => x._id !== item._id)].slice(0, 10);
-                    localStorage.setItem("cb_recent_searches", JSON.stringify(updated));
-                    setSearchResults(null);
-                    setSearchQuery("");
-                  }}
-                />
+                {isSearchOpen && (
+                  <SearchDropdown 
+                    results={searchResults} 
+                    loading={searchLoading} 
+                    onClose={() => setIsSearchOpen(false)}
+                    onItemClick={(item) => {
+                      if (!item) return;
+                      const saved = JSON.parse(localStorage.getItem("cb_recent_searches") || "[]");
+                      const updated = [item, ...saved.filter(x => x._id !== item._id)].slice(0, 10);
+                      localStorage.setItem("cb_recent_searches", JSON.stringify(updated));
+                      setIsSearchOpen(false);
+                      setSearchQuery("");
+                    }}
+                  />
+                )}
               </form>
             </div>
 
