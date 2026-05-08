@@ -37,7 +37,8 @@ export default function Saved() {
     : collections.find(c => c._id === activeTab)?.posts || [];
 
   return (
-    <div className="container saved-page slide-in">
+    <div className="saved-page slide-in">
+
       <header className="page-header">
         <h1 className="page-title">Saved</h1>
         <p className="subtitle">Your private collections of inspiration.</p>

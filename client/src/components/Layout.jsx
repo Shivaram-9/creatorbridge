@@ -106,7 +106,7 @@ export default function Layout() {
   };
 
   return (
-    <div className="layout">
+    <div className="app-layout">
       <OfflineBanner />
       
       <Navbar 
@@ -124,8 +124,10 @@ export default function Layout() {
         logout={logout}
       />
 
-      <main className="main-content container slide-in">
-        <Outlet />
+      <main className="main-content">
+        <div className="container slide-in">
+          <Outlet />
+        </div>
       </main>
 
       {user && <BottomNav msgUnreadCount={msgUnreadTotal} notifUnreadCount={unreadCount} />}
@@ -133,4 +135,5 @@ export default function Layout() {
     </div>
   );
 }
+
 

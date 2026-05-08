@@ -40,11 +40,12 @@ export default function Requests() {
   if (loading) return <LoadingSpinner centered />;
 
   return (
-    <div className="requests-page container slide-in">
-      <header className="requests-header">
+    <div className="requests-page slide-in">
+      <header className="requests-header" style={{ textAlign: 'center', marginBottom: '2rem' }}>
         <h1>Align Requests</h1>
         <p>People who want to follow you and see your private content.</p>
       </header>
+
 
       <ErrorBanner message={error} onDismiss={() => setError("")} />
 

@@ -96,7 +96,8 @@ export default function AdminDashboard() {
   if (loading && !stats) return <LoadingSpinner centered />;
 
   return (
-    <div className="admin-page container slide-in">
+    <div className="admin-page slide-in">
+
       <header className="admin-header">
         <div className="header-info">
           <h1>Enterprise Control Panel</h1>

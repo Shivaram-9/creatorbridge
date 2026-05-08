@@ -173,7 +173,8 @@ export default function Premium() {
   }
 
   return (
-    <div className="premium-page container slide-in">
+    <div className="premium-page slide-in">
+
       <header className="premium-header">
         <span className="premium-tag">PREMIUM ACCESS</span>
         <h1>Elevate Your Presence</h1>

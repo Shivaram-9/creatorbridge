@@ -98,7 +98,8 @@ export default function Notifications() {
   };
 
   return (
-    <div className="notifications-v3 container slide-in">
+    <div className="notifications-v3 slide-in">
+
       <header className="notif-header">
         <div className="notif-header-top">
           <h1 className="page-title">Activity</h1>

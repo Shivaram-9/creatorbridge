@@ -130,9 +130,10 @@ export default function Navbar({
           <>
             <div className="header-center">
               <form className="search-container" onSubmit={handleSearch} ref={searchRef}>
-                <span className="search-icon">
+                <span className="search-icon-wrapper">
                   <SearchIcon />
                 </span>
+
                 <input
                   type="text"
                   className="search-input"

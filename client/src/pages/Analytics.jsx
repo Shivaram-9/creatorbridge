@@ -59,7 +59,9 @@ export default function Analytics() {
   if (loading) return <LoadingSpinner centered />;
 
   return (
-    <div className="analytics-dashboard container slide-in">
+    <div className="analytics-dashboard slide-in">
+
+
       <header className="dashboard-header">
         <div className="header-badge">AI ANALYTICS ENABLED</div>
         <h1>Performance Intelligence</h1>

@@ -34,7 +34,9 @@ export default function Deals() {
   if (loading) return <LoadingSpinner centered />;
 
   return (
-    <div className="deals-page container slide-in">
+    <div className="deals-page slide-in">
+
+
       <header className="deals-header">
         <div className="header-content">
           <h1>{user.role === "brand" ? "Campaign Deals" : "Collaboration Offers"}</h1>

@@ -1,10 +1,11 @@
 .ai-assistant-wrapper {
   position: fixed;
-  bottom: 80px; /* Above bottom nav */
+  bottom: 85px; /* Stay strictly above bottom nav */
   right: 20px;
-  z-index: 1000;
+  z-index: 999;
   font-family: 'Inter', sans-serif;
 }
+
 
 .ai-fab {
   background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);

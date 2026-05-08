@@ -77,7 +77,8 @@ export default function Discover() {
   if (loading) return <LoadingSpinner centered />;
 
   return (
-    <div className="discover-v2 container slide-in">
+    <div className="discover-v2 slide-in">
+
       <header className="discover-header">
         <div className="header-badge">AI DISCOVERY ACTIVE</div>
         <h1>Intelligent Search</h1>

@@ -108,7 +108,9 @@ export default function Profile() {
   if (loadingData) return <LoadingSpinner centered />;
 
   return (
-    <div className="profile-pro container slide-in">
+    <div className="profile-pro slide-in">
+
+
       <header className="profile-pro-header">
         <div className="profile-pro-avatar" style={{ cursor: "pointer", position: "relative" }}>
           <Avatar user={user} size="xl" />

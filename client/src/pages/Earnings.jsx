@@ -57,7 +57,8 @@ export default function Earnings() {
   if (loading) return <LoadingSpinner centered />;
 
   return (
-    <div className="earnings-page container slide-in">
+    <div className="earnings-page slide-in">
+
       <header className="earnings-header">
         <div className="header-badge">FINANCIAL HUB</div>
         <h1>Wallet & Revenue</h1>
