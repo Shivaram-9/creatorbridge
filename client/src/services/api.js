@@ -270,8 +270,22 @@ export const api = {
     getWithdrawals: () => request("/admin/withdrawals"),
     updateWithdrawal: (id, body) => request(`/admin/withdrawals/${id}`, { method: "PATCH", body }),
     getVerifications: () => request("/admin/verifications"),
-    verifyUser: (id) => request(`/admin/verify/${id}`, { method: "PATCH" }),
+    updateVerification: (id, body) => request(`/admin/verifications/${id}`, { method: "PATCH", body }),
   },
+  verification: {
+    apply: (formData) => request("/verification/apply", { method: "POST", body: formData }),
+    status: () => request("/verification/status"),
+  },
+  brand: {
+    getTargeting: (params) => {
+      const sp = new URLSearchParams(params);
+      return request(`/brand/targeting?${sp.toString()}`);
+    },
+    compare: (ids) => request("/brand/compare", { method: "POST", body: { ids } }),
+    getReports: () => request("/brand/reports"),
+    shortlist: (creatorId) => request("/brand/shortlist", { method: "POST", body: { creatorId } }),
+  },
+
   analytics: {
     getProfile: () => request("/analytics/profile"),
     getPosts: () => request("/analytics/posts"),

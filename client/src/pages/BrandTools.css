@@ -1,0 +1,153 @@
+.brand-tools-page {
+  padding-bottom: 4rem;
+}
+
+.tool-tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--border-light);
+  padding-bottom: 0.5rem;
+}
+
+.tool-tabs button {
+  background: none;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.3s;
+}
+
+.tool-tabs button.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+  font-weight: 600;
+}
+
+.targeting-tool {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 2rem;
+}
+
+.search-sidebar {
+  padding: 1.5rem;
+  height: fit-content;
+}
+
+.checkbox-field {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.creators-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.creator-tool-card {
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.creator-tool-card .handle {
+  color: var(--primary);
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.category-tag {
+  display: inline-block;
+  padding: 0.2rem 0.8rem;
+  background: var(--bg-main);
+  border-radius: 20px;
+  font-size: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.card-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.comparison-table th, .comparison-table td {
+  padding: 1.25rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.comparison-table th {
+  background: var(--bg-main);
+}
+
+.comparison-table th span {
+  display: block;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.comparison-footer {
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 2rem;
+}
+
+.total-est span {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-right: 0.5rem;
+}
+
+.total-est strong {
+  font-size: 1.5rem;
+  color: var(--primary);
+}
+
+.performance-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+.performance-summary .metric {
+  text-align: center;
+  padding: 2rem;
+  background: var(--bg-main);
+  border-radius: 12px;
+}
+
+.performance-summary .metric label {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.performance-summary .metric span {
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+@media (max-width: 992px) {
+  .targeting-tool {
+    grid-template-columns: 1fr;
+  }
+}

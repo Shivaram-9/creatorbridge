@@ -79,16 +79,19 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleVerify = async (userId) => {
-    if (!window.confirm("Verify this creator?")) return;
+  const handleVerifyRequest = async (requestId, status) => {
+    const adminNotes = status === 'rejected' ? window.prompt("Reason for rejection:") : "";
+    if (status === 'rejected' && !adminNotes) return;
+
     try {
-      await api.admin.verifyUser(userId);
-      setVerifications(prev => prev.filter(v => v._id !== userId));
-      alert("Creator verified! ✅");
+      await api.admin.updateVerification(requestId, { status, adminNotes });
+      setVerifications(prev => prev.map(v => v._id === requestId ? { ...v, status, adminNotes } : v));
+      toast.success(`Request ${status}`);
     } catch {
-      setError("Verification failed");
+      setError("Failed to update verification");
     }
   };
+
 
   if (loading && !stats) return <LoadingSpinner centered />;
 
@@ -231,23 +234,49 @@ export default function AdminDashboard() {
         )}
 
         {activeTab === 'verifications' && (
-          <div className="verifications-grid">
-            {verifications.length === 0 ? <div className="empty-state">No pending verifications.</div> : (
-              verifications.map(v => (
-                <div key={v._id} className="verification-card card">
-                  <Avatar user={v} size="lg" />
-                  <h3>{v.name}</h3>
-                  <p>@{v.username}</p>
-                  <div className="v-stats">
-                    <span>{v.followers?.length} Followers</span>
-                    <span>{v.category}</span>
+          <div className="verifications-list">
+            {verifications.length === 0 ? <div className="empty-state">No pending verification requests.</div> : (
+              verifications.map(req => (
+                <div key={req._id} className="verification-admin-card card">
+                  <div className="v-admin-header">
+                    <Avatar user={req.user} size="md" />
+                    <div className="v-admin-user">
+                      <strong>{req.user?.name}</strong>
+                      <span>@{req.user?.username} • {req.category}</span>
+                    </div>
+                    <span className={`status-pill ${req.status}`}>{req.status}</span>
                   </div>
-                  <button className="btn btn-primary w-full" onClick={() => handleVerify(v._id)}>Verify Creator</button>
+
+                  <div className="v-admin-body">
+                    <div className="v-proof-section">
+                      <label>ID Proof</label>
+                      <a href={req.idProof.startsWith('http') ? req.idProof : `${api.getResolvedApiOrigin()}${req.idProof}`} target="_blank" rel="noreferrer" className="v-proof-link">
+                        View ID Document 📄
+                      </a>
+                    </div>
+                    
+                    <div className="v-socials">
+                      <label>Social Links</label>
+                      <div className="v-social-tags">
+                        {req.socialLinks?.instagram && <span className="pill">IG: {req.socialLinks.instagram}</span>}
+                        {req.socialLinks?.youtube && <span className="pill">YT: {req.socialLinks.youtube}</span>}
+                        {req.socialLinks?.twitter && <span className="pill">TW: {req.socialLinks.twitter}</span>}
+                      </div>
+                    </div>
+                  </div>
+
+                  {req.status === 'pending' && (
+                    <div className="v-admin-actions">
+                      <button className="btn btn-success" onClick={() => handleVerifyRequest(req._id, 'approved')}>Approve</button>
+                      <button className="btn btn-danger" onClick={() => handleVerifyRequest(req._id, 'rejected')}>Reject</button>
+                    </div>
+                  )}
                 </div>
               ))
             )}
           </div>
         )}
+
 
         {activeTab === 'reports' && (
           <div className="reports-queue">
