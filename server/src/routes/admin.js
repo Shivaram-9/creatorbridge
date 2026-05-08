@@ -7,6 +7,9 @@ import { Withdrawal } from "../models/Withdrawal.js";
 import { Deal } from "../models/Deal.js";
 import { authMiddleware } from "../middleware/auth.js";
 import { adminMiddleware } from "../middleware/admin.js";
+import { VerificationRequest } from "../models/VerificationRequest.js";
+import { EmailService } from "../services/EmailService.js";
+
 
 export const adminRouter = Router();
 
@@ -131,25 +134,42 @@ adminRouter.patch("/withdrawals/:id", async (req, res) => {
 // GET /api/admin/verifications - Pending verification requests
 adminRouter.get("/verifications", async (req, res) => {
   try {
-    // Assuming users "request" verification by some flag or we just show unverified creators
-    const users = await User.find({ role: "influencer", isVerified: false })
-      .sort({ followers: -1 })
-      .limit(50);
-    res.json(users);
+    const requests = await VerificationRequest.find()
+      .populate("user", "name username avatar role category followers")
+      .sort({ createdAt: -1 });
+    res.json(requests);
   } catch (err) {
     res.status(500).json({ error: "Failed to fetch verifications" });
   }
 });
 
-// PATCH /api/admin/verify/:id - Approve verification
-adminRouter.patch("/verify/:id", async (req, res) => {
+// PATCH /api/admin/verifications/:id - Review verification request
+adminRouter.patch("/verifications/:id", async (req, res) => {
   try {
-    const user = await User.findByIdAndUpdate(req.params.id, { isVerified: true }, { new: true });
-    res.json(user);
+    const { status, adminNotes } = req.body;
+    const request = await VerificationRequest.findById(req.params.id);
+    if (!request) return res.status(404).json({ error: "Request not found" });
+
+    request.status = status;
+    request.adminNotes = adminNotes;
+    request.reviewedAt = new Date();
+    await request.save();
+
+    const user = await User.findById(request.user);
+    if (status === "approved") {
+      user.isVerified = true;
+      await user.save();
+    }
+
+    // Send Email notification
+    EmailService.sendVerificationUpdate(user, status, adminNotes);
+
+    res.json(request);
   } catch (err) {
-    res.status(500).json({ error: "Failed to verify user" });
+    res.status(500).json({ error: "Failed to update verification request" });
   }
 });
+
 
 // GET /api/admin/users - User management
 adminRouter.get("/users", async (req, res) => {

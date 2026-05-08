@@ -75,8 +75,12 @@ const userSchema = new mongoose.Schema(
     // AI Discovery Behavior (Prompt-7)
     viewedProfiles: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     viewedCategories: [{ type: String }],
-    interests: [{ type: String }]
+    interests: [{ type: String }],
+    
+    // Brand Specific
+    shortlistedCreators: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   },
+
   { timestamps: true }
 );
 

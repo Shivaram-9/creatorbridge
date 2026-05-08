@@ -5,7 +5,8 @@ import { body, validationResult } from "express-validator";
 import { User } from "../models/User.js";
 import { Session } from "../models/Session.js";
 import { SecurityAlert } from "../models/SecurityAlert.js";
-import { sendEmail } from "../utils/email.js";
+import { EmailService } from "../services/EmailService.js";
+
 import crypto from "crypto";
 
 export const authRouter = Router();
@@ -79,14 +80,12 @@ authRouter.post(
 
       // Send verification email
       const verifyUrl = `${process.env.CLIENT_URL}/verify-email?token=${verificationToken}`;
-      await sendEmail({
-        to: email,
-        subject: "Verify your CreatorBridge account",
-        html: `<h1>Welcome to CreatorBridge!</h1>
-               <p>Please click the link below to verify your email address:</p>
-               <a href="${verifyUrl}" style="padding: 10px 20px; background: #6366f1; color: white; text-decoration: none; border-radius: 5px;">Verify Email</a>
-               <p>If you did not request this, please ignore this email.</p>`
-      }).catch(err => console.error("Initial verification email failed:", err));
+      await EmailService.send(email, "Verify your CreatorBridge account", "Verify Email", `
+        <p>Welcome to CreatorBridge!</p>
+        <p>Please click the button below to verify your email address:</p>
+        <a href="${verifyUrl}" class="btn">Verify Email</a>
+      `).catch(err => console.error("Initial verification email failed:", err));
+
 
       const token = signToken(user._id.toString());
       await createSession(user, token, req);
@@ -154,13 +153,11 @@ authRouter.post(
       await user.save();
 
       const resetUrl = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
-      await sendEmail({
-        to: email,
-        subject: "Password Reset Request",
-        html: `<h1>Reset Your Password</h1>
-               <p>Click the link below to reset your password. This link expires in 30 minutes.</p>
-               <a href="${resetUrl}" style="padding: 10px 20px; background: #6366f1; color: white; text-decoration: none; border-radius: 5px;">Reset Password</a>`
-      });
+      await EmailService.send(email, "Password Reset Request", "Reset Your Password", `
+        <p>Click the button below to reset your password. This link expires in 30 minutes.</p>
+        <a href="${resetUrl}" class="btn">Reset Password</a>
+      `);
+
       
       res.json({ message: "Password reset instructions sent to your email" });
     } catch (err) {
@@ -198,6 +195,8 @@ authRouter.post(
         type: "password_change",
         message: "Your password was successfully reset."
       });
+      EmailService.sendSecurityAlert(user, "password_change");
+
 
       res.json({ message: "Password reset successful" });
     } catch (err) {
@@ -240,13 +239,11 @@ authRouter.post("/send-otp", async (req, res) => {
     user.verificationCode = otp;
     await user.save();
 
-    await sendEmail({
-      to: email,
-      subject: "Your CreatorBridge Verification Code",
-      html: `<h1>Verify Your Identity</h1>
-             <p>Your verification code is: <strong style="font-size: 24px; color: #6366f1;">${otp}</strong></p>
-             <p>This code will expire shortly. Do not share it with anyone.</p>`
-    });
+    await EmailService.send(email, "Your CreatorBridge Verification Code", "Verify Identity", `
+      <p>Your verification code is: <strong style="font-size: 24px; color: #6366f1;">${otp}</strong></p>
+      <p>This code will expire shortly. Do not share it with anyone.</p>
+    `);
+
     
     res.json({ message: "Verification code sent to your email" });
   } catch (err) {

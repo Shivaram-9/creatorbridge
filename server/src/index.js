@@ -24,6 +24,9 @@ import { onboardingRouter } from "./routes/onboarding.js";
 import { discoveryRouter } from "./routes/discovery.js";
 import { dealsRouter } from "./routes/deals.js";
 import { aiRouter } from "./routes/ai.js";
+import { verificationRouter } from "./routes/verification.js";
+import { brandRouter } from "./routes/brand.js";
+
 import { Message } from "./models/Message.js";
 import { Session } from "./models/Session.js";
 import helmet from "helmet";
@@ -75,6 +78,9 @@ app.use("/api/onboarding", onboardingRouter);
 app.use("/api/discovery", discoveryRouter);
 app.use("/api/deals", dealsRouter);
 app.use("/api/ai", aiRouter);
+app.use("/api/verification", verificationRouter);
+app.use("/api/brand", brandRouter);
+
 
 // Serve static uploads
 app.use("/uploads", express.static("uploads"));
