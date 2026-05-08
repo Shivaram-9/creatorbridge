@@ -61,7 +61,9 @@ analyticsRouter.get("/posts", authMiddleware, async (req, res) => {
 // GET /api/analytics/campaigns
 analyticsRouter.get("/campaigns", authMiddleware, async (req, res) => {
   try {
-    const isBrand = (await User.findById(req.userId)).role === "brand";
+    const user = await User.findById(req.userId);
+    if (!user) return res.status(404).json({ error: "User not found" });
+    const isBrand = user.role === "brand";
     
     let stats = {};
     if (isBrand) {
@@ -91,6 +93,7 @@ async function updateDailySnapshot(userId) {
   date.setHours(0, 0, 0, 0);
   
   const user = await User.findById(userId);
+  if (!user) return;
   const posts = await Post.find({ user: userId });
   const postViews = posts.reduce((sum, p) => sum + (p.views || 0), 0);
   const engagement = posts.reduce((sum, p) => sum + (p.likes?.length || 0) + (p.comments?.length || 0), 0);
