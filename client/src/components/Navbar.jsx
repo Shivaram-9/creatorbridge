@@ -226,26 +226,61 @@ export default function Navbar({
                   />
                 </button>
                 {menuOpen && (
-                  <div className="dropdown-card slide-fade-in" style={{ width: '220px' }}>
-                    {user && user.role === "admin" && (
-                      <Link to="/admin" className="dropdown-item-pro" style={{ color: 'var(--accent)', fontWeight: 700 }} onClick={() => setMenuOpen(false)}>
-                        Admin Panel
-                      </Link>
+                  <div className="dropdown-card slide-fade-in" style={{ width: '250px', padding: '8px 0' }}>
+                    {!user.isEmailVerified && (
+                      <>
+                        <Link to="/verify-email" className="dropdown-item-pro" style={{ color: '#f59e0b', fontWeight: 600 }} onClick={() => setMenuOpen(false)}>
+                          <span style={{ marginRight: '10px' }}>⚠️</span> Verify Email
+                        </Link>
+                        <div style={{ height: '1px', background: '#f1f5f9', margin: '4px 0' }}></div>
+                      </>
                     )}
-                    <Link to="/requests" className="dropdown-item-pro" onClick={() => setMenuOpen(false)}>Align Requests</Link>
-                    <Link to="/deals" className="dropdown-item-pro" onClick={() => setMenuOpen(false)}>My Deals</Link>
-                    <Link to="/analytics" className="dropdown-item-pro" onClick={() => setMenuOpen(false)}>Analytics</Link>
-                    <Link to="/settings" className="dropdown-item-pro" onClick={() => setMenuOpen(false)}>Settings</Link>
-                    <div style={{ margin: '4px 0', borderTop: '1px solid var(--border-light)' }}></div>
+                    
+                    <Link to="/requests" className="dropdown-item-pro" onClick={() => setMenuOpen(false)}>
+                      <span style={{ width: '24px', display: 'inline-block' }}></span> Align Requests
+                    </Link>
+                    <div style={{ height: '1px', background: '#f1f5f9', margin: '4px 0' }}></div>
+                    
+                    <Link to="/deals" className="dropdown-item-pro" onClick={() => setMenuOpen(false)}>
+                      <span style={{ marginRight: '10px' }}>🤝</span> My Deals
+                    </Link>
+                    <div style={{ height: '1px', background: '#f1f5f9', margin: '4px 0' }}></div>
+                    
+                    <Link to="/saved" className="dropdown-item-pro" onClick={() => setMenuOpen(false)}>
+                      <span style={{ width: '24px', display: 'inline-block' }}></span> Saved Posts
+                    </Link>
+                    <div style={{ height: '1px', background: '#f1f5f9', margin: '4px 0' }}></div>
+                    
+                    <Link to="/premium" className="dropdown-item-pro" style={{ color: '#6366f1', fontWeight: 600 }} onClick={() => setMenuOpen(false)}>
+                      <span style={{ marginRight: '10px' }}>⭐</span> Upgrade to Premium
+                    </Link>
+                    <div style={{ height: '1px', background: '#f1f5f9', margin: '4px 0' }}></div>
+                    
+                    <Link to="/earnings" className="dropdown-item-pro" onClick={() => setMenuOpen(false)}>
+                      <span style={{ marginRight: '10px' }}>💰</span> My Earnings
+                    </Link>
+                    <div style={{ height: '1px', background: '#f1f5f9', margin: '4px 0' }}></div>
+                    
+                    <Link to="/analytics" className="dropdown-item-pro" onClick={() => setMenuOpen(false)}>
+                      <span style={{ width: '24px', display: 'inline-block' }}></span> Analytics
+                    </Link>
+                    <div style={{ height: '1px', background: '#f1f5f9', margin: '4px 0' }}></div>
+                    
+                    <Link to="/settings" className="dropdown-item-pro" onClick={() => setMenuOpen(false)}>
+                      <span style={{ width: '24px', display: 'inline-block' }}></span> Settings
+                    </Link>
+                    <div style={{ height: '1px', background: '#f1f5f9', margin: '4px 0' }}></div>
+                    
                     <button
                       className="dropdown-item-pro"
-                      style={{ color: '#ef4444', width: '100%', background: 'none', border: 'none', cursor: 'pointer' }}
+                      style={{ color: '#ef4444', width: '100%', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600 }}
                       onClick={() => { setMenuOpen(false); logout(); }}
                     >
-                      Logout
+                      <span style={{ width: '24px', display: 'inline-block' }}></span> Logout
                     </button>
                   </div>
                 )}
+
               </div>
             </div>
           </>
