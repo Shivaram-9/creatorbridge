@@ -1,0 +1,205 @@
+.analytics-dashboard {
+  padding: 30px;
+  max-width: 1400px;
+  margin: 0 auto;
+  background: #fff;
+}
+
+.dashboard-header {
+  margin-bottom: 40px;
+}
+
+.dashboard-header h1 {
+  font-size: 32px;
+  font-weight: 800;
+  margin: 0 0 8px 0;
+}
+
+.dashboard-header p {
+  color: #666;
+  margin: 0;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.stat-card {
+  background: #f9fafb;
+  padding: 24px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border: 1px solid #f3f4f6;
+  transition: transform 0.2s;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  background: #f3f4f6;
+}
+
+.stat-icon {
+  font-size: 24px;
+  background: white;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+}
+
+.stat-content h4 {
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  color: #666;
+  font-weight: 600;
+}
+
+.stat-value-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.stat-value {
+  font-size: 24px;
+  font-weight: 800;
+  color: #111;
+}
+
+.stat-change {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.stat-change.positive {
+  color: #10b981;
+  background: #d1fae5;
+}
+
+.charts-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+.chart-container {
+  background: white;
+  padding: 24px;
+  border-radius: 20px;
+  border: 1px solid #f3f4f6;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+}
+
+.chart-container h3 {
+  margin: 0 0 20px 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.h-400 {
+  height: 350px;
+}
+
+.insights-row {
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: 30px;
+}
+
+.top-posts-card, .campaign-insights-card {
+  background: white;
+  padding: 24px;
+  border-radius: 20px;
+  border: 1px solid #f3f4f6;
+}
+
+.top-posts-card h3, .campaign-insights-card h3 {
+  margin: 0 0 20px 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.post-rank-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.post-rank-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.rank-num {
+  font-weight: 800;
+  color: #999;
+  width: 20px;
+}
+
+.post-rank-item img {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.post-rank-info p {
+  margin: 0;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.post-rank-stats {
+  font-size: 12px;
+  color: #888;
+}
+
+.insight-metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.metric-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.metric-row span:first-child {
+  color: #666;
+  font-weight: 500;
+}
+
+.metric-val {
+  font-weight: 700;
+  font-size: 18px;
+}
+
+@media (max-width: 1024px) {
+  .charts-section, .insights-row {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 640px) {
+  .analytics-dashboard {
+    padding: 15px;
+  }
+  .stat-card {
+    padding: 16px;
+  }
+}
