@@ -1,0 +1,49 @@
+.collaborations-page {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.collaborations-page h1 {
+  font-size: 26px;
+  font-weight: 800;
+  margin-bottom: 24px;
+}
+
+.tab-navigation {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.tab-navigation button {
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid #e5e7eb;
+  background: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.tab-navigation button.active {
+  background: #000;
+  color: white;
+  border-color: #000;
+}
+
+.collabs-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #666;
+  background: #f9fafb;
+  border-radius: 12px;
+}

@@ -1,0 +1,105 @@
+.campaign-card {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
+  margin-bottom: 20px;
+}
+
+.campaign-card:hover {
+  transform: translateY(-5px);
+}
+
+.campaign-banner {
+  position: relative;
+  height: 180px;
+}
+
+.campaign-banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.campaign-category {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #333;
+}
+
+.campaign-content {
+  padding: 16px;
+}
+
+.campaign-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.campaign-brand {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+}
+
+.campaign-brand img {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.campaign-budget {
+  font-weight: 700;
+  color: #10b981;
+}
+
+.campaign-title {
+  font-size: 18px;
+  margin: 0 0 8px 0;
+  color: #1a1a1a;
+}
+
+.campaign-deadline {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 16px;
+}
+
+.campaign-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.campaign-actions a, .campaign-actions button {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-primary {
+  background: #000;
+  color: #fff;
+}
+
+.btn-secondary {
+  background: #f3f4f6;
+  color: #374151;
+  text-decoration: none;
+}

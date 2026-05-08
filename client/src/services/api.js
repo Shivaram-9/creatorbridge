@@ -239,4 +239,17 @@ export const api = {
     viewProfile: (userId) => request(`/analytics/view/profile/${userId}`, { method: "POST" }),
     viewPost: (postId) => request(`/analytics/view/post/${postId}`, { method: "POST" }),
   },
+  campaigns: {
+    list: () => request("/campaigns"),
+    get: (id) => request(`/campaigns/${id}`),
+    create: (body) => request("/campaigns/create", { method: "POST", body }),
+    remove: (id) => request(`/campaigns/${id}`, { method: "DELETE" }),
+    apply: (id) => request(`/campaigns/apply/${id}`, { method: "POST" }),
+    invite: (campaignId, userId) => request(`/campaigns/invite/${campaignId}/${userId}`, { method: "POST" }),
+    respond: (campaignId, body) => request(`/campaigns/respond/${campaignId}`, { method: "POST", body }),
+  },
+  collaborations: {
+    list: () => request("/collaborations"),
+    updateStatus: (id, status) => request(`/collaborations/status/${id}`, { method: "PATCH", body: { status } }),
+  },
 };

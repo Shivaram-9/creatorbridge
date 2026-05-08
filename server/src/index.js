@@ -14,6 +14,8 @@ import { searchRouter } from "./routes/search.js";
 import { storiesRouter } from "./routes/stories.js";
 import { adminRouter } from "./routes/admin.js";
 import { analyticsRouter } from "./routes/analytics.js";
+import { campaignsRouter } from "./routes/campaigns.js";
+import { collaborationsRouter } from "./routes/collaborations.js";
 import { Message } from "./models/Message.js";
 import helmet from "helmet";
 import { apiLimiter } from "./middleware/security.js";
@@ -54,6 +56,8 @@ app.use("/api/search", searchRouter);
 app.use("/api/stories", contentLimiter, storiesRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/analytics", analyticsRouter);
+app.use("/api/campaigns", campaignsRouter);
+app.use("/api/collaborations", collaborationsRouter);
 
 // Serve static uploads
 app.use("/uploads", express.static("uploads"));
