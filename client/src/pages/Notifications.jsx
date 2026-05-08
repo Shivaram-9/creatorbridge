@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState, useCallback } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { api } from "../services/api.js";
 import ErrorBanner from "../components/ErrorBanner.jsx";
 import Avatar from "../components/Avatar.jsx";
+import "./Notifications.css";
 
-/** Relative timestamp — e.g. "2 min ago", "3 days ago" */
 function timeAgo(dateStr) {
   const diff = Date.now() - new Date(dateStr).getTime();
   const sec = Math.floor(diff / 1000);
@@ -19,103 +19,123 @@ function timeAgo(dateStr) {
   return `${months}mo ago`;
 }
 
-
-
-/** Collab prefix detection (reused from Chat) */
-const COLLAB_PREFIX = "📋 COLLABORATION PROPOSAL\n";
-function previewContent(text) {
-  if (!text) return "";
-  if (text.startsWith(COLLAB_PREFIX)) return "🤝 Sent a collaboration proposal";
-  return text.length > 80 ? text.slice(0, 80) + "…" : text;
-}
-
 export default function Notifications() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [filter, setFilter] = useState("all");
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      setLoading(true);
-      setError("");
-      try {
-        const data = await api.notifications.list();
-        if (cancelled) return;
-        if (data?.error) {
-          setError(typeof data.error === "string" ? data.error : "Something went wrong");
-        } else {
-          setItems(Array.isArray(data) ? data : []);
-        }
-      } catch {
-        if (!cancelled) setError("Something went wrong");
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    })();
-    return () => { cancelled = true; };
+  const loadNotifications = useCallback(async () => {
+    setLoading(true);
+    try {
+      const data = await api.notifications.list();
+      if (data?.error) setError(data.error);
+      else setItems(Array.isArray(data) ? data : []);
+    } catch {
+      setError("Failed to load notifications");
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
+  useEffect(() => {
+    loadNotifications();
+  }, [loadNotifications]);
+
+  const markAllAsRead = async () => {
+    try {
+      await api.notifications.markAllRead();
+      setItems(prev => prev.map(n => ({ ...n, read: true })));
+    } catch {
+      setError("Failed to mark all as read");
+    }
+  };
+
+  const handleNotifClick = async (n) => {
+    if (!n.read) {
+      api.notifications.markRead(n._id).catch(() => {});
+      setItems(prev => prev.map(item => item._id === n._id ? { ...item, read: true } : item));
+    }
+    
+    // Redirect based on type
+    if (n.type === "follow") navigate(`/user/${n.sender?._id || n.sender}`);
+    else if (n.type === "like" || n.type === "comment") navigate(`/post/${n.post?._id || n.post}`);
+    else if (n.type === "campaign_invite" || n.type === "campaign_apply") navigate(`/collaborations`);
+    else if (n.type === "chat" || n.type === "collab_message") navigate(`/chat/${n.sender?._id || n.sender}`);
+    else if (n.type === "premium_upgrade") navigate(`/premium`);
+  };
+
+  const filteredItems = items.filter(n => {
+    if (filter === "all") return true;
+    if (filter === "interactions") return ["like", "comment"].includes(n.type);
+    if (filter === "connections") return ["follow"].includes(n.type);
+    if (filter === "campaigns") return ["campaign_invite", "campaign_apply", "collab_status"].includes(n.type);
+    return true;
+  });
+
+  const getIcon = (type) => {
+    switch(type) {
+      case 'like': return '❤️';
+      case 'comment': return '💬';
+      case 'follow': return '👤';
+      case 'campaign_invite':
+      case 'campaign_apply': return '📋';
+      case 'premium_upgrade': return '✨';
+      case 'chat': return '✉️';
+      default: return '🔔';
+    }
+  };
+
   return (
-    <div className="container notif-page">
-      <header className="page-header">
-        <h1 className="page-title">Notifications</h1>
-        <p className="subtitle">Recent messages and activities.</p>
+    <div className="notifications-v3 container slide-in">
+      <header className="notif-header">
+        <div className="notif-header-top">
+          <h1 className="page-title">Activity</h1>
+          <button className="btn-text" onClick={markAllAsRead}>Mark all as read</button>
+        </div>
+        
+        <div className="notif-filters">
+          <button className={filter === 'all' ? 'active' : ''} onClick={() => setFilter('all')}>All</button>
+          <button className={filter === 'interactions' ? 'active' : ''} onClick={() => setFilter('interactions')}>Likes & Comments</button>
+          <button className={filter === 'connections' ? 'active' : ''} onClick={() => setFilter('connections')}>Connections</button>
+          <button className={filter === 'campaigns' ? 'active' : ''} onClick={() => setFilter('campaigns')}>Campaigns</button>
+        </div>
       </header>
 
       <ErrorBanner message={error} onDismiss={() => setError("")} />
 
       {loading ? (
-        <p className="loading-line">Loading notifications</p>
-      ) : items.length === 0 ? (
-        <div className="empty-state empty-state--hero" role="status">
-          <div className="empty-state__illustration" aria-hidden="true">🔔</div>
-          <h2 className="empty-state__title">All caught up!</h2>
-          <p className="empty-state__text">
-            No new messages. Start exploring creators and brands.
-          </p>
-          <div className="empty-state__action">
-            <Link to="/discover" className="btn btn-primary">Explore</Link>
-          </div>
+        <div className="notif-skeleton">
+          {[1,2,3,4,5].map(i => <div key={i} className="skeleton-item" />)}
+        </div>
+      ) : filteredItems.length === 0 ? (
+        <div className="empty-state">
+          <div className="empty-icon">🔔</div>
+          <h3>No notifications here</h3>
+          <p>We'll notify you when someone interacts with you.</p>
         </div>
       ) : (
         <div className="notif-list">
-          {items.map((n) => {
-            const actor = n.sender;
-            const actorName = actor?.name || actor?.username || "Someone";
-            const isRead = n.read;
-
-            let link = "/home";
-            let icon = "🔔";
-
-            if (n.type === "follow") {
-              link = `/user/${actor?._id || actor}`;
-              icon = "👤";
-            } else if (n.type === "like") {
-              icon = "❤️";
-            } else if (n.type === "comment") {
-              icon = "💬";
-            }
-
-            return (
-              <Link
-                key={n._id}
-                to={link}
-                className={`notif-item ${!isRead ? 'notif-item--unread' : ''}`}
-                onClick={() => !isRead && api.notifications.markRead(n._id)}
-              >
-                {!isRead && <div className="notif-item__type-dot" aria-hidden="true" />}
-                <Avatar user={actor} size="md" />
-                <div className="notif-item__body">
-                  <p className="notif-item__text">
-                    <strong>{actorName}</strong> {n.message.replace(actorName, "").trim()}
-                  </p>
-                  <span className="notif-item__time">{timeAgo(n.createdAt)}</span>
-                </div>
-                <span className="notif-item__icon" aria-hidden="true">{icon}</span>
-              </Link>
-            );
-          })}
+          {filteredItems.map(n => (
+            <div 
+              key={n._id} 
+              className={`notif-item ${!n.read ? 'unread' : ''}`}
+              onClick={() => handleNotifClick(n)}
+            >
+              <div className="notif-avatar">
+                <Avatar user={n.sender} size="md" />
+                <span className="notif-type-icon">{getIcon(n.type)}</span>
+              </div>
+              <div className="notif-info">
+                <p className="notif-text">
+                  <span className="username">{n.sender?.username || n.sender?.name}</span> {n.message}
+                </p>
+                <span className="notif-date">{timeAgo(n.createdAt)}</span>
+              </div>
+              {!n.read && <div className="unread-dot" />}
+            </div>
+          ))}
         </div>
       )}
     </div>

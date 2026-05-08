@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { HomeIcon, UsersIcon, MessageIcon, ProfileIcon } from "./Icons.jsx";
+import { HomeIcon, UsersIcon, MessageIcon, ProfileIcon, BellIcon } from "./Icons.jsx";
 
 function BottomNavItem({ to, icon, label, badgeCount }) {
   return (
@@ -20,12 +20,13 @@ function BottomNavItem({ to, icon, label, badgeCount }) {
   );
 }
 
-export default function BottomNav({ msgUnreadCount }) {
+export default function BottomNav({ msgUnreadCount, notifUnreadCount }) {
   return (
     <nav className="bottom-nav">
       <BottomNavItem to="/home" icon={<HomeIcon />} label="Home" />
       <BottomNavItem to="/discover" icon={<UsersIcon />} label="Discover" />
       <BottomNavItem to="/messages" icon={<MessageIcon />} label="Messages" badgeCount={msgUnreadCount} />
+      <BottomNavItem to="/notifications" icon={<BellIcon />} label="Activity" badgeCount={notifUnreadCount} />
       <BottomNavItem to="/profile" icon={<ProfileIcon />} label="Profile" />
     </nav>
   );

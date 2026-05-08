@@ -37,7 +37,7 @@ export default function UserCard({ user }) {
     >
       <div style={{ marginBottom: '1rem', position: 'relative' }}>
         <Avatar user={user} size="xl" />
-        {user.isVerified && (
+        {(user.isVerified || user.isPremium) && (
           <div style={{ 
             position: 'absolute', 
             bottom: '4px', 
@@ -46,7 +46,7 @@ export default function UserCard({ user }) {
             borderRadius: '50%', 
             padding: '2px' 
           }}>
-            <VerifiedBadge size="sm" />
+            <VerifiedBadge size="sm" tier={user.premiumTier} />
           </div>
         )}
       </div>

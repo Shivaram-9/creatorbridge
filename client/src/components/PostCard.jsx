@@ -8,9 +8,8 @@ import VerifiedBadge from "./VerifiedBadge.jsx";
 import ReportModal from "./ReportModal.jsx";
 import MediaGallery from "./MediaGallery.jsx";
 import "./PostCard.css";
-
 import Lightbox from "./Lightbox.jsx";
-import "./PostCard.css";
+import CollectionModal from "./CollectionModal.jsx";
 
 const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
   const { user, setUser } = useAuth();
@@ -42,6 +41,7 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
   const [showMenu, setShowMenu] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
+  const [showCollectionModal, setShowCollectionModal] = useState(false);
 
   const isOwner = user?._id === (post.user?._id || post.user);
 
@@ -167,7 +167,9 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
         <div className="post-info">
           <h3 className="post-username" onClick={() => navigate(`/user/${post.user?._id}`)}>
             {post.user?.name || post.username}
-            {post.user?.isVerified && <VerifiedBadge size="sm" />}
+            {(post.user?.isVerified || post.user?.isPremium) && (
+              <VerifiedBadge size="sm" tier={post.user?.premiumTier} />
+            )}
           </h3>
           <div className="post-meta">
             <span className="post-time">{new Date(post.createdAt).toLocaleDateString()}</span>
@@ -187,10 +189,14 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
                   <button onClick={() => { setIsEditing(true); setShowMenu(false); }}>Edit Post</button>
                   <button onClick={handlePin}>{post.isPinned ? "Unpin" : "Pin to Profile"}</button>
                   <button onClick={handleArchive}>Archive</button>
+                  <button onClick={() => { setShowCollectionModal(true); setShowMenu(false); }} style={{ color: 'var(--accent)' }}>Save to Collection</button>
                   <button onClick={handleDelete} className="text-danger" disabled={isDeleting}>Delete</button>
                 </>
               ) : (
-                <button onClick={() => { setShowReportModal(true); setShowMenu(false); }}>Report</button>
+                <>
+                  <button onClick={() => { setShowCollectionModal(true); setShowMenu(false); }} style={{ color: 'var(--accent)' }}>Save to Collection</button>
+                  <button onClick={() => { setShowReportModal(true); setShowMenu(false); }}>Report</button>
+                </>
               )}
             </div>
           )}
@@ -276,6 +282,7 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
       </div>
 
       {showReportModal && <ReportModal targetPost={post._id} onClose={() => setShowReportModal(false)} />}
+      {showCollectionModal && <CollectionModal postId={post._id} onClose={() => setShowCollectionModal(false)} />}
     </div>
   );
 });

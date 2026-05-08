@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { api } from "../services/api.js";
 import Avatar from "../components/Avatar.jsx";
+import VerifiedBadge from "../components/VerifiedBadge.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import ErrorBanner from "../components/ErrorBanner.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
@@ -118,7 +119,10 @@ function UserRow({ user, onUpdate }) {
     >
       <Avatar user={user} size="md" />
       <div style={{ marginLeft: '1rem', flex: 1 }}>
-        <div style={{ fontWeight: 700, fontSize: '0.95rem' }}>{user.username || user.name}</div>
+        <div style={{ fontWeight: 700, fontSize: '0.95rem', display: 'flex', alignItems: 'center' }}>
+          {user.username || user.name}
+          {(user.isVerified || user.isPremium) && <VerifiedBadge size="xs" tier={user.premiumTier} />}
+        </div>
         <div className="muted" style={{ fontSize: '0.8rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '200px' }}>
           {user.bio || user.category || user.role}
         </div>

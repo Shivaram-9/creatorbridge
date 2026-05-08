@@ -17,7 +17,12 @@ export default function Messages() {
         if (data?.error) {
           setError(data.error);
         } else {
-          setConversations(data);
+          const sorted = Array.isArray(data) ? [...data].sort((a, b) => {
+            if ((a.unreadCount > 0) && (b.unreadCount === 0)) return -1;
+            if ((a.unreadCount === 0) && (b.unreadCount > 0)) return 1;
+            return new Date(b.lastMessage.createdAt) - new Date(a.lastMessage.createdAt);
+          }) : [];
+          setConversations(sorted);
         }
       } catch {
         setError("Failed to load conversations");
@@ -69,7 +74,7 @@ export default function Messages() {
                 onClick={() => navigate(`/chat/${conv.partner._id}`)}
               >
                 <div className="chat-item-avatar">
-                  <Avatar user={conv.partner} size="md" />
+                  <Avatar user={conv.partner} size="md" showOnline />
                 </div>
                 <div className="chat-item-info">
                   <div className="chat-item-name" style={{ fontWeight: conv.unreadCount > 0 ? 700 : 500 }}>

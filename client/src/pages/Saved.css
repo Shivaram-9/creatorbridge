@@ -1,0 +1,46 @@
+.saved-page {
+  padding-bottom: 100px;
+}
+
+.saved-tabs {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 10px 0 20px;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.saved-tabs::-webkit-scrollbar { display: none; }
+
+.saved-tabs button {
+  background: white;
+  border: 1px solid var(--border);
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-muted);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.saved-tabs button.active {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+  box-shadow: 0 4px 12px rgba(var(--accent-rgb), 0.2);
+}
+
+.saved-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+@media (max-width: 480px) {
+  .saved-page {
+    padding: 20px 10px 100px;
+  }
+}

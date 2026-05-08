@@ -241,6 +241,7 @@ usersRouter.get("/search", async (req, res) => {
 
     if (role) filter.role = role;
     if (verified === "true") filter.isVerified = true;
+    if (req.query.premium === "true") filter.isPremium = true;
     if (category) filter.category = category;
 
     const users = await User.find(filter)
@@ -372,5 +373,58 @@ usersRouter.get("/:id/following", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to load following" });
+  }
+});
+
+// Collections
+usersRouter.get("/collections", authMiddleware, async (req, res) => {
+  try {
+    const user = await User.findById(req.userId).populate("collections.posts");
+    res.json(user.collections || []);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch collections" });
+  }
+});
+
+usersRouter.post("/collections", authMiddleware, async (req, res) => {
+  try {
+    const { name } = req.body;
+    if (!name) return res.status(400).json({ error: "Name is required" });
+    const user = await User.findByIdAndUpdate(
+      req.userId,
+      { $push: { collections: { name, posts: [] } } },
+      { new: true }
+    );
+    res.json(user.collections);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to create collection" });
+  }
+});
+
+usersRouter.post("/collections/:colId/add", authMiddleware, async (req, res) => {
+  try {
+    const { postId } = req.body;
+    const user = await User.findOneAndUpdate(
+      { _id: req.userId, "collections._id": req.params.colId },
+      { $addToSet: { "collections.$.posts": postId } },
+      { new: true }
+    );
+    res.json(user.collections);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to add to collection" });
+  }
+});
+
+usersRouter.delete("/collections/:colId/remove", authMiddleware, async (req, res) => {
+  try {
+    const { postId } = req.body;
+    const user = await User.findOneAndUpdate(
+      { _id: req.userId, "collections._id": req.params.colId },
+      { $pull: { "collections.$.posts": postId } },
+      { new: true }
+    );
+    res.json(user.collections);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to remove from collection" });
   }
 });

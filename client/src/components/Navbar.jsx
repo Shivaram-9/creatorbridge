@@ -133,7 +133,15 @@ export default function Navbar({
                 <SearchDropdown 
                   results={searchResults} 
                   loading={searchLoading} 
-                  onClose={() => setSearchResults(null)} 
+                  onClose={() => setSearchResults(null)}
+                  onItemClick={(item) => {
+                    if (!item) return;
+                    const saved = JSON.parse(localStorage.getItem("cb_recent_searches") || "[]");
+                    const updated = [item, ...saved.filter(x => x._id !== item._id)].slice(0, 10);
+                    localStorage.setItem("cb_recent_searches", JSON.stringify(updated));
+                    setSearchResults(null);
+                    setSearchQuery("");
+                  }}
                 />
               </form>
             </div>

@@ -91,9 +91,19 @@ io.use((socket, next) => {
   }
 });
 
-io.on("connection", (socket) => {
+import { User } from "./models/User.js";
+
+io.on("connection", async (socket) => {
   const uid = socket.userId;
   socket.join(`user:${uid}`);
+
+  // Mark user as online
+  await User.findByIdAndUpdate(uid, { isOnline: true, lastActive: new Date() });
+
+  socket.on("disconnect", async () => {
+    // Mark user as offline
+    await User.findByIdAndUpdate(uid, { isOnline: false, lastActive: new Date() });
+  });
 
   socket.on("send_message", async (payload, ack) => {
     try {

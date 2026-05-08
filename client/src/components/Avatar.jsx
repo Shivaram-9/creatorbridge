@@ -6,7 +6,7 @@ import { BASE_URL } from "../config/api.js";
  * @param {string} size - Size of the avatar (xs, sm, md, lg, xl).
  * @param {string} className - Additional CSS classes.
  */
-export default function Avatar({ user, size = "md", className = "" }) {
+export default function Avatar({ user, size = "md", className = "", showOnline = false }) {
   const getInitials = (name, email) => {
     if (name && name.trim()) {
       const parts = name.trim().split(/\s+/);
@@ -41,27 +41,30 @@ export default function Avatar({ user, size = "md", className = "" }) {
 
   const selectedSizeClass = sizeClasses[size] || sizeClasses.md;
 
-  if (avatarUrl) {
-    return (
-      <div className={`avatar-container ${selectedSizeClass} ${className}`}>
-        <img 
-          src={avatarUrl} 
-          alt={user?.name || "User avatar"} 
-          className="avatar-img"
-          onError={(e) => {
-            // If image fails to load, fallback to initials
-            e.target.style.display = 'none';
-            e.target.parentElement.classList.add('avatar-fallback-active');
-          }}
-        />
-        <span className="avatar-initials-fallback">{initials}</span>
-      </div>
-    );
-  }
+  const renderContent = () => {
+    if (avatarUrl) {
+      return (
+        <>
+          <img 
+            src={avatarUrl} 
+            alt={user?.name || "User avatar"} 
+            className="avatar-img"
+            onError={(e) => {
+              e.target.style.display = 'none';
+              e.target.parentElement.classList.add('avatar-fallback-active');
+            }}
+          />
+          <span className="avatar-initials-fallback">{initials}</span>
+        </>
+      );
+    }
+    return <div className="avatar-initials-content">{initials}</div>;
+  };
 
   return (
-    <div className={`avatar-container avatar-initials ${selectedSizeClass} ${className}`}>
-      {initials}
+    <div className={`avatar-container ${selectedSizeClass} ${avatarUrl ? '' : 'avatar-initials'} ${className}`}>
+      {renderContent()}
+      {showOnline && user?.isOnline && <span className="online-dot" title="Online" />}
     </div>
   );
 }
