@@ -39,7 +39,7 @@ analyticsRouter.get("/profile", authMiddleware, async (req, res) => {
 // GET /api/analytics/posts
 analyticsRouter.get("/posts", authMiddleware, async (req, res) => {
   try {
-    const posts = await Post.find({ user: req.userId }).sort("-views").limit(10);
+    const posts = await Post.find({ user: req.userId }).sort("-views").limit(10).populate("user", "username name avatar");
     
     const topLiked = await Post.findOne({ user: req.userId }).sort("-likes");
     const topCommented = await Post.findOne({ user: req.userId }).sort("-comments");
