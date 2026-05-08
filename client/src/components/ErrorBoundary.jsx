@@ -1,41 +1,49 @@
-import React from "react";
+import React from 'react';
 
-export default class ErrorBoundary extends React.Component {
+class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { hasError: false, error: null };
+    this.state = { hasError: false };
   }
 
   static getDerivedStateFromError(error) {
-    return { hasError: true, error };
+    return { hasError: true };
   }
 
   componentDidCatch(error, errorInfo) {
-    console.error("App crashed:", error, errorInfo);
+    console.error("PLATFORM CRASH RECOVERED:", error, errorInfo);
   }
 
   render() {
     if (this.state.hasError) {
       return (
-        <div className="container" style={{ paddingTop: "2rem", textAlign: "center" }}>
-          <div className="empty-state empty-state--hero">
-            <div className="empty-state__illustration" aria-hidden="true">⚠️</div>
-            <h2 className="empty-state__title">Something went wrong</h2>
-            <p className="empty-state__text">
-              We encountered an unexpected error. Please try reloading the app.
-            </p>
-            <div className="empty-state__action">
-              <button
-                className="btn btn-primary"
-                onClick={() => window.location.reload()}
-              >
-                Reload app
-              </button>
-            </div>
-          </div>
+        <div className="error-boundary-screen" style={{
+          height: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: '#f8fafc',
+          textAlign: 'center',
+          padding: '2rem'
+        }}>
+          <h1 style={{ fontSize: '4rem', marginBottom: '1rem' }}>⚠️</h1>
+          <h2 style={{ fontSize: '1.5rem', color: '#1e293b' }}>Something went wrong.</h2>
+          <p style={{ color: '#64748b', marginBottom: '2rem', maxWidth: '400px' }}>
+            The platform encountered an unexpected error. We've been notified and are working on it.
+          </p>
+          <button 
+            className="btn btn-primary" 
+            onClick={() => window.location.href = '/home'}
+          >
+            Back to Home
+          </button>
         </div>
       );
     }
-    return this.props.children;
+
+    return this.props.children; 
   }
 }
+
+export default ErrorBoundary;

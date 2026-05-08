@@ -1,34 +1,47 @@
-import React from "react";
-
-export function Skeleton({ width, height, borderRadius = "4px", className = "" }) {
-  return (
-    <div 
-      className={`skeleton-loader ${className}`}
-      style={{ 
-        width, 
-        height, 
-        borderRadius,
-        background: 'linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)',
-        backgroundSize: '200% 100%',
-        animation: 'shimmer 1.5s infinite linear'
-      }}
-    />
-  );
-}
+import "./Skeleton.css";
 
 export function PostSkeleton() {
   return (
-    <div className="card" style={{ marginBottom: '1rem', border: '1px solid var(--border)' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
-        <Skeleton width="42px" height="42px" borderRadius="50%" />
-        <div>
-          <Skeleton width="120px" height="14px" />
-          <Skeleton width="60px" height="10px" className="mt-2" />
+    <div className="skeleton-card card">
+      <div className="skeleton-header">
+        <div className="skeleton-circle" />
+        <div className="skeleton-text-group">
+          <div className="skeleton-line w-40" />
+          <div className="skeleton-line w-20" />
         </div>
       </div>
-      <Skeleton width="100%" height="16px" className="mb-2" />
-      <Skeleton width="80%" height="16px" className="mb-3" />
-      <Skeleton width="100%" height="300px" borderRadius="12px" />
+      <div className="skeleton-body">
+        <div className="skeleton-line w-full" />
+        <div className="skeleton-line w-full" />
+        <div className="skeleton-line w-3/4" />
+      </div>
+      <div className="skeleton-media" />
+    </div>
+  );
+}
+
+export function ProfileSkeleton() {
+  return (
+    <div className="skeleton-profile container">
+      <div className="skeleton-banner" />
+      <div className="skeleton-profile-content">
+        <div className="skeleton-circle-lg" />
+        <div className="skeleton-line w-60 h-8" />
+        <div className="skeleton-line w-40 h-4" />
+      </div>
+    </div>
+  );
+}
+
+export function ListSkeleton({ count = 5 }) {
+  return (
+    <div className="list-gap">
+      {[...Array(count)].map((_, i) => (
+        <div key={i} className="skeleton-list-item">
+          <div className="skeleton-circle-sm" />
+          <div className="skeleton-line w-full" />
+        </div>
+      ))}
     </div>
   );
 }

@@ -1,0 +1,29 @@
+.empty-state-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+  margin: 2rem 0;
+  border-style: dashed;
+}
+
+.empty-icon {
+  font-size: 3.5rem;
+  margin-bottom: 1.5rem;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.1));
+}
+
+.empty-title {
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: var(--text-main);
+}
+
+.empty-desc {
+  font-size: 1rem;
+  color: var(--text-muted);
+  max-width: 320px;
+  margin-bottom: 2rem;
+}

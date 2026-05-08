@@ -124,7 +124,7 @@ export default function Layout() {
         logout={logout}
       />
 
-      <main className="main-content">
+      <main className="main-content container slide-in">
         <Outlet />
       </main>
 
@@ -133,3 +133,4 @@ export default function Layout() {
     </div>
   );
 }
+
