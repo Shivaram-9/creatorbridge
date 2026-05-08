@@ -312,7 +312,15 @@ export const api = {
     getTransactions: () => request("/premium/transactions"),
     upgrade: (tier, transactionId) => request("/premium/upgrade", { method: "POST", body: { tier, transactionId } }),
     addEarnings: (amount, description) => request("/premium/add-earnings", { method: "POST", body: { amount, description } }),
+    createOrder: (tier) => request("/premium/create-order", { method: "POST", body: { tier } }),
+    verifyPayment: (body) => request("/premium/verify-payment", { method: "POST", body }),
+    withdraw: (body) => request("/premium/withdraw", { method: "POST", body }),
   },
+  ai: {
+    chat: (message) => request("/ai/chat", { method: "POST", body: { message } }),
+    getInsights: () => request("/ai/insights"),
+  },
+
   BASE_URL,
   getResolvedApiOrigin: () => BASE_URL,
 };

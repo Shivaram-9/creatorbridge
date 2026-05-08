@@ -20,18 +20,19 @@ export default function AIAssistant() {
 
   const handleSend = async (e) => {
     e.preventDefault();
-    if (!input.trim() || loading) return;
+    if (!input?.trim() || loading) return;
 
     const userMsg = input.trim();
-    setMessages(prev => [...prev, { role: "user", content: userMsg }]);
+    setMessages(prev => [...(prev || []), { role: "user", content: userMsg }]);
     setInput("");
     setLoading(true);
 
     try {
-      const res = await api.ai.chat(userMsg);
-      setMessages(prev => [...prev, { role: "assistant", content: res.response || "I am processing your request..." }]);
-    } catch {
-      setMessages(prev => [...prev, { role: "assistant", content: "Sorry, I am having trouble connecting right now." }]);
+      const res = await api?.ai?.chat(userMsg);
+      setMessages(prev => [...(prev || []), { role: "assistant", content: res?.response || "I am processing your request..." }]);
+    } catch (err) {
+      console.error("AI Assistant Error:", err);
+      setMessages(prev => [...(prev || []), { role: "assistant", content: "Sorry, I am having trouble connecting right now." }]);
     } finally {
       setLoading(false);
     }
@@ -40,7 +41,7 @@ export default function AIAssistant() {
   return (
     <div className={`ai-assistant-wrapper ${isOpen ? "open" : ""}`}>
       {/* Floating Button */}
-      <button className="ai-fab" onClick={() => setIsOpen(!isOpen)}>
+      <button className="ai-fab" onClick={() => setIsOpen(!isOpen)} aria-label="Toggle AI Assistant">
         <span className="ai-icon">✨</span>
         {!isOpen && <span className="ai-label">Ask AI</span>}
       </button>
@@ -53,15 +54,15 @@ export default function AIAssistant() {
               <span className="sparkle">✨</span>
               <h3>Creator Assistant</h3>
             </div>
-            <button className="close-btn" onClick={() => setIsOpen(false)}>×</button>
+            <button className="close-btn" onClick={() => setIsOpen(false)} aria-label="Close">×</button>
           </header>
 
           <div className="ai-chat-body">
-            {messages.map((msg, i) => (
-              <div key={i} className={`ai-message ${msg.role}`}>
-                {msg.role === "assistant" && <div className="ai-avatar-mini">🤖</div>}
+            {(messages || []).map((msg, i) => (
+              <div key={i} className={`ai-message ${msg?.role || 'assistant'}`}>
+                {msg?.role === "assistant" && <div className="ai-avatar-mini">🤖</div>}
                 <div className="ai-bubble">
-                  {msg.content}
+                  {msg?.content || "..."}
                 </div>
               </div>
             ))}
@@ -80,11 +81,11 @@ export default function AIAssistant() {
             <input 
               type="text" 
               placeholder="Type a message..." 
-              value={input}
+              value={input || ""}
               onChange={(e) => setInput(e.target.value)}
               disabled={loading}
             />
-            <button type="submit" disabled={!input.trim() || loading}>
+            <button type="submit" disabled={!input?.trim() || loading}>
               {loading ? "..." : "Send"}
             </button>
           </form>
@@ -93,3 +94,4 @@ export default function AIAssistant() {
     </div>
   );
 }
+

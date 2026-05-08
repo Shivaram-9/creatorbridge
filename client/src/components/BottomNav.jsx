@@ -1,3 +1,4 @@
+import { NavLink } from "react-router-dom";
 import { HomeIcon, UsersIcon, MessageIcon, ProfileIcon, BriefcaseIcon } from "./Icons.jsx";
 
 function BottomNavItem({ to, icon, label, badgeCount }) {

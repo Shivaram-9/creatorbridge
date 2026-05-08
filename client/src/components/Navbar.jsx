@@ -174,23 +174,24 @@ export default function Navbar({
                     <div className="dropdown-menu dropdown-menu--notif slide-in">
                       <div className="dropdown-header">Notifications</div>
                       <div className="dropdown-scroll">
-                        {notifications.length === 0 ? (
+                        {(!notifications || notifications.length === 0) ? (
                           <div className="dropdown-item dropdown-item--empty">No notifications</div>
                         ) : (
-                          notifications.map(n => (
+                          (notifications || []).map(n => (
                             <div 
-                              key={n._id} 
-                              className={`dropdown-item dropdown-item--notif ${!n.read ? 'unread' : ''}`}
+                              key={n?._id} 
+                              className={`dropdown-item dropdown-item--notif ${!n?.read ? 'unread' : ''}`}
                               onClick={() => handleNotifClick(n)}
                             >
                               <div className="notif-content">
-                                <p className="notif-text">{n.message}</p>
-                                <span className="notif-time">{formatTime(n.createdAt)}</span>
+                                <p className="notif-text">{n?.message}</p>
+                                <span className="notif-time">{n?.createdAt ? formatTime(n.createdAt) : ""}</span>
                               </div>
                             </div>
                           ))
                         )}
                       </div>
+
                       <Link to="/notifications" className="dropdown-footer" onClick={() => setNotifOpen(false)}>
                         View all
                       </Link>
