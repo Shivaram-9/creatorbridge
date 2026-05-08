@@ -106,7 +106,7 @@ export default function Layout() {
   };
 
   return (
-    <div className="app-wrapper">
+    <div className="app-shell">
       <OfflineBanner />
       
       <Navbar 
@@ -124,8 +124,8 @@ export default function Layout() {
         logout={logout}
       />
 
-      <main className="main-content-area">
-        <div className="page-container slide-up-fade">
+      <main className="main-viewport">
+        <div className="content-container slide-fade-in">
           <Outlet />
         </div>
       </main>
@@ -135,6 +135,7 @@ export default function Layout() {
     </div>
   );
 }
+
 
 
 

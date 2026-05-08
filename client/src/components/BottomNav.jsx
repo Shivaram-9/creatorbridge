@@ -5,25 +5,25 @@ function BottomNavItem({ to, icon, label, badgeCount }) {
   return (
     <NavLink
       to={to}
-      className={({ isActive }) => `nav-tab ${isActive ? "active" : ""}`}
+      className={({ isActive }) => `bottom-tab-pro ${isActive ? "active" : ""}`}
     >
-      <div className="nav-tab-icon">
+      <div className="tab-icon-wrap" style={{ fontSize: '1.4rem', position: 'relative', display: 'flex' }}>
         {icon}
         {badgeCount > 0 && (
-          <span className="badge-dot" style={{ top: '-4px', right: '-8px' }}>
+          <span className="badge-dot" style={{ top: '-4px', right: '-8px', fontSize: '0.65rem' }}>
             {badgeCount > 99 ? "99+" : badgeCount}
           </span>
         )}
       </div>
-      <span className="nav-tab-label">{label}</span>
+      <span className="tab-label">{label}</span>
     </NavLink>
   );
 }
 
 export default function BottomNav({ msgUnreadCount }) {
   return (
-    <nav className="bottom-nav-fixed">
-      <div className="bottom-nav-inner">
+    <nav className="bottom-nav-pro">
+      <div className="bottom-nav-content">
         <BottomNavItem to="/home" icon={<HomeIcon />} label="Home" />
         <BottomNavItem to="/discover" icon={<UsersIcon />} label="Discover" />
         <BottomNavItem to="/messages" icon={<MessageIcon />} label="Messages" badgeCount={msgUnreadCount} />
@@ -33,4 +33,5 @@ export default function BottomNav({ msgUnreadCount }) {
     </nav>
   );
 }
+
 

@@ -118,24 +118,24 @@ export default function Navbar({
   }, [navigate]);
 
   return (
-    <header className="header-fixed">
-      <div className="navbar-inner">
-        <div className="nav-left">
-          <Link to="/home" className="logo-link">
+    <header className="navbar-fixed">
+      <div className="navbar-content">
+        <div className="brand-section">
+          <Link to="/home" className="logo-main">
             CreatorBridge
           </Link>
         </div>
 
         {user && (
           <>
-            <div className="nav-center">
-              <form className="search-box-wrap" onSubmit={handleSearch} ref={searchRef}>
-                <span className="search-icon-abs">
+            <div className="search-section">
+              <form className="search-bar-wrap" onSubmit={handleSearch} ref={searchRef}>
+                <span className="search-bar-icon">
                   <SearchIcon />
                 </span>
                 <input
                   type="text"
-                  className="search-field"
+                  className="search-bar-input"
                   placeholder="Search creators & brands..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -159,60 +159,60 @@ export default function Navbar({
               </form>
             </div>
 
-            <div className="nav-right">
-              <div className="top-menu-container" ref={notifRef}>
+            <div className="actions-section">
+              <div className="dropdown-container" ref={notifRef}>
                 <button 
-                  className="icon-btn" 
+                  className="nav-action-btn" 
                   onClick={() => setNotifOpen(!notifOpen)}
                   aria-label="Notifications"
                 >
                   <BellIcon />
-                  {unreadCount > 0 && <span className="badge-dot">{unreadCount}</span>}
+                  {unreadCount > 0 && <span className="badge-dot" style={{ top: '4px', right: '4px' }}>{unreadCount}</span>}
                 </button>
                 {notifOpen && (
-                  <div className="dropdown-menu dropdown-menu--notif slide-in">
-                    <div className="dropdown-header">Notifications</div>
-                    <div className="dropdown-scroll">
+                  <div className="dropdown-card slide-fade-in">
+                    <div className="dropdown-header" style={{ padding: '12px', borderBottom: '1px solid var(--border-light)', fontWeight: 700 }}>Notifications</div>
+                    <div className="dropdown-scroll" style={{ maxHeight: '350px', overflowY: 'auto' }}>
                       {(!notifications || notifications.length === 0) ? (
-                        <div className="dropdown-item dropdown-item--empty">No notifications</div>
+                        <div className="dropdown-item-pro" style={{ color: 'var(--text-muted)', justifyContent: 'center' }}>No notifications</div>
                       ) : (
                         (notifications || []).map(n => (
                           <div 
                             key={n?._id} 
-                            className={`dropdown-item dropdown-item--notif ${!n?.read ? 'unread' : ''}`}
+                            className={`dropdown-item-pro ${!n?.read ? 'unread' : ''}`}
                             onClick={() => handleNotifClick(n)}
+                            style={{ borderBottom: '1px solid #f1f5f9', cursor: 'pointer' }}
                           >
-                            <div className="notif-content">
-                              <p className="notif-text">{n?.message}</p>
-                              <span className="notif-time">{n?.createdAt ? formatTime(n.createdAt) : ""}</span>
+                            <div className="notif-content" style={{ padding: '4px 0' }}>
+                              <p className="notif-text" style={{ fontSize: '0.85rem' }}>{n?.message}</p>
+                              <span className="notif-time" style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{n?.createdAt ? formatTime(n.createdAt) : ""}</span>
                             </div>
                           </div>
                         ))
                       )}
                     </div>
-                    <Link to="/notifications" className="dropdown-footer" onClick={() => setNotifOpen(false)}>
-                      View all
+                    <Link to="/notifications" className="dropdown-footer" onClick={() => setNotifOpen(false)} style={{ display: 'block', textAlign: 'center', padding: '12px', color: 'var(--primary)', fontWeight: 600, textDecoration: 'none', borderTop: '1px solid var(--border-light)' }}>
+                      View all activity
                     </Link>
                   </div>
                 )}
               </div>
 
-              <Link to="/messages" className="icon-btn" aria-label="Messages">
+              <Link to="/messages" className="nav-action-btn" aria-label="Messages">
                 <MessageIcon />
-                {msgUnreadCount > 0 && <span className="badge-dot">{msgUnreadCount}</span>}
+                {msgUnreadCount > 0 && <span className="badge-dot" style={{ top: '4px', right: '4px' }}>{msgUnreadCount}</span>}
               </Link>
 
-              <div className="top-menu-container" ref={menuRef}>
+              <div className="dropdown-container" ref={menuRef}>
                 <button
-                  className="icon-btn"
+                  className="nav-action-btn"
                   onClick={() => setMenuOpen(!menuOpen)}
                   aria-label="Menu"
-                  style={{ position: 'relative', padding: '0.25rem' }}
+                  style={{ position: 'relative', padding: '4px' }}
                 >
                   <Avatar user={user} size="sm" />
                   <span 
                     className={`status-dot status-dot--${socketStatus}`}
-                    title={`Live status: ${socketStatus}`}
                     style={{
                       position: 'absolute',
                       bottom: '2px',
@@ -226,18 +226,20 @@ export default function Navbar({
                   />
                 </button>
                 {menuOpen && (
-                  <div className="dropdown-menu slide-in">
+                  <div className="dropdown-card slide-fade-in" style={{ width: '220px' }}>
                     {user && user.role === "admin" && (
-                      <Link to="/admin" className="dropdown-item" style={{ color: 'var(--accent)', fontWeight: 700 }} onClick={() => setMenuOpen(false)}>
+                      <Link to="/admin" className="dropdown-item-pro" style={{ color: 'var(--accent)', fontWeight: 700 }} onClick={() => setMenuOpen(false)}>
                         Admin Panel
                       </Link>
                     )}
-                    <Link to="/requests" className="dropdown-item" onClick={() => setMenuOpen(false)}>Align Requests</Link>
-                    <Link to="/deals" className="dropdown-item" onClick={() => setMenuOpen(false)}>My Deals</Link>
-                    <Link to="/analytics" className="dropdown-item" onClick={() => setMenuOpen(false)}>Analytics</Link>
-                    <Link to="/settings" className="dropdown-item" onClick={() => setMenuOpen(false)}>Settings</Link>
+                    <Link to="/requests" className="dropdown-item-pro" onClick={() => setMenuOpen(false)}>Align Requests</Link>
+                    <Link to="/deals" className="dropdown-item-pro" onClick={() => setMenuOpen(false)}>My Deals</Link>
+                    <Link to="/analytics" className="dropdown-item-pro" onClick={() => setMenuOpen(false)}>Analytics</Link>
+                    <Link to="/settings" className="dropdown-item-pro" onClick={() => setMenuOpen(false)}>Settings</Link>
+                    <div style={{ margin: '4px 0', borderTop: '1px solid var(--border-light)' }}></div>
                     <button
-                      className="dropdown-item text-danger"
+                      className="dropdown-item-pro"
+                      style={{ color: '#ef4444', width: '100%', background: 'none', border: 'none', cursor: 'pointer' }}
                       onClick={() => { setMenuOpen(false); logout(); }}
                     >
                       Logout
@@ -250,6 +252,7 @@ export default function Navbar({
         )}
       </div>
     </header>
+
 
   );
 }

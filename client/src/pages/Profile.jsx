@@ -113,7 +113,7 @@ export default function Profile() {
 
 
       <header className="profile-pro-header">
-        <div className="profile-pro-avatar" style={{ cursor: "pointer", position: "relative" }}>
+        <div className="profile-pro-avatar">
           <Avatar user={user} size="xl" />
           <label className="avatar-edit-overlay">
             <input 
@@ -168,6 +168,7 @@ export default function Profile() {
           </div>
         </div>
       </header>
+
 
       <div className="profile-pro-tabs">
         <button className={activeTab === "posts" ? "active" : ""} onClick={() => setActiveTab("posts")}>POSTS</button>

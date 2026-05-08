@@ -53,44 +53,36 @@ export default function Messages() {
       </header>
 
 
-
       <ErrorBanner message={error} onDismiss={() => setError("")} />
 
       <div className="msg-content slide-in">
-        <div className="chat-list">
+        <div className="messages-container-pro slide-fade-in">
           {loading ? (
             <p className="loading-line">Loading chats...</p>
           ) : conversations.length === 0 ? (
-            <div className="empty-state" style={{ marginTop: '4rem' }}>
-              <div className="empty-state__illustration">💬</div>
-              <p className="empty-state__text">No active chats yet.</p>
-              <Link to="/discover" className="btn btn-primary btn-sm" style={{ marginTop: '1rem' }}>
-                Find creators
-              </Link>
+            <div className="empty-state" style={{ padding: '60px', textAlign: 'center' }}>
+              <div className="empty-icon" style={{ fontSize: '3rem', marginBottom: '1rem' }}>💬</div>
+              <h3>No conversations yet</h3>
+              <p style={{ color: 'var(--text-muted)' }}>Messages from brands and creators will appear here.</p>
             </div>
           ) : (
             conversations.map(conv => (
               <div 
                 key={conv._id} 
-                className={`chat-list-item ${conv.unreadCount > 0 ? 'chat-list-item--unread' : ''}`} 
+                className="msg-list-item-pro"
                 onClick={() => navigate(`/chat/${conv.partner._id}`)}
               >
-                <div className="chat-item-avatar">
-                  <Avatar user={conv.partner} size="md" showOnline />
+                <Avatar user={conv.partner} size="md" />
+                <div className="msg-info-wrap">
+                  <div className="msg-name-row">
+                    <span className="msg-user-name">{conv.partner.name || conv.partner.username}</span>
+                    <span className="msg-time">{formatTime(conv.lastMessage.createdAt)}</span>
+                  </div>
+                  <p className="msg-preview-text">
+                    {conv.lastMessage.content || (conv.lastMessage.media ? "📷 Photo" : "Media")}
+                  </p>
                 </div>
-                <div className="chat-item-info">
-                  <div className="chat-item-name" style={{ fontWeight: conv.unreadCount > 0 ? 700 : 500 }}>
-                    {conv.partner.name || conv.partner.username}
-                  </div>
-                  <div className="chat-item-last" style={{ color: conv.unreadCount > 0 ? 'var(--text)' : 'var(--text-muted)' }}>
-                    {conv.lastMessage.content || (conv.lastMessage.media ? "📷 Photo" : "Media")} · {formatTime(conv.lastMessage.createdAt)}
-                  </div>
-                </div>
-                {conv.unreadCount > 0 && (
-                  <div className="unread-badge">
-                    {conv.unreadCount}
-                  </div>
-                )}
+                {conv.unreadCount > 0 && <span className="badge-dot" style={{ position: 'static', width: '8px', height: '8px' }}></span>}
               </div>
             ))
           )}

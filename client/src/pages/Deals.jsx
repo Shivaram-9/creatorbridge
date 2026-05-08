@@ -35,10 +35,23 @@ export default function Deals() {
 
   return (
     <div className="deals-page slide-up-fade">
-      <header className="page-header-block">
-        <h1 className="page-title-main">{user.role === "brand" ? "Campaign Deals" : "Collaboration Offers"}</h1>
-        <p className="page-subtitle-main">Manage your professional business relationships and contracts.</p>
+      <header className="deals-header">
+        <div className="deals-header-left">
+          <h1>{user.role === "brand" ? "Campaign Deals" : "Collaboration Offers"}</h1>
+          <p>Manage your professional business relationships and contracts.</p>
+        </div>
+        <div className="deals-stats">
+          <div className="mini-stat">
+            <span className="val">{deals.filter(d => d.status === 'active').length}</span>
+            <span className="lbl">Active</span>
+          </div>
+          <div className="mini-stat">
+            <span className="val">{deals.filter(d => d.status === 'offered').length}</span>
+            <span className="lbl">Pending</span>
+          </div>
+        </div>
       </header>
+
 
 
       <div className="deals-filters">

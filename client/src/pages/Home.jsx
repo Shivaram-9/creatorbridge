@@ -61,8 +61,9 @@ export default function Home() {
   };
 
   return (
-    <div className="slide-up-fade">
-      <div className="feed-layout-centered">
+    <div className="slide-fade-in">
+      <div className="feed-centered-wrap">
+
         <header className="page-header-block">
           <h1 className="page-title-main">Feed</h1>
           <p className="page-subtitle-main">Explore the latest from your network.</p>
