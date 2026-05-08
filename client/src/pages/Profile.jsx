@@ -108,7 +108,8 @@ export default function Profile() {
   if (loadingData) return <LoadingSpinner centered />;
 
   return (
-    <div className="profile-pro slide-in">
+    <div className="profile-pro slide-up-fade">
+
 
 
       <header className="profile-pro-header">

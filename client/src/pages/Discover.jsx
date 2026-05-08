@@ -77,13 +77,12 @@ export default function Discover() {
   if (loading) return <LoadingSpinner centered />;
 
   return (
-    <div className="discover-v2 slide-in">
-
-      <header className="discover-header">
-        <div className="header-badge">AI DISCOVERY ACTIVE</div>
-        <h1>Intelligent Search</h1>
-        <p>Smart recommendations based on your behavior and interests.</p>
+    <div className="discover-v2 slide-up-fade">
+      <header className="page-header-block">
+        <h1 className="page-title-main">Intelligent Search</h1>
+        <p className="page-subtitle-main">Smart recommendations based on your behavior and interests.</p>
       </header>
+
 
       <ErrorBanner message={error} onDismiss={() => setError("")} />
 

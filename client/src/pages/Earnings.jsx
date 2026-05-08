@@ -57,13 +57,12 @@ export default function Earnings() {
   if (loading) return <LoadingSpinner centered />;
 
   return (
-    <div className="earnings-page slide-in">
-
-      <header className="earnings-header">
-        <div className="header-badge">FINANCIAL HUB</div>
-        <h1>Wallet & Revenue</h1>
-        <p>Manage your professional earnings and payouts securely.</p>
+    <div className="earnings-page slide-up-fade">
+      <header className="page-header-block">
+        <h1 className="page-title-main">Wallet & Revenue</h1>
+        <p className="page-subtitle-main">Manage your professional earnings and payouts securely.</p>
       </header>
+
 
       <div className="earnings-grid">
         <div className="earnings-card primary wallet">

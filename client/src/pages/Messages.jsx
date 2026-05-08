@@ -47,10 +47,11 @@ export default function Messages() {
   };
 
   return (
-    <div className="messages-v2 slide-in">
-      <header className="page-header" style={{ textAlign: 'center', marginBottom: '2rem' }}>
-        <h1 className="page-title">Messages</h1>
+    <div className="messages-v2 slide-up-fade">
+      <header className="page-header-block">
+        <h1 className="page-title-main">Messages</h1>
       </header>
+
 
 
       <ErrorBanner message={error} onDismiss={() => setError("")} />

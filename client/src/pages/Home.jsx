@@ -61,15 +61,15 @@ export default function Home() {
   };
 
   return (
-    <div className="slide-in">
-      <div className="feed-container">
-        <header className="page-header" style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <h1 className="page-title">Feed</h1>
-          <p className="subtitle">Explore the latest from your network.</p>
+    <div className="slide-up-fade">
+      <div className="feed-layout-centered">
+        <header className="page-header-block">
+          <h1 className="page-title-main">Feed</h1>
+          <p className="page-subtitle-main">Explore the latest from your network.</p>
         </header>
 
-
         <StoriesBar />
+
 
         <CreatePost onPost={handleAddPost} user={user} />
 

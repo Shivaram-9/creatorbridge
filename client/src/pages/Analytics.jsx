@@ -59,14 +59,12 @@ export default function Analytics() {
   if (loading) return <LoadingSpinner centered />;
 
   return (
-    <div className="analytics-dashboard slide-in">
-
-
-      <header className="dashboard-header">
-        <div className="header-badge">AI ANALYTICS ENABLED</div>
-        <h1>Performance Intelligence</h1>
-        <p>Real-time tracking powered by CreatorBridge AI Discovery.</p>
+    <div className="analytics-dashboard slide-up-fade">
+      <header className="page-header-block">
+        <h1 className="page-title-main">Performance Intelligence</h1>
+        <p className="page-subtitle-main">Real-time tracking powered by CreatorBridge AI Discovery.</p>
       </header>
+
 
       {/* Overview Cards */}
       <div className="stats-grid">

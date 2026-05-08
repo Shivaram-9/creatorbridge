@@ -34,25 +34,12 @@ export default function Deals() {
   if (loading) return <LoadingSpinner centered />;
 
   return (
-    <div className="deals-page slide-in">
-
-
-      <header className="deals-header">
-        <div className="header-content">
-          <h1>{user.role === "brand" ? "Campaign Deals" : "Collaboration Offers"}</h1>
-          <p>Manage your professional business relationships and contracts.</p>
-        </div>
-        <div className="deals-stats">
-          <div className="mini-stat">
-            <span className="val">{deals.filter(d => d.status === 'active').length}</span>
-            <span className="lbl">Active</span>
-          </div>
-          <div className="mini-stat">
-            <span className="val">{deals.filter(d => d.status === 'offered').length}</span>
-            <span className="lbl">Pending</span>
-          </div>
-        </div>
+    <div className="deals-page slide-up-fade">
+      <header className="page-header-block">
+        <h1 className="page-title-main">{user.role === "brand" ? "Campaign Deals" : "Collaboration Offers"}</h1>
+        <p className="page-subtitle-main">Manage your professional business relationships and contracts.</p>
       </header>
+
 
       <div className="deals-filters">
         <button className={filter === "all" ? "active" : ""} onClick={() => setFilter("all")}>All Deals</button>

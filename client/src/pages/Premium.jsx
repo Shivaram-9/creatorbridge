@@ -173,13 +173,12 @@ export default function Premium() {
   }
 
   return (
-    <div className="premium-page slide-in">
-
-      <header className="premium-header">
-        <span className="premium-tag">PREMIUM ACCESS</span>
-        <h1>Elevate Your Presence</h1>
-        <p>Join the elite tier of creators and brands on CreatorBridge.</p>
+    <div className="premium-page slide-up-fade">
+      <header className="page-header-block">
+        <h1 className="page-title-main">Elevate Your Presence</h1>
+        <p className="page-subtitle-main">Join the elite tier of creators and brands on CreatorBridge.</p>
       </header>
+
 
       {user?.isPremium && (
         <div className="current-plan-banner gold-gradient">
