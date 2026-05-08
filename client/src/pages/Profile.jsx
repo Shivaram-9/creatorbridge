@@ -158,20 +158,38 @@ export default function Profile() {
             )}
           </div>
         )}
+        {activeTab === "tagged" && (
+          <div className="pro-tagged-grid">
+            {posts.filter(p => p.taggedUsers?.includes(user._id)).length > 0 ? (
+                <PortfolioGrid items={posts.filter(p => p.taggedUsers?.includes(user._id))} onDelete={handleDelete} />
+            ) : (
+                <div className="empty-state">
+                    <div className="empty-icon">🏷️</div>
+                    <p>No tagged media yet.</p>
+                </div>
+            )}
+          </div>
+        )}
         {activeTab === "collabs" && (
           <div className="pro-collabs-list">
             {collabs.length > 0 ? (
                 collabs.map(c => (
-                    <div key={c._id} className="pro-collab-item">
+                    <div key={c._id} className="pro-collab-item" onClick={() => navigate(`/campaigns/${c.campaign?._id}`)}>
                         <img src={c.campaign?.banner} alt="" />
-                        <div>
+                        <div className="collab-info">
                             <h4>{c.campaign?.title}</h4>
-                            <span>Status: {c.status}</span>
+                            <span className={`status-badge ${c.status.toLowerCase()}`}>{c.status}</span>
+                        </div>
+                        <div className="collab-meta">
+                            <span>{new Date(c.createdAt).toLocaleDateString()}</span>
                         </div>
                     </div>
                 ))
             ) : (
-                <div className="empty-state">No collaborations yet.</div>
+                <div className="empty-state">
+                    <div className="empty-icon">🤝</div>
+                    <p>No collaborations yet.</p>
+                </div>
             )}
           </div>
         )}

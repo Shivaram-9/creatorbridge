@@ -9,10 +9,17 @@ import ReportModal from "./ReportModal.jsx";
 import MediaGallery from "./MediaGallery.jsx";
 import "./PostCard.css";
 
+import Lightbox from "./Lightbox.jsx";
+import "./PostCard.css";
+
 const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
   const { user, setUser } = useAuth();
   const navigate = useNavigate();
   
+  const [isEditing, setIsEditing] = useState(false);
+  const [editContent, setEditContent] = useState(post.content);
+  const [showLightbox, setShowLightbox] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
   const initialLiked = useMemo(() => {
     if (!user || !post.likes) return false;
     return post.likes.some(l => (l._id || l) === user._id);
@@ -75,6 +82,19 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
       alert("Failed to archive post");
     }
     setShowMenu(false);
+  };
+
+  const handleEdit = async () => {
+    try {
+      const res = await api.posts.update(post._id, { content: editContent });
+      if (res.error) alert(res.error);
+      else {
+        onUpdate?.(res);
+        setIsEditing(false);
+      }
+    } catch (err) {
+      alert("Failed to update post");
+    }
   };
 
   const handleLike = async () => {
@@ -164,6 +184,7 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
             <div className="dropdown-menu">
               {isOwner ? (
                 <>
+                  <button onClick={() => { setIsEditing(true); setShowMenu(false); }}>Edit Post</button>
                   <button onClick={handlePin}>{post.isPinned ? "Unpin" : "Pin to Profile"}</button>
                   <button onClick={handleArchive}>Archive</button>
                   <button onClick={handleDelete} className="text-danger" disabled={isDeleting}>Delete</button>
@@ -177,16 +198,36 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
       </div>
 
       <div className="post-content">
-        <p className="post-text">
-          {post.content}
-          {post.hashtags?.length > 0 && (
-            <div className="post-hashtags">
-              {post.hashtags.map(h => <span key={h} className="hashtag">#{h} </span>)}
+        {isEditing ? (
+          <div className="edit-box">
+            <textarea value={editContent} onChange={(e) => setEditContent(e.target.value)} />
+            <div className="edit-btns">
+              <button onClick={() => setIsEditing(false)}>Cancel</button>
+              <button onClick={handleEdit}>Save</button>
             </div>
-          )}
-        </p>
-        <MediaGallery media={mediaList} />
+          </div>
+        ) : (
+          <p className="post-text">
+            {post.content}
+            {post.hashtags?.length > 0 && (
+              <div className="post-hashtags">
+                {post.hashtags.map(h => <span key={h} className="hashtag">#{h} </span>)}
+              </div>
+            )}
+          </p>
+        )}
+        <div onClick={() => setShowLightbox(true)}>
+          <MediaGallery media={mediaList} />
+        </div>
       </div>
+
+      {showLightbox && (
+        <Lightbox 
+          media={mediaList} 
+          startIndex={lightboxIndex} 
+          onClose={() => setShowLightbox(false)} 
+        />
+      )}
 
       <div className="post-actions">
         <div className="post-actions__left">

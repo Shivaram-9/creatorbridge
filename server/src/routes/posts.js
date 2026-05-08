@@ -63,6 +63,7 @@ router.patch("/pin/:id", authMiddleware, async (req, res) => {
 
     post.isPinned = !post.isPinned;
     await post.save();
+    await post.populate("user", "name avatar role");
     res.json(post);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -78,6 +79,7 @@ router.patch("/archive/:id", authMiddleware, async (req, res) => {
 
     post.isArchived = !post.isArchived;
     await post.save();
+    await post.populate("user", "name avatar role");
     res.json(post);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -97,7 +99,25 @@ router.patch("/:id", authMiddleware, async (req, res) => {
     post.location = location || post.location;
     
     await post.save();
+    await post.populate("user", "name avatar role");
     res.json(post);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Save/Unsave Post
+router.post("/save/:postId", authMiddleware, async (req, res) => {
+  try {
+    const user = await User.findById(req.userId);
+    const postId = req.params.postId;
+    if (user.savedPosts.includes(postId)) {
+      user.savedPosts = user.savedPosts.filter(id => id.toString() !== postId);
+    } else {
+      user.savedPosts.push(postId);
+    }
+    await user.save();
+    res.json({ saved: user.savedPosts.includes(postId) });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -107,14 +127,28 @@ router.patch("/:id", authMiddleware, async (req, res) => {
 router.post("/like/:postId", authMiddleware, async (req, res) => {
   try {
     const post = await Post.findById(req.params.postId);
-    if (!post.likes.includes(req.userId)) {
-      post.likes.push(req.userId);
-      await post.save();
-    } else {
+    if (post.likes.includes(req.userId)) {
       post.likes = post.likes.filter(id => id.toString() !== req.userId);
-      await post.save();
+    } else {
+      post.likes.push(req.userId);
     }
+    await post.save();
+    await post.populate("user", "name avatar role");
     res.json(post);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Comment on Post
+router.post("/comment/:postId", authMiddleware, async (req, res) => {
+  try {
+    const { text } = req.body;
+    const post = await Post.findById(req.params.postId);
+    post.comments.push({ user: req.userId, text });
+    await post.save();
+    await post.populate("comments.user", "name avatar");
+    res.json(post.comments[post.comments.length - 1]);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

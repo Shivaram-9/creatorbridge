@@ -133,28 +133,55 @@
 .pro-collab-item {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 12px;
+  gap: 20px;
+  padding: 16px;
   border: 1px solid #efefef;
-  border-radius: 8px;
-  margin-bottom: 12px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.pro-collab-item:hover {
+  background: #f9fafb;
 }
 
 .pro-collab-item img {
-  width: 50px;
-  height: 50px;
-  border-radius: 4px;
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
   object-fit: cover;
 }
 
-.pro-collab-item h4 {
-  margin: 0 0 4px 0;
-  font-size: 15px;
+.collab-info {
+  flex: 1;
 }
 
-.pro-collab-item span {
+.collab-info h4 {
+  margin: 0 0 6px 0;
+  font-size: 16px;
+}
+
+.status-badge {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.status-badge.accepted { background: #dcfce7; color: #15803d; }
+.status-badge.pending { background: #fef9c3; color: #a16207; }
+.status-badge.completed { background: #dbeafe; color: #1e40af; }
+
+.collab-meta {
   font-size: 12px;
   color: #8e8e8e;
+}
+
+.empty-icon {
+  font-size: 40px;
+  margin-bottom: 12px;
 }
 
 .empty-state {

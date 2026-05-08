@@ -175,3 +175,39 @@
 }
 
 .comment-form button:disabled { opacity: 0.3; }
+
+.edit-box {
+  padding: 0 16px 12px;
+}
+
+.edit-box textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #efefef;
+  border-radius: 8px;
+  font-size: 14px;
+  resize: vertical;
+  outline: none;
+}
+
+.edit-btns {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.edit-btns button {
+  padding: 4px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 4px;
+  cursor: pointer;
+  border: 1px solid #efefef;
+}
+
+.edit-btns button:last-child {
+  background: #000;
+  color: white;
+  border: none;
+}
