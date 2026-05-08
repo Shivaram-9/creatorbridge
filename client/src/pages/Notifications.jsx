@@ -70,7 +70,6 @@ export default function Notifications() {
     if (filter === "all") return true;
     if (filter === "interactions") return ["like", "comment"].includes(n.type);
     if (filter === "connections") return ["follow"].includes(n.type);
-    if (filter === "campaigns") return ["campaign_invite", "campaign_apply", "collab_status"].includes(n.type);
     return true;
   });
 
@@ -99,7 +98,6 @@ export default function Notifications() {
           <button className={filter === 'all' ? 'active' : ''} onClick={() => setFilter('all')}>All</button>
           <button className={filter === 'interactions' ? 'active' : ''} onClick={() => setFilter('interactions')}>Likes & Comments</button>
           <button className={filter === 'connections' ? 'active' : ''} onClick={() => setFilter('connections')}>Connections</button>
-          <button className={filter === 'campaigns' ? 'active' : ''} onClick={() => setFilter('campaigns')}>Campaigns</button>
         </div>
       </header>
 

@@ -160,18 +160,24 @@
 .trust-badges {
   display: flex;
   justify-content: center;
-  gap: 40px;
-  padding-top: 40px;
+  gap: 60px;
+  padding: 60px 0;
   border-top: 1px solid #f1f5f9;
+  flex-wrap: wrap;
 }
 
 .trust-item {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  font-weight: 700;
-  color: #94a3b8;
+  gap: 12px;
+  font-size: 18px;
+  font-weight: 800;
+  color: #1e293b;
+  padding: 16px 32px;
+  background: white;
+  border-radius: 100px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f1f5f9;
 }
 
 /* Checkout View */
@@ -272,6 +278,18 @@
   display: flex;
   justify-content: center;
   gap: 16px;
+}
+
+.checkout-error {
+  color: #dc2626;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  padding: 12px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
 }
 
 .checkout-pay-btn {

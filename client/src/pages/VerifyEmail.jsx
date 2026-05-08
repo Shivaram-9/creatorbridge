@@ -61,7 +61,7 @@ export default function VerifyEmail() {
     setError("");
     try {
       // First, confirm credentials to ensure it's the real user
-      const loginRes = await api.auth.login(email, password);
+      const loginRes = await api.auth.login({ email, password });
       if (loginRes.error) {
         setError("Invalid email or password");
         setLoading(false);
