@@ -60,6 +60,7 @@ authRouter.post(
     validate
   ],
   async (req, res) => {
+    console.log("REGISTRATION ATTEMPT:", req.body.email);
     try {
       const { email, password, role } = req.body;
       const existing = await User.findOne({ email });
@@ -106,6 +107,7 @@ authRouter.post(
     validate
   ],
   async (req, res) => {
+    console.log("LOGIN ATTEMPT:", req.body.email);
     try {
       const { email, password } = req.body;
       const user = await User.findOne({ email });
