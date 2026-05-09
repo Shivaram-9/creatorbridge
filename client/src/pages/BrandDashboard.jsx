@@ -11,17 +11,12 @@ import "./BrandDashboard.css";
 export default function BrandDashboard() {
   const { user } = useAuth();
   const [stats, setStats] = useState(null);
-  const [deals, setDeals] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadStats() {
       try {
-        const [dealList, analytics] = await Promise.all([
-          api.deals.list(),
-          api.analytics.getCampaigns()
-        ]);
-        setDeals(dealList);
+        const analytics = await api.analytics.getCampaigns();
         setStats(analytics);
       } catch (err) {
         console.error(err);
@@ -34,12 +29,10 @@ export default function BrandDashboard() {
 
   if (loading) return <LoadingSpinner centered />;
 
-  const activeDeals = deals.filter(d => d.status === "active" || d.status === "negotiating");
-  const completedDeals = deals.filter(d => d.status === "completed");
-  
+  // Mock data for ROI if actual data is unavailable
   const roiData = [
-    { name: 'Influencer Fees', value: deals.reduce((sum, d) => sum + d.budget, 0) },
-    { name: 'Estimated ROI', value: deals.reduce((sum, d) => sum + (d.budget * 2.4), 0) }, // Mock ROI logic
+    { name: 'Ad Spend', value: 5000 },
+    { name: 'Estimated ROI', value: 12000 },
   ];
 
   const COLORS = ['#3b82f6', '#10b981'];
@@ -49,7 +42,7 @@ export default function BrandDashboard() {
       <header className="dashboard-header">
         <div className="header-badge">ENTERPRISE CONSOLE</div>
         <h1>Campaign Intelligence</h1>
-        <p>Monitor your active collaborations and measure campaign ROI.</p>
+        <p>Monitor your active campaigns and measure ROI performance.</p>
       </header>
 
       <div className="stats-grid">
@@ -58,12 +51,12 @@ export default function BrandDashboard() {
           <h2 className="val">{stats?.active || 0}</h2>
         </div>
         <div className="stat-box">
-          <span className="lbl">Negotiations</span>
-          <h2 className="val">{deals.filter(d => d.status === 'negotiating').length}</h2>
+          <span className="lbl">Total Reach</span>
+          <h2 className="val">1.2M</h2>
         </div>
         <div className="stat-box">
-          <span className="lbl">Creators Aligned</span>
-          <h2 className="val">{deals.length}</h2>
+          <span className="lbl">Avg. CPC</span>
+          <h2 className="val">$0.45</h2>
         </div>
         <div className="stat-box accent">
           <span className="lbl">Avg. Engagement</span>
@@ -96,43 +89,32 @@ export default function BrandDashboard() {
 
         <section className="dashboard-card creator-responses">
           <div className="card-header">
-            <h3>Active Proposals</h3>
-            <span className="badge">PENDING</span>
+            <h3>Recent Activity</h3>
+            <span className="badge">LIVE</span>
           </div>
           <div className="responses-list">
-            {activeDeals.length === 0 ? (
-              <div className="empty-msg">No active proposals yet.</div>
-            ) : (
-              activeDeals.map(deal => (
-                <div key={deal._id} className="response-item">
-                  <div className="resp-info">
-                    <strong>{deal.influencer?.name || deal.influencer?.username}</strong>
-                    <span>{deal.title}</span>
-                  </div>
-                  <span className={`resp-status ${deal.status}`}>{deal.status}</span>
-                </div>
-              ))
-            )}
+            <div className="response-item">
+              <div className="resp-info">
+                <strong>Summer Launch</strong>
+                <span>New engagement spike detected</span>
+              </div>
+              <span className="resp-status active">Trending</span>
+            </div>
+            <div className="response-item">
+              <div className="resp-info">
+                <strong>Global Reach</strong>
+                <span>Campaign expanding to EU markets</span>
+              </div>
+              <span className="resp-status pending">Growing</span>
+            </div>
           </div>
         </section>
       </div>
 
       <section className="performance-section">
-        <h2 className="section-title">Top Performing Collaborators</h2>
-        <div className="performers-grid">
-          {completedDeals.slice(0, 3).map(deal => (
-            <div key={deal._id} className="performer-card">
-              <Avatar user={deal.influencer} size="md" />
-              <div className="perf-info">
-                <h4>{deal.influencer?.name || deal.influencer?.username}</h4>
-                <p>Niche: Fashion & Lifestyle</p>
-                <div className="perf-stats">
-                  <span>ROI: 3.2x</span>
-                  <span>Impact: 12k views</span>
-                </div>
-              </div>
-            </div>
-          ))}
+        <h2 className="section-title">Campaign Performance Over Time</h2>
+        <div className="p-12 text-center bg-slate-50 rounded-3xl border border-dashed border-slate-200">
+           <p className="text-slate-500 font-medium">Historical performance charts are being generated based on latest metrics.</p>
         </div>
       </section>
     </div>

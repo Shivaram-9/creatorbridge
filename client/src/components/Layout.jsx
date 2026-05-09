@@ -15,8 +15,9 @@ export default function Layout() {
   const [msgUnreadTotal, setMsgUnreadTotal] = useState(0);
   
   const isAuthPage = ["/login", "/register", "/forgot-password", "/reset-password"].includes(location.pathname);
-  const isChatPage = location.pathname.startsWith("/chat/");
-  const shouldBeCentered = ["/home", "/discover", "/messages"].includes(location.pathname);
+  const isMessagesPage = location.pathname.startsWith("/messages");
+  const isChatActive = isMessagesPage && location.pathname.split("/").length > 2;
+  const shouldBeCentered = ["/home", "/discover"].includes(location.pathname);
 
   useEffect(() => {
     if (user && !user.onboardingComplete && location.pathname !== "/onboarding" && !location.pathname.startsWith("/select-role")) {
@@ -83,14 +84,14 @@ export default function Layout() {
         logout={logout}
       />
 
-      <main className={`main-viewport ${isChatPage ? 'chat-view-active' : ''}`}>
-        <div className={shouldBeCentered ? "feed-layout-centered" : "content-container-pro"}>
+      <main className={`main-viewport ${isMessagesPage ? 'messages-view-active' : ''}`}>
+        <div className={shouldBeCentered ? "feed-layout-centered" : isMessagesPage ? "w-full" : "content-container-pro"}>
           <Outlet />
         </div>
       </main>
 
-      {!isChatPage && <BottomNav msgUnreadCount={msgUnreadTotal} />}
-      {!isChatPage && <AIAssistant />}
+      {(!isChatActive) && <BottomNav msgUnreadCount={msgUnreadTotal} />}
+      {!isMessagesPage && <AIAssistant />}
     </div>
   );
 }

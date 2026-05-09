@@ -76,8 +76,8 @@ export default function App() {
           <Route path="/discover" element={<Discover />} />
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/settings" element={<Settings />} />
-          <Route path="/chat/:userId" element={<Chat />} />
           <Route path="/messages" element={<Messages />} />
+          <Route path="/messages/:userId" element={<Messages />} />
           <Route path="/saved" element={<Saved />} />
           <Route path="/admin" element={
             <AdminRoute>

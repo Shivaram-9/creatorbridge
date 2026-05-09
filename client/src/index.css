@@ -30,6 +30,17 @@ body {
   color: var(--text-main);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.01em;
+}
+
+.logo-main-text {
+  font-size: 1.5rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #6366f1 0%, #a78bfa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.04em;
+  text-decoration: none;
 }
 
 /* Auth System (Image-Reference Design) */
@@ -48,40 +59,42 @@ body {
   background: white;
   border-radius: 40px;
   padding: 48px 32px;
-  box-shadow: var(--shadow-premium);
+  box-shadow: 0 25px 50px -12px rgba(99, 102, 241, 0.1);
   text-align: center;
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 .auth-hero-icon {
-  width: 120px;
-  height: 120px;
-  margin: 0 auto 24px;
+  width: 140px;
+  height: 140px;
+  margin: 0 auto 32px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.05) 0%, transparent 70%);
   position: relative;
 }
 
 .auth-title-pro {
-  font-size: 2.25rem;
+  font-size: 2.2rem;
   font-weight: 800;
-  color: #0f172a;
-  letter-spacing: -1px;
-  margin-bottom: 8px;
+  color: #1e293b;
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
 }
 
 .auth-subtitle-pro {
-  font-size: 1rem;
-  color: var(--text-muted);
-  margin-bottom: 40px;
+  font-size: 1.05rem;
+  color: #64748b;
+  margin-bottom: 48px;
+  line-height: 1.5;
 }
 
 /* Premium Inputs */
 .input-group-pro {
   position: relative;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .input-icon-left {
@@ -89,27 +102,25 @@ body {
   left: 20px;
   top: 50%;
   transform: translateY(-50%);
-  color: var(--primary);
-  opacity: 0.8;
+  color: #6366f1;
 }
 
 .input-premium {
   width: 100%;
-  height: 60px;
-  background: #f8fafc;
-  border: 1px solid transparent;
+  height: 64px;
+  background: #ffffff;
+  border: 1.5px solid #f1f5f9;
   border-radius: 20px;
   padding: 0 54px;
   font-size: 1rem;
   color: #1e293b;
   outline: none;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s;
 }
 
 .input-premium:focus {
-  background: white;
-  border-color: rgba(99, 102, 241, 0.3);
-  box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.1);
+  border-color: #6366f1;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
 }
 
 .password-toggle-btn {
@@ -117,30 +128,48 @@ body {
   right: 20px;
   top: 50%;
   transform: translateY(-50%);
-  color: var(--text-muted);
+  color: #94a3b8;
   cursor: pointer;
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
 }
 
 /* Premium Buttons */
 .btn-gradient-pro {
   width: 100%;
-  height: 64px;
-  background: var(--primary-gradient);
+  height: 68px;
+  background: linear-gradient(135deg, #a78bfa 0%, #6366f1 100%);
   color: white;
   font-weight: 700;
   font-size: 1.1rem;
-  border-radius: 32px;
+  border-radius: 34px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
-  box-shadow: 0 12px 24px -6px rgba(99, 102, 241, 0.4);
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.4);
   transition: all 0.3s;
+  margin-top: 10px;
 }
 
 .btn-gradient-pro:hover {
   transform: translateY(-2px);
-  box-shadow: 0 16px 32px -8px rgba(99, 102, 241, 0.5);
+  box-shadow: 0 15px 30px -8px rgba(99, 102, 241, 0.5);
+}
+
+.btn-circle-arrow {
+  width: 32px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
 }
 
 .btn-outline-pro {
@@ -231,7 +260,112 @@ body {
 .fade-up { animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
-@media (max-width: 640px) {
-  .auth-card-premium { padding: 40px 24px; border-radius: 0; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; }
-  .auth-page-wrapper { padding: 0; }
+/* Messaging V3 (Instagram-Style Dual Pane) */
+.messaging-v3-container {
+  display: flex;
+  height: calc(100vh - var(--header-height));
+  background: white;
+  overflow: hidden;
 }
+
+.messages-sidebar-pro {
+  width: 380px;
+  border-right: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+}
+
+.chat-detail-view-pro {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  position: relative;
+}
+
+.sidebar-header-pro {
+  padding: 24px;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sidebar-scroll-area {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.chat-item-v3 {
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+  border-left: 4px solid transparent;
+}
+
+.chat-item-v3:hover { background: #f8fafc; }
+.chat-item-v3.active { background: #f1f5f9; border-left-color: var(--primary); }
+
+.chat-item-info { flex: 1; min-width: 0; }
+.chat-item-name { font-weight: 700; color: #1e293b; font-size: 0.95rem; }
+.chat-item-preview { font-size: 0.85rem; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Responsive Messaging */
+@media (max-width: 768px) {
+  .messages-sidebar-pro { width: 100%; }
+  .chat-detail-view-pro { display: none; }
+  .chat-detail-view-pro.active-mobile { 
+    display: flex; 
+    position: fixed; 
+    inset: 0; 
+    z-index: 2000;
+    margin-top: 0;
+  }
+}
+
+.social-login-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.btn-social-auth {
+  height: 56px;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-weight: 600;
+  color: #1e293b;
+  background: white;
+  transition: all 0.2s;
+}
+
+.btn-social-auth:hover { background: #f8fafc; border-color: #cbd5e1; }
+
+.password-reqs-pro {
+  background: #f8fafc;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 24px;
+  text-align: left;
+}
+
+.password-req-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-bottom: 4px;
+}
+
+.password-req-item.valid { color: #10b981; }
+.password-req-item.valid svg { color: #10b981; }

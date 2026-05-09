@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { HomeIcon, UsersIcon, MessageIcon, ProfileIcon, BriefcaseIcon } from "./Icons.jsx";
+import { HomeIcon, UsersIcon, MessageIcon, ProfileIcon } from "./Icons.jsx";
 
 export default function BottomNav({ msgUnreadCount }) {
   return (
@@ -33,7 +33,5 @@ export default function BottomNav({ msgUnreadCount }) {
         </NavLink>
       </div>
     </nav>
-
-
   );
 }

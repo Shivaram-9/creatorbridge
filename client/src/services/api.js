@@ -307,16 +307,6 @@ export const api = {
     list: () => request("/collaborations"),
     updateStatus: (id, status) => request(`/collaborations/status/${id}`, { method: "PATCH", body: { status } }),
   },
-  deals: {
-    list: () => request("/deals"),
-    get: (id) => request(`/deals/${id}`),
-    create: (body) => request("/deals", { method: "POST", body }),
-    negotiate: (id, body) => request(`/deals/${id}/negotiate`, { method: "PATCH", body }),
-    accept: (id) => request(`/deals/${id}/accept`, { method: "POST" }),
-    updateDeliverable: (dealId, delivId, body) => request(`/deals/${dealId}/deliverables/${delivId}`, { method: "PATCH", body }),
-    complete: (id) => request(`/deals/${id}/complete`, { method: "POST" }),
-    match: () => request("/deals/match"),
-  },
   transactions: {
     list: () => request("/premium/transactions"), // Unified for now or new endpoint
     earnings: () => request("/premium/stats"), // Reuse existing or update
