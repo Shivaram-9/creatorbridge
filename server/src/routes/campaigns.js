@@ -4,7 +4,6 @@ import { Collaboration } from "../models/Collaboration.js";
 import { Notification } from "../models/Notification.js";
 import { authMiddleware } from "../middleware/auth.js";
 import { brandOnly, influencerOnly } from "../middleware/role.js";
-import { io } from "../index.js";
 
 const router = express.Router();
 
@@ -79,7 +78,11 @@ router.post("/apply/:id", authMiddleware, influencerOnly, async (req, res) => {
       type: "campaign_apply",
       message: `An influencer has applied to your campaign: ${campaign.title}`,
     });
-    io.to(`user:${campaign.createdBy}`).emit("notification", notif);
+    
+    const io = req.app.get("io");
+    if (io) {
+      io.to(`user:${campaign.createdBy}`).emit("notification", notif);
+    }
 
     res.json({ message: "Application submitted" });
   } catch (err) {
@@ -109,7 +112,11 @@ router.post("/invite/:campaignId/:userId", authMiddleware, brandOnly, async (req
       type: "campaign_invite",
       message: `You've been invited to join the campaign: ${campaign.title}`,
     });
-    io.to(`user:${userId}`).emit("notification", notif);
+    
+    const io = req.app.get("io");
+    if (io) {
+      io.to(`user:${userId}`).emit("notification", notif);
+    }
 
     res.json({ message: "Invitation sent" });
   } catch (err) {
@@ -141,7 +148,11 @@ router.post("/respond/:campaignId", authMiddleware, async (req, res) => {
           type: "collab_status",
           message: `Your application for "${campaign.title}" was accepted!`,
         });
-        io.to(`user:${userId}`).emit("notification", notif);
+        
+        const io = req.app.get("io");
+        if (io) {
+          io.to(`user:${userId}`).emit("notification", notif);
+        }
       }
     } 
     // If Influencer responding to Invite
@@ -161,7 +172,11 @@ router.post("/respond/:campaignId", authMiddleware, async (req, res) => {
               type: "collab_status",
               message: `Influencer accepted your invite for "${campaign.title}"!`,
             });
-            io.to(`user:${campaign.createdBy}`).emit("notification", notif);
+            
+            const io = req.app.get("io");
+            if (io) {
+              io.to(`user:${campaign.createdBy}`).emit("notification", notif);
+            }
           }
     } else {
         return res.status(403).json({ error: "Unauthorized" });

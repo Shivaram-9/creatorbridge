@@ -52,52 +52,60 @@ async function createSession(user, token, req) {
 }
 
 authRouter.post("/register", async (req, res) => {
-    const { name, email, password, role = "influencer" } = req.body;
-    const finalRole = (role === "influencer" || role === "brand" || role === "admin") ? role : "influencer";
-    
-    console.log("FULL REQ BODY:", JSON.stringify(req.body));
-    
-    if (!email || !password) {
-      console.log("VALIDATION FAILED: email or password missing");
-      return res.status(400).json({ error: "Email and password are required" });
-    }
+  // 1. Detailed Logging
+  console.log("REGISTER REQUEST BODY:", JSON.stringify(req.body, null, 2));
 
-    try {
-      const existing = await User.findOne({ email });
-      if (existing) {
-        return res.status(409).json({ error: "Email already registered" });
-      }
+  const { name, email, password, role = "influencer" } = req.body;
 
-      const hashed = await bcrypt.hash(password, 10);
-      const hashedVerificationToken = crypto.randomBytes(32).toString("hex");
-
-      const user = await User.create({
-        name: name || "",
-        email,
-        password: hashed,
-        role: finalRole,
-        emailVerificationToken: hashedVerificationToken,
-      });
-
-      // Send verification email
-      const verifyUrl = `${process.env.CLIENT_URL}/verify-email?token=${hashedVerificationToken}`;
-      await EmailService.send(email, "Verify your CreatorBridge account", "Verify Email", `
-        <p>Welcome to CreatorBridge!</p>
-        <p>Please click the button below to verify your email address:</p>
-        <a href="${verifyUrl}" class="btn">Verify Email</a>
-      `).catch(err => console.error("Initial verification email failed:", err));
-
-
-      const token = signToken(user._id.toString());
-      await createSession(user, token, req);
-      
-      res.status(201).json({ token, user });
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ error: "Registration failed" });
-    }
+  // 2. Basic Validation Only
+  if (!name || !email || !password) {
+    console.log("REGISTER FAIL: Missing required fields", { name: !!name, email: !!email, password: !!password });
+    return res.status(400).json({ message: "Name, email and password are required" });
   }
-);
+
+  try {
+    // Check if user exists
+    const existing = await User.findOne({ email });
+    if (existing) {
+      console.log(`REGISTER FAIL: Email ${email} already exists`);
+      return res.status(400).json({ message: "Email already registered" });
+    }
+
+    // 3. Password Hashing
+    const hashed = await bcrypt.hash(password, 10);
+    const hashedVerificationToken = crypto.randomBytes(32).toString("hex");
+
+    // 4. MongoDB User Creation
+    console.log("Attempting to create user in MongoDB...");
+    const user = await User.create({
+      name: name.trim(),
+      email: email.toLowerCase().trim(),
+      password: hashed,
+      role: ["influencer", "brand", "admin"].includes(role) ? role : "influencer",
+      emailVerificationToken: hashedVerificationToken,
+    });
+
+    console.log(`REGISTER SUCCESS: User created with ID ${user._id}`);
+
+    // Send verification email (non-blocking)
+    const verifyUrl = `${process.env.CLIENT_URL}/verify-email?token=${hashedVerificationToken}`;
+    EmailService.send(email, "Verify your CreatorBridge account", "Verify Email", `
+      <p>Welcome to CreatorBridge!</p>
+      <p>Please click the button below to verify your email address:</p>
+      <a href="${verifyUrl}" class="btn">Verify Email</a>
+    `).catch(err => console.error("Verification email error:", err.message));
+
+    const token = signToken(user._id.toString());
+    await createSession(user, token, req);
+    
+    res.status(201).json({ token, user });
+  } catch (error) {
+    console.error("REGISTER CRITICAL ERROR:", error);
+    res.status(400).json({ message: error.message });
+  }
+});
+
+
 
 authRouter.post(
   "/login",

@@ -30,7 +30,7 @@ import { brandRouter } from "./routes/brand.js";
 import { Message } from "./models/Message.js";
 import { Session } from "./models/Session.js";
 import helmet from "helmet";
-import { apiLimiter } from "./middleware/security.js";
+import { apiLimiter, authLimiter } from "./middleware/security.js";
 
 const PORT = Number(process.env.PORT) || 5000;
 
@@ -64,11 +64,11 @@ app.get("/api/health", (_, res) => {
 // 3. Auth Routes (Bypassing limiter for now)
 app.use("/api/auth", authRouter);
 app.use("/api/users", usersRouter);
-app.use("/api/messages", contentLimiter, messagesRouter);
+app.use("/api/messages", messagesRouter);
 app.use("/api/notifications", notificationsRouter);
-app.use("/api/posts", contentLimiter, postsRouter);
+app.use("/api/posts", postsRouter);
 app.use("/api/search", searchRouter);
-app.use("/api/stories", contentLimiter, storiesRouter);
+app.use("/api/stories", storiesRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/analytics", analyticsRouter);
 app.use("/api/campaigns", campaignsRouter);
@@ -102,6 +102,8 @@ app.use((err, req, res, next) => {
 export const io = new Server(server, {
   cors: { origin: true, methods: ["GET", "POST"] },
 });
+
+app.set("io", io);
 
 io.use(async (socket, next) => {
   try {

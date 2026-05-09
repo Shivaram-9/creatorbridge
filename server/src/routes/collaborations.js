@@ -2,7 +2,6 @@ import express from "express";
 import { Collaboration } from "../models/Collaboration.js";
 import { Notification } from "../models/Notification.js";
 import { authMiddleware } from "../middleware/auth.js";
-import { io } from "../index.js";
 
 const router = express.Router();
 
@@ -44,7 +43,11 @@ router.patch("/status/:id", authMiddleware, async (req, res) => {
       type: "collab_status",
       message: `Collaboration status for "${collab.campaign.title}" updated to ${status}`,
     });
-    io.to(`user:${recipient}`).emit("notification", notif);
+    
+    const io = req.app.get("io");
+    if (io) {
+      io.to(`user:${recipient}`).emit("notification", notif);
+    }
 
     res.json(collab);
   } catch (err) {

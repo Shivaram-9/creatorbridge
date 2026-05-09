@@ -3,7 +3,6 @@ import { Router } from "express";
 import { Message } from "../models/Message.js";
 import { authMiddleware } from "../middleware/auth.js";
 import { chatUpload } from "../middleware/upload.js";
-import { io } from "../index.js";
 
 export const messagesRouter = Router();
 
@@ -153,6 +152,7 @@ messagesRouter.post("/", async (req, res) => {
     await msg.populate("receiver", "name email role");
     
     const plain = msg.toObject();
+    const io = req.app.get("io");
     if (io) {
       io.to(`user:${receiverId}`).emit("message", plain);
       io.to(`user:${req.userId}`).emit("message", plain);
@@ -191,6 +191,7 @@ messagesRouter.post("/media", chatUpload.single("media"), async (req, res) => {
     await msg.populate("receiver", "name email role");
 
     const plain = msg.toObject();
+    const io = req.app.get("io");
     if (io) {
       io.to(`user:${receiverId}`).emit("message", plain);
       io.to(`user:${req.userId}`).emit("message", plain);
@@ -219,3 +220,4 @@ messagesRouter.patch("/read/:partnerId", async (req, res) => {
     res.status(500).json({ error: "Failed to mark messages as read" });
   }
 });
+
