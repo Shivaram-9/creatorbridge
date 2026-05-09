@@ -56,7 +56,7 @@ authRouter.post(
   [
     body("email").isEmail().withMessage("Valid email is required").normalizeEmail(),
     body("password").isLength({ min: 6 }).withMessage("Password must be at least 6 characters"),
-    body("role").isIn(["influencer", "brand"]).withMessage("Invalid role"),
+    body("role").optional().isIn(["influencer", "brand"]).withMessage("Invalid role"),
     validate
   ],
   async (req, res) => {
