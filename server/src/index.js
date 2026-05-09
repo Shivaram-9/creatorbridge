@@ -47,19 +47,22 @@ if (smtpCheck.length > 0) {
 }
 
 const app = express();
-// app.use(helmet());
-app.use(cors({ origin: true, credentials: true }));
-app.use(express.json({ limit: "2mb" }));
 
+// 1. Priority Middlewares (MUST BE FIRST)
+app.use(cors({ origin: true, credentials: true }));
+app.use(express.json({ limit: "5mb" }));
+app.use(express.urlencoded({ extended: true }));
+
+// 2. Security (Disabled for debug)
+// app.use(helmet());
 // app.use("/api", apiLimiter);
 
 app.get("/api/health", (_, res) => {
   res.json({ ok: true, name: "CreatorBridge API" });
 });
 
-import { authLimiter, contentLimiter } from "./middleware/security.js";
-
-app.use("/api/auth", authLimiter, authRouter);
+// 3. Auth Routes (Bypassing limiter for now)
+app.use("/api/auth", authRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/messages", contentLimiter, messagesRouter);
 app.use("/api/notifications", notificationsRouter);
