@@ -1,22 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import { api, firstApiError } from "../services/api.js";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import { api } from "../services/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import { connectSocket, getSocket } from "../services/socket.js";
-import { roleBadgeClass } from "../utils/badges.js";
-import { BASE_URL } from "../config/api.js";
-import ErrorBanner from "../components/ErrorBanner.jsx";
 import Avatar from "../components/Avatar.jsx";
+import ErrorBanner from "../components/ErrorBanner.jsx";
 
-/* Removed collab message helpers */
-
-/**
- * Chat page — real-time messaging with REST fallback.
- */
 export default function Chat() {
   const { userId: partnerId } = useParams();
   const { user } = useAuth();
-  const receiverId = partnerId;
+  const navigate = useNavigate();
 
   const [partner, setPartner] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -24,63 +17,18 @@ export default function Chat() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
-  const [socketOnline, setSocketOnline] = useState(false);
   const [isPartnerTyping, setIsPartnerTyping] = useState(false);
-  const typingTimeoutRef = useRef(null);
+  const [socketOnline, setSocketOnline] = useState(false);
 
-  /* Media attachment state */
-  const [showMedia, setShowMedia] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState("");
   const fileInputRef = useRef(null);
-
-  const seenIdsRef = useRef(new Set());
   const bottomRef = useRef(null);
+  const typingTimeoutRef = useRef(null);
 
-  const scrollToBottom = useCallback(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, []);
-
-  useEffect(() => {
-    const timer = setTimeout(scrollToBottom, 100);
-    return () => clearTimeout(timer);
-  }, [messages, scrollToBottom, isPartnerTyping]);
-
-  const pushMessage = useCallback((msg) => {
-    if (!msg) return;
-    const id = msg._id;
-    if (id && seenIdsRef.current.has(id)) return;
-    if (id) seenIdsRef.current.add(id);
-
-    setMessages((prev) => {
-      if (id && prev.some((m) => m._id === id)) return prev;
-      const next = [...prev, msg];
-      next.sort((a, b) => {
-        const ta = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-        const tb = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-        return ta - tb;
-      });
-      return next;
-    });
-  }, []);
-
-  const setMessagesBulk = useCallback((msgs) => {
-    const arr = Array.isArray(msgs) ? msgs : [];
-    setMessages((prev) => {
-      const map = new Map(prev.map((m) => [m._id, m]));
-      for (const m of arr) {
-        if (m._id) map.set(m._id, m);
-      }
-      const merged = Array.from(map.values());
-      seenIdsRef.current = new Set(merged.map((m) => m._id));
-      merged.sort((a, b) => {
-        const ta = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-        const tb = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-        return ta - tb;
-      });
-      return merged;
-    });
-  }, []);
+  const scrollToBottom = (behavior = "smooth") => {
+    bottomRef.current?.scrollIntoView({ behavior });
+  };
 
   const fetchConversation = useCallback(async () => {
     try {
@@ -88,466 +36,197 @@ export default function Chat() {
         api.users.get(partnerId),
         api.messages.conversation(partnerId),
       ]);
-      const errMsg = firstApiError(p, msgs);
-      if (errMsg) {
-        setError(errMsg);
-      } else {
-        setPartner(p);
-        setMessagesBulk(msgs);
-      }
+      setPartner(p);
+      setMessages(Array.isArray(msgs) ? msgs : []);
     } catch {
-      setError("Something went wrong");
+      setError("Failed to load chat");
+    } finally {
+      setLoading(false);
     }
-  }, [partnerId, setMessagesBulk]);
+  }, [partnerId]);
 
   useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      setError("");
-      setLoading(true);
-      await fetchConversation();
-      if (!cancelled) {
-        setLoading(false);
-        api.messages.markAsRead(partnerId).catch(() => {});
-      }
-    })();
-    return () => { cancelled = true; };
-  }, [fetchConversation]);
+    fetchConversation();
+    api.messages.markAsRead(partnerId).catch(() => {});
+  }, [fetchConversation, partnerId]);
 
   useEffect(() => {
     const socket = connectSocket();
-    if (!socket) {
-      setSocketOnline(false);
-      return undefined;
-    }
+    if (!socket) return;
 
-    const syncOnline = () => setSocketOnline(socket.connected);
-    syncOnline();
+    const syncStatus = () => setSocketOnline(socket.connected);
+    syncStatus();
 
-    const handleConnect = () => {
-      syncOnline();
-      fetchConversation();
-    };
+    socket.on("connect", syncStatus);
+    socket.on("disconnect", syncStatus);
+    socket.on("typing", (data) => data.senderId === partnerId && setIsPartnerTyping(true));
+    socket.on("stop_typing", (data) => data.senderId === partnerId && setIsPartnerTyping(false));
 
-    socket.on("connect", handleConnect);
-    socket.on("disconnect", syncOnline);
-    socket.on("connect_error", syncOnline);
-
-    const onTyping = (data) => {
-      if (data.senderId === partnerId) setIsPartnerTyping(true);
-    };
-    const onStopTyping = (data) => {
-      if (data.senderId === partnerId) setIsPartnerTyping(false);
-    };
-
-    socket.on("typing", onTyping);
-    socket.on("stop_typing", onStopTyping);
-
-    const onReconnect = () => { syncOnline(); fetchConversation(); };
-    socket.io.on("reconnect", onReconnect);
-
-    function onMessage(msg) {
-      if (!msg) return;
+    const onMessage = (msg) => {
       const sid = msg.sender?._id || msg.sender;
       const rid = msg.receiver?._id || msg.receiver;
-      const pid = partnerId;
-      const uid = user?._id;
-      const involves = (sid === pid || rid === pid) && (sid === uid || rid === uid);
-      if (!involves) return;
-      pushMessage(msg);
-      setIsPartnerTyping(false); // Stop typing when message received
-      if (rid === user?._id) {
-        api.messages.markAsRead(partnerId).catch(() => {});
+      if ((sid === partnerId || rid === partnerId) && (sid === user?._id || rid === user?._id)) {
+        setMessages(prev => [...prev, msg]);
+        setIsPartnerTyping(false);
+        if (rid === user?._id) api.messages.markAsRead(partnerId).catch(() => {});
       }
-    }
-
+    };
     socket.on("message", onMessage);
 
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === "visible") {
-        if (!socket.connected) socket.connect();
-        fetchConversation();
-      }
-    };
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
     return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      socket.off("connect", syncStatus);
+      socket.off("disconnect", syncStatus);
       socket.off("message", onMessage);
-      socket.off("typing", onTyping);
-      socket.off("stop_typing", onStopTyping);
-      socket.off("connect", handleConnect);
-      socket.off("disconnect", syncOnline);
-      socket.off("connect_error", syncOnline);
-      socket.io.off("reconnect", onReconnect);
+      socket.off("typing");
+      socket.off("stop_typing");
     };
-  }, [partnerId, user?._id, pushMessage, fetchConversation]);
+  }, [partnerId, user?._id]);
 
-  /* ── Send helpers ── */
-  const sendContentViaRest = useCallback(
-    async (content, mediaUrl, mediaType, onDone) => {
-      try {
-        const payload = { receiverId, content, mediaUrl, mediaType };
-        const msg = await api.messages.send(payload);
-        if (msg?.error) {
-          setError(typeof msg.error === "string" ? msg.error : "Something went wrong");
-        } else {
-          pushMessage(msg);
-        }
-      } catch {
-        setError("Something went wrong");
-      } finally {
-        onDone?.();
-      }
-    },
-    [receiverId, pushMessage]
-  );
-
-  const sendContent = useCallback(
-    (content, mediaUrl, mediaType, onDone) => {
-      if ((!content && !mediaUrl) || !receiverId) { onDone?.(); return; }
-
-      const socket = getSocket() || connectSocket();
-      const payload = { receiverId, content, mediaUrl, mediaType };
-
-      if (socket?.connected) {
-        socket.emit("send_message", payload, (ack) => {
-          if (ack?.error) {
-            sendContentViaRest(content, mediaUrl, mediaType, onDone);
-            return;
-          }
-          if (ack?.message) pushMessage(ack.message);
-          onDone?.();
-        });
-        return;
-      }
-
-      sendContentViaRest(content, mediaUrl, mediaType, onDone);
-    },
-    [receiverId, pushMessage, sendContentViaRest]
-  );
-
-  /* Normal message */
-  function handleSubmit(e) {
-    e.preventDefault();
-    const txt = input.trim();
-    if (sending) return;
-    
-    if (selectedFile) {
-      handleMediaUpload(e);
-      return;
-    }
-
-    if (!txt) return;
-    
-    // Stop typing immediately when sending
-    const socket = getSocket();
-    if (socket?.connected) {
-      socket.emit("stop_typing", { receiverId });
-    }
-    if (typingTimeoutRef.current) {
-      clearTimeout(typingTimeoutRef.current);
-      typingTimeoutRef.current = null;
-    }
-
-    setSending(true);
-    setError("");
-    sendContent(txt, null, null, () => {
-      setInput("");
-      setSending(false);
-    });
-  }
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, isPartnerTyping]);
 
   const handleInputChange = (e) => {
     const val = e.target.value;
     setInput(val);
-
     const socket = getSocket();
-    if (socket?.connected && receiverId) {
-      if (!typingTimeoutRef.current) {
-        socket.emit("typing", { receiverId });
-      } else {
-        clearTimeout(typingTimeoutRef.current);
-      }
-
+    if (socket?.connected) {
+      if (!typingTimeoutRef.current) socket.emit("typing", { receiverId: partnerId });
+      clearTimeout(typingTimeoutRef.current);
       typingTimeoutRef.current = setTimeout(() => {
-        socket.emit("stop_typing", { receiverId });
+        socket.emit("stop_typing", { receiverId: partnerId });
         typingTimeoutRef.current = null;
       }, 2000);
     }
   };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    if (!file.type.startsWith("image/") && !file.type.startsWith("video/")) {
-      setError("Only images and videos are allowed");
-      return;
-    }
-
-    if (file.size > 50 * 1024 * 1024) {
-      setError("File size exceeds 50MB limit");
-      return;
-    }
-
-    setSelectedFile(file);
-    setPreviewUrl(URL.createObjectURL(file));
-    setShowMedia(true);
-  };
-
-  const handleMediaUpload = async (e) => {
-    e?.preventDefault();
-    if (!selectedFile || sending) return;
-
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (sending || (!input.trim() && !selectedFile)) return;
     setSending(true);
     setError("");
 
     try {
-      const formData = new FormData();
-      formData.append("media", selectedFile);
-      formData.append("receiverId", receiverId);
-      if (input.trim()) {
-        formData.append("content", input.trim());
+      let msg;
+      if (selectedFile) {
+        const formData = new FormData();
+        formData.append("media", selectedFile);
+        formData.append("receiverId", partnerId);
+        if (input.trim()) formData.append("content", input.trim());
+        msg = await api.messages.sendMedia(formData);
+      } else {
+        msg = await api.messages.send({ receiverId: partnerId, content: input.trim() });
       }
 
-      const res = await api.messages.sendMedia(formData);
-      if (res.error) {
-        setError(res.error);
-      } else {
-        pushMessage(res);
+      if (msg.error) setError(msg.error);
+      else {
+        setMessages(prev => [...prev, msg]);
         setInput("");
         setSelectedFile(null);
         setPreviewUrl("");
-        setShowMedia(false);
       }
-    } catch (err) {
-      setError("Failed to upload media");
+    } catch {
+      setError("Failed to send message");
     } finally {
       setSending(false);
+      const socket = getSocket();
+      if (socket?.connected) socket.emit("stop_typing", { receiverId: partnerId });
     }
   };
 
-  const getMediaUrl = (path) => {
-    if (!path) return "";
-    if (path.startsWith("http")) return path;
-    return `${BASE_URL}${path}`;
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+      setPreviewUrl(URL.createObjectURL(file));
+    }
   };
 
-  const senderLabelFor = useCallback(
-    (m, mine) => {
-      if (mine) return user?.name || user?.email || "You";
-      return m.sender?.name || m.sender?.email || partner?.name || partner?.email || "Partner";
-    },
-    [user?.name, user?.email, partner?.name, partner?.email]
+  if (loading) return (
+    <div className="chat-layout-pro flex items-center justify-center">
+      <div className="text-slate-400 font-medium animate-pulse">Opening DM...</div>
+    </div>
   );
 
-  /* ── Render ── */
-
-  if (loading) {
-    return (
-      <div className="container chat-page">
-        <p className="loading-line">Opening conversation</p>
-      </div>
-    );
-  }
-
-  if (error && !partner) {
-    return (
-      <div className="container chat-page">
-        <div className="empty-state empty-state--hero" style={{ marginTop: "1rem" }}>
-          <div className="empty-state__illustration" aria-hidden="true">😕</div>
-          <h2 className="empty-state__title">Could not open chat</h2>
-          <p className="empty-state__text">{error}</p>
-          <div className="empty-state__action">
-            <Link to="/messages" className="btn btn-secondary btn-sm">Back to messages</Link>
-            <Link to="/discover" className="btn btn-primary btn-sm">Explore</Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="container chat-page">
-      <header className="chat-header-bar" style={{ marginBottom: 0 }}>
-        <Link to="/messages" className="btn btn-secondary btn-sm">← Back</Link>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <Avatar user={partner} size="md" />
-          <div>
-            <div className="row" style={{ alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
-              <h1 className="page-title" style={{ fontSize: "1.35rem", margin: 0 }}>Chat</h1>
-              <span className="muted" style={{ fontSize: "1rem", fontWeight: 600 }}>
-                · {partner?.name || partner?.email || "Conversation"}
-              </span>
-            </div>
-            <div className="row" style={{ alignItems: "center", gap: "0.65rem", marginTop: "0.35rem" }}>
-              {partner?.role && <span className={`badge ${roleBadgeClass(partner.role)}`}>{partner.role}</span>}
-              <p className="muted" style={{ margin: 0, fontSize: "0.85rem" }}>
-                {partner?.category ? <>Category · {partner.category}</> : <span>Category not set</span>}
-              </p>
-            </div>
-          </div>
+    <div className="chat-layout-pro slide-up">
+      <header className="chat-header-pro">
+        <button onClick={() => navigate("/messages")} className="mr-4 text-slate-600 hover:text-slate-900 transition-colors">
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" /></svg>
+        </button>
+        <Avatar user={partner} size="sm" />
+        <div className="ml-3 flex-1 min-width-0">
+          <h2 className="font-bold text-slate-900 truncate leading-tight">{partner?.name || partner?.username}</h2>
+          <p className="text-[11px] text-slate-500 font-medium">
+            {socketOnline ? "Active now" : "Offline"}
+          </p>
         </div>
       </header>
 
-      {!socketOnline && (
-        <p className="chat-live-banner chat-live-banner--warn" role="status">
-          Chat server disconnected — messages will be sent via REST fallback.
-        </p>
-      )}
-      {socketOnline && (
-        <p className="chat-live-banner chat-live-banner--ok" role="status">
-          Live messaging connected.
-        </p>
-      )}
-
       <ErrorBanner message={error} onDismiss={() => setError("")} />
 
-      <div className="chat-window">
-        <div className="chat-messages" aria-label="Messages">
-          {messages.length === 0 ? (
-            <div className="chat-empty" role="status">
-              <div className="chat-empty__illustration" aria-hidden="true">💬</div>
-              <p className="chat-empty__title">Start the conversation</p>
-              <p className="chat-empty__text">
-                Send a message below or tap 📎 to send media.
-              </p>
-            </div>
-          ) : (
-            messages.map((m, idx) => {
-              const sid = m.sender?._id || m.sender;
-              const mine = sid === user?._id;
-              const media = m.media || m.mediaUrl;
-              const msgTime = m.createdAt ? new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "";
+      <div className="chat-message-stream">
+        {messages.map((m, idx) => {
+          const isMine = (m.sender?._id || m.sender) === user?._id;
+          const media = m.media || m.mediaUrl;
+          const time = m.createdAt ? new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "";
 
-              return (
-                <div key={m._id || idx} className={`chat-bubble-wrap ${mine ? "chat-bubble-wrap--mine" : "chat-bubble-wrap--theirs"}`}>
-                  <div className={`chat-bubble ${mine ? "chat-bubble-mine" : "chat-bubble-theirs"} fade-in`}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.25rem' }}>
-                      <Avatar user={mine ? user : m.sender || partner} size="xs" />
-                      <span className="chat-bubble__sender" style={{ marginBottom: 0 }}>{senderLabelFor(m, mine)}</span>
-                    </div>
-                    {media && (
-                      <div className="chat-media-container" style={{ marginTop: '0.25rem' }}>
-                        {m.mediaType === "video" ? (
-                          <video 
-                            src={media.startsWith('http') ? media : `${api.BASE_URL}${media}`} 
-                            controls 
-                            className="chat-media-display" 
-                            playsInline
-                            style={{ maxWidth: '100%', borderRadius: '8px', display: 'block' }} 
-                            onError={(e) => { e.target.style.display = 'none'; }}
-                          />
-                        ) : (
-                          <img 
-                            src={media.startsWith('http') ? media : `${api.BASE_URL}${media}`} 
-                            alt="" 
-                            className="chat-media-display" 
-                            style={{ maxWidth: '100%', borderRadius: '8px', display: 'block' }} 
-                            onError={(e) => { e.target.style.display = 'none'; }}
-                          />
-                        )}
-                      </div>
+          return (
+            <div key={m._id || idx} className={`bubble-wrap ${isMine ? "bubble-wrap-sent" : "bubble-wrap-received"}`}>
+              <div className={`bubble-pro ${isMine ? "bubble-sent" : "bubble-received"}`}>
+                {media && (
+                  <div className="bubble-media-pro mb-2">
+                    {m.mediaType === "video" ? (
+                      <video src={media.startsWith("http") ? media : `${api.BASE_URL}${media}`} controls className="w-full max-h-60 rounded-xl" />
+                    ) : (
+                      <img src={media.startsWith("http") ? media : `${api.BASE_URL}${media}`} alt="" className="w-full max-h-60 object-cover rounded-xl" />
                     )}
-                    {m.content && <div className="chat-bubble__text" style={{ marginTop: media ? '0.5rem' : 0 }}>{m.content}</div>}
-                    {msgTime && <div className="chat-bubble__time">{msgTime}</div>}
                   </div>
-                </div>
-              );
-            })
-          )}
-          {isPartnerTyping && (
-            <div className="chat-bubble-wrap chat-bubble-wrap--theirs fade-in">
-              <div className="chat-bubble chat-bubble-theirs typing-indicator">
-                <span></span><span></span><span></span>
+                )}
+                {m.content && <p className="leading-relaxed">{m.content}</p>}
+                <span className="bubble-timestamp">{time}</span>
               </div>
             </div>
-          )}
-          <div ref={bottomRef} />
-        </div>
-
-        {/* Input row + Media button */}
-        <form className="chat-form" onSubmit={handleSubmit}>
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={handleFileChange}
-            accept="image/*,video/*"
-            style={{ display: 'none' }}
-          />
-          <button
-            type="button"
-            className="chat-collab-trigger"
-            onClick={() => fileInputRef.current?.click()}
-            title="Attach Media"
-            aria-label="Attach Media"
-            disabled={sending}
-          >
-            📎
-          </button>
-          <input
-            className="input"
-            placeholder={selectedFile ? "Add a caption…" : "Type a message…"}
-            value={input}
-            onChange={handleInputChange}
-            maxLength={5000}
-            disabled={sending}
-            enterKeyHint="send"
-            aria-label="Message text"
-          />
-          <button type="submit" className="btn btn-primary btn-sm" disabled={sending || (!input.trim() && !selectedFile)} aria-busy={sending}>
-            {sending ? "..." : (selectedFile ? "Send File" : "Send")}
-          </button>
-        </form>
-      </div>
-
-      {/* ═══════════════════════════════
-          MEDIA MODAL
-         ═══════════════════════════════ */}
-      {showMedia && (
-        <div className="collab-overlay" onClick={() => !sending && (setShowMedia(false), setSelectedFile(null), setPreviewUrl(""))}>
-          <div className="collab-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="collab-modal__header">
-              <div className="collab-modal__header-text">
-                <span className="collab-modal__header-icon" aria-hidden="true">🖼️</span>
-                <h2 className="collab-modal__title">Media Preview</h2>
-              </div>
-              <button type="button" className="collab-modal__close" onClick={() => { setShowMedia(false); setSelectedFile(null); setPreviewUrl(""); }} aria-label="Close" disabled={sending}>✕</button>
-            </div>
-            
-            <div className="media-preview-body" style={{ textAlign: 'center', padding: '1rem' }}>
-              {selectedFile?.type.startsWith("video") ? (
-                <video src={previewUrl} controls style={{ maxWidth: '100%', maxHeight: '300px', borderRadius: '8px' }} />
-              ) : (
-                <img src={previewUrl} alt="preview" style={{ maxWidth: '100%', maxHeight: '300px', borderRadius: '8px' }} />
-              )}
-              <p className="muted" style={{ marginTop: '0.5rem', fontSize: '0.85rem' }}>
-                {selectedFile?.name} ({(selectedFile?.size / (1024 * 1024)).toFixed(2)} MB)
-              </p>
-            </div>
-
-            <div className="collab-modal__actions">
-              <button 
-                type="button" 
-                className="btn btn-secondary" 
-                onClick={() => { setShowMedia(false); setSelectedFile(null); setPreviewUrl(""); }} 
-                disabled={sending}
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={handleMediaUpload}
-                disabled={sending}
-              >
-                {sending ? "Uploading…" : "Send Media"}
-              </button>
+          );
+        })}
+        {isPartnerTyping && (
+          <div className="bubble-wrap bubble-wrap-received">
+            <div className="typing-pro">
+              <div className="typing-dot" style={{ animationDelay: "0s" }}></div>
+              <div className="typing-dot" style={{ animationDelay: "0.2s" }}></div>
+              <div className="typing-dot" style={{ animationDelay: "0.4s" }}></div>
             </div>
           </div>
+        )}
+        <div ref={bottomRef} />
+      </div>
+
+      {previewUrl && (
+        <div className="px-4 py-2 bg-slate-50 border-t border-slate-100 flex items-center gap-3">
+          <div className="relative w-16 h-16 rounded-lg overflow-hidden border border-slate-200">
+            {selectedFile?.type.startsWith("video") ? <div className="w-full h-full bg-slate-900 flex items-center justify-center text-[10px] text-white">Video</div> : <img src={previewUrl} className="w-full h-full object-cover" />}
+            <button onClick={() => { setSelectedFile(null); setPreviewUrl(""); }} className="absolute top-0 right-0 bg-rose-500 text-white w-4 h-4 flex items-center justify-center text-[10px]">✕</button>
+          </div>
+          <span className="text-xs text-slate-500 truncate flex-1">{selectedFile?.name}</span>
         </div>
       )}
+
+      <form className="chat-input-bar-pro" onSubmit={handleSubmit}>
+        <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*,video/*" className="hidden" />
+        <button type="button" onClick={() => fileInputRef.current?.click()} className="icon-btn-pro" disabled={sending}>
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+        </button>
+        <input
+          className="input-field-rounded"
+          placeholder={selectedFile ? "Add a caption..." : "Message..."}
+          value={input}
+          onChange={handleInputChange}
+          disabled={sending}
+        />
+        <button type="submit" className="send-btn-pro" disabled={sending || (!input.trim() && !selectedFile)}>
+          {sending ? "..." : "Send"}
+        </button>
+      </form>
     </div>
   );
 }

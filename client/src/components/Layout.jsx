@@ -15,6 +15,7 @@ export default function Layout() {
   const [msgUnreadTotal, setMsgUnreadTotal] = useState(0);
   
   const isAuthPage = ["/login", "/register", "/forgot-password", "/reset-password"].includes(location.pathname);
+  const isChatPage = location.pathname.startsWith("/chat/");
   const shouldBeCentered = ["/home", "/discover", "/messages"].includes(location.pathname);
 
   useEffect(() => {
@@ -82,15 +83,16 @@ export default function Layout() {
         logout={logout}
       />
 
-      <main className="main-viewport">
-        <div className={shouldBeCentered ? "feed-layout-centered slide-up-fade" : "content-container-pro slide-up-fade"}>
+      <main className={`main-viewport ${isChatPage ? 'chat-view-active' : ''}`}>
+        <div className={shouldBeCentered ? "feed-layout-centered" : "content-container-pro"}>
           <Outlet />
         </div>
       </main>
 
-      <BottomNav msgUnreadCount={msgUnreadTotal} />
-      <AIAssistant />
+      {!isChatPage && <BottomNav msgUnreadCount={msgUnreadTotal} />}
+      {!isChatPage && <AIAssistant />}
     </div>
   );
 }
+
 
