@@ -139,22 +139,22 @@ export default function Navbar({
   return (
     <header className="navbar-fixed">
       <div className="navbar-inner">
-        <div className="nav-left">
-          <Link to="/home" className="logo-link">
+        <div className="flex justify-start">
+          <Link to="/home" className="logo-main-text">
             CreatorBridge
           </Link>
         </div>
 
         {user && (
           <>
-            <div className="nav-center">
-              <form className="relative w-full" onSubmit={handleSearch} ref={searchRef}>
-                <span className="search-icon-wrap">
+            <div className="nav-search-wrap">
+              <form className="relative w-full max-w-[440px]" onSubmit={handleSearch} ref={searchRef}>
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
                   <SearchIcon />
                 </span>
                 <input
                   type="text"
-                  className="search-box"
+                  className="search-input-pro"
                   placeholder="Search creators & brands..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -175,78 +175,88 @@ export default function Navbar({
               </form>
             </div>
 
-            <div className="nav-right">
+            <div className="nav-actions-wrap">
               <div className="relative" ref={notifRef}>
                 <button 
-                  className="p-2 rounded-full hover:bg-slate-100 transition-colors relative" 
+                  className="p-2.5 rounded-xl hover:bg-slate-100 transition-colors relative text-slate-700" 
                   onClick={() => setNotifOpen(!notifOpen)}
-                  aria-label="Notifications"
                 >
                   <BellIcon />
-                  {unreadCount > 0 && <span className="absolute top-1 right-1 w-4 h-4 bg-indigo-600 text-white text-[10px] flex items-center justify-center rounded-full border-2 border-white">{unreadCount}</span>}
+                  {unreadCount > 0 && (
+                    <span className="absolute top-2 right-2 w-4 h-4 bg-indigo-600 text-white text-[10px] flex items-center justify-center rounded-full border-2 border-white font-bold">
+                      {unreadCount}
+                    </span>
+                  )}
                 </button>
                 {notifOpen && (
-                  <div className="dropdown-card fade-up-entry">
-                    <div className="p-3 border-b border-slate-100 font-bold text-slate-800">Notifications</div>
+                  <div className="dropdown-card-pro slide-up-fade">
+                    <div className="p-4 border-b border-slate-100 font-bold text-slate-800">Notifications</div>
                     <div className="max-h-80 overflow-y-auto">
                       {(!notifications || notifications.length === 0) ? (
-                        <div className="p-4 text-center text-slate-500 text-sm">No notifications</div>
+                        <div className="p-6 text-center text-slate-500 text-sm">No notifications</div>
                       ) : (
-                        (notifications || []).map(n => (
+                        notifications.map(n => (
                           <div 
                             key={n?._id} 
-                            className={`p-3 border-b border-slate-50 last:border-0 hover:bg-slate-50 cursor-pointer ${!n?.read ? 'bg-indigo-50/30' : ''}`}
+                            className={`p-4 border-b border-slate-50 last:border-0 hover:bg-slate-50 cursor-pointer transition-colors ${!n?.read ? 'bg-indigo-50/30' : ''}`}
                             onClick={() => handleNotifClick(n)}
                           >
                             <p className="text-sm text-slate-800 leading-snug">{n?.message}</p>
-                            <span className="text-[10px] text-slate-400 mt-1 block">{n?.createdAt ? formatTime(n.createdAt) : ""}</span>
+                            <span className="text-[10px] text-slate-400 mt-1.5 block font-medium">{n?.createdAt ? formatTime(n.createdAt) : ""}</span>
                           </div>
                         ))
                       )}
                     </div>
-                    <Link to="/notifications" className="block p-3 text-center text-indigo-600 font-bold text-sm border-t border-slate-100 hover:bg-indigo-50/20" onClick={() => setNotifOpen(false)}>
+                    <Link to="/notifications" className="block p-3.5 text-center text-indigo-600 font-bold text-sm border-t border-slate-100 hover:bg-indigo-50/20" onClick={() => setNotifOpen(false)}>
                       View all activity
                     </Link>
                   </div>
                 )}
               </div>
 
-              <Link to="/messages" className="p-2 rounded-full hover:bg-slate-100 transition-colors relative" aria-label="Messages">
+              <Link to="/messages" className="p-2.5 rounded-xl hover:bg-slate-100 transition-colors relative text-slate-700">
                 <MessageIcon />
-                {msgUnreadCount > 0 && <span className="absolute top-1 right-1 w-4 h-4 bg-indigo-600 text-white text-[10px] flex items-center justify-center rounded-full border-2 border-white">{msgUnreadCount}</span>}
+                {msgUnreadCount > 0 && (
+                  <span className="absolute top-2 right-2 w-4 h-4 bg-indigo-600 text-white text-[10px] flex items-center justify-center rounded-full border-2 border-white font-bold">
+                    {msgUnreadCount}
+                  </span>
+                )}
               </Link>
 
               <div className="relative" ref={menuRef}>
                 <button
-                  className="p-1 rounded-full hover:bg-slate-100 transition-colors relative"
+                  className="p-0.5 rounded-full hover:ring-4 hover:ring-slate-100 transition-all relative"
                   onClick={() => setMenuOpen(!menuOpen)}
-                  aria-label="Menu"
                 >
                   <Avatar user={user} size="sm" />
                   <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white bg-${socketStatus === 'online' ? 'emerald' : socketStatus === 'connecting' ? 'amber' : 'rose'}-500`} />
                 </button>
                 {menuOpen && (
-                  <div className="dropdown-card fade-up-entry w-60">
-                    <div className="py-2">
+                  <div className="dropdown-card-pro slide-up-fade">
+                    <div className="py-1">
                       {!user.isEmailVerified && (
-                        <Link to="/verify-email" className="flex items-center px-4 py-2.5 text-sm font-semibold text-amber-600 hover:bg-amber-50" onClick={() => setMenuOpen(false)}>
-                          <span className="mr-3">⚠️</span> Verify Email
-                        </Link>
+                        <>
+                          <Link to="/verify-email" className="dropdown-item-pro text-amber-600 font-bold" onClick={() => setMenuOpen(false)}>
+                            <span>⚠️</span> Verify Email
+                          </Link>
+                          <div className="dropdown-divider"></div>
+                        </>
                       )}
-                      <Link to="/requests" className="flex items-center px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50" onClick={() => setMenuOpen(false)}>Align Requests</Link>
-                      <Link to="/deals" className="flex items-center px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50" onClick={() => setMenuOpen(false)}>My Deals</Link>
-                      <Link to="/saved" className="flex items-center px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50" onClick={() => setMenuOpen(false)}>Saved Posts</Link>
-                      <Link to="/premium" className="flex items-center px-4 py-2.5 text-sm font-bold text-indigo-600 hover:bg-indigo-50" onClick={() => setMenuOpen(false)}>
-                        <span className="mr-3">⭐</span> Upgrade to Premium
+                      <Link to="/requests" className="dropdown-item-pro" onClick={() => setMenuOpen(false)}>Align Requests</Link>
+                      <Link to="/deals" className="dropdown-item-pro" onClick={() => setMenuOpen(false)}>My Deals</Link>
+                      <Link to="/saved" className="dropdown-item-pro" onClick={() => setMenuOpen(false)}>Saved Posts</Link>
+                      <div className="dropdown-divider"></div>
+                      <Link to="/premium" className="dropdown-item-pro text-indigo-600 font-bold" onClick={() => setMenuOpen(false)}>
+                        <span>⭐</span> Upgrade to Premium
                       </Link>
-                      <Link to="/earnings" className="flex items-center px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50" onClick={() => setMenuOpen(false)}>
-                        <span className="mr-3">💰</span> My Earnings
+                      <Link to="/earnings" className="dropdown-item-pro" onClick={() => setMenuOpen(false)}>
+                        <span>💰</span> My Earnings
                       </Link>
-                      <Link to="/analytics" className="flex items-center px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50" onClick={() => setMenuOpen(false)}>Analytics</Link>
-                      <Link to="/settings" className="flex items-center px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50" onClick={() => setMenuOpen(false)}>Settings</Link>
-                      <div className="my-1 border-t border-slate-100"></div>
+                      <Link to="/analytics" className="dropdown-item-pro" onClick={() => setMenuOpen(false)}>Analytics</Link>
+                      <Link to="/settings" className="dropdown-item-pro" onClick={() => setMenuOpen(false)}>Settings</Link>
+                      <div className="dropdown-divider"></div>
                       <button
-                        className="flex items-center w-full px-4 py-2.5 text-sm font-bold text-rose-500 hover:bg-rose-50"
+                        className="dropdown-item-pro w-full font-bold text-rose-500 hover:bg-rose-50"
                         onClick={() => { setMenuOpen(false); logout(); }}
                       >
                         Logout
@@ -262,5 +272,6 @@ export default function Navbar({
     </header>
   );
 }
+
 
 

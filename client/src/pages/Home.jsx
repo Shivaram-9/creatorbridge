@@ -61,41 +61,39 @@ export default function Home() {
   };
 
   return (
-    <div className="slide-fade-in">
-      <div className="feed-centered-wrap">
+    <div className="w-full">
+      <header className="page-header-block">
+        <h1 className="page-title-main">Feed</h1>
+        <p className="page-subtitle-main">Explore the latest from your network.</p>
+      </header>
 
-        <header className="page-header-block">
-          <h1 className="page-title-main">Feed</h1>
-          <p className="page-subtitle-main">Explore the latest from your network.</p>
-        </header>
+      <StoriesBar />
+      <CreatePost onPost={handleAddPost} user={user} />
 
-        <StoriesBar />
-
-
-        <CreatePost onPost={handleAddPost} user={user} />
-
-        {loading ? (
-          <div className="list-gap">
-            <PostSkeleton />
-            <PostSkeleton />
-            <PostSkeleton />
-          </div>
-        ) : posts.length === 0 ? (
-          <EmptyState 
-            icon="📭" 
-            title="Your feed is empty" 
-            description="Start following creators or create your own post to see something here!"
-          />
-        ) : (
-          posts.map((post) => (
+      {loading ? (
+        <div className="mt-8 space-y-6">
+          <PostSkeleton />
+          <PostSkeleton />
+          <PostSkeleton />
+        </div>
+      ) : posts.length === 0 ? (
+        <EmptyState 
+          icon="📭" 
+          title="Your feed is empty" 
+          description="Start following creators or create your own post to see something here!"
+        />
+      ) : (
+        <div className="mt-6 space-y-6">
+          {posts.map((post) => (
             <PostCard 
               key={post._id} 
               post={formatPost(post)} 
               onDelete={(id) => setPosts(prev => prev.filter(p => p._id !== id))}
             />
-          ))
-        )}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
+

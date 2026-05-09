@@ -55,34 +55,36 @@ export default function Messages() {
 
       <ErrorBanner message={error} onDismiss={() => setError("")} />
 
-      <div className="msg-content slide-in">
-        <div className="messages-container-pro slide-fade-in">
+      <div className="content-container-pro slide-up-fade">
+        <div className="messages-list-wrap">
           {loading ? (
-            <p className="loading-line">Loading chats...</p>
+            <div className="p-12 text-center text-slate-500 font-medium">Loading chats...</div>
           ) : conversations.length === 0 ? (
-            <div className="empty-state" style={{ padding: '60px', textAlign: 'center' }}>
-              <div className="empty-icon" style={{ fontSize: '3rem', marginBottom: '1rem' }}>💬</div>
-              <h3>No conversations yet</h3>
-              <p style={{ color: 'var(--text-muted)' }}>Messages from brands and creators will appear here.</p>
+            <div className="p-20 text-center">
+              <div className="text-5xl mb-6">💬</div>
+              <h3 className="text-xl font-bold text-slate-800">No conversations yet</h3>
+              <p className="text-slate-500 mt-2">Messages from brands and creators will appear here.</p>
             </div>
           ) : (
             conversations.map(conv => (
               <div 
                 key={conv._id} 
-                className="msg-list-item-pro"
+                className="chat-item-pro"
                 onClick={() => navigate(`/chat/${conv.partner._id}`)}
               >
                 <Avatar user={conv.partner} size="md" />
-                <div className="msg-info-wrap">
-                  <div className="msg-name-row">
-                    <span className="msg-user-name">{conv.partner.name || conv.partner.username}</span>
-                    <span className="msg-time">{formatTime(conv.lastMessage.createdAt)}</span>
+                <div className="chat-info-pro">
+                  <div className="chat-name-row">
+                    <span className="chat-user-name">{conv.partner.name || conv.partner.username}</span>
+                    <span className="chat-timestamp">{formatTime(conv.lastMessage.createdAt)}</span>
                   </div>
-                  <p className="msg-preview-text">
+                  <p className="chat-preview-text">
                     {conv.lastMessage.content || (conv.lastMessage.media ? "📷 Photo" : "Media")}
                   </p>
                 </div>
-                {conv.unreadCount > 0 && <span className="badge-dot" style={{ position: 'static', width: '8px', height: '8px' }}></span>}
+                {conv.unreadCount > 0 && (
+                  <span className="w-2.5 h-2.5 bg-indigo-600 rounded-full"></span>
+                )}
               </div>
             ))
           )}

@@ -83,7 +83,7 @@ export default function Layout() {
       />
 
       <main className="main-viewport">
-        <div className={shouldBeCentered ? "feed-container fade-up-entry" : "page-center-container fade-up-entry"}>
+        <div className={shouldBeCentered ? "feed-layout-centered slide-up-fade" : "content-container-pro slide-up-fade"}>
           <Outlet />
         </div>
       </main>
@@ -93,3 +93,4 @@ export default function Layout() {
     </div>
   );
 }
+
