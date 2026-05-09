@@ -55,9 +55,10 @@ authRouter.post("/register", async (req, res) => {
     const { name, email, password, role = "influencer" } = req.body;
     const finalRole = (role === "influencer" || role === "brand" || role === "admin") ? role : "influencer";
     
-    console.log("REGISTRATION ATTEMPT:", { name, email, finalRole });
+    console.log("FULL REQ BODY:", JSON.stringify(req.body));
     
     if (!email || !password) {
+      console.log("VALIDATION FAILED: email or password missing");
       return res.status(400).json({ error: "Email and password are required" });
     }
 
@@ -79,7 +80,7 @@ authRouter.post("/register", async (req, res) => {
       });
 
       // Send verification email
-      const verifyUrl = `${process.env.CLIENT_URL}/verify-email?token=${verificationToken}`;
+      const verifyUrl = `${process.env.CLIENT_URL}/verify-email?token=${hashedVerificationToken}`;
       await EmailService.send(email, "Verify your CreatorBridge account", "Verify Email", `
         <p>Welcome to CreatorBridge!</p>
         <p>Please click the button below to verify your email address:</p>
