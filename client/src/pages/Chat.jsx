@@ -145,107 +145,76 @@ export default function Chat({ standalone = true }) {
   };
 
   if (loading) return (
-    <div className="flex-1 flex items-center justify-center bg-white">
-      <div className="flex flex-col items-center gap-4">
-        <div className="w-10 h-10 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin"></div>
-        <p className="text-slate-400 font-medium text-sm">Loading conversation...</p>
+    <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'white' }}>
+      <div style={{ textAlign: 'center' }}>
+        <p style={{ color: '#94a3b8', fontSize: '0.9rem' }}>Loading conversation...</p>
       </div>
     </div>
   );
 
   return (
-    <div className="flex flex-col h-full bg-white">
-      <header className="px-6 py-4 border-b border-slate-100 flex items-center sticky top-0 bg-white/80 backdrop-blur-md z-10">
-        <button onClick={() => navigate("/messages")} className="md:hidden mr-4 text-slate-600 hover:text-slate-900 transition-colors">
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" /></svg>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: 'white' }}>
+      <header style={{ padding: '16px 24px', borderBottom: '1px solid #f1f5f9', display: 'flex', alignItems: 'center', position: 'sticky', top: 0, background: 'rgba(255,255,255,0.8)', backdropFilter: 'blur(10px)', zIndex: 10 }}>
+        <button onClick={() => navigate("/messages")} style={{ border: 'none', background: 'none', cursor: 'pointer', marginRight: '16px', color: '#64748b' }}>
+          <svg style={{ width: '24px', height: '24px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" /></svg>
         </button>
         <Avatar user={partner} size="sm" />
-        <div className="ml-3 flex-1">
-          <h2 className="font-bold text-slate-900 leading-tight">{partner?.name || partner?.username}</h2>
-          <div className="flex items-center gap-1.5">
-            <span className={`w-2 h-2 rounded-full ${socketOnline ? 'bg-emerald-500' : 'bg-slate-300'}`}></span>
-            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">
+        <div style={{ marginLeft: '12px', flex: 1 }}>
+          <h2 style={{ fontSize: '1rem', fontWeight: '700', color: '#0f172a', margin: 0 }}>{partner?.name || partner?.username}</h2>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: socketOnline ? '#10b981' : '#cbd5e1' }}></span>
+            <p style={{ fontSize: '10px', color: '#64748b', fontWeight: '700', textTransform: 'uppercase', margin: 0 }}>
               {socketOnline ? "Active now" : "Offline"}
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-4">
-          <button className="text-slate-400 hover:text-indigo-600 transition-colors"><svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg></button>
-          <button className="text-slate-400 hover:text-indigo-600 transition-colors"><svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg></button>
-          <button className="text-slate-400 hover:text-indigo-600 transition-colors"><svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></button>
-        </div>
       </header>
 
-      <div className="flex-1 overflow-y-auto p-6 space-y-4">
+      <div style={{ flex: 1, overflowY: 'auto', padding: '24px' }}>
         {messages.map((m, idx) => {
           const isMine = (m.sender?._id || m.sender) === user?._id;
           const media = m.media || m.mediaUrl;
           const time = m.createdAt ? new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "";
 
           return (
-            <div key={m._id || idx} className={`flex ${isMine ? "justify-end" : "justify-start"}`}>
-              <div className={`max-w-[75%] px-4 py-3 rounded-2xl ${isMine ? "bg-indigo-600 text-white rounded-br-none shadow-lg shadow-indigo-100" : "bg-slate-100 text-slate-800 rounded-bl-none"}`}>
+            <div key={m._id || idx} style={{ display: 'flex', justifyContent: isMine ? 'flex-end' : 'flex-start', marginBottom: '16px' }}>
+              <div style={{ maxWidth: '75%', padding: '12px 16px', borderRadius: '16px', borderBottomLeftRadius: isMine ? '16px' : '0', borderBottomRightRadius: isMine ? '0' : '16px', background: isMine ? '#6366f1' : '#f1f5f9', color: isMine ? 'white' : '#1e293b' }}>
                 {media && (
-                  <div className="mb-2">
+                  <div style={{ marginBottom: '8px' }}>
                     {m.mediaType === "video" ? (
-                      <video src={media.startsWith("http") ? media : `${api.BASE_URL}${media}`} controls className="w-full max-h-64 rounded-xl" />
+                      <video src={media.startsWith("http") ? media : `${api.BASE_URL}${media}`} controls style={{ width: '100%', maxHeight: '256px', borderRadius: '12px' }} />
                     ) : (
-                      <img src={media.startsWith("http") ? media : `${api.BASE_URL}${media}`} alt="" className="w-full max-h-64 object-cover rounded-xl" />
+                      <img src={media.startsWith("http") ? media : `${api.BASE_URL}${media}`} alt="" style={{ width: '100%', maxHeight: '256px', borderRadius: '12px', objectFit: 'cover' }} />
                     )}
                   </div>
                 )}
-                {m.content && <p className="text-[15px] leading-relaxed break-words">{m.content}</p>}
-                <span className={`text-[10px] mt-1 block font-medium opacity-60 ${isMine ? "text-right" : "text-left"}`}>{time}</span>
+                {m.content && <p style={{ fontSize: '15px', margin: 0, wordBreak: 'break-word' }}>{m.content}</p>}
+                <span style={{ fontSize: '10px', marginTop: '4px', display: 'block', opacity: 0.6, textAlign: isMine ? 'right' : 'left' }}>{time}</span>
               </div>
             </div>
           );
         })}
-        {isPartnerTyping && (
-          <div className="flex justify-start">
-            <div className="bg-slate-100 px-4 py-3 rounded-2xl rounded-bl-none">
-              <div className="flex gap-1">
-                <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0s' }}></div>
-                <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
-              </div>
-            </div>
-          </div>
-        )}
         <div ref={bottomRef} />
       </div>
 
-      {previewUrl && (
-        <div className="px-6 py-3 bg-slate-50 border-t border-slate-100 flex items-center gap-4">
-          <div className="relative w-20 h-20 rounded-xl overflow-hidden border-2 border-white shadow-md">
-            {selectedFile?.type.startsWith("video") ? <div className="w-full h-full bg-slate-900 flex items-center justify-center text-[10px] text-white">Video</div> : <img src={previewUrl} className="w-full h-full object-cover" />}
-            <button onClick={() => { setSelectedFile(null); setPreviewUrl(""); }} className="absolute top-1 right-1 bg-rose-500 text-white w-5 h-5 flex items-center justify-center rounded-full shadow-sm text-xs">✕</button>
-          </div>
-          <div className="flex-1">
-             <p className="text-xs font-bold text-slate-700 truncate">{selectedFile?.name}</p>
-             <p className="text-[10px] text-slate-400">Media ready to send</p>
-          </div>
-        </div>
-      )}
-
-      <form className="p-4 md:p-6 bg-white border-t border-slate-100" onSubmit={handleSubmit}>
-        <div className="relative flex items-center gap-3 bg-slate-50 p-2 rounded-3xl border border-slate-100 focus-within:border-indigo-200 focus-within:bg-white transition-all">
-          <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*,video/*" className="hidden" />
-          <button type="button" onClick={() => fileInputRef.current?.click()} className="p-3 text-slate-400 hover:text-indigo-600 transition-colors" disabled={sending}>
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+      <form style={{ padding: '16px', background: 'white', borderTop: '1px solid #f1f5f9' }} onSubmit={handleSubmit}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', background: '#f8fafc', padding: '8px', borderRadius: '24px' }}>
+          <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*,video/*" style={{ display: 'none' }} />
+          <button type="button" onClick={() => fileInputRef.current?.click()} style={{ border: 'none', background: 'none', cursor: 'pointer', padding: '8px', color: '#94a3b8' }}>
+            <svg style={{ width: '24px', height: '24px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
           </button>
           <input
-            className="flex-1 bg-transparent border-none outline-none text-sm text-slate-800 placeholder-slate-400 py-2"
-            placeholder={selectedFile ? "Add a caption..." : "Write a message..."}
+            style={{ flex: 1, background: 'transparent', border: 'none', outline: 'none', padding: '8px', fontSize: '14px' }}
+            placeholder="Write a message..."
             value={input}
             onChange={handleInputChange}
-            disabled={sending}
           />
           <button 
             type="submit" 
-            className={`px-6 py-2.5 rounded-2xl font-bold text-sm transition-all ${(!input.trim() && !selectedFile) || sending ? 'bg-slate-200 text-slate-400 cursor-not-allowed' : 'bg-indigo-600 text-white shadow-md shadow-indigo-100 hover:bg-indigo-700'}`}
-            disabled={sending || (!input.trim() && !selectedFile)}
+            style={{ padding: '8px 24px', borderRadius: '20px', border: 'none', background: '#6366f1', color: 'white', fontWeight: '700', cursor: 'pointer', opacity: (!input.trim() && !selectedFile) ? 0.5 : 1 }}
+            disabled={!input.trim() && !selectedFile}
           >
-            {sending ? "..." : "Send"}
+            Send
           </button>
         </div>
       </form>

@@ -80,7 +80,7 @@ export default function Register() {
 
         <ErrorBanner message={error} onDismiss={() => setError("")} />
 
-        <form onSubmit={handleSubmit} className="w-full">
+        <form onSubmit={handleSubmit} style={{ width: '100%' }}>
           <div className="input-group-pro">
             <input
               type="text"
@@ -166,12 +166,12 @@ export default function Register() {
           </button>
         </form>
 
-        <div className="relative my-8">
-          <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-100"></div></div>
-          <div className="relative flex justify-center text-[11px]"><span className="px-2 bg-white text-slate-400 font-bold uppercase tracking-wider">or</span></div>
+        <div style={{ position: 'relative', margin: '32px 0' }}>
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center' }}><div style={{ width: '100%', borderTop: '1px solid #f1f5f9' }}></div></div>
+          <div style={{ position: 'relative', display: 'flex', justifyContent: 'center', fontSize: '11px' }}><span style={{ padding: '0 8px', background: 'white', color: '#94a3b8', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em' }}>or</span></div>
         </div>
 
-        <div className="flex flex-col gap-2">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           <button type="button" className="btn-social-auth">
             <img style={{ width: '18px', height: '18px' }} src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/pjax/google.png" alt="Google" />
             Sign up with Google
@@ -182,8 +182,8 @@ export default function Register() {
           </button>
         </div>
 
-        <footer className="mt-8 text-center border-t border-slate-50 pt-6">
-          <p className="text-sm text-slate-500">Already have an account? <Link to="/login" className="text-indigo-600 font-bold hover:underline">Login</Link></p>
+        <footer style={{ marginTop: '32px', textAlign: 'center', borderTop: '1.5px solid #f8fafc', paddingTop: '24px' }}>
+          <p style={{ fontSize: '14px', color: '#64748b' }}>Already have an account? <Link to="/login" style={{ color: '#6366f1', fontWeight: '800', textDecoration: 'none' }}>Login</Link></p>
         </footer>
       </div>
     </div>

@@ -48,7 +48,7 @@ export default function Login() {
 
         <ErrorBanner message={error} onDismiss={() => setError("")} />
 
-        <form onSubmit={handleSubmit} className="w-full">
+        <form onSubmit={handleSubmit} style={{ width: '100%' }}>
           <div className="input-group-pro">
             <input
               type="email"
@@ -60,7 +60,7 @@ export default function Login() {
             />
           </div>
 
-          <div className="input-group-pro">
+          <div className="input-group-pro" style={{ position: 'relative' }}>
             <input
               type={showPassword ? "text" : "password"}
               className="input-premium"
@@ -71,7 +71,7 @@ export default function Login() {
             />
             <button
               type="button"
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 p-1"
+              style={{ position: 'absolute', right: '16px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', padding: '4px', cursor: 'pointer', color: '#94a3b8' }}
               onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? (
@@ -82,12 +82,12 @@ export default function Login() {
             </button>
           </div>
 
-          <div className="flex items-center justify-between mt-2 mb-6">
-            <label className="flex items-center text-[12px] text-slate-500 cursor-pointer select-none">
-              <input type="checkbox" className="w-3.5 h-3.5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 mr-2" />
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '8px', marginBottom: '24px' }}>
+            <label style={{ display: 'flex', alignItems: 'center', fontSize: '12px', color: '#64748b', cursor: 'pointer', userSelect: 'none' }}>
+              <input type="checkbox" style={{ width: '14px', height: '14px', marginRight: '8px' }} />
               Remember me
             </label>
-            <Link to="/forgot-password" size="sm" className="text-[12px] font-bold text-indigo-600 hover:text-indigo-700">
+            <Link to="/forgot-password" style={{ fontSize: '12px', fontWeight: '700', color: '#6366f1', textDecoration: 'none' }}>
               Forgot password?
             </Link>
           </div>
@@ -102,19 +102,19 @@ export default function Login() {
           </button>
         </form>
 
-        <div className="relative my-8">
-          <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-100"></div></div>
-          <div className="relative flex justify-center text-[11px]"><span className="px-2 bg-white text-slate-400 font-bold uppercase tracking-wider">or</span></div>
+        <div style={{ position: 'relative', margin: '32px 0' }}>
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center' }}><div style={{ width: '100%', borderTop: '1px solid #f1f5f9' }}></div></div>
+          <div style={{ position: 'relative', display: 'flex', justifyContent: 'center', fontSize: '11px' }}><span style={{ padding: '0 8px', background: 'white', color: '#94a3b8', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em' }}>or</span></div>
         </div>
 
-        <button onClick={() => navigate("/register")} className="w-full h-12 rounded-2xl border-1.5 border-slate-100 text-slate-600 font-bold text-sm hover:bg-slate-50 transition-all active:scale-[0.98]">
+        <button onClick={() => navigate("/register")} style={{ width: '100%', height: '48px', borderRadius: '16px', border: '1.5px solid #f1f5f9', background: 'white', color: '#475569', fontWeight: '700', fontSize: '14px', cursor: 'pointer', transition: 'all 0.2s' }}>
           Create an account
         </button>
 
-        <footer className="mt-8 text-center">
-          <p className="text-[10px] text-slate-400 leading-relaxed max-w-[200px] mx-auto">
+        <footer style={{ marginTop: '32px', textAlign: 'center' }}>
+          <p style={{ fontSize: '10px', color: '#94a3b8', lineHeight: '1.5', maxWidth: '200px', margin: '0 auto' }}>
             By continuing, you agree to our<br />
-            <Link to="/terms" className="text-indigo-600 font-semibold hover:underline">Terms of Service</Link> and <Link to="/privacy" className="text-indigo-600 font-semibold hover:underline">Privacy Policy</Link>
+            <Link to="/terms" style={{ color: '#6366f1', fontWeight: '600', textDecoration: 'none' }}>Terms of Service</Link> and <Link to="/privacy" style={{ color: '#6366f1', fontWeight: '600', textDecoration: 'none' }}>Privacy Policy</Link>
           </p>
         </footer>
       </div>
