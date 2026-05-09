@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../services/api.js";
 import ErrorBanner from "../components/ErrorBanner.jsx";
+import "./Auth.css";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -30,39 +31,47 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="container" style={{ maxWidth: '480px', paddingTop: '4rem' }}>
-      <div className="card card--auth fade-in">
-        <h1 className="page-title" style={{ textAlign: 'center', marginBottom: '1rem' }}>Recovery</h1>
-        <p className="subtitle" style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          Enter your email to receive password reset instructions.
-        </p>
+    <div className="auth-stabilized-wrapper">
+      <div className="auth-card-stabilized fade-up">
+        <div className="auth-icon-box">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#6366F1" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+
+        <div className="auth-header-text">
+          <h1>Recovery</h1>
+          <p>Enter your email to receive password reset instructions</p>
+        </div>
 
         <ErrorBanner message={error} onDismiss={() => setError("")} />
         
         {message ? (
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📩</div>
-            <p style={{ color: 'var(--success)', fontWeight: 600, marginBottom: '2rem' }}>{message}</p>
-            <Link to="/login" className="btn btn-secondary btn-block">Back to Login</Link>
+          <div style={{ textAlign: 'center', width: '100%' }}>
+            <div style={{ fontSize: '3rem', marginBottom: '1.5rem' }}>📩</div>
+            <p style={{ color: '#10b981', fontWeight: 700, marginBottom: '2rem', fontSize: '15px' }}>{message}</p>
+            <Link to="/login" className="auth-social-btn" style={{ textDecoration: 'none' }}>Back to Login</Link>
           </div>
         ) : (
-          <form onSubmit={handleSubmit}>
-            <div className="field">
-              <label>Email Address</label>
+          <form onSubmit={handleSubmit} className="auth-form-stabilized">
+            <div className="auth-input-container">
               <input
                 type="email"
-                className="input"
+                className="auth-input-field"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
+                placeholder="Email address"
               />
             </div>
-            <button type="submit" className="btn btn-primary btn-block" disabled={loading}>
+            <button type="submit" className="auth-submit-btn" disabled={loading}>
               {loading ? "Sending..." : "Send Reset Link"}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12H19M19 12L12 5M19 12L12 19" />
+              </svg>
             </button>
-            <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
-              <Link to="/login" className="muted" style={{ fontSize: '0.875rem' }}>Back to Login</Link>
+            <div className="auth-footer" style={{ marginTop: '24px' }}>
+              <Link to="/login" className="auth-footer-link" style={{ fontSize: '14px' }}>Back to Login</Link>
             </div>
           </form>
         )}
@@ -70,3 +79,4 @@ export default function ForgotPassword() {
     </div>
   );
 }
+

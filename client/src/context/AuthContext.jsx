@@ -65,8 +65,8 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
-  const register = useCallback(async (email, password, role) => {
-    const data = await api.auth.register({ email, password, role });
+  const register = useCallback(async (name, email, password, role) => {
+    const data = await api.auth.register({ name, email, password, role });
     if (data?.error || !data?.token) {
       const message = typeof data?.error === "string" ? data.error : "";
       return { ok: false, error: message || "Something went wrong" };
