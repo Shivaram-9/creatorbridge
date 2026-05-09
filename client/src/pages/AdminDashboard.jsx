@@ -144,9 +144,9 @@ export default function AdminDashboard() {
               <span className="stat-trend">Reports pending</span>
             </div>
             <div className="stat-card info">
-              <span className="stat-label">Marketplace Activity</span>
-              <span className="stat-value">{stats?.dealCount}</span>
-              <span className="stat-trend">Active Deals</span>
+              <span className="stat-label">Campaign Activity</span>
+              <span className="stat-value">{stats?.dealCount || 0}</span>
+              <span className="stat-trend">Active Campaigns</span>
             </div>
           </div>
         )}

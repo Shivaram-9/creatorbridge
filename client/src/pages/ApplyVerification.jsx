@@ -169,8 +169,8 @@ export default function ApplyVerification() {
             <li>
               <span className="v-icon">💼</span>
               <div>
-                <strong>Exclusive Deals</strong>
-                <p>Access premium campaigns limited to verified creators.</p>
+                <strong>Premium Opportunities</strong>
+                <p>Access high-end campaigns limited to verified creators.</p>
               </div>
             </li>
           </ul>
