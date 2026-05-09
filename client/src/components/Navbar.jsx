@@ -7,22 +7,38 @@ import SearchDropdown from "./SearchDropdown.jsx";
 import { api } from "../services/api.js";
 
 export default function Navbar({ 
-  user, searchQuery, setSearchQuery, handleSearch, 
-  unreadCount, msgUnreadCount, notifications, onMarkRead,
-  menuOpen, setMenuOpen, menuRef, logout 
+  user, 
+  unreadCount = 0, 
+  msgUnreadCount = 0, 
+  notifications = [], 
+  onMarkRead = () => {}, 
+  logout 
 }) {
   const [notifOpen, setNotifOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [socketStatus, setSocketStatus] = useState("connecting");
   const [searchResults, setSearchResults] = useState(null);
   const [searchLoading, setSearchLoading] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  
   const notifRef = useRef(null);
+  const menuRef = useRef(null);
   const searchRef = useRef(null);
   const navigate = useNavigate();
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/discover?q=${encodeURIComponent(searchQuery)}`);
+      setSearchQuery("");
+      setIsSearchOpen(false);
+    }
+  };
+
   // Live search with debounce and cancellation
   useEffect(() => {
-    if (!searchQuery.trim()) {
+    if (!searchQuery || !searchQuery.trim()) {
       setSearchResults(null);
       return;
     }
@@ -102,13 +118,16 @@ export default function Navbar({
       if (notifOpen && notifRef.current && !notifRef.current.contains(e.target)) {
         setNotifOpen(false);
       }
+      if (menuOpen && menuRef.current && !menuRef.current.contains(e.target)) {
+        setMenuOpen(false);
+      }
       if (isSearchOpen && searchRef.current && !searchRef.current.contains(e.target)) {
         setIsSearchOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [notifOpen, isSearchOpen]);
+  }, [notifOpen, menuOpen, isSearchOpen]);
 
   /* Reset on location change */
   useEffect(() => {

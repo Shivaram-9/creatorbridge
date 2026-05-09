@@ -60,6 +60,13 @@ export default function Layout() {
     fetchUnreadMessages();
   }, [user, fetchUnreadMessages, fetchNotifications]);
 
+  const handleMarkRead = async (id) => {
+    try {
+      await api.notifications.markRead(id);
+      setNotifications(prev => prev.map(n => n._id === id ? { ...n, read: true } : n));
+    } catch { /* silent */ }
+  };
+
   const unreadCount = notifications.filter(n => !n.read).length;
 
   if (isAuthPage) return <Outlet />;
@@ -71,6 +78,7 @@ export default function Layout() {
         unreadCount={unreadCount}
         msgUnreadCount={msgUnreadTotal}
         notifications={notifications}
+        onMarkRead={handleMarkRead}
         logout={logout}
       />
 
