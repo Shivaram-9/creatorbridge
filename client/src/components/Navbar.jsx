@@ -119,23 +119,23 @@ export default function Navbar({
 
   return (
     <header className="navbar-fixed">
-      <div className="navbar-content">
-        <div className="brand-section">
-          <Link to="/home" className="logo-main">
+      <div className="navbar-inner">
+        <div className="nav-left">
+          <Link to="/home" className="logo-link">
             CreatorBridge
           </Link>
         </div>
 
         {user && (
           <>
-            <div className="search-section">
-              <form className="search-bar-wrap" onSubmit={handleSearch} ref={searchRef}>
-                <span className="search-bar-icon">
+            <div className="nav-center">
+              <form className="relative w-full" onSubmit={handleSearch} ref={searchRef}>
+                <span className="search-icon-wrap">
                   <SearchIcon />
                 </span>
                 <input
                   type="text"
-                  className="search-bar-input"
+                  className="search-box"
                   placeholder="Search creators & brands..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -148,9 +148,6 @@ export default function Navbar({
                     onClose={() => setIsSearchOpen(false)}
                     onItemClick={(item) => {
                       if (!item) return;
-                      const saved = JSON.parse(localStorage.getItem("cb_recent_searches") || "[]");
-                      const updated = [item, ...saved.filter(x => x._id !== item._id)].slice(0, 10);
-                      localStorage.setItem("cb_recent_searches", JSON.stringify(updated));
                       setIsSearchOpen(false);
                       setSearchQuery("");
                     }}
@@ -159,135 +156,92 @@ export default function Navbar({
               </form>
             </div>
 
-            <div className="actions-section">
-              <div className="dropdown-container" ref={notifRef}>
+            <div className="nav-right">
+              <div className="relative" ref={notifRef}>
                 <button 
-                  className="nav-action-btn" 
+                  className="p-2 rounded-full hover:bg-slate-100 transition-colors relative" 
                   onClick={() => setNotifOpen(!notifOpen)}
                   aria-label="Notifications"
                 >
                   <BellIcon />
-                  {unreadCount > 0 && <span className="badge-dot" style={{ top: '4px', right: '4px' }}>{unreadCount}</span>}
+                  {unreadCount > 0 && <span className="absolute top-1 right-1 w-4 h-4 bg-indigo-600 text-white text-[10px] flex items-center justify-center rounded-full border-2 border-white">{unreadCount}</span>}
                 </button>
                 {notifOpen && (
-                  <div className="dropdown-card slide-fade-in">
-                    <div className="dropdown-header" style={{ padding: '12px', borderBottom: '1px solid var(--border-light)', fontWeight: 700 }}>Notifications</div>
-                    <div className="dropdown-scroll" style={{ maxHeight: '350px', overflowY: 'auto' }}>
+                  <div className="dropdown-card fade-up-entry">
+                    <div className="p-3 border-b border-slate-100 font-bold text-slate-800">Notifications</div>
+                    <div className="max-h-80 overflow-y-auto">
                       {(!notifications || notifications.length === 0) ? (
-                        <div className="dropdown-item-pro" style={{ color: 'var(--text-muted)', justifyContent: 'center' }}>No notifications</div>
+                        <div className="p-4 text-center text-slate-500 text-sm">No notifications</div>
                       ) : (
                         (notifications || []).map(n => (
                           <div 
                             key={n?._id} 
-                            className={`dropdown-item-pro ${!n?.read ? 'unread' : ''}`}
+                            className={`p-3 border-b border-slate-50 last:border-0 hover:bg-slate-50 cursor-pointer ${!n?.read ? 'bg-indigo-50/30' : ''}`}
                             onClick={() => handleNotifClick(n)}
-                            style={{ borderBottom: '1px solid #f1f5f9', cursor: 'pointer' }}
                           >
-                            <div className="notif-content" style={{ padding: '4px 0' }}>
-                              <p className="notif-text" style={{ fontSize: '0.85rem' }}>{n?.message}</p>
-                              <span className="notif-time" style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{n?.createdAt ? formatTime(n.createdAt) : ""}</span>
-                            </div>
+                            <p className="text-sm text-slate-800 leading-snug">{n?.message}</p>
+                            <span className="text-[10px] text-slate-400 mt-1 block">{n?.createdAt ? formatTime(n.createdAt) : ""}</span>
                           </div>
                         ))
                       )}
                     </div>
-                    <Link to="/notifications" className="dropdown-footer" onClick={() => setNotifOpen(false)} style={{ display: 'block', textAlign: 'center', padding: '12px', color: 'var(--primary)', fontWeight: 600, textDecoration: 'none', borderTop: '1px solid var(--border-light)' }}>
+                    <Link to="/notifications" className="block p-3 text-center text-indigo-600 font-bold text-sm border-t border-slate-100 hover:bg-indigo-50/20" onClick={() => setNotifOpen(false)}>
                       View all activity
                     </Link>
                   </div>
                 )}
               </div>
 
-              <Link to="/messages" className="nav-action-btn" aria-label="Messages">
+              <Link to="/messages" className="p-2 rounded-full hover:bg-slate-100 transition-colors relative" aria-label="Messages">
                 <MessageIcon />
-                {msgUnreadCount > 0 && <span className="badge-dot" style={{ top: '4px', right: '4px' }}>{msgUnreadCount}</span>}
+                {msgUnreadCount > 0 && <span className="absolute top-1 right-1 w-4 h-4 bg-indigo-600 text-white text-[10px] flex items-center justify-center rounded-full border-2 border-white">{msgUnreadCount}</span>}
               </Link>
 
-              <div className="dropdown-container" ref={menuRef}>
+              <div className="relative" ref={menuRef}>
                 <button
-                  className="nav-action-btn"
+                  className="p-1 rounded-full hover:bg-slate-100 transition-colors relative"
                   onClick={() => setMenuOpen(!menuOpen)}
                   aria-label="Menu"
-                  style={{ position: 'relative', padding: '4px' }}
                 >
                   <Avatar user={user} size="sm" />
-                  <span 
-                    className={`status-dot status-dot--${socketStatus}`}
-                    style={{
-                      position: 'absolute',
-                      bottom: '2px',
-                      right: '2px',
-                      width: '10px',
-                      height: '10px',
-                      borderRadius: '50%',
-                      border: '2px solid white',
-                      backgroundColor: socketStatus === 'online' ? '#10b981' : socketStatus === 'connecting' ? '#f59e0b' : '#ef4444'
-                    }}
-                  />
+                  <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white bg-${socketStatus === 'online' ? 'emerald' : socketStatus === 'connecting' ? 'amber' : 'rose'}-500`} />
                 </button>
                 {menuOpen && (
-                  <div className="dropdown-card slide-fade-in" style={{ width: '250px', padding: '8px 0' }}>
-                    {!user.isEmailVerified && (
-                      <>
-                        <Link to="/verify-email" className="dropdown-item-pro" style={{ color: '#f59e0b', fontWeight: 600 }} onClick={() => setMenuOpen(false)}>
-                          <span style={{ marginRight: '10px' }}>⚠️</span> Verify Email
+                  <div className="dropdown-card fade-up-entry w-60">
+                    <div className="py-2">
+                      {!user.isEmailVerified && (
+                        <Link to="/verify-email" className="flex items-center px-4 py-2.5 text-sm font-semibold text-amber-600 hover:bg-amber-50" onClick={() => setMenuOpen(false)}>
+                          <span className="mr-3">⚠️</span> Verify Email
                         </Link>
-                        <div style={{ height: '1px', background: '#f1f5f9', margin: '4px 0' }}></div>
-                      </>
-                    )}
-                    
-                    <Link to="/requests" className="dropdown-item-pro" onClick={() => setMenuOpen(false)}>
-                      <span style={{ width: '24px', display: 'inline-block' }}></span> Align Requests
-                    </Link>
-                    <div style={{ height: '1px', background: '#f1f5f9', margin: '4px 0' }}></div>
-                    
-                    <Link to="/deals" className="dropdown-item-pro" onClick={() => setMenuOpen(false)}>
-                      <span style={{ marginRight: '10px' }}>🤝</span> My Deals
-                    </Link>
-                    <div style={{ height: '1px', background: '#f1f5f9', margin: '4px 0' }}></div>
-                    
-                    <Link to="/saved" className="dropdown-item-pro" onClick={() => setMenuOpen(false)}>
-                      <span style={{ width: '24px', display: 'inline-block' }}></span> Saved Posts
-                    </Link>
-                    <div style={{ height: '1px', background: '#f1f5f9', margin: '4px 0' }}></div>
-                    
-                    <Link to="/premium" className="dropdown-item-pro" style={{ color: '#6366f1', fontWeight: 600 }} onClick={() => setMenuOpen(false)}>
-                      <span style={{ marginRight: '10px' }}>⭐</span> Upgrade to Premium
-                    </Link>
-                    <div style={{ height: '1px', background: '#f1f5f9', margin: '4px 0' }}></div>
-                    
-                    <Link to="/earnings" className="dropdown-item-pro" onClick={() => setMenuOpen(false)}>
-                      <span style={{ marginRight: '10px' }}>💰</span> My Earnings
-                    </Link>
-                    <div style={{ height: '1px', background: '#f1f5f9', margin: '4px 0' }}></div>
-                    
-                    <Link to="/analytics" className="dropdown-item-pro" onClick={() => setMenuOpen(false)}>
-                      <span style={{ width: '24px', display: 'inline-block' }}></span> Analytics
-                    </Link>
-                    <div style={{ height: '1px', background: '#f1f5f9', margin: '4px 0' }}></div>
-                    
-                    <Link to="/settings" className="dropdown-item-pro" onClick={() => setMenuOpen(false)}>
-                      <span style={{ width: '24px', display: 'inline-block' }}></span> Settings
-                    </Link>
-                    <div style={{ height: '1px', background: '#f1f5f9', margin: '4px 0' }}></div>
-                    
-                    <button
-                      className="dropdown-item-pro"
-                      style={{ color: '#ef4444', width: '100%', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600 }}
-                      onClick={() => { setMenuOpen(false); logout(); }}
-                    >
-                      <span style={{ width: '24px', display: 'inline-block' }}></span> Logout
-                    </button>
+                      )}
+                      <Link to="/requests" className="flex items-center px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50" onClick={() => setMenuOpen(false)}>Align Requests</Link>
+                      <Link to="/deals" className="flex items-center px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50" onClick={() => setMenuOpen(false)}>My Deals</Link>
+                      <Link to="/saved" className="flex items-center px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50" onClick={() => setMenuOpen(false)}>Saved Posts</Link>
+                      <Link to="/premium" className="flex items-center px-4 py-2.5 text-sm font-bold text-indigo-600 hover:bg-indigo-50" onClick={() => setMenuOpen(false)}>
+                        <span className="mr-3">⭐</span> Upgrade to Premium
+                      </Link>
+                      <Link to="/earnings" className="flex items-center px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50" onClick={() => setMenuOpen(false)}>
+                        <span className="mr-3">💰</span> My Earnings
+                      </Link>
+                      <Link to="/analytics" className="flex items-center px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50" onClick={() => setMenuOpen(false)}>Analytics</Link>
+                      <Link to="/settings" className="flex items-center px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50" onClick={() => setMenuOpen(false)}>Settings</Link>
+                      <div className="my-1 border-t border-slate-100"></div>
+                      <button
+                        className="flex items-center w-full px-4 py-2.5 text-sm font-bold text-rose-500 hover:bg-rose-50"
+                        onClick={() => { setMenuOpen(false); logout(); }}
+                      >
+                        Logout
+                      </button>
+                    </div>
                   </div>
                 )}
-
               </div>
             </div>
           </>
         )}
       </div>
     </header>
-
-
   );
 }
+
+
