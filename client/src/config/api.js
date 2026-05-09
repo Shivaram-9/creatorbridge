@@ -1,1 +1,2 @@
-export const BASE_URL = "https://creatorbridge-tn9r.onrender.com";
+export const BASE_URL = "https://creatorbridge-myeo.onrender.com";
+
