@@ -51,17 +51,16 @@ async function createSession(user, token, req) {
   }
 }
 
-authRouter.post(
-  "/register",
-  [
-    body("email").isEmail().withMessage("Valid email is required").normalizeEmail(),
-    body("password").isLength({ min: 6 }).withMessage("Password must be at least 6 characters"),
-    body("role").optional().isIn(["influencer", "brand"]).withMessage("Invalid role"),
-    validate
-  ],
-  async (req, res) => {
+authRouter.post("/register", async (req, res) => {
     const { email, password, role = "influencer" } = req.body;
-    console.log("REGISTRATION ATTEMPT:", { email, role });
+    const finalRole = (role === "influencer" || role === "brand") ? role : "influencer";
+    
+    console.log("REGISTRATION ATTEMPT:", { email, finalRole });
+    
+    if (!email || !password) {
+      return res.status(400).json({ error: "Email and password are required" });
+    }
+
     try {
       const existing = await User.findOne({ email });
       if (existing) {
@@ -75,7 +74,7 @@ authRouter.post(
       const user = await User.create({
         email,
         password: hashed,
-        role: role || "influencer",
+        role: finalRole,
         emailVerificationToken: hashedVerificationToken,
       });
 
