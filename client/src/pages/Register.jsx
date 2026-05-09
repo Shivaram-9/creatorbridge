@@ -44,63 +44,70 @@ export default function Register() {
   }
 
   return (
-    <>
-      <OfflineBanner />
-      <div className="container auth-card">
-        <div className="card card--auth">
-          <h1 className="page-title" style={{ fontSize: "1.5rem" }}>
-            Create account
-          </h1>
-          <p className="subtitle">Join CreatorBridge and start connecting.</p>
-          <form onSubmit={handleSubmit}>
-            <div className="field">
-              <label htmlFor="reg-email">Email / Username</label>
-              <input
-                id="reg-email"
-                className="input"
-                type="text"
-                autoComplete="username"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-            <div className="field">
-              <label htmlFor="reg-password">Password</label>
-              <input
-                id="reg-password"
-                className="input"
-                type="password"
-                autoComplete="new-password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                minLength={6}
-              />
-            </div>
-            <div className="field">
-              <label htmlFor="reg-confirm-password">Confirm Password</label>
-              <input
-                id="reg-confirm-password"
-                className="input"
-                type="password"
-                autoComplete="new-password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-                minLength={6}
-              />
-            </div>
+    <div className="auth-page-bg">
+      <div className="auth-card-pro slide-fade-in">
+        <div className="auth-logo-wrap">
+          <Link to="/" className="logo-main" style={{ fontSize: '2rem' }}>
+            CreatorBridge
+          </Link>
+        </div>
+
+        <h1 className="auth-title">Create Account</h1>
+        <p className="auth-subtitle">Join the professional collaboration network.</p>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="field-group">
+            <label className="field-label" htmlFor="reg-email">Email / Username</label>
+            <input
+              id="reg-email"
+              className="input-pro"
+              type="text"
+              placeholder="Enter your email or username"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className="field-group">
+            <label className="field-label" htmlFor="reg-password">Password</label>
+            <input
+              id="reg-password"
+              className="input-pro"
+              type="password"
+              placeholder="Create a strong password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              minLength={6}
+            />
+          </div>
+          <div className="field-group">
+            <label className="field-label" htmlFor="reg-confirm-password">Confirm Password</label>
+            <input
+              id="reg-confirm-password"
+              className="input-pro"
+              type="password"
+              placeholder="Repeat your password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              minLength={6}
+            />
+          </div>
+
+          <div style={{ marginTop: '1.5rem' }}>
             <ErrorBanner message={error} onDismiss={() => setError("")} />
             <button type="submit" className="btn btn-primary btn-block" disabled={submitting}>
-              {submitting ? "Creating…" : "Create account"}
+              {submitting ? "Processing..." : "Create Account"}
             </button>
-          </form>
-          <p className="muted" style={{ marginTop: "1rem", textAlign: "center" }}>
-            Already have an account? <Link to="/login">Sign in</Link>
-          </p>
-        </div>
+          </div>
+        </form>
+
+        <p className="mt-8 text-center text-sm text-slate-500">
+          Already have an account? <Link to="/login" className="text-indigo-600 font-bold hover:underline">Sign In</Link>
+        </p>
       </div>
-    </>
+    </div>
   );
 }
+

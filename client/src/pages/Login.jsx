@@ -49,78 +49,76 @@ export default function Login() {
   }
 
   return (
-    <>
-      <OfflineBanner />
-      <div className="container auth-card">
-        <div className="card card--auth">
-          <h1 className="page-title" style={{ fontSize: "1.5rem" }}>
-            Sign in
-          </h1>
-          <p className="subtitle">Welcome back to CreatorBridge.</p>
-          
-          {loginMethod === "email" ? (
-            <form onSubmit={handleSubmit}>
-              <div className="field">
-                <label htmlFor="email">Email</label>
-                <input
-                  id="email"
-                  className="input"
-                  type="email"
-                  autoComplete="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="field">
-                <label htmlFor="password">Password</label>
-                <input
-                  id="password"
-                  className="input"
-                  type="password"
-                  autoComplete="current-password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  minLength={6}
-                />
-              </div>
-              <ErrorBanner message={error} onDismiss={() => setError("")} />
-              <button type="submit" className="btn btn-primary btn-block" disabled={submitting}>
-                {submitting ? "Loading..." : "Sign in"}
-              </button>
-              <div style={{ marginTop: "1rem", textAlign: "center" }}>
-                <Link to="/forgot-password" style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>
-                  Forgot Password?
-                </Link>
-              </div>
-            </form>
-          ) : (
-            <PhoneLogin />
-          )}
-
-          <div style={{ marginTop: "1.5rem", textAlign: "center" }}>
-            <button 
-              type="button" 
-              onClick={() => setLoginMethod(loginMethod === "email" ? "phone" : "email")}
-              style={{
-                background: "transparent",
-                border: "none",
-                color: "var(--primary, #3b82f6)",
-                cursor: "pointer",
-                fontSize: "0.95rem",
-                textDecoration: "underline"
-              }}
-            >
-              {loginMethod === "email" ? "Login with Phone Instead" : "Login with Email Instead"}
-            </button>
-          </div>
-
-          <p className="muted" style={{ marginTop: "1rem", textAlign: "center" }}>
-            No account? <Link to="/register">Create one</Link>
-          </p>
+    <div className="auth-page-bg">
+      <div className="auth-card-pro slide-fade-in">
+        <div className="auth-logo-wrap">
+          <Link to="/" className="logo-main" style={{ fontSize: '2rem' }}>
+            CreatorBridge
+          </Link>
         </div>
+
+        <h1 className="auth-title">Welcome Back</h1>
+        <p className="auth-subtitle">Sign in to manage your collaborations.</p>
+        
+        {loginMethod === "email" ? (
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="field-group">
+              <label className="field-label" htmlFor="email">Email Address</label>
+              <input
+                id="email"
+                className="input-pro"
+                type="email"
+                placeholder="name@company.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div className="field-group">
+              <label className="field-label" htmlFor="password">Password</label>
+              <input
+                id="password"
+                className="input-pro"
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={6}
+              />
+            </div>
+
+            <div className="flex justify-end">
+              <Link to="/forgot-password" style={{ fontSize: "0.85rem", color: "var(--primary)", fontWeight: 600 }}>
+                Forgot Password?
+              </Link>
+            </div>
+
+            <ErrorBanner message={error} onDismiss={() => setError("")} />
+            
+            <button type="submit" className="btn btn-primary btn-block" disabled={submitting}>
+              {submitting ? "Authenticating..." : "Sign In"}
+            </button>
+          </form>
+        ) : (
+          <PhoneLogin />
+        )}
+
+        <div className="mt-8 pt-6 border-t border-slate-100">
+          <button 
+            type="button" 
+            onClick={() => setLoginMethod(loginMethod === "email" ? "phone" : "email")}
+            className="w-full text-center text-sm font-semibold text-slate-600 hover:text-indigo-600 transition-colors"
+          >
+            {loginMethod === "email" ? "Login with Phone Instead" : "Login with Email Instead"}
+          </button>
+        </div>
+
+        <p className="mt-6 text-center text-sm text-slate-500">
+          Don't have an account? <Link to="/register" className="text-indigo-600 font-bold hover:underline">Create Account</Link>
+        </p>
       </div>
-    </>
+    </div>
   );
 }
+
