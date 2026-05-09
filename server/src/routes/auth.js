@@ -52,10 +52,10 @@ async function createSession(user, token, req) {
 }
 
 authRouter.post("/register", async (req, res) => {
-    const { email, password, role = "influencer" } = req.body;
-    const finalRole = (role === "influencer" || role === "brand") ? role : "influencer";
+    const { name, email, password, role = "influencer" } = req.body;
+    const finalRole = (role === "influencer" || role === "brand" || role === "admin") ? role : "influencer";
     
-    console.log("REGISTRATION ATTEMPT:", { email, finalRole });
+    console.log("REGISTRATION ATTEMPT:", { name, email, finalRole });
     
     if (!email || !password) {
       return res.status(400).json({ error: "Email and password are required" });
@@ -66,12 +66,12 @@ authRouter.post("/register", async (req, res) => {
       if (existing) {
         return res.status(409).json({ error: "Email already registered" });
       }
+
       const hashed = await bcrypt.hash(password, 10);
-      
-      const verificationToken = crypto.randomBytes(20).toString("hex");
-      const hashedVerificationToken = crypto.createHash("sha256").update(verificationToken).digest("hex");
+      const hashedVerificationToken = crypto.randomBytes(32).toString("hex");
 
       const user = await User.create({
+        name: name || "",
         email,
         password: hashed,
         role: finalRole,
