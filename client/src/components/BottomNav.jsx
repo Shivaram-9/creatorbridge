@@ -26,11 +26,6 @@ export default function BottomNav({ msgUnreadCount }) {
           </div>
           <span className="nav-tab-label">Messages</span>
         </NavLink>
-
-        <NavLink to="/deals" className={({ isActive }) => `nav-tab-pro ${isActive ? "active" : ""}`}>
-          <BriefcaseIcon />
-          <span className="nav-tab-label">Deals</span>
-        </NavLink>
         
         <NavLink to="/profile" className={({ isActive }) => `nav-tab-pro ${isActive ? "active" : ""}`}>
           <ProfileIcon />
@@ -38,6 +33,7 @@ export default function BottomNav({ msgUnreadCount }) {
         </NavLink>
       </div>
     </nav>
+
 
   );
 }

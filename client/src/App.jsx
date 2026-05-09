@@ -32,8 +32,6 @@ const ApplyVerification = lazy(() => import("./pages/ApplyVerification.jsx"));
 const BrandTools = lazy(() => import("./pages/BrandTools.jsx"));
 
 const Requests = lazy(() => import("./pages/Requests.jsx"));
-const Deals = lazy(() => import("./pages/Deals.jsx"));
-const DealDetail = lazy(() => import("./pages/DealDetail.jsx"));
 const BrandDashboard = lazy(() => import("./pages/BrandDashboard.jsx"));
 
 
@@ -93,8 +91,6 @@ export default function App() {
           <Route path="/user/:userId/:type" element={<UsersList />} />
           <Route path="/post/:postId/likes" element={<UsersList />} />
           <Route path="/requests" element={<Requests />} />
-          <Route path="/deals" element={<Deals />} />
-          <Route path="/deals/:dealId" element={<DealDetail />} />
           <Route path="/brand-dashboard" element={<BrandDashboard />} />
           <Route path="/verify-account" element={<ApplyVerification />} />
           <Route path="/brand-tools" element={<BrandTools />} />

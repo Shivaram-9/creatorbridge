@@ -243,7 +243,6 @@ export default function Navbar({
                         </>
                       )}
                       <Link to="/requests" className="dropdown-item-pro" onClick={() => setMenuOpen(false)}>Align Requests</Link>
-                      <Link to="/deals" className="dropdown-item-pro" onClick={() => setMenuOpen(false)}>My Deals</Link>
                       <Link to="/saved" className="dropdown-item-pro" onClick={() => setMenuOpen(false)}>Saved Posts</Link>
                       <div className="dropdown-divider"></div>
                       <Link to="/premium" className="dropdown-item-pro text-indigo-600 font-bold" onClick={() => setMenuOpen(false)}>
