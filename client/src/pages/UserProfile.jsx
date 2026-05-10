@@ -216,7 +216,7 @@ export default function UserProfile() {
                 >
                   {actionBusy ? "..." : hasRequested ? "Requested" : isFollowing ? "Aligned" : "Align"}
                 </button>
-                {!isPrivateAndHidden && (
+                {isFollowing && Array.isArray(me?.followers) && me.followers.some(f => (f._id || f) === userId) && (
                   <Link to={`/chat/${userId}`} className="btn btn-primary">💬 Message</Link>
                 )}
                 <div className="profile-more-actions">

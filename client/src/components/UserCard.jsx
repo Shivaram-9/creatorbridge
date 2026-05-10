@@ -1,14 +1,62 @@
-import { memo } from "react";
-import { Link } from "react-router-dom";
+import { memo, useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Avatar from "./Avatar.jsx";
 import VerifiedBadge from "./VerifiedBadge.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
+import { api } from "../services/api.js";
 
 const UserCard = memo(({ user }) => {
   if (!user) return null;
 
+  const navigate = useNavigate();
+  const { user: me } = useAuth();
+  
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [hasRequested, setHasRequested] = useState(false);
+  const [actionBusy, setActionBusy] = useState(false);
+
+  // Initialize follow status
+  useEffect(() => {
+    if (me && me.following) {
+      setIsFollowing(me.following.includes(user._id));
+    }
+  }, [me, user._id]);
+
+  const isOwn = me?._id === user._id;
+
+  const handleAlign = async (e) => {
+    e.stopPropagation(); // Prevent navigating to profile
+    if (!me) {
+      navigate('/login');
+      return;
+    }
+    
+    if (isOwn) {
+      navigate('/profile/edit');
+      return;
+    }
+
+    setActionBusy(true);
+    try {
+      if (isFollowing) {
+        const result = await api.users.unfollow(user._id);
+        if (!result.error) setIsFollowing(false);
+      } else {
+        const result = await api.users.follow(user._id);
+        if (!result.error) {
+          if (result.requested) setHasRequested(true);
+          else setIsFollowing(true);
+        }
+      }
+    } catch (err) {
+      console.error("Action failed", err);
+    } finally {
+      setActionBusy(false);
+    }
+  };
+
   return (
-    <Link 
-      to={`/user/${user._id}`} 
+    <div 
       className="user-card-premium slide-in"
       style={{
         display: 'flex',
@@ -18,14 +66,14 @@ const UserCard = memo(({ user }) => {
         backgroundColor: 'white',
         borderRadius: '24px',
         border: '1px solid #f1f5f9',
-        textDecoration: 'none',
         transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
         position: 'relative',
         overflow: 'hidden',
         textAlign: 'center',
         boxShadow: '0 4px 20px rgba(0,0,0,0.02)',
         width: '100%',
-        maxWidth: '100%'
+        maxWidth: '100%',
+        cursor: 'pointer'
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = 'translateY(-6px)';
@@ -37,6 +85,7 @@ const UserCard = memo(({ user }) => {
         e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.02)';
         e.currentTarget.style.borderColor = '#f1f5f9';
       }}
+      onClick={() => navigate(`/user/${user._id}`)}
     >
       <div style={{ marginBottom: '1rem', position: 'relative' }}>
         <Avatar user={user} size="xl" />
@@ -113,23 +162,26 @@ const UserCard = memo(({ user }) => {
           </div>
         </div>
 
-        <div 
-          className="btn-view"
+        <button 
+          onClick={handleAlign}
+          disabled={actionBusy || hasRequested}
           style={{
             width: '100%',
             padding: '10px',
             borderRadius: '12px',
-            backgroundColor: '#1a1a1a',
-            color: 'white',
+            backgroundColor: hasRequested ? '#f1f5f9' : isFollowing ? '#f8fafc' : '#1a1a1a',
+            color: hasRequested ? '#64748b' : isFollowing ? '#1a1a1a' : 'white',
+            border: isFollowing ? '1px solid #e2e8f0' : 'none',
             fontSize: '13px',
-            fontWeight: 600,
-            transition: 'opacity 0.2s'
+            fontWeight: 700,
+            cursor: (actionBusy || hasRequested) ? 'not-allowed' : 'pointer',
+            transition: 'all 0.2s'
           }}
         >
-          View Profile
-        </div>
+          {actionBusy ? "..." : isOwn ? "Edit Profile" : hasRequested ? "Requested" : isFollowing ? "Aligned" : "Align"}
+        </button>
       </div>
-    </Link>
+    </div>
   );
 });
 
