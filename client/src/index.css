@@ -162,15 +162,17 @@ body {
   z-index: 9999;
   display: flex;
   justify-content: center;
-  align-items: center;
   padding-bottom: env(safe-area-inset-bottom);
 }
+
 
 .bottom-nav-inner {
   display: flex;
   justify-content: space-around;
   align-items: center;
   width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
   height: 100%;
 }
 

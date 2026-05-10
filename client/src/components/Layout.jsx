@@ -17,7 +17,7 @@ export default function Layout() {
   const isAuthPage = ["/login", "/register", "/forgot-password", "/reset-password"].includes(location.pathname);
   const isMessagesPage = location.pathname.startsWith("/messages");
   const isChatActive = isMessagesPage && location.pathname.split("/").length > 2;
-  const shouldBeCentered = ["/home", "/discover"].includes(location.pathname);
+  const shouldBeCentered = ["/home"].includes(location.pathname);
 
   useEffect(() => {
     if (user && !user.onboardingComplete && location.pathname !== "/onboarding" && !location.pathname.startsWith("/select-role")) {

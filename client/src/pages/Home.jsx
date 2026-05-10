@@ -94,29 +94,27 @@ export default function Home() {
   ];
 
   return (
-    <div style={{ width: '100%', display: 'flex', justifyContent: 'center', paddingBottom: '80px', paddingTop: '16px' }}>
-      <div className="feed-layout-centered">
-        <StoriesBar />
-        <CreatePost onPost={handleAddPost} user={user} />
+    <div style={{ paddingBottom: '80px', paddingTop: '16px' }}>
+      <StoriesBar />
+      <CreatePost onPost={handleAddPost} user={user} />
 
-        {loading ? (
-          <div style={{ marginTop: '32px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            <PostSkeleton />
-            <PostSkeleton />
-            <PostSkeleton />
-          </div>
-        ) : (
-          <div style={{ marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            {(posts.length > 0 ? posts : demoPosts).map((post) => (
-              <PostCard 
-                key={post._id} 
-                post={formatPost(post)} 
-                onDelete={(id) => setPosts(prev => prev.filter(p => p._id !== id))}
-              />
-            ))}
-          </div>
-        )}
-      </div>
+      {loading ? (
+        <div style={{ marginTop: '32px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          <PostSkeleton />
+          <PostSkeleton />
+          <PostSkeleton />
+        </div>
+      ) : (
+        <div style={{ marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          {(posts.length > 0 ? posts : demoPosts).map((post) => (
+            <PostCard 
+              key={post._id} 
+              post={formatPost(post)} 
+              onDelete={(id) => setPosts(prev => prev.filter(p => p._id !== id))}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
