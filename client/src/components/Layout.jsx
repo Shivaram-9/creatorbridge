@@ -85,7 +85,15 @@ export default function Layout() {
       />
 
       <main className={`main-viewport ${isMessagesPage ? 'messages-view-active' : ''}`}>
-        <div className={shouldBeCentered ? "feed-layout-centered" : isMessagesPage ? "w-full" : "content-container-pro"}>
+        <div
+          className={
+            shouldBeCentered
+              ? "feed-layout-centered"
+              : isMessagesPage
+              ? "messages-layout-wrap"
+              : "content-container-pro"
+          }
+        >
           <Outlet />
         </div>
       </main>

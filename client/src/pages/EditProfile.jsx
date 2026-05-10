@@ -1,0 +1,210 @@
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { api } from "../services/api.js";
+import { useAuth } from "../context/AuthContext.jsx";
+import { CATEGORIES } from "../constants/categories.js";
+import Avatar from "../components/Avatar.jsx";
+import toast from "react-hot-toast";
+import "./EditProfile.css";
+
+export default function EditProfile() {
+  const { user, setUser } = useAuth();
+  const navigate = useNavigate();
+  const [saving, setSaving] = useState(false);
+  const [avatarUploading, setAvatarUploading] = useState(false);
+
+  const [form, setForm] = useState({
+    name: "",
+    username: "",
+    bio: "",
+    category: "",
+    location: "",
+    website: "",
+  });
+
+  useEffect(() => {
+    if (user) {
+      setForm({
+        name: user.name || "",
+        username: user.username || "",
+        bio: user.bio || "",
+        category: user.category || "",
+        location: user.location || "",
+        website: user.website || "",
+      });
+    }
+  }, [user]);
+
+  const handleChange = (e) => {
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleAvatarChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setAvatarUploading(true);
+    const fd = new FormData();
+    fd.append("avatar", file);
+    try {
+      const res = await api.users.updateAvatar(fd);
+      if (!res.error) {
+        setUser(res);
+        toast.success("Profile photo updated!");
+      } else {
+        toast.error(res.error);
+      }
+    } catch {
+      toast.error("Failed to upload photo");
+    } finally {
+      setAvatarUploading(false);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      const res = await api.users.updateMe(form);
+      if (res.error) {
+        toast.error(res.error);
+      } else {
+        setUser(res);
+        toast.success("Profile saved!");
+        navigate("/profile");
+      }
+    } catch {
+      toast.error("Failed to save profile");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="edit-profile-page">
+      {/* Header */}
+      <div className="ep-header">
+        <button className="ep-back-btn" onClick={() => navigate("/profile")}>
+          <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <h1 className="ep-title">Edit Profile</h1>
+        <button
+          className="ep-save-btn"
+          onClick={handleSubmit}
+          disabled={saving}
+        >
+          {saving ? "Saving..." : "Done"}
+        </button>
+      </div>
+
+      {/* Avatar Section */}
+      <div className="ep-avatar-section">
+        <div className="ep-avatar-wrap">
+          <Avatar user={user} size="xl" />
+          {avatarUploading && (
+            <div className="ep-avatar-loading">
+              <div className="ep-spinner" />
+            </div>
+          )}
+        </div>
+        <label className="ep-change-photo-btn">
+          <input
+            type="file"
+            hidden
+            accept="image/*"
+            onChange={handleAvatarChange}
+          />
+          Change profile photo
+        </label>
+      </div>
+
+      {/* Form */}
+      <form className="ep-form" onSubmit={handleSubmit}>
+        <div className="ep-field-group">
+          <div className="ep-field">
+            <label className="ep-label">Name</label>
+            <input
+              className="ep-input"
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              placeholder="Name"
+              autoComplete="off"
+            />
+          </div>
+
+          <div className="ep-field">
+            <label className="ep-label">Username</label>
+            <input
+              className="ep-input"
+              name="username"
+              value={form.username}
+              onChange={handleChange}
+              placeholder="Username"
+              autoComplete="off"
+            />
+          </div>
+
+          <div className="ep-field">
+            <label className="ep-label">Bio</label>
+            <textarea
+              className="ep-input ep-textarea"
+              name="bio"
+              value={form.bio}
+              onChange={handleChange}
+              placeholder="Write a short bio..."
+              rows={4}
+            />
+          </div>
+
+          <div className="ep-field">
+            <label className="ep-label">Category</label>
+            <select
+              className="ep-input ep-select"
+              name="category"
+              value={form.category}
+              onChange={handleChange}
+            >
+              <option value="">Select category</option>
+              {CATEGORIES.map((c) => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="ep-field">
+            <label className="ep-label">Location</label>
+            <input
+              className="ep-input"
+              name="location"
+              value={form.location}
+              onChange={handleChange}
+              placeholder="City, Country"
+            />
+          </div>
+
+          <div className="ep-field">
+            <label className="ep-label">Website</label>
+            <input
+              className="ep-input"
+              name="website"
+              value={form.website}
+              onChange={handleChange}
+              placeholder="https://yourwebsite.com"
+              type="url"
+            />
+          </div>
+        </div>
+
+        <div className="ep-divider">
+          <span>Personal information</span>
+        </div>
+
+        <p className="ep-hint">
+          Provide your personal information, even if the account used for a business, a pet or something else. This won't be a part of your public profile.
+        </p>
+      </form>
+    </div>
+  );
+}

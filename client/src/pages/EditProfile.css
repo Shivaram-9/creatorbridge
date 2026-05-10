@@ -1,0 +1,207 @@
+/* Edit Profile Page - Instagram Style */
+.edit-profile-page {
+  min-height: 100vh;
+  background: #fff;
+  max-width: 935px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Header */
+.ep-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid #dbdbdb;
+  position: sticky;
+  top: 0;
+  background: #fff;
+  z-index: 10;
+}
+
+.ep-back-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  color: #262626;
+}
+
+.ep-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #262626;
+  margin: 0;
+}
+
+.ep-save-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: #0095f6;
+  padding: 4px 8px;
+}
+
+.ep-save-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Avatar Section */
+.ep-avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 16px 16px;
+  gap: 12px;
+}
+
+.ep-avatar-wrap {
+  position: relative;
+  width: 96px;
+  height: 96px;
+}
+
+.ep-avatar-wrap > * {
+  width: 96px !important;
+  height: 96px !important;
+}
+
+.ep-avatar-loading {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ep-spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.ep-change-photo-btn {
+  font-size: 14px;
+  font-weight: 600;
+  color: #0095f6;
+  cursor: pointer;
+}
+
+/* Form */
+.ep-form {
+  padding: 0 16px 80px;
+}
+
+.ep-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.ep-field {
+  padding: 12px 0;
+  border-bottom: 1px solid #dbdbdb;
+}
+
+.ep-label {
+  display: block;
+  font-size: 12px;
+  color: #737373;
+  margin-bottom: 4px;
+  font-weight: 400;
+}
+
+.ep-input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  color: #262626;
+  background: transparent;
+  font-family: inherit;
+  padding: 0;
+}
+
+.ep-textarea {
+  resize: none;
+  line-height: 1.5;
+}
+
+.ep-select {
+  appearance: none;
+  cursor: pointer;
+}
+
+.ep-divider {
+  margin: 24px 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ep-divider span {
+  font-size: 14px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.ep-hint {
+  font-size: 13px;
+  color: #737373;
+  line-height: 1.5;
+}
+
+@media (min-width: 768px) {
+  .ep-form {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 0 0 80px;
+  }
+  
+  .ep-avatar-section {
+    max-width: 600px;
+    margin: 0 auto;
+    align-items: center;
+    flex-direction: row;
+    gap: 32px;
+  }
+
+  .ep-field {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    border-bottom: none;
+    padding: 14px 0;
+  }
+
+  .ep-label {
+    width: 180px;
+    min-width: 180px;
+    text-align: right;
+    padding-right: 24px;
+    font-size: 16px;
+    color: #262626;
+    font-weight: 400;
+    margin: 0;
+    padding-top: 2px;
+  }
+
+  .ep-input {
+    flex: 1;
+  }
+}

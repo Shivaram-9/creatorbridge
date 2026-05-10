@@ -1,13 +1,29 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { api } from "../services/api.js";
 import UserCard from "../components/UserCard.jsx";
-import PostCard from "../components/PostCard.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import ErrorBanner from "../components/ErrorBanner.jsx";
 import { CATEGORIES } from "../constants/categories.js";
 import "./Discover.css";
 
+const EXPLORE_PHOTOS = [
+  "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&q=80",
+  "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=300&q=80",
+  "https://images.unsplash.com/photo-1682685797365-41f45b562c0a?w=300&q=80",
+  "https://images.unsplash.com/photo-1682686580391-615b1f28e5ee?w=300&q=80",
+  "https://images.unsplash.com/photo-1516912481808-3406841bd33c?w=300&q=80",
+  "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=300&q=80",
+  "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=300&q=80",
+  "https://images.unsplash.com/photo-1495147466023-ac5c588e2e94?w=300&q=80",
+  "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=300&q=80",
+  "https://images.unsplash.com/photo-1526779259212-939e64788e3c?w=300&q=80",
+  "https://images.unsplash.com/photo-1518895949257-7621c3c786d7?w=300&q=80",
+  "https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=300&q=80",
+];
+
 export default function Discover() {
+  const navigate = useNavigate();
   const [discovery, setDiscovery] = useState({
     suggestedCreators: [],
     suggestedBrands: [],
@@ -18,21 +34,19 @@ export default function Discover() {
   const [allUsers, setAllUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  
+  const [searchQuery, setSearchQuery] = useState("");
+
   // Filters
   const [activeCategory, setActiveCategory] = useState("All");
   const [activeRole, setActiveRole] = useState("all");
-  const [onlyVerified, setOnlyVerified] = useState(false);
 
   useEffect(() => {
     async function loadDiscoverData() {
-      // Caching logic (Prompt-7)
       const cached = localStorage.getItem("cb_discovery_cache");
       const cachedTime = localStorage.getItem("cb_discovery_time");
-      if (cached && cachedTime && (Date.now() - parseInt(cachedTime)) < 300000) { // 5 mins
+      if (cached && cachedTime && (Date.now() - parseInt(cachedTime)) < 300000) {
         setDiscovery(JSON.parse(cached));
         setLoading(false);
-        // Still fetch all users as it might change more frequently or for search
         const all = await api.users.list();
         setAllUsers(Array.isArray(all) ? all : []);
         return;
@@ -45,7 +59,7 @@ export default function Discover() {
           api.discovery.getTrending(),
           api.users.list()
         ]);
-        
+
         const data = {
           suggestedCreators: suggested.suggestedCreators || [],
           suggestedBrands: suggested.suggestedBrands || [],
@@ -55,11 +69,11 @@ export default function Discover() {
         };
         setDiscovery(data);
         setAllUsers(Array.isArray(all) ? all : []);
-        
+
         localStorage.setItem("cb_discovery_cache", JSON.stringify(data));
         localStorage.setItem("cb_discovery_time", Date.now().toString());
       } catch (err) {
-        setError("Failed to load discovery data. Please try again.");
+        setError("Failed to load discovery data.");
       } finally {
         setLoading(false);
       }
@@ -68,85 +82,138 @@ export default function Discover() {
   }, []);
 
   const filteredUsers = allUsers.filter(u => {
+    const q = searchQuery.toLowerCase();
+    const matchSearch = !q || (u.name?.toLowerCase().includes(q) || u.username?.toLowerCase().includes(q) || u.bio?.toLowerCase().includes(q));
     const matchCategory = activeCategory === "All" || u.category === activeCategory;
     const matchRole = activeRole === "all" || u.role === activeRole;
-    const matchVerified = !onlyVerified || u.isVerified;
-    return matchCategory && matchRole && matchVerified;
+    return matchSearch && matchCategory && matchRole;
   });
 
   if (loading) return <LoadingSpinner centered />;
 
+  const exploreGrid = discovery.trendingPosts.length > 0
+    ? discovery.trendingPosts
+    : null;
+
   return (
-    <div className="discover-v2 slide-fade-in" style={{ width: '100%', maxWidth: '935px', margin: '0 auto', paddingTop: '20px' }}>
+    <div className="discover-v2 slide-fade-in">
       <ErrorBanner message={error} onDismiss={() => setError("")} />
 
-      <div style={{ padding: '0 10px', marginBottom: '16px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '10px' }}>
-          <div>
-            <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: 0 }}>Intelligent Search</h1>
-            <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.9rem' }}>Smart recommendations based on your behavior and interests.</p>
-          </div>
-          <div style={{ flex: '1 1 300px', maxWidth: '400px' }}>
-            <input 
-              type="text" 
-              placeholder="Search..." 
-              style={{ width: '100%', padding: '10px 16px', borderRadius: '20px', border: '1px solid #dbdbdb', outline: 'none', background: '#fafafa' }} 
-            />
-          </div>
-        </div>
-        
-        <h2 style={{ fontSize: '1.2rem', fontWeight: '600', margin: '24px 0 12px 0' }}>Global Marketplace</h2>
-        <div style={{ display: 'flex', gap: '12px', marginBottom: '16px', flexWrap: 'wrap' }}>
-          <select 
-            value={activeCategory} 
-            onChange={(e) => setActiveCategory(e.target.value)}
-            style={{ padding: '10px 16px', borderRadius: '8px', border: '1px solid #dbdbdb', outline: 'none', background: 'white', fontWeight: '500' }}
-          >
-            <option value="All">All Categories</option>
-            {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
-          </select>
-          <select 
-            value={activeRole} 
-            onChange={(e) => setActiveRole(e.target.value)}
-            style={{ padding: '10px 16px', borderRadius: '8px', border: '1px solid #dbdbdb', outline: 'none', background: 'white', fontWeight: '500' }}
-          >
-            <option value="all">All Roles</option>
-            <option value="influencer">Influencers</option>
-            <option value="brand">Brands</option>
-          </select>
+      {/* Search Bar */}
+      <div className="discover-search-wrap">
+        <div className="discover-search-inner">
+          <svg className="discover-search-icon" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <input
+            type="text"
+            className="discover-search-input"
+            placeholder="Search creators, brands..."
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+          />
+          {searchQuery && (
+            <button className="discover-search-clear" onClick={() => setSearchQuery("")}>✕</button>
+          )}
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '4px', padding: '0 10px' }}>
-        {discovery.trendingPosts.length > 0 ? (
-          discovery.trendingPosts.map(post => (
-            <div key={post._id} style={{ aspectRatio: '1/1', position: 'relative', overflow: 'hidden', cursor: 'pointer', background: '#efefef' }}>
-              <img 
-                src={post.media?.[0]?.startsWith('http') ? post.media[0] : `${api.BASE_URL}${post.media?.[0] || '/default-post.jpg'}`} 
-                alt="" 
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&w=300&q=80" }}
-              />
-              <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.3)', opacity: 0, transition: 'opacity 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold' }}
-                   onMouseEnter={e => e.currentTarget.style.opacity = 1}
-                   onMouseLeave={e => e.currentTarget.style.opacity = 0}>
-                ❤️ {post.likes?.length || 0}
+      {/* If user is searching, show search results */}
+      {searchQuery ? (
+        <div className="discover-section">
+          <h2 className="discover-section-title">Results for "{searchQuery}"</h2>
+          {filteredUsers.length === 0 ? (
+            <div className="discover-empty">
+              <span>🔍</span>
+              <p>No creators found. Try a different search.</p>
+            </div>
+          ) : (
+            <div className="discover-user-grid">
+              {filteredUsers.map(u => <UserCard key={u._id} user={u} />)}
+            </div>
+          )}
+        </div>
+      ) : (
+        <>
+          {/* Explore Grid (Instagram-style image grid) */}
+          <div className="discover-explore-grid">
+            {exploreGrid ? (
+              exploreGrid.map((post, i) => {
+                const src = post.media?.[0]?.startsWith("http")
+                  ? post.media[0]
+                  : post.media?.[0]
+                  ? `${api.BASE_URL}${post.media[0]}`
+                  : EXPLORE_PHOTOS[i % EXPLORE_PHOTOS.length];
+                return (
+                  <div
+                    key={post._id}
+                    className={`discover-grid-item ${i % 5 === 0 ? "large" : ""}`}
+                    onClick={() => navigate(`/user/${post.user?._id || ""}`)}
+                  >
+                    <img
+                      src={src}
+                      alt=""
+                      className="discover-grid-img"
+                      onError={e => { e.target.src = EXPLORE_PHOTOS[i % EXPLORE_PHOTOS.length]; }}
+                    />
+                    <div className="discover-grid-overlay">
+                      <span>❤️ {post.likes?.length || 0}</span>
+                      <span>💬 {post.comments?.length || 0}</span>
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              EXPLORE_PHOTOS.map((src, i) => (
+                <div key={i} className={`discover-grid-item ${i % 5 === 0 ? "large" : ""}`}>
+                  <img src={src} alt="Explore" className="discover-grid-img" />
+                  <div className="discover-grid-overlay">
+                    <span>❤️ {Math.floor(Math.random() * 500 + 50)}</span>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+
+          {/* Global Marketplace Section */}
+          <div className="discover-marketplace-section">
+            <div className="discover-marketplace-header">
+              <h2 className="discover-marketplace-title">Global Marketplace</h2>
+              <div className="discover-filters">
+                <select
+                  className="discover-filter-select"
+                  value={activeCategory}
+                  onChange={e => setActiveCategory(e.target.value)}
+                >
+                  <option value="All">All Categories</option>
+                  {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                </select>
+                <select
+                  className="discover-filter-select"
+                  value={activeRole}
+                  onChange={e => setActiveRole(e.target.value)}
+                >
+                  <option value="all">All Roles</option>
+                  <option value="influencer">Influencers</option>
+                  <option value="brand">Brands</option>
+                </select>
               </div>
             </div>
-          ))
-        ) : (
-          // Demo Instagram-style explore grid items
-          [1,2,3,4,5,6,7,8,9,10,11,12].map(i => (
-            <div key={i} style={{ aspectRatio: '1/1', position: 'relative', overflow: 'hidden', cursor: 'pointer', background: '#efefef' }}>
-              <img 
-                src={`https://images.unsplash.com/photo-${1500000000000 + i}?auto=format&fit=crop&w=300&q=80`} 
-                alt="Explore" 
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              />
-            </div>
-          ))
-        )}
-      </div>
+
+            {filteredUsers.length === 0 ? (
+              <div className="discover-empty">
+                <span>👥</span>
+                <p>No creators found for this filter.</p>
+              </div>
+            ) : (
+              <div className="discover-user-grid">
+                {filteredUsers.map(u => <UserCard key={u._id} user={u} />)}
+              </div>
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 }

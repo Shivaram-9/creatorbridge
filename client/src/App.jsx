@@ -33,6 +33,7 @@ const BrandTools = lazy(() => import("./pages/BrandTools.jsx"));
 
 const Requests = lazy(() => import("./pages/Requests.jsx"));
 const BrandDashboard = lazy(() => import("./pages/BrandDashboard.jsx"));
+const EditProfile = lazy(() => import("./pages/EditProfile.jsx"));
 
 
 export default function App() {
@@ -72,6 +73,7 @@ export default function App() {
         >
           <Route path="/home" element={<Home />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/profile/edit" element={<EditProfile />} />
           <Route path="/user/:userId" element={<UserProfile />} />
           <Route path="/discover" element={<Discover />} />
           <Route path="/notifications" element={<Notifications />} />

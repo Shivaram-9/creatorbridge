@@ -49,12 +49,20 @@ body {
   background-color: var(--bg-main);
   display: flex;
   justify-content: center;
+  align-items: flex-start;
+  width: 100%;
 }
 
 .content-container-pro {
   width: 100%;
   max-width: var(--container-max);
   padding: 20px;
+}
+
+/* Messages page fills full width so .messaging-v3-container can self-center */
+.messages-layout-wrap {
+  width: 100%;
+  padding: 0 16px;
 }
 
 .feed-layout-centered {
