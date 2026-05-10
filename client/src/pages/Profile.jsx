@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../services/api.js";
+import { BASE_URL } from "../config/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import Avatar from "../components/Avatar.jsx";
@@ -66,18 +67,25 @@ export default function Profile() {
   if (loadingData) return <LoadingSpinner centered />;
 
   const getPostImage = (p) => {
-    if (!p.media || p.media.length === 0) return null;
-    const m = p.media[0];
-    return m.startsWith("http") ? m : `${api.BASE_URL}${m}`;
+    if (p.media && p.media.length > 0) {
+      const m = p.media[0];
+      return m.startsWith("http") ? m : `${BASE_URL}${m}`;
+    }
+    if (p.image) {
+      return p.image.startsWith("http") ? p.image : `${BASE_URL}${p.image}`;
+    }
+    return null;
   };
 
   return (
     <div className="profile-ig">
       {/* Profile Header */}
       <div className="profile-ig-header">
-        {/* Avatar */}
+        {/* Avatar - explicitly sized wrapper */}
         <div className="profile-ig-avatar-wrap">
-          <Avatar user={user} size="xl" className="profile-ig-avatar" />
+          <div style={{ width: 150, height: 150, borderRadius: '50%', overflow: 'hidden', flexShrink: 0 }}>
+            <Avatar user={user} size="xl" />
+          </div>
         </div>
 
         {/* Info Column */}

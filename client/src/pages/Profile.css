@@ -16,13 +16,14 @@
 
 .profile-ig-avatar-wrap {
   flex-shrink: 0;
+  position: relative;
 }
 
-/* Force avatar to 150px on desktop */
-.profile-ig-header .profile-ig-avatar-wrap > * {
-  width: 150px !important;
-  height: 150px !important;
-  border-radius: 50% !important;
+/* Override avatar to fill the wrapper */
+.profile-ig-avatar-wrap .avatar-container {
+  width: 100% !important;
+  height: 100% !important;
+  font-size: 36px !important;
 }
 
 .profile-ig-info {
