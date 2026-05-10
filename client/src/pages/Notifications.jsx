@@ -70,7 +70,7 @@ export default function Notifications() {
     else if (n.type === "align_request") navigate(`/requests`);
     else if (n.type === "like" || n.type === "comment") navigate(`/post/${n.post?._id || n.post}`);
     else if (n.type === "campaign_invite" || n.type === "campaign_apply") navigate(`/collaborations`);
-    else if (n.type === "chat" || n.type === "collab_message") navigate(`/chat/${n.sender?._id || n.sender}`);
+    else if (n.type === "chat" || n.type === "collab_message") navigate(`/messages/${n.sender?._id || n.sender}`);
     else if (n.type === "premium_upgrade") navigate(`/premium`);
     else if (n.type === "security_alert") navigate(`/settings`);
   };

@@ -105,6 +105,11 @@ export default function Chat({ standalone = true }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (sending || (!input.trim() && !selectedFile)) return;
+    if (!partnerId) {
+      setError("No recipient selected");
+      return;
+    }
+    
     setSending(true);
     setError("");
 
@@ -117,18 +122,27 @@ export default function Chat({ standalone = true }) {
         if (input.trim()) formData.append("content", input.trim());
         msg = await api.messages.sendMedia(formData);
       } else {
-        msg = await api.messages.send({ receiverId: partnerId, content: input.trim() });
+        msg = await api.messages.send({ 
+          receiverId: partnerId, 
+          content: input.trim() 
+        });
       }
 
-      if (msg.error) setError(msg.error);
-      else {
+      if (msg?.error) {
+        setError(msg.error);
+        console.error("Message error:", msg.error);
+      } else if (msg && msg._id) {
         setMessages(prev => [...prev, msg]);
         setInput("");
         setSelectedFile(null);
         setPreviewUrl("");
+        scrollToBottom("smooth");
+      } else {
+        throw new Error("Invalid response from server");
       }
-    } catch {
-      setError("Failed to send message");
+    } catch (err) {
+      console.error("Send failed:", err);
+      setError("Failed to send message. Please try again.");
     } finally {
       setSending(false);
       const socket = getSocket();
