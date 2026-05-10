@@ -216,7 +216,7 @@ export default function UserProfile() {
                 >
                   {actionBusy ? "..." : hasRequested ? "Requested" : isFollowing ? "Aligned" : "Align"}
                 </button>
-                {isFollowing && Array.isArray(me?.followers) && me.followers.some(f => f && (f._id || f) === userId) && (
+                {isFollowing && me?.followers && Array.isArray(me.followers) && me.followers.some(f => f && (f?._id || f) === userId) && (
                   <Link to={`/chat/${userId}`} className="btn btn-primary">💬 Message</Link>
                 )}
                 <div className="profile-more-actions">
@@ -243,11 +243,11 @@ export default function UserProfile() {
           <span className="up-stat__label">Aligners</span>
         </div>
         <div className="up-stat" onClick={() => !isPrivateAndHidden && navigate(`/user/${userId}/following`)}>
-          <span className="up-stat__value">{Array.isArray(profile.following) ? profile.following.length : "0"}</span>
+          <span className="up-stat__value">{Array.isArray(profile?.following) ? profile.following.length : "0"}</span>
           <span className="up-stat__label">Aligned</span>
         </div>
         <div className="up-stat">
-          <span className="up-stat__value">{isPrivateAndHidden ? "?" : userPosts.length}</span>
+          <span className="up-stat__value">{isPrivateAndHidden ? "?" : (userPosts?.length || 0)}</span>
           <span className="up-stat__label">Posts</span>
         </div>
       </div>

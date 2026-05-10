@@ -23,7 +23,8 @@ export default function VerifiedBadge({ size = 'md', showTooltip = true, tier = 
   };
 
   const badgeSize = sizes[size] || sizes.md;
-  const badgeColor = colors[tier.toLowerCase()] || colors.none;
+  const tierKey = (tier || 'none').toLowerCase();
+  const badgeColor = colors[tierKey] || colors.none;
 
   return (
     <span 

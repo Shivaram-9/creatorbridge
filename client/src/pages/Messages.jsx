@@ -106,7 +106,7 @@ export default function Messages() {
           ) : filteredConversations.length === 0 ? (
             <div style={{ padding: '48px', textAlign: 'center', color: '#94a3b8' }}>{searchQuery ? "No matches found." : "No messages yet."}</div>
           ) : (
-            filteredConversations.map(conv => (
+            filteredConversations.map(conv => conv && conv.partner && (
               <div 
                 key={conv._id} 
                 className={`chat-item-v3 ${userId === conv.partner?._id ? 'active' : ''}`}

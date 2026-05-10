@@ -172,6 +172,7 @@ export default function Chat({ standalone = true }) {
 
       <div style={{ flex: 1, overflowY: 'auto', padding: '24px' }}>
         {messages.map((m, idx) => {
+          if (!m) return null;
           const isMine = (m.sender?._id || m.sender) === user?._id;
           const media = m.media || m.mediaUrl;
           const time = m.createdAt ? new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "";
