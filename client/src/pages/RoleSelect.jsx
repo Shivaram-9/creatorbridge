@@ -4,6 +4,7 @@ import { api } from "../services/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import OfflineBanner from "../components/OfflineBanner.jsx";
 import ErrorBanner from "../components/ErrorBanner.jsx";
+import "./RoleSelect.css";
 
 const ROLES = [
   {
