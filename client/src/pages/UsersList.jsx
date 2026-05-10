@@ -65,15 +65,15 @@ export default function UsersList() {
       <div className="users-list-page slide-in">
         {loading ? (
           <LoadingSpinner centered />
-        ) : users.length === 0 ? (
+        ) : users.filter(u => !!u).length === 0 ? (
           <div className="empty-state" style={{ padding: '4rem 0' }}>
             <div className="empty-state__illustration">👥</div>
             <p className="empty-state__text">No {title.toLowerCase()} yet.</p>
           </div>
         ) : (
           <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-            {users.map(u => (
-              <UserRow key={u._id} user={u} onUpdate={loadData} />
+            {users.filter(u => !!u).map(u => (
+              <UserRow key={u?._id || Math.random()} user={u} onUpdate={loadData} />
             ))}
           </div>
         )}
@@ -86,6 +86,9 @@ function UserRow({ user, onUpdate }) {
   const navigate = useNavigate();
   const { user: me, setUser: setMe } = useAuth();
   const [busy, setBusy] = useState(false);
+  
+  if (!user) return null;
+
   const isFollowing = me?.following?.includes(user._id);
 
   async function handleFollow(e) {
@@ -115,7 +118,7 @@ function UserRow({ user, onUpdate }) {
         borderBottom: '1px solid var(--border)',
         cursor: 'pointer'
       }}
-      onClick={() => navigate(`/user/${user._id}`)}
+      onClick={() => user._id && navigate(`/user/${user._id}`)}
     >
       <Avatar user={user} size="md" />
       <div style={{ marginLeft: '1rem', flex: 1 }}>
