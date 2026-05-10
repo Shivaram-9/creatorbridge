@@ -1,4 +1,8 @@
-/* FINAL UI STABILIZATION - NO TAILWIND - STRICT SCALING */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* FINAL UI STABILIZATION - STRICT SCALING */
 :root {
   --primary: #6366f1;
   --primary-hover: #4f46e5;
@@ -26,8 +30,33 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* FORCE SVG SCALING FIX */
-svg { max-width: 100%; height: auto; }
+/* Layout System */
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-viewport {
+  flex: 1;
+  margin-top: var(--header-height);
+  padding-bottom: calc(var(--bottom-nav-height) + 20px);
+  background-color: #f8fafc;
+}
+
+.content-container-pro {
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.feed-layout-centered {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
 
 /* Navbar Fixed */
 .navbar-fixed {
@@ -50,6 +79,66 @@ svg { max-width: 100%; height: auto; }
   padding: 0 24px;
 }
 
+/* Bottom Nav Fixed */
+.bottom-nav-fixed {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--bottom-nav-height);
+  background: #ffffff;
+  border-top: 1px solid var(--border-light);
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.bottom-nav-inner {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  max-width: 500px;
+  height: 100%;
+}
+
+.nav-tab-pro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: var(--text-muted);
+  transition: all 0.2s ease;
+  flex: 1;
+  gap: 4px;
+}
+
+.nav-tab-pro svg {
+  width: 24px;
+  height: 24px;
+  stroke-width: 2;
+}
+
+.nav-tab-pro.active {
+  color: var(--primary);
+}
+
+.nav-tab-pro.active svg {
+  stroke-width: 2.5;
+}
+
+.nav-tab-label {
+  font-size: 11px;
+  font-weight: 600;
+}
+
 /* Animations */
 .fade-up { animation: fadeUp 0.5s ease-out forwards; }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Utility Classes */
+.relative { position: relative; }
+.absolute { position: absolute; }
