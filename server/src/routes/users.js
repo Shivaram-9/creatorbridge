@@ -151,7 +151,7 @@ usersRouter.post("/follow/:id", async (req, res) => {
       user: targetId,
       sender: currentId,
       type: "follow",
-      message: `${me.username || me.name || "Someone"} started following you`,
+      message: "has aligned you",
     });
 
     res.json(me);

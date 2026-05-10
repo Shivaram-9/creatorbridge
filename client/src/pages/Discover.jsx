@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { api } from "../services/api.js";
 import UserCard from "../components/UserCard.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
@@ -24,6 +24,7 @@ const EXPLORE_PHOTOS = [
 
 export default function Discover() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [discovery, setDiscovery] = useState({
     suggestedCreators: [],
     suggestedBrands: [],
@@ -34,7 +35,15 @@ export default function Discover() {
   const [allUsers, setAllUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(searchParams.get("q") || "");
+
+  // Update searchQuery if URL changes
+  useEffect(() => {
+    const q = searchParams.get("q");
+    if (q !== null) {
+      setSearchQuery(q);
+    }
+  }, [searchParams]);
 
   // Filters
   const [activeCategory, setActiveCategory] = useState("All");

@@ -125,14 +125,14 @@ export default function Profile() {
               onClick={() => navigate(`/user/${user._id}/followers`)}
             >
               <strong>{fmtCount(user?.followers?.length)}</strong>
-              <span>followers</span>
+              <span>Aligners</span>
             </div>
             <div
               className="profile-ig-stat clickable"
               onClick={() => navigate(`/user/${user._id}/following`)}
             >
               <strong>{fmtCount(user?.following?.length)}</strong>
-              <span>following</span>
+              <span>Aligned</span>
             </div>
           </div>
 
