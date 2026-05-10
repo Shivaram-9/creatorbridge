@@ -115,11 +115,11 @@ export default function Notifications() {
 
       <ErrorBanner message={error} onDismiss={() => setError("")} />
 
-      {pendingRequests.length > 0 && filter === "all" && (
+      {Array.isArray(pendingRequests) && pendingRequests.length > 0 && filter === "all" && (
         <div className="requests-preview-notif" onClick={() => navigate('/requests')}>
           <div className="requests-avatar-stack">
             {pendingRequests.slice(0, 3).map((r, i) => (
-              <Avatar key={r._id} user={r.sender} size="sm" />
+              r && <Avatar key={r?._id || i} user={r?.sender} size="sm" />
             ))}
           </div>
           <div className="requests-preview-text">
@@ -134,7 +134,7 @@ export default function Notifications() {
         <div className="notif-skeleton">
           {[1,2,3,4,5].map(i => <div key={i} className="skeleton-item" />)}
         </div>
-      ) : filteredItems.length === 0 ? (
+      ) : (Array.isArray(filteredItems) && filteredItems.length === 0) ? (
         <div className="empty-state">
           <div className="empty-icon">🔔</div>
           <h3>No notifications here</h3>
@@ -142,7 +142,7 @@ export default function Notifications() {
         </div>
       ) : (
         <div className="notif-list">
-          {filteredItems.map(n => (
+          {Array.isArray(filteredItems) && filteredItems.map(n => n && (
             <div 
               key={n._id} 
               className={`notif-item ${!n.read ? 'unread' : ''}`}

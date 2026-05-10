@@ -91,11 +91,20 @@ export default function Navbar({
   }, [notifOpen, user]);
 
   const handleNotifClick = (n) => {
+    if (!n) return;
     if (n.type === "align_request") return; // Do nothing, user has to click Accept/Reject
+    
     onMarkRead(n._id);
     setNotifOpen(false);
+
+    const senderId = n.sender?._id || n.sender;
+    if (!senderId) {
+      console.warn("Notification has no sender ID", n);
+      return;
+    }
+
     if (n.type === "follow") {
-      navigate(`/user/${n.sender?._id || n.sender}`);
+      navigate(`/user/${senderId}`);
     } else if (n.post) {
       navigate(`/home`); 
     }

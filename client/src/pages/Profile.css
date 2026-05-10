@@ -395,6 +395,8 @@
   .profile-ig-header .profile-ig-avatar-wrap > * {
     width: 80px !important;
     height: 80px !important;
+    border-radius: 50% !important;
+    overflow: hidden !important;
   }
 
   /* Hide desktop bio in header */

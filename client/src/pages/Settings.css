@@ -272,20 +272,65 @@ input:checked + .slider:before {
 }
 
 @media (max-width: 900px) {
+  .settings-page {
+    padding: 0;
+    background: #fff;
+  }
   .settings-layout {
     grid-template-columns: 1fr;
+    gap: 0;
   }
   .settings-sidebar {
     border-right: none;
-    border-bottom: 1px solid #f1f5f9;
-    padding-bottom: 20px;
+    border-bottom: 1px solid #efefef;
+    padding: 16px;
+    background: #fafafa;
+  }
+  .settings-sidebar h2 {
+    font-size: 20px;
+    margin-bottom: 16px;
   }
   .settings-sidebar nav {
+    display: flex;
     flex-direction: row;
     overflow-x: auto;
-    padding-bottom: 10px;
+    padding: 4px 16px 12px;
+    gap: 8px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .settings-sidebar nav::-webkit-scrollbar {
+    display: none;
   }
   .settings-sidebar nav button {
+    flex-shrink: 0;
     white-space: nowrap;
+    padding: 6px 12px;
+    background: #fff;
+    border: 1px solid #efefef;
+    font-size: 12px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #64748b;
+  }
+  .settings-sidebar nav button .icon {
+    font-size: 14px;
+  }
+  .settings-sidebar nav button.active {
+    background: #0095f6;
+    color: #fff;
+    border-color: #0095f6;
+  }
+  .settings-content {
+    padding: 20px;
+  }
+  .setting-item {
+    padding: 20px 0;
+  }
+  .session-item {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }

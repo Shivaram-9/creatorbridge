@@ -12,6 +12,10 @@ export default function EditProfile() {
   const navigate = useNavigate();
   const [saving, setSaving] = useState(false);
   const [avatarUploading, setAvatarUploading] = useState(false);
+  const [tempAvatar, setTempAvatar] = useState(null);
+  const [zoom, setZoom] = useState(1);
+  const [showAdjuster, setShowAdjuster] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
 
   const [form, setForm] = useState({
     name: "",
@@ -39,12 +43,28 @@ export default function EditProfile() {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleAvatarChange = async (e) => {
+  const onFileSelect = (e) => {
     const file = e.target.files[0];
     if (!file) return;
+    setSelectedFile(file);
+    const reader = new FileReader();
+    reader.onload = () => {
+      setTempAvatar(reader.result);
+      setShowAdjuster(true);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleAvatarUpload = async () => {
+    if (!selectedFile) return;
     setAvatarUploading(true);
+    setShowAdjuster(false);
+    
     const fd = new FormData();
-    fd.append("avatar", file);
+    fd.append("avatar", selectedFile);
+    // Note: In a full implementation, we'd send crop coordinates too.
+    // For now, we'll just send the file and use the zoom/preview for UX.
+    
     try {
       const res = await api.users.updateAvatar(fd);
       if (!res.error) {
@@ -57,6 +77,8 @@ export default function EditProfile() {
       toast.error("Failed to upload photo");
     } finally {
       setAvatarUploading(false);
+      setTempAvatar(null);
+      setSelectedFile(null);
     }
   };
 
@@ -113,11 +135,47 @@ export default function EditProfile() {
             type="file"
             hidden
             accept="image/*"
-            onChange={handleAvatarChange}
+            onChange={onFileSelect}
           />
           Change profile photo
         </label>
       </div>
+
+      {/* Adjustment Modal */}
+      {showAdjuster && (
+        <div className="ep-adjust-modal">
+          <div className="ep-adjust-content">
+            <h3>Adjust Profile Photo</h3>
+            <div className="ep-adjust-preview">
+              <div className="ep-preview-circle">
+                <img 
+                  src={tempAvatar} 
+                  alt="Preview" 
+                  style={{ 
+                    transform: `scale(${zoom})`,
+                    transition: 'transform 0.1s'
+                  }} 
+                />
+              </div>
+            </div>
+            <div className="ep-adjust-controls">
+              <span>Zoom</span>
+              <input 
+                type="range" 
+                min="1" 
+                max="3" 
+                step="0.01" 
+                value={zoom} 
+                onChange={(e) => setZoom(parseFloat(e.target.value))} 
+              />
+            </div>
+            <div className="ep-adjust-actions">
+              <button className="ep-btn-cancel" onClick={() => setShowAdjuster(false)}>Cancel</button>
+              <button className="ep-btn-save" onClick={handleAvatarUpload}>Upload</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Form */}
       <form className="ep-form" onSubmit={handleSubmit}>
