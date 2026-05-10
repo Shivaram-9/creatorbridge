@@ -105,7 +105,7 @@ usersRouter.post("/follow/:id", async (req, res) => {
     if (!targetUser) return res.status(404).json({ error: "User not found" });
 
     // Block Check (Prompt-6)
-    if (targetUser.blockedUsers.includes(currentId) || targetUser.blockedBy.includes(currentId)) {
+    if (targetUser.blockedUsers?.includes(currentId) || targetUser.blockedBy?.includes(currentId)) {
       return res.status(403).json({ error: "You cannot follow this user" });
     }
 
@@ -403,7 +403,7 @@ usersRouter.get("/:id", async (req, res) => {
     if (!user) return res.status(404).json({ error: "User not found" });
 
     // Block Check (Prompt-6)
-    if (user.blockedUsers.includes(req.userId) || user.blockedBy.includes(req.userId)) {
+    if (user.blockedUsers?.includes(req.userId) || user.blockedBy?.includes(req.userId)) {
       return res.status(403).json({ error: "This user has blocked you or you have blocked them." });
     }
 

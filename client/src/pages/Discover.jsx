@@ -80,6 +80,43 @@ export default function Discover() {
     <div className="discover-v2 slide-fade-in" style={{ width: '100%', maxWidth: '935px', margin: '0 auto', paddingTop: '20px' }}>
       <ErrorBanner message={error} onDismiss={() => setError("")} />
 
+      <div style={{ padding: '0 10px', marginBottom: '16px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '10px' }}>
+          <div>
+            <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: 0 }}>Intelligent Search</h1>
+            <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.9rem' }}>Smart recommendations based on your behavior and interests.</p>
+          </div>
+          <div style={{ flex: '1 1 300px', maxWidth: '400px' }}>
+            <input 
+              type="text" 
+              placeholder="Search..." 
+              style={{ width: '100%', padding: '10px 16px', borderRadius: '20px', border: '1px solid #dbdbdb', outline: 'none', background: '#fafafa' }} 
+            />
+          </div>
+        </div>
+        
+        <h2 style={{ fontSize: '1.2rem', fontWeight: '600', margin: '24px 0 12px 0' }}>Global Marketplace</h2>
+        <div style={{ display: 'flex', gap: '12px', marginBottom: '16px', flexWrap: 'wrap' }}>
+          <select 
+            value={activeCategory} 
+            onChange={(e) => setActiveCategory(e.target.value)}
+            style={{ padding: '10px 16px', borderRadius: '8px', border: '1px solid #dbdbdb', outline: 'none', background: 'white', fontWeight: '500' }}
+          >
+            <option value="All">All Categories</option>
+            {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+          </select>
+          <select 
+            value={activeRole} 
+            onChange={(e) => setActiveRole(e.target.value)}
+            style={{ padding: '10px 16px', borderRadius: '8px', border: '1px solid #dbdbdb', outline: 'none', background: 'white', fontWeight: '500' }}
+          >
+            <option value="all">All Roles</option>
+            <option value="influencer">Influencers</option>
+            <option value="brand">Brands</option>
+          </select>
+        </div>
+      </div>
+
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '4px', padding: '0 10px' }}>
         {discovery.trendingPosts.length > 0 ? (
           discovery.trendingPosts.map(post => (
