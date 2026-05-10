@@ -52,14 +52,31 @@ export default function Messages() {
     <div className="messaging-v3-container fade-up">
       {/* Sidebar: List of conversations */}
       <aside className={`messages-sidebar-pro ${userId ? 'hidden-mobile' : ''}`}>
-        <header className="sidebar-header-pro">
-          <h1>Messages</h1>
-          <button style={{ padding: '8px', background: 'none', border: 'none', borderRadius: '50%', cursor: 'pointer' }}>
-            <svg style={{ width: '24px', height: '24px', color: '#64748b' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <header className="sidebar-header-pro" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px' }}>
+          <h1 style={{ fontSize: '1.2rem', fontWeight: 'bold', margin: 0 }}>Messages</h1>
+          <button style={{ padding: '8px', background: 'none', border: 'none', cursor: 'pointer' }}>
+            <svg style={{ width: '24px', height: '24px', color: 'var(--text-main)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
             </svg>
           </button>
         </header>
+
+        <div style={{ padding: '0 20px 16px' }}>
+          <div style={{ background: '#efefef', borderRadius: '8px', padding: '8px 12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ color: '#8e8e8e' }}>🔍</span>
+            <input type="text" placeholder="Search" style={{ background: 'transparent', border: 'none', outline: 'none', fontSize: '14px', width: '100%' }} />
+          </div>
+        </div>
+
+        {/* Active Notes / Users row (Static UI per IG style) */}
+        <div style={{ display: 'flex', gap: '16px', overflowX: 'auto', padding: '0 20px 16px', borderBottom: '1px solid var(--border-light)' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+            <div style={{ width: '60px', height: '60px', borderRadius: '50%', background: '#eee', position: 'relative' }}>
+              <span style={{ position: 'absolute', top: '-6px', left: '50%', transform: 'translateX(-50%)', background: 'white', border: '1px solid #dbdbdb', borderRadius: '12px', padding: '2px 8px', fontSize: '10px', boxShadow: '0 1px 2px rgba(0,0,0,0.1)', whiteSpace: 'nowrap' }}>Note...</span>
+            </div>
+            <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Your note</span>
+          </div>
+        </div>
 
         <ErrorBanner message={error} onDismiss={() => setError("")} />
 
@@ -101,17 +118,8 @@ export default function Messages() {
         {userId ? (
           <Chat standalone={false} />
         ) : (
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '48px', textAlign: 'center', background: '#f8fafc' }}>
-            <div style={{ width: '96px', height: '96px', background: 'white', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '24px', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.05)' }}>
-              <svg style={{ width: '48px', height: '48px', color: '#6366f1' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-              </svg>
-            </div>
-            <h2 style={{ fontSize: '1.5rem', fontWeight: '800', color: '#0f172a', marginBottom: '8px' }}>Your Messages</h2>
-            <p style={{ color: '#64748b', fontSize: '0.9rem', maxWidth: '280px', margin: '0 auto' }}>Send private photos and messages to a friend or brand.</p>
-            <button style={{ marginTop: '32px', padding: '12px 24px', background: '#6366f1', color: 'white', fontWeight: '700', borderRadius: '16px', border: 'none', cursor: 'pointer', boxShadow: '0 8px 20px -4px rgba(99, 102, 241, 0.3)' }}>
-              Send Message
-            </button>
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-main)' }}>
+            {/* Removed the broken 'Your Messages' layout as requested */}
           </div>
         )}
       </main>

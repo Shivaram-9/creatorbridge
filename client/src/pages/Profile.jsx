@@ -170,60 +170,50 @@ export default function Profile() {
       </header>
 
 
-      <div className="profile-pro-tabs">
-        <button className={activeTab === "posts" ? "active" : ""} onClick={() => setActiveTab("posts")}>POSTS</button>
-        <button className={activeTab === "portfolio" ? "active" : ""} onClick={() => setActiveTab("portfolio")}>PORTFOLIO</button>
-        <button className={activeTab === "tagged" ? "active" : ""} onClick={() => setActiveTab("tagged")}>TAGGED</button>
-        <button className={activeTab === "collabs" ? "active" : ""} onClick={() => setActiveTab("collabs")}>COLLABS</button>
+      <div className="profile-pro-tabs" style={{ display: 'flex', justifyContent: 'space-around', borderTop: '1px solid var(--border-light)', paddingTop: '12px', marginTop: '24px' }}>
+        <button style={{ background: 'none', border: 'none', fontWeight: activeTab === 'posts' ? 'bold' : 'normal', color: activeTab === 'posts' ? 'var(--text-main)' : 'var(--text-muted)', cursor: 'pointer', fontSize: '12px', letterSpacing: '1px' }} onClick={() => setActiveTab("posts")}>POSTS</button>
+        <button style={{ background: 'none', border: 'none', fontWeight: activeTab === 'portfolio' ? 'bold' : 'normal', color: activeTab === 'portfolio' ? 'var(--text-main)' : 'var(--text-muted)', cursor: 'pointer', fontSize: '12px', letterSpacing: '1px' }} onClick={() => setActiveTab("portfolio")}>PORTFOLIO</button>
+        <button style={{ background: 'none', border: 'none', fontWeight: activeTab === 'tagged' ? 'bold' : 'normal', color: activeTab === 'tagged' ? 'var(--text-main)' : 'var(--text-muted)', cursor: 'pointer', fontSize: '12px', letterSpacing: '1px' }} onClick={() => setActiveTab("tagged")}>TAGGED</button>
+        <button style={{ background: 'none', border: 'none', fontWeight: activeTab === 'collabs' ? 'bold' : 'normal', color: activeTab === 'collabs' ? 'var(--text-main)' : 'var(--text-muted)', cursor: 'pointer', fontSize: '12px', letterSpacing: '1px' }} onClick={() => setActiveTab("collabs")}>COLLABS</button>
       </div>
 
-      <div className="profile-pro-content">
+      <div className="profile-pro-content" style={{ marginTop: '16px' }}>
         {activeTab === "posts" && (
-          <div className="pro-posts-list">
-            {posts.map(p => <PortfolioGrid key={p._id} items={[p]} onDelete={handleDelete} onUpdate={handleUpdate} />)}
-          </div>
-        )}
-        {activeTab === "portfolio" && (
-          <div className="pro-portfolio-grid">
-            {posts.filter(p => p.category === "Portfolio").length > 0 ? (
-                <PortfolioGrid items={posts.filter(p => p.category === "Portfolio")} onDelete={handleDelete} />
-            ) : (
-                <div className="empty-state">No portfolio projects yet.</div>
-            )}
-          </div>
-        )}
-        {activeTab === "tagged" && (
-          <div className="pro-tagged-grid">
-            {posts.filter(p => p.taggedUsers?.includes(user._id)).length > 0 ? (
-                <PortfolioGrid items={posts.filter(p => p.taggedUsers?.includes(user._id))} onDelete={handleDelete} />
-            ) : (
-                <div className="empty-state">
-                    <div className="empty-icon">🏷️</div>
-                    <p>No tagged media yet.</p>
-                </div>
-            )}
-          </div>
-        )}
-        {activeTab === "collabs" && (
-          <div className="pro-collabs-list">
-            {collabs.length > 0 ? (
-                collabs.map(c => (
-                    <div key={c._id} className="pro-collab-item" onClick={() => navigate(`/campaigns/${c.campaign?._id}`)}>
-                        <img src={c.campaign?.banner} alt="" />
-                        <div className="collab-info">
-                            <h4>{c.campaign?.title}</h4>
-                            <span className={`status-badge ${c.status.toLowerCase()}`}>{c.status}</span>
-                        </div>
-                        <div className="collab-meta">
-                            <span>{new Date(c.createdAt).toLocaleDateString()}</span>
-                        </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '4px' }}>
+            {posts.length > 0 ? (
+              posts.map(p => (
+                <div key={p._id} style={{ aspectRatio: '1/1', position: 'relative', overflow: 'hidden', cursor: 'pointer', background: '#efefef' }}>
+                  {p.media && p.media.length > 0 && (
+                    <img 
+                      src={p.media[0].startsWith('http') ? p.media[0] : `${api.BASE_URL}${p.media[0]}`} 
+                      alt="" 
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      onError={(e) => { e.target.style.display = 'none' }}
+                    />
+                  )}
+                  {(!p.media || p.media.length === 0) && (
+                    <div style={{ padding: '8px', fontSize: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', textAlign: 'center' }}>
+                      {p.content?.slice(0, 50)}...
                     </div>
-                ))
-            ) : (
-                <div className="empty-state">
-                    <div className="empty-icon">🤝</div>
-                    <p>No collaborations yet.</p>
+                  )}
+                  <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.3)', opacity: 0, transition: 'opacity 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold' }}
+                       onMouseEnter={e => e.currentTarget.style.opacity = 1}
+                       onMouseLeave={e => e.currentTarget.style.opacity = 0}>
+                    ❤️ {p.likes?.length || 0}
+                  </div>
                 </div>
+              ))
+            ) : (
+              <div style={{ gridColumn: '1 / -1', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '64px 20px', textAlign: 'center' }}>
+                <div style={{ width: '64px', height: '64px', border: '2px solid var(--text-main)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px' }}>
+                  <svg style={{ width: '32px', height: '32px', color: 'var(--text-main)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                </div>
+                <h2 style={{ fontSize: '1.2rem', fontWeight: 'bold', marginBottom: '8px', margin: 0 }}>Create your first post</h2>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '16px' }}>Share photos and updates with your followers.</p>
+                <button style={{ background: 'var(--primary)', color: 'white', border: 'none', padding: '8px 16px', borderRadius: 'var(--radius-md)', fontWeight: 'bold', cursor: 'pointer' }} onClick={() => navigate('/home')}>
+                  Create Post
+                </button>
+              </div>
             )}
           </div>
         )}

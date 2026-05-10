@@ -60,37 +60,62 @@ export default function Home() {
     };
   };
 
+  const demoPosts = [
+    {
+      _id: "demo1",
+      user: {
+        _id: "demo_user_1",
+        name: "CreatorBridge Official",
+        username: "creatorbridge",
+        avatar: "https://ui-avatars.com/api/?name=Creator+Bridge&background=0095f6&color=fff",
+        isVerified: true
+      },
+      content: "Welcome to CreatorBridge! 🚀 This is a sample post. Start following other creators and brands to fill your feed with amazing content.",
+      likes: ["1", "2", "3", "4", "5"],
+      comments: [
+        { _id: "c1", user: { name: "User1", username: "user1" }, text: "Welcome!" }
+      ],
+      createdAt: new Date().toISOString()
+    },
+    {
+      _id: "demo2",
+      user: {
+        _id: "demo_user_2",
+        name: "Photography Hub",
+        username: "photo.hub",
+        avatar: "https://ui-avatars.com/api/?name=Photo+Hub&background=10b981&color=fff"
+      },
+      content: "Capturing the golden hour perfectly. 🌅 What's your favorite time to shoot? #photography #goldenhour",
+      media: ["https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=600&q=80"],
+      likes: ["1", "2"],
+      comments: [],
+      createdAt: new Date(Date.now() - 3600000).toISOString() // 1 hour ago
+    }
+  ];
+
   return (
-    <div className="w-full flex justify-center pb-20">
+    <div className="w-full flex justify-center pb-20 pt-4">
       <div className="feed-layout-centered">
-        {/* We can remove the page-header-block completely for a cleaner Instagram look, or keep it minimal */}
+        <StoriesBar />
+        <CreatePost onPost={handleAddPost} user={user} />
 
-      <StoriesBar />
-      <CreatePost onPost={handleAddPost} user={user} />
-
-      {loading ? (
-        <div className="mt-8 space-y-6">
-          <PostSkeleton />
-          <PostSkeleton />
-          <PostSkeleton />
-        </div>
-      ) : posts.length === 0 ? (
-        <EmptyState 
-          icon="📭" 
-          title="Your feed is empty" 
-          description="Start following creators or create your own post to see something here!"
-        />
-      ) : (
-        <div className="mt-6 space-y-6">
-          {posts.map((post) => (
-            <PostCard 
-              key={post._id} 
-              post={formatPost(post)} 
-              onDelete={(id) => setPosts(prev => prev.filter(p => p._id !== id))}
-            />
-          ))}
-        </div>
-      )}
+        {loading ? (
+          <div className="mt-8 space-y-6">
+            <PostSkeleton />
+            <PostSkeleton />
+            <PostSkeleton />
+          </div>
+        ) : (
+          <div className="space-y-4 mt-2">
+            {(posts.length > 0 ? posts : demoPosts).map((post) => (
+              <PostCard 
+                key={post._id} 
+                post={formatPost(post)} 
+                onDelete={(id) => setPosts(prev => prev.filter(p => p._id !== id))}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -87,97 +87,36 @@ export default function Discover() {
 
       <ErrorBanner message={error} onDismiss={() => setError("")} />
 
-      <div className="discover-content">
-        
-        {/* Trending Posts Milestone Section */}
-        {discovery.trendingPosts.length > 0 && (
-          <section className="discover-section">
-            <div className="section-header">
-              <h2>Trending Now</h2>
-              <span className="trend-label">LIVE ENGAGEMENT</span>
-            </div>
-            <div className="trending-posts-grid">
-              {discovery.trendingPosts.slice(0, 6).map(post => (
-                <PostCard 
-                  key={post._id} 
-                  post={post} 
-                  onDelete={() => {}} 
-                  onUpdate={() => {}} 
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '2px', padding: '2px' }}>
+          {discovery.trendingPosts.length > 0 ? (
+            discovery.trendingPosts.map(post => (
+              <div key={post._id} style={{ aspectRatio: '1/1', position: 'relative', overflow: 'hidden', cursor: 'pointer' }}>
+                <img 
+                  src={post.media?.[0]?.startsWith('http') ? post.media[0] : `${api.BASE_URL}${post.media?.[0] || '/default-post.jpg'}`} 
+                  alt="" 
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&w=300&q=80" }}
                 />
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Suggested For You - Creators */}
-        <section className="discover-section">
-          <div className="section-header">
-            <h2>Suggested Creators</h2>
-            <p>Creators matching your niche and interests.</p>
-          </div>
-          <div className="user-grid">
-            {discovery.suggestedCreators.map(u => <UserCard key={u._id} user={u} />)}
-          </div>
-        </section>
-
-        {/* Suggested For You - Brands */}
-        <section className="discover-section">
-          <div className="section-header">
-            <h2>Suggested Brands</h2>
-            <p>Brands looking for creators like you.</p>
-          </div>
-          <div className="user-grid">
-            {discovery.suggestedBrands.map(u => <UserCard key={u._id} user={u} />)}
-          </div>
-        </section>
-
-        {/* Explore All with Filters */}
-        <section className="explore-section">
-          <div className="explore-header">
-            <h2>Global Marketplace</h2>
-            <div className="filter-bar">
-              <select 
-                className="filter-select" 
-                value={activeCategory} 
-                onChange={(e) => setActiveCategory(e.target.value)}
-              >
-                <option value="All">All Categories</option>
-                {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
-              </select>
-
-              <select 
-                className="filter-select" 
-                value={activeRole} 
-                onChange={(e) => setActiveRole(e.target.value)}
-              >
-                <option value="all">All Roles</option>
-                <option value="influencer">Influencers</option>
-                <option value="brand">Brands</option>
-              </select>
-
-              <label className="verified-toggle">
-                <input 
-                  type="checkbox" 
-                  checked={onlyVerified} 
-                  onChange={(e) => setOnlyVerified(e.target.checked)}
-                />
-                Verified Only
-              </label>
-            </div>
-          </div>
-
-          {filteredUsers.length === 0 ? (
-            <div className="empty-results">
-              <div className="icon">🔍</div>
-              <h3>No creators found</h3>
-              <p>Try adjusting your smart filters.</p>
-            </div>
+                <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.3)', opacity: 0, transition: 'opacity 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold' }}
+                     onMouseEnter={e => e.currentTarget.style.opacity = 1}
+                     onMouseLeave={e => e.currentTarget.style.opacity = 0}>
+                  ❤️ {post.likes?.length || 0}
+                </div>
+              </div>
+            ))
           ) : (
-            <div className="user-grid">
-              {filteredUsers.map(u => <UserCard key={u._id} user={u} />)}
-            </div>
+            // Demo Instagram-style explore grid items
+            [1,2,3,4,5,6,7,8,9,10,11,12].map(i => (
+              <div key={i} style={{ aspectRatio: '1/1', position: 'relative', overflow: 'hidden', cursor: 'pointer' }}>
+                <img 
+                  src={`https://images.unsplash.com/photo-${1500000000000 + i}?auto=format&fit=crop&w=300&q=80`} 
+                  alt="Explore" 
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+              </div>
+            ))
           )}
-        </section>
+        </div>
       </div>
     </div>
   );
