@@ -1,23 +1,29 @@
+import { v2 as cloudinary } from "cloudinary";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
 import { v4 as uuidv4 } from "uuid";
 
-// Ensure upload directories exist
-const ensureDir = (dir) => {
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
-  return dir;
-};
+// ─── Cloudinary Configuration ───────────────────────────────────────────────
+const useCloudinary = !!(
+  process.env.CLOUDINARY_CLOUD_NAME &&
+  process.env.CLOUDINARY_API_KEY &&
+  process.env.CLOUDINARY_API_SECRET
+);
 
-// Strict filename sanitization
-const sanitizeFilename = (file) => {
-  const ext = path.extname(file.originalname).toLowerCase();
-  return `${uuidv4()}${ext}`;
-};
+if (useCloudinary) {
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  });
+  console.log("☁️  Cloudinary storage enabled.");
+} else {
+  console.log("⚠️  Cloudinary not configured. Falling back to local disk storage.");
+}
 
-// Strict MIME type filters
+// ─── Strict MIME type filters ────────────────────────────────────────────────
 const imageFilter = (req, file, cb) => {
   const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
   if (allowedTypes.includes(file.mimetype)) {
@@ -28,46 +34,77 @@ const imageFilter = (req, file, cb) => {
 };
 
 const mediaFilter = (req, file, cb) => {
-  const allowedTypes = ["image/jpeg", "image/png", "image/webp", "video/mp4", "video/quicktime"];
+  const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif", "video/mp4", "video/quicktime"];
   if (allowedTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error("Invalid media type. Only safe images and MP4/MOV videos are allowed."), false);
+    cb(new Error("Invalid media type. Only images and MP4/MOV videos are allowed."), false);
   }
 };
 
-const storageConfig = (folder) => multer.diskStorage({
-  destination: (req, file, cb) => cb(null, ensureDir(folder)),
-  filename: (req, file, cb) => cb(null, sanitizeFilename(file))
-});
+// ─── Cloudinary storage factory ──────────────────────────────────────────────
+function cloudinaryStorage(folder, resourceType = "auto") {
+  return new CloudinaryStorage({
+    cloudinary,
+    params: (req, file) => ({
+      folder: `creatorbridge/${folder}`,
+      resource_type: resourceType,
+      public_id: `${Date.now()}-${uuidv4()}`,
+      overwrite: false,
+    }),
+  });
+}
 
-// Hardened Uploaders
+// ─── Local disk storage fallback ─────────────────────────────────────────────
+const ensureDir = (dir) => {
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  return dir;
+};
+
+const sanitizeFilename = (file) => {
+  const ext = path.extname(file.originalname).toLowerCase();
+  return `${uuidv4()}${ext}`;
+};
+
+function diskStorage(folder) {
+  return multer.diskStorage({
+    destination: (req, file, cb) => cb(null, ensureDir(folder)),
+    filename: (req, file, cb) => cb(null, sanitizeFilename(file)),
+  });
+}
+
+// ─── Multer instances ─────────────────────────────────────────────────────────
+// General avatar upload
 export const upload = multer({
-  storage: storageConfig("uploads/"),
+  storage: useCloudinary ? cloudinaryStorage("avatars", "image") : diskStorage("uploads/"),
   fileFilter: imageFilter,
-  limits: { fileSize: 5 * 1024 * 1024 } // 5MB
+  limits: { fileSize: 5 * 1024 * 1024 },
 });
 
-export const chatUpload = multer({
-  storage: storageConfig("uploads/chat/"),
-  fileFilter: mediaFilter,
-  limits: { fileSize: 50 * 1024 * 1024 } // 50MB
-});
-
+// Avatar upload specifically
 export const profileUpload = multer({
-  storage: storageConfig("uploads/avatars/"),
+  storage: useCloudinary ? cloudinaryStorage("avatars", "image") : diskStorage("uploads/avatars/"),
   fileFilter: imageFilter,
-  limits: { fileSize: 2 * 1024 * 1024 } // 2MB for avatars
+  limits: { fileSize: 2 * 1024 * 1024 },
 });
 
-export const storyUpload = multer({
-  storage: storageConfig("uploads/stories/"),
-  fileFilter: mediaFilter,
-  limits: { fileSize: 50 * 1024 * 1024 } // 50MB
-});
-
+// Post media upload (images + video)
 export const postUpload = multer({
-  storage: storageConfig("uploads/posts/"),
+  storage: useCloudinary ? cloudinaryStorage("posts", "auto") : diskStorage("uploads/posts/"),
   fileFilter: mediaFilter,
-  limits: { fileSize: 10 * 1024 * 1024 } // 10MB
+  limits: { fileSize: 20 * 1024 * 1024 }, // 20MB for posts
+});
+
+// Story upload
+export const storyUpload = multer({
+  storage: useCloudinary ? cloudinaryStorage("stories", "auto") : diskStorage("uploads/stories/"),
+  fileFilter: mediaFilter,
+  limits: { fileSize: 50 * 1024 * 1024 },
+});
+
+// Chat media upload
+export const chatUpload = multer({
+  storage: useCloudinary ? cloudinaryStorage("chat", "auto") : diskStorage("uploads/chat/"),
+  fileFilter: mediaFilter,
+  limits: { fileSize: 50 * 1024 * 1024 },
 });

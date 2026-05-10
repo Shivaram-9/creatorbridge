@@ -10,22 +10,27 @@ const router = express.Router();
 router.post("/", authMiddleware, postUpload.array("media", 10), async (req, res) => {
   try {
     const { content, category, location, hashtags, taggedUsers } = req.body;
-    const mediaFiles = req.files ? req.files.map(f => `/uploads/posts/${f.filename}`) : [];
-    
+
+    // Cloudinary returns file.path (full https URL); disk storage uses filename
+    const mediaFiles = req.files
+      ? req.files.map(f => f.path || `/uploads/posts/${f.filename}`)
+      : [];
+
     const post = await Post.create({
       user: req.userId,
       content,
       media: mediaFiles,
-      mediaType: mediaFiles.length > 1 ? "gallery" : "image",
+      mediaType: mediaFiles.length > 1 ? "gallery" : mediaFiles.length === 1 ? "image" : "none",
       category,
       location,
-      hashtags: hashtags ? hashtags.split(",").map(h => h.trim()) : [],
-      taggedUsers: taggedUsers ? taggedUsers.split(",") : [],
+      hashtags: hashtags ? hashtags.split(",").map(h => h.trim()).filter(Boolean) : [],
+      taggedUsers: taggedUsers ? taggedUsers.split(",").filter(Boolean) : [],
     });
-    
-    await post.populate("user", "name avatar role");
+
+    await post.populate("user", "name username avatar role isVerified isPremium");
     res.status(201).json(post);
   } catch (err) {
+    console.error("Post create error:", err);
     res.status(400).json({ error: err.message });
   }
 });

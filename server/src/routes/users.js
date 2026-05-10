@@ -57,7 +57,8 @@ usersRouter.patch("/verify/:id", async (req, res) => {
 usersRouter.post("/me/avatar", profileUpload.single("avatar"), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: "Avatar file is required" });
-    const avatarPath = `/uploads/avatars/${req.file.filename}`;
+    // Cloudinary returns file.path (full https URL); disk uses filename
+    const avatarPath = req.file.path || `/uploads/avatars/${req.file.filename}`;
     const user = await User.findByIdAndUpdate(req.userId, { $set: { avatar: avatarPath } }, { new: true });
     if (!user) return res.status(404).json({ error: "User not found" });
     res.json(user);
