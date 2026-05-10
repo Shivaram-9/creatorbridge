@@ -1,4 +1,5 @@
 import { Router } from "express";
+import mongoose from "mongoose";
 import { User } from "../models/User.js";
 import { AlignRequest } from "../models/AlignRequest.js";
 import { authMiddleware } from "../middleware/auth.js";

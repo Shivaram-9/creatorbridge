@@ -69,6 +69,7 @@ export default function UserProfile() {
         return;
       }
       setProfile(data);
+      setHasRequested(!!data.isRequested);
       
       // Track view for AI Discovery (Prompt-7)
       if (!isOwn && me) {

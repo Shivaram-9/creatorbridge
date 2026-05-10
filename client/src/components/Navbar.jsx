@@ -60,8 +60,19 @@ export default function Navbar({
         if (!abortController.signal.aborted) setSearchLoading(false);
       }
     }, 300);
-    return () => { clearTimeout(timer); abortController.abort(); };
+    return () => {
+      clearTimeout(timer);
+      abortController.abort();
+    };
   }, [searchQuery]);
+
+  useEffect(() => {
+    if (notifOpen && user) {
+      api.privacy.getRequests().then(reqs => {
+        if (!reqs.error) setPendingRequests(reqs);
+      }).catch(() => {});
+    }
+  }, [notifOpen, user]);
 
   useEffect(() => {
     const socket = getSocket();
@@ -241,7 +252,7 @@ export default function Navbar({
                                       style={{ flex: 1, padding: '6px', background: '#efefef', color: 'var(--text-main)', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer', fontSize: '12px' }}
                                       onClick={(e) => { e.stopPropagation(); handleRequestAction(n, 'reject'); }}
                                     >
-                                      Reject
+                                      Decline
                                     </button>
                                   </div>
                                 )}

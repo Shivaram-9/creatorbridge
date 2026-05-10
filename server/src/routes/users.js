@@ -110,51 +110,27 @@ usersRouter.post("/follow/:id", async (req, res) => {
       return res.status(403).json({ error: "You cannot follow this user" });
     }
 
-    // Private Account Check (Prompt-6)
-    if (targetUser.isPrivate) {
-      const existing = await AlignRequest.findOne({ sender: currentId, receiver: targetId });
-      if (existing) {
-        if (existing.status === "pending") return res.status(400).json({ error: "Request already pending" });
-        if (existing.status === "accepted") return res.status(400).json({ error: "Already aligned" });
-        // If rejected, allow re-requesting? For now yes.
-        existing.status = "pending";
-        await existing.save();
-      } else {
-        await AlignRequest.create({ sender: currentId, receiver: targetId });
-      }
-
-      await Notification.create({
-        user: targetId,
-        sender: currentId,
-        type: "align_request",
-        message: "requested to align with you",
-      });
-
-      return res.json({ message: "Align request sent", requested: true });
+    // ALWAYS use AlignRequest instead of immediate follow as per user requirement
+    const existing = await AlignRequest.findOne({ sender: currentId, receiver: targetId });
+    if (existing) {
+      if (existing.status === "pending") return res.status(400).json({ error: "Request already pending" });
+      if (existing.status === "accepted") return res.status(400).json({ error: "Already aligned" });
+      // If rejected, allow re-requesting
+      existing.status = "pending";
+      await existing.save();
+    } else {
+      await AlignRequest.create({ sender: currentId, receiver: targetId });
     }
 
-    // Add target to current user's following
-    const me = await User.findByIdAndUpdate(
-      currentId,
-      { $addToSet: { following: targetId } },
-      { new: true }
-    );
-
-    // Add current user to target user's followers
-    await User.findByIdAndUpdate(
-      targetId,
-      { $addToSet: { followers: currentId } }
-    );
-
-    // Create notification
+    // Create notification for the receiver
     await Notification.create({
       user: targetId,
       sender: currentId,
-      type: "follow",
-      message: "has aligned you",
+      type: "align_request",
+      message: "requested to align with you",
     });
 
-    res.json(me);
+    res.json({ message: "Align request sent", requested: true });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to follow user" });
@@ -400,12 +376,22 @@ usersRouter.get("/:id", async (req, res) => {
       if (!user) return res.status(404).json({ error: "User not found" });
       return res.json(user);
     }
-    const user = await User.findById(req.params.id).select("-password");
+    const user = await User.findById(req.params.id).select("-password").lean();
     if (!user) return res.status(404).json({ error: "User not found" });
 
     // Block Check (Prompt-6)
     if (user.blockedUsers?.includes(req.userId) || user.blockedBy?.includes(req.userId)) {
       return res.status(403).json({ error: "This user has blocked you or you have blocked them." });
+    }
+
+    // Add request status for the frontend
+    if (req.userId) {
+      const request = await AlignRequest.findOne({ 
+        sender: req.userId, 
+        receiver: req.params.id,
+        status: "pending" 
+      });
+      user.isRequested = !!request;
     }
 
     res.json(user);
