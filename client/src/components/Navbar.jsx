@@ -5,6 +5,7 @@ import { getSocket } from "../services/socket.js";
 import Avatar from "./Avatar.jsx";
 import SearchDropdown from "./SearchDropdown.jsx";
 import { api } from "../services/api.js";
+import toast from "react-hot-toast";
 
 export default function Navbar({ 
   user, 
@@ -21,6 +22,7 @@ export default function Navbar({
   const [searchLoading, setSearchLoading] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [pendingRequests, setPendingRequests] = useState([]);
   
   const notifRef = useRef(null);
   const menuRef = useRef(null);
@@ -41,9 +43,7 @@ export default function Navbar({
       setSearchResults(null);
       return;
     }
-
     const abortController = new AbortController();
-
     const timer = setTimeout(async () => {
       setSearchLoading(true);
       try {
@@ -55,48 +55,70 @@ export default function Navbar({
           setSearchResults({ users, posts });
         }
       } catch (err) {
-        if (err.name !== 'AbortError') {
-          console.error("Search failed", err);
-        }
+        if (err.name !== 'AbortError') console.error("Search failed", err);
       } finally {
-        if (!abortController.signal.aborted) {
-          setSearchLoading(false);
-        }
+        if (!abortController.signal.aborted) setSearchLoading(false);
       }
     }, 300);
-
-    return () => {
-      clearTimeout(timer);
-      abortController.abort();
-    };
+    return () => { clearTimeout(timer); abortController.abort(); };
   }, [searchQuery]);
 
   useEffect(() => {
     const socket = getSocket();
     if (!socket) return;
-
     const updateStatus = () => setSocketStatus(socket.connected ? "online" : "offline");
     updateStatus();
-
     socket.on("connect", updateStatus);
     socket.on("disconnect", updateStatus);
     socket.on("connect_error", () => setSocketStatus("error"));
-
     return () => {
       socket.off("connect", updateStatus);
       socket.off("disconnect", updateStatus);
     };
   }, []);
 
+  const loadRequests = async () => {
+    try {
+      const reqs = await api.privacy.getRequests();
+      if (!reqs.error) setPendingRequests(Array.isArray(reqs) ? reqs : []);
+    } catch (e) { console.error("Failed to load requests", e); }
+  };
+
+  useEffect(() => {
+    if (notifOpen && user?.isPrivate) {
+      loadRequests();
+    }
+  }, [notifOpen, user]);
+
   const handleNotifClick = (n) => {
+    if (n.type === "align_request") return; // Do nothing, user has to click Accept/Reject
     onMarkRead(n._id);
     setNotifOpen(false);
     if (n.type === "follow") {
       navigate(`/user/${n.sender?._id || n.sender}`);
-    } else if (n.type === "align_request") {
-      navigate(`/requests`);
     } else if (n.post) {
       navigate(`/home`); 
+    }
+  };
+
+  const handleRequestAction = async (n, action) => {
+    const senderId = n.sender?._id || n.sender;
+    const reqDoc = pendingRequests.find(r => r.sender._id === senderId || r.sender === senderId);
+    if (!reqDoc) {
+      toast.error("Request no longer exists");
+      onMarkRead(n._id);
+      return;
+    }
+    try {
+      const res = await api.privacy.respondRequest(reqDoc._id, action);
+      if (res.error) toast.error(res.error);
+      else {
+        toast.success(action === 'accept' ? 'Request Accepted' : 'Request Rejected');
+        setPendingRequests(prev => prev.filter(r => r._id !== reqDoc._id));
+        onMarkRead(n._id);
+      }
+    } catch {
+      toast.error("Action failed");
     }
   };
 
@@ -113,15 +135,9 @@ export default function Navbar({
 
   useEffect(() => {
     function handleClickOutside(e) {
-      if (notifOpen && notifRef.current && !notifRef.current.contains(e.target)) {
-        setNotifOpen(false);
-      }
-      if (menuOpen && menuRef.current && !menuRef.current.contains(e.target)) {
-        setMenuOpen(false);
-      }
-      if (isSearchOpen && searchRef.current && !searchRef.current.contains(e.target)) {
-        setIsSearchOpen(false);
-      }
+      if (notifOpen && notifRef.current && !notifRef.current.contains(e.target)) setNotifOpen(false);
+      if (menuOpen && menuRef.current && !menuRef.current.contains(e.target)) setMenuOpen(false);
+      if (isSearchOpen && searchRef.current && !searchRef.current.contains(e.target)) setIsSearchOpen(false);
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
@@ -194,11 +210,34 @@ export default function Navbar({
                         notifications.map(n => (
                           <div 
                             key={n?._id} 
-                            className={`p-4 border-b border-gray-50 cursor-pointer hover:bg-gray-50 transition-colors ${!n?.read ? 'bg-blue-50/50' : 'bg-white'}`}
-                            onClick={() => handleNotifClick(n)}
+                            className={`p-4 border-b border-gray-50 hover:bg-gray-50 transition-colors ${!n?.read ? 'bg-blue-50/50' : 'bg-white'}`}
                           >
-                            <p className="text-sm text-gray-800 m-0 leading-snug">{n?.message}</p>
-                            <span className="text-xs text-gray-500 mt-1 block">{n?.createdAt ? formatTime(n.createdAt) : ""}</span>
+                            <div className="flex gap-3" onClick={() => handleNotifClick(n)} style={{ cursor: n.type === 'align_request' ? 'default' : 'pointer' }}>
+                              <Avatar user={n.sender} size="sm" />
+                              <div style={{ flex: 1 }}>
+                                <p className="text-sm text-gray-800 m-0 leading-snug">
+                                  <strong>{n.sender?.username || n.sender?.name}</strong> {n?.message}
+                                </p>
+                                <span className="text-xs text-gray-500 mt-1 block">{n?.createdAt ? formatTime(n.createdAt) : ""}</span>
+                                
+                                {n.type === "align_request" && !n.read && (
+                                  <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
+                                    <button 
+                                      style={{ flex: 1, padding: '6px', background: 'var(--primary)', color: 'white', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer', fontSize: '12px' }}
+                                      onClick={(e) => { e.stopPropagation(); handleRequestAction(n, 'accept'); }}
+                                    >
+                                      Accept
+                                    </button>
+                                    <button 
+                                      style={{ flex: 1, padding: '6px', background: '#efefef', color: 'var(--text-main)', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer', fontSize: '12px' }}
+                                      onClick={(e) => { e.stopPropagation(); handleRequestAction(n, 'reject'); }}
+                                    >
+                                      Reject
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
                           </div>
                         ))
                       )}

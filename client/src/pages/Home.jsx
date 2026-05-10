@@ -94,19 +94,19 @@ export default function Home() {
   ];
 
   return (
-    <div className="w-full flex justify-center pb-20 pt-4">
+    <div style={{ width: '100%', display: 'flex', justifyContent: 'center', paddingBottom: '80px', paddingTop: '16px' }}>
       <div className="feed-layout-centered">
         <StoriesBar />
         <CreatePost onPost={handleAddPost} user={user} />
 
         {loading ? (
-          <div className="mt-8 space-y-6">
+          <div style={{ marginTop: '32px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
             <PostSkeleton />
             <PostSkeleton />
             <PostSkeleton />
           </div>
         ) : (
-          <div className="space-y-4 mt-2">
+          <div style={{ marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
             {(posts.length > 0 ? posts : demoPosts).map((post) => (
               <PostCard 
                 key={post._id} 

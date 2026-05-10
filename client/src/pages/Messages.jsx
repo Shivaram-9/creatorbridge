@@ -4,6 +4,7 @@ import { api } from "../services/api.js";
 import ErrorBanner from "../components/ErrorBanner.jsx";
 import Avatar from "../components/Avatar.jsx";
 import Chat from "./Chat.jsx";
+import "./Messages.css";
 
 export default function Messages() {
   const [conversations, setConversations] = useState([]);

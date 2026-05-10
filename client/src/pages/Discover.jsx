@@ -77,46 +77,38 @@ export default function Discover() {
   if (loading) return <LoadingSpinner centered />;
 
   return (
-    <div className="discover-v2 slide-fade-in">
-
-      <header className="page-header-block">
-        <h1 className="page-title-main">Intelligent Search</h1>
-        <p className="page-subtitle-main">Smart recommendations based on your behavior and interests.</p>
-      </header>
-
-
+    <div className="discover-v2 slide-fade-in" style={{ width: '100%', maxWidth: '935px', margin: '0 auto', paddingTop: '20px' }}>
       <ErrorBanner message={error} onDismiss={() => setError("")} />
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '2px', padding: '2px' }}>
-          {discovery.trendingPosts.length > 0 ? (
-            discovery.trendingPosts.map(post => (
-              <div key={post._id} style={{ aspectRatio: '1/1', position: 'relative', overflow: 'hidden', cursor: 'pointer' }}>
-                <img 
-                  src={post.media?.[0]?.startsWith('http') ? post.media[0] : `${api.BASE_URL}${post.media?.[0] || '/default-post.jpg'}`} 
-                  alt="" 
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                  onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&w=300&q=80" }}
-                />
-                <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.3)', opacity: 0, transition: 'opacity 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold' }}
-                     onMouseEnter={e => e.currentTarget.style.opacity = 1}
-                     onMouseLeave={e => e.currentTarget.style.opacity = 0}>
-                  ❤️ {post.likes?.length || 0}
-                </div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '4px', padding: '0 10px' }}>
+        {discovery.trendingPosts.length > 0 ? (
+          discovery.trendingPosts.map(post => (
+            <div key={post._id} style={{ aspectRatio: '1/1', position: 'relative', overflow: 'hidden', cursor: 'pointer', background: '#efefef' }}>
+              <img 
+                src={post.media?.[0]?.startsWith('http') ? post.media[0] : `${api.BASE_URL}${post.media?.[0] || '/default-post.jpg'}`} 
+                alt="" 
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&w=300&q=80" }}
+              />
+              <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.3)', opacity: 0, transition: 'opacity 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold' }}
+                   onMouseEnter={e => e.currentTarget.style.opacity = 1}
+                   onMouseLeave={e => e.currentTarget.style.opacity = 0}>
+                ❤️ {post.likes?.length || 0}
               </div>
-            ))
-          ) : (
-            // Demo Instagram-style explore grid items
-            [1,2,3,4,5,6,7,8,9,10,11,12].map(i => (
-              <div key={i} style={{ aspectRatio: '1/1', position: 'relative', overflow: 'hidden', cursor: 'pointer' }}>
-                <img 
-                  src={`https://images.unsplash.com/photo-${1500000000000 + i}?auto=format&fit=crop&w=300&q=80`} 
-                  alt="Explore" 
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                />
-              </div>
-            ))
-          )}
-        </div>
+            </div>
+          ))
+        ) : (
+          // Demo Instagram-style explore grid items
+          [1,2,3,4,5,6,7,8,9,10,11,12].map(i => (
+            <div key={i} style={{ aspectRatio: '1/1', position: 'relative', overflow: 'hidden', cursor: 'pointer', background: '#efefef' }}>
+              <img 
+                src={`https://images.unsplash.com/photo-${1500000000000 + i}?auto=format&fit=crop&w=300&q=80`} 
+                alt="Explore" 
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
