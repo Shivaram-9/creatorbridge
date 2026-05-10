@@ -9,6 +9,7 @@ import PortfolioGrid from "../components/PortfolioGrid.jsx";
 import { ShareIcon } from "../components/Icons.jsx";
 import Avatar from "../components/Avatar.jsx";
 import VerifiedBadge from "../components/VerifiedBadge.jsx";
+import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import { PostSkeleton } from "../components/Skeleton.jsx";
 
 function fmtFollowers(n) {
