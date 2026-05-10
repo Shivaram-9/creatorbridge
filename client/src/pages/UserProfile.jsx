@@ -11,6 +11,7 @@ import Avatar from "../components/Avatar.jsx";
 import VerifiedBadge from "../components/VerifiedBadge.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import { PostSkeleton } from "../components/Skeleton.jsx";
+import "./UserProfile.css";
 
 function fmtFollowers(n) {
   if (!n || n <= 0) return null;

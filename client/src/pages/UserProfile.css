@@ -1,0 +1,238 @@
+/* UserProfile.css - Premium Centered Layout */
+.up-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px 16px 100px;
+}
+
+.up-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  transition: color 0.2s;
+}
+
+.up-back:hover {
+  color: var(--primary);
+}
+
+.up-hero {
+  position: relative;
+  background: white;
+  border-radius: 24px;
+  border: 1px solid var(--border-light);
+  overflow: hidden;
+  margin-bottom: 32px;
+  box-shadow: var(--shadow-premium);
+}
+
+.up-hero__gradient {
+  height: 120px;
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  opacity: 0.1;
+}
+
+.up-hero__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 24px 40px;
+  margin-top: -60px;
+  text-align: center;
+}
+
+.up-avatar {
+  position: relative;
+  margin-bottom: 20px;
+  padding: 4px;
+  background: white;
+  border-radius: 50%;
+}
+
+.up-avatar-main {
+  border: 4px solid white;
+  box-shadow: var(--shadow-md);
+}
+
+.up-avatar__role-dot {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  background: #10b981; /* Influencer Green */
+  border: 4px solid white;
+  border-radius: 50%;
+}
+
+.up-avatar__role-dot--brand {
+  background: #3b82f6; /* Brand Blue */
+}
+
+.up-name {
+  font-size: 28px;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.up-username {
+  font-size: 16px;
+  color: #64748b;
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+
+.up-tags {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.up-cat-badge {
+  background: #f1f5f9;
+  color: #475569;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.up-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.up-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.up-stat {
+  background: white;
+  padding: 20px;
+  border-radius: 16px;
+  border: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.up-stat:hover {
+  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.up-stat__value {
+  font-size: 20px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.up-stat__label {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+}
+
+.up-section {
+  margin-bottom: 40px;
+}
+
+.up-section__title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 16px;
+}
+
+.up-section__card {
+  background: white;
+  border-radius: 20px;
+  border: 1px solid var(--border-light);
+  padding: 24px;
+  box-shadow: var(--shadow-premium);
+}
+
+.up-section__card--flush {
+  padding: 4px;
+  overflow: hidden;
+}
+
+.up-bio {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #334155;
+  margin-bottom: 20px;
+  white-space: pre-wrap;
+}
+
+.up-detail-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.up-detail {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.private-account-message {
+  background: white;
+  border-radius: 20px;
+  padding: 48px 24px;
+  text-align: center;
+  border: 1px solid var(--border-light);
+}
+
+.private-account-message .icon {
+  font-size: 40px;
+  margin-bottom: 16px;
+}
+
+.private-account-message h3 {
+  font-size: 20px;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 8px;
+}
+
+.private-account-message p {
+  color: #64748b;
+}
+
+.profile-more-actions {
+  position: relative;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .up-hero { border-radius: 0; margin: -24px -16px 24px; border-left: 0; border-right: 0; }
+  .up-stats { gap: 8px; }
+  .up-stat { padding: 12px; }
+  .up-stat__value { font-size: 18px; }
+  .up-stat__label { font-size: 10px; }
+}
