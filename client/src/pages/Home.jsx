@@ -61,11 +61,9 @@ export default function Home() {
   };
 
   return (
-    <div className="w-full">
-      <header className="page-header-block">
-        <h1 className="page-title-main">Feed</h1>
-        <p className="page-subtitle-main">Explore the latest from your network.</p>
-      </header>
+    <div className="w-full flex justify-center pb-20">
+      <div className="feed-layout-centered">
+        {/* We can remove the page-header-block completely for a cleaner Instagram look, or keep it minimal */}
 
       <StoriesBar />
       <CreatePost onPost={handleAddPost} user={user} />
@@ -93,6 +91,7 @@ export default function Home() {
           ))}
         </div>
       )}
+      </div>
     </div>
   );
 }

@@ -5,31 +5,31 @@ export default function BottomNav({ msgUnreadCount }) {
   return (
     <nav className="bottom-nav-fixed">
       <div className="bottom-nav-inner">
-        <NavLink to="/home" className={({ isActive }) => `nav-tab-pro ${isActive ? "active" : ""}`}>
+        <NavLink to="/home" className={({ isActive }) => `nav-tab-pro ${isActive ? "active" : "text-gray-500"}`}>
           <HomeIcon />
-          <span className="nav-tab-label">Home</span>
+          <span className="text-[10px] font-medium mt-1">Home</span>
         </NavLink>
         
-        <NavLink to="/discover" className={({ isActive }) => `nav-tab-pro ${isActive ? "active" : ""}`}>
+        <NavLink to="/discover" className={({ isActive }) => `nav-tab-pro ${isActive ? "active" : "text-gray-500"}`}>
           <UsersIcon />
-          <span className="nav-tab-label">Discover</span>
+          <span className="text-[10px] font-medium mt-1">Discover</span>
         </NavLink>
         
-        <NavLink to="/messages" className={({ isActive }) => `nav-tab-pro ${isActive ? "active" : ""}`}>
+        <NavLink to="/messages" className={({ isActive }) => `nav-tab-pro ${isActive ? "active" : "text-gray-500"}`}>
           <div className="relative">
             <MessageIcon />
             {msgUnreadCount > 0 && (
-              <span className="absolute -top-1 -right-2 w-4 h-4 bg-indigo-600 text-white text-[9px] flex items-center justify-center rounded-full border border-white font-bold">
+              <span className="absolute -top-1 -right-2 w-4 h-4 bg-red-500 text-white text-[9px] flex items-center justify-center rounded-full font-bold">
                 {msgUnreadCount > 9 ? "9+" : msgUnreadCount}
               </span>
             )}
           </div>
-          <span className="nav-tab-label">Messages</span>
+          <span className="text-[10px] font-medium mt-1">Messages</span>
         </NavLink>
         
-        <NavLink to="/profile" className={({ isActive }) => `nav-tab-pro ${isActive ? "active" : ""}`}>
+        <NavLink to="/profile" className={({ isActive }) => `nav-tab-pro ${isActive ? "active" : "text-gray-500"}`}>
           <ProfileIcon />
-          <span className="nav-tab-label">Profile</span>
+          <span className="text-[10px] font-medium mt-1">Profile</span>
         </NavLink>
       </div>
     </nav>

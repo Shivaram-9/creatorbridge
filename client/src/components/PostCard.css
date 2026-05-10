@@ -1,134 +1,188 @@
+/* PostCard Modern Styling */
 .post-card {
-  background: white;
-  border-radius: 12px;
-  border: 1px solid #efefef;
-  margin-bottom: 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  margin-bottom: 15px;
   overflow: hidden;
-}
-
-.post-card.pinned {
-  border: 2px solid #000;
+  display: flex;
+  flex-direction: column;
 }
 
 .post-header {
   display: flex;
   align-items: center;
   padding: 12px 16px;
-  gap: 12px;
+  border-bottom: 1px solid var(--border-light);
 }
 
 .post-info {
+  margin-left: 12px;
   flex: 1;
 }
 
 .post-username {
   font-size: 14px;
-  font-weight: 700;
-  margin: 0;
+  font-weight: 600;
+  color: var(--text-main);
   display: flex;
   align-items: center;
   gap: 4px;
   cursor: pointer;
+  margin: 0;
+}
+
+.post-username:hover {
+  text-decoration: underline;
 }
 
 .post-meta {
   font-size: 12px;
-  color: #8e8e8e;
+  color: var(--text-muted);
   display: flex;
-  gap: 4px;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
 }
 
 .post-menu-container {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 8px;
-  position: relative;
+  gap: 12px;
 }
 
 .pin-indicator {
-  font-size: 11px;
-  font-weight: 700;
-  background: #f3f4f6;
-  padding: 2px 8px;
-  border-radius: 12px;
+  font-size: 12px;
+  color: var(--text-muted);
+  background: var(--bg-main);
+  padding: 4px 8px;
+  border-radius: var(--radius-full);
 }
 
 .btn-menu {
   background: none;
   border: none;
-  padding: 4px;
   cursor: pointer;
+  color: var(--text-main);
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .dropdown-menu {
   position: absolute;
   top: 100%;
   right: 0;
-  background: white;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  border-radius: 8px;
-  padding: 4px;
-  z-index: 100;
-  min-width: 150px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  width: 160px;
+  z-index: 10;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .dropdown-menu button {
-  width: 100%;
-  text-align: left;
-  padding: 8px 12px;
   background: none;
   border: none;
-  font-size: 13px;
-  font-weight: 600;
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 14px;
   cursor: pointer;
-  border-radius: 4px;
+  transition: background 0.2s;
+  color: var(--text-main);
 }
 
 .dropdown-menu button:hover {
-  background: #f9fafb;
+  background: var(--bg-main);
 }
 
-.dropdown-menu .text-danger { color: #ef4444; }
+.dropdown-menu button.text-danger {
+  color: #ed4956;
+  font-weight: 600;
+}
+
+.post-content {
+  padding: 0;
+}
 
 .post-text {
-  padding: 0 16px 12px;
   font-size: 14px;
-  margin: 0;
   line-height: 1.5;
+  color: var(--text-main);
+  padding: 12px 16px;
+  margin: 0;
 }
 
 .post-hashtags {
   margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
 }
 
 .hashtag {
   color: #00376b;
-  font-weight: 600;
+  cursor: pointer;
+}
+
+.hashtag:hover {
+  text-decoration: underline;
 }
 
 .post-actions {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
+  padding: 8px 16px;
 }
 
 .post-actions__left {
   display: flex;
+  align-items: center;
   gap: 16px;
 }
 
 .post-action-btn {
   background: none;
   border: none;
+  cursor: pointer;
   display: flex;
   align-items: center;
   gap: 6px;
   padding: 0;
-  cursor: pointer;
+  color: var(--text-main);
+  transition: transform 0.2s ease;
+  font-size: 14px;
+  font-weight: 600;
 }
 
-.post-action-btn.liked { color: #ed4956; }
-.post-action-btn.saved { color: #000; }
+.post-action-btn:hover {
+  color: var(--text-muted);
+}
+
+.post-action-btn:active {
+  transform: scale(0.9);
+}
+
+.post-action-btn svg {
+  width: 24px;
+  height: 24px;
+}
+
+.post-action-btn.liked svg {
+  color: #ed4956;
+  fill: #ed4956;
+}
+
+.post-action-btn.saved svg {
+  color: var(--text-main);
+  fill: var(--text-main);
+}
 
 .post-footer {
   padding: 0 16px 16px;
@@ -136,58 +190,84 @@
 
 .post-likes {
   font-size: 14px;
-  font-weight: 600;
+  color: var(--text-main);
   margin-bottom: 8px;
   cursor: pointer;
 }
 
+.post-likes strong {
+  font-weight: 600;
+}
+
 .post-comments {
-  border-top: 1px solid #efefef;
-  padding-top: 12px;
-  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .comment-item {
-  font-size: 13px;
-  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+.comment-item strong {
+  font-weight: 600;
+  margin-right: 4px;
 }
 
 .comment-form {
   display: flex;
-  margin-top: 12px;
-  gap: 12px;
+  align-items: center;
+  margin-top: 8px;
+  border-top: 1px solid var(--border-light);
+  padding-top: 12px;
 }
 
 .comment-form input {
   flex: 1;
   border: none;
-  font-size: 13px;
+  background: transparent;
   outline: none;
+  font-size: 14px;
+  padding: 0;
 }
 
 .comment-form button {
   background: none;
   border: none;
-  color: #0095f6;
-  font-weight: 700;
-  font-size: 13px;
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 14px;
   cursor: pointer;
 }
 
-.comment-form button:disabled { opacity: 0.3; }
+.comment-form button:disabled {
+  color: #b3dbff;
+  cursor: default;
+}
+
+.slide-in {
+  animation: slideIn 0.3s ease-out forwards;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
 .edit-box {
-  padding: 0 16px 12px;
+  padding: 12px 16px;
 }
 
 .edit-box textarea {
   width: 100%;
-  padding: 8px;
-  border: 1px solid #efefef;
-  border-radius: 8px;
-  font-size: 14px;
-  resize: vertical;
+  min-height: 80px;
+  padding: 12px;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
   outline: none;
+  resize: vertical;
+  font-family: inherit;
+  font-size: 14px;
 }
 
 .edit-btns {
@@ -198,16 +278,21 @@
 }
 
 .edit-btns button {
-  padding: 4px 12px;
-  font-size: 13px;
+  padding: 6px 16px;
+  border-radius: var(--radius-md);
+  font-size: 14px;
   font-weight: 600;
-  border-radius: 4px;
   cursor: pointer;
-  border: 1px solid #efefef;
+}
+
+.edit-btns button:first-child {
+  background: var(--bg-main);
+  border: 1px solid var(--border-light);
+  color: var(--text-main);
 }
 
 .edit-btns button:last-child {
-  background: #000;
-  color: white;
+  background: var(--primary);
   border: none;
+  color: white;
 }

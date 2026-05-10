@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { BellIcon, MenuIcon, SearchIcon, MessageIcon } from "./Icons.jsx";
+import { BellIcon, SearchIcon, MessageIcon } from "./Icons.jsx";
 import { getSocket } from "../services/socket.js";
 import Avatar from "./Avatar.jsx";
 import SearchDropdown from "./SearchDropdown.jsx";
@@ -136,70 +136,69 @@ export default function Navbar({
   return (
     <header className="navbar-fixed">
       <div className="navbar-inner">
-        <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+        <div style={{ flex: '1 0 0' }}>
           <Link to="/home" className="logo-main-text">
             CreatorBridge
           </Link>
         </div>
 
         {user && (
-          <>
-            <div style={{ flex: 1, display: 'flex', justifyContent: 'center', margin: '0 24px' }}>
-              <form style={{ position: 'relative', width: '100%', maxWidth: '440px' }} onSubmit={handleSearch} ref={searchRef}>
-                <span style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }}>
-                  <SearchIcon />
-                </span>
-                <input
-                  type="text"
-                  style={{ width: '100%', height: '44px', background: '#f8fafc', border: '1px solid #f1f5f9', borderRadius: '12px', padding: '0 16px 0 48px', fontSize: '14px', outline: 'none' }}
-                  placeholder="Search creators & brands..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onFocus={() => setIsSearchOpen(true)}
+          <div className="search-input-container" ref={searchRef}>
+            <form onSubmit={handleSearch}>
+              <span className="search-icon">
+                <SearchIcon />
+              </span>
+              <input
+                type="text"
+                className="search-input"
+                placeholder="Search"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onFocus={() => setIsSearchOpen(true)}
+              />
+              {isSearchOpen && (
+                <SearchDropdown 
+                  results={searchResults} 
+                  loading={searchLoading} 
+                  onClose={() => setIsSearchOpen(false)}
+                  onItemClick={(item) => {
+                    if (!item) return;
+                    setIsSearchOpen(false);
+                    setSearchQuery("");
+                  }}
                 />
-                {isSearchOpen && (
-                  <SearchDropdown 
-                    results={searchResults} 
-                    loading={searchLoading} 
-                    onClose={() => setIsSearchOpen(false)}
-                    onItemClick={(item) => {
-                      if (!item) return;
-                      setIsSearchOpen(false);
-                      setSearchQuery("");
-                    }}
-                  />
-                )}
-              </form>
-            </div>
+              )}
+            </form>
+          </div>
+        )}
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <div style={{ position: 'relative' }} ref={notifRef}>
-                <button 
-                  style={{ padding: '10px', borderRadius: '12px', background: 'none', border: 'none', cursor: 'pointer', position: 'relative', color: '#475569' }} 
-                  onClick={() => setNotifOpen(!notifOpen)}
-                >
-                  <BellIcon />
+        <div style={{ flex: '1 0 0', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '16px' }}>
+          {user && (
+            <>
+              <div className="relative" ref={notifRef}>
+                <button className="nav-icon-btn" onClick={() => setNotifOpen(!notifOpen)}>
+                  <BellIcon filled={notifOpen} />
                   {unreadCount > 0 && (
-                    <span style={{ position: 'absolute', top: '8px', right: '8px', width: '16px', height: '16px', background: '#6366f1', color: 'white', fontSize: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', border: '2px solid white', fontWeight: '700' }}>
-                      {unreadCount}
+                    <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[10px] flex items-center justify-center rounded-full font-bold">
+                      {unreadCount > 9 ? "9+" : unreadCount}
                     </span>
                   )}
                 </button>
                 {notifOpen && (
-                  <div className="dropdown-card-pro fade-up" style={{ position: 'absolute', top: '50px', right: 0, width: '320px', background: 'white', borderRadius: '16px', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.1)', overflow: 'hidden' }}>
-                    <div style={{ padding: '16px', borderBottom: '1px solid #f1f5f9', fontWeight: '700', color: '#1e293b' }}>Notifications</div>
-                    <div style={{ maxHeight: '320px', overflowY: 'auto' }}>
+                  <div className="absolute top-12 right-0 w-80 bg-white rounded-lg shadow-premium border border-gray-100 overflow-hidden fade-up">
+                    <div className="p-4 border-b border-gray-100 font-bold text-gray-800">Notifications</div>
+                    <div className="max-h-80 overflow-y-auto">
                       {(!notifications || notifications.length === 0) ? (
-                        <div style={{ padding: '24px', textAlign: 'center', color: '#94a3b8', fontSize: '14px' }}>No notifications</div>
+                        <div className="p-6 text-center text-gray-500 text-sm">No notifications</div>
                       ) : (
                         notifications.map(n => (
                           <div 
                             key={n?._id} 
-                            style={{ padding: '16px', borderBottom: '1px solid #f8fafc', cursor: 'pointer', background: !n?.read ? 'rgba(99,102,241,0.03)' : 'white' }}
+                            className={`p-4 border-b border-gray-50 cursor-pointer hover:bg-gray-50 transition-colors ${!n?.read ? 'bg-blue-50/50' : 'bg-white'}`}
                             onClick={() => handleNotifClick(n)}
                           >
-                            <p style={{ fontSize: '14px', color: '#334155', margin: 0, lineHeight: '1.4' }}>{n?.message}</p>
-                            <span style={{ fontSize: '10px', color: '#94a3b8', marginTop: '6px', display: 'block' }}>{n?.createdAt ? formatTime(n.createdAt) : ""}</span>
+                            <p className="text-sm text-gray-800 m-0 leading-snug">{n?.message}</p>
+                            <span className="text-xs text-gray-500 mt-1 block">{n?.createdAt ? formatTime(n.createdAt) : ""}</span>
                           </div>
                         ))
                       )}
@@ -208,41 +207,44 @@ export default function Navbar({
                 )}
               </div>
 
-              <Link to="/messages" style={{ padding: '10px', borderRadius: '12px', color: '#475569', position: 'relative' }}>
+              <Link to="/messages" className="nav-icon-btn relative">
                 <MessageIcon />
                 {msgUnreadCount > 0 && (
-                  <span style={{ position: 'absolute', top: '8px', right: '8px', width: '16px', height: '16px', background: '#6366f1', color: 'white', fontSize: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', border: '2px solid white', fontWeight: '700' }}>
-                    {msgUnreadCount}
+                  <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[10px] flex items-center justify-center rounded-full font-bold">
+                    {msgUnreadCount > 9 ? "9+" : msgUnreadCount}
                   </span>
                 )}
               </Link>
 
-              <div style={{ position: 'relative' }} ref={menuRef}>
+              <div className="relative" ref={menuRef}>
                 <button
-                  style={{ padding: '2px', borderRadius: '50%', background: 'none', border: 'none', cursor: 'pointer', position: 'relative' }}
+                  className="bg-transparent border-none cursor-pointer relative"
+                  style={{ padding: '2px' }}
                   onClick={() => setMenuOpen(!menuOpen)}
                 >
-                  <Avatar user={user} size="sm" />
-                  <span style={{ position: 'absolute', bottom: 0, right: 0, width: '12px', height: '12px', borderRadius: '50%', border: '2px solid white', background: socketStatus === 'online' ? '#10b981' : socketStatus === 'connecting' ? '#f59e0b' : '#ef4444' }} />
+                  <div className={`rounded-full p-[2px] transition-all ${menuOpen ? 'border border-gray-400' : 'border border-transparent'}`}>
+                    <Avatar user={user} size="sm" />
+                  </div>
+                  <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white ${socketStatus === 'online' ? 'bg-green-500' : socketStatus === 'connecting' ? 'bg-yellow-500' : 'bg-red-500'}`} />
                 </button>
                 {menuOpen && (
-                  <div className="dropdown-card-pro fade-up" style={{ position: 'absolute', top: '50px', right: 0, width: '220px', background: 'white', borderRadius: '16px', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.1)', padding: '8px 0' }}>
-                    <Link to="/profile" style={{ display: 'block', padding: '12px 16px', fontSize: '14px', color: '#334155', fontWeight: '600' }} onClick={() => setMenuOpen(false)}>My Profile</Link>
-                    <Link to="/requests" style={{ display: 'block', padding: '12px 16px', fontSize: '14px', color: '#334155', fontWeight: '600' }} onClick={() => setMenuOpen(false)}>Align Requests</Link>
-                    <Link to="/settings" style={{ display: 'block', padding: '12px 16px', fontSize: '14px', color: '#334155', fontWeight: '600' }} onClick={() => setMenuOpen(false)}>Settings</Link>
-                    <div style={{ height: '1px', background: '#f1f5f9', margin: '8px 0' }}></div>
+                  <div className="absolute top-12 right-0 w-48 bg-white rounded-lg shadow-premium border border-gray-100 py-2 fade-up">
+                    <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-black transition-colors" onClick={() => setMenuOpen(false)}>Profile</Link>
+                    <Link to="/saved" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-black transition-colors" onClick={() => setMenuOpen(false)}>Saved</Link>
+                    <Link to="/settings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-black transition-colors" onClick={() => setMenuOpen(false)}>Settings</Link>
+                    <div className="h-px bg-gray-100 my-2"></div>
                     <button
-                      style={{ width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: '12px 16px', fontSize: '14px', color: '#ef4444', fontWeight: '700', cursor: 'pointer' }}
+                      className="w-full text-left bg-transparent border-none px-4 py-2 text-sm text-red-500 hover:bg-gray-50 transition-colors cursor-pointer"
                       onClick={() => { setMenuOpen(false); logout(); }}
                     >
-                      Logout
+                      Log out
                     </button>
                   </div>
                 )}
               </div>
-            </div>
-          </>
-        )}
+            </>
+          )}
+        </div>
       </div>
     </header>
   );
