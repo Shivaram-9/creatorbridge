@@ -159,7 +159,7 @@ body {
   height: var(--bottom-nav-height);
   background: #ffffff;
   border-top: 1px solid var(--border-light);
-  z-index: 1000;
+  z-index: 9999;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -219,7 +219,6 @@ body {
 @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
 @media (min-width: 768px) {
-  .bottom-nav-fixed { display: none; }
   .navbar-inner { padding: 0 40px; }
   .feed-layout-centered { margin-top: 30px; }
 }
