@@ -31,22 +31,22 @@ export default function PortfolioGrid({ items = [], onDelete }) {
   return (
     <>
       <div className="portfolio-grid" role="list" aria-label="Posts">
-        {items.map((item, idx) => (
+        {items.filter(item => !!item).map((item, idx) => (
           <button
-            key={item._id || idx}
+            key={item?._id || item?.id || idx}
             type="button"
             className="portfolio-cell"
             onClick={() => setViewIdx(idx)}
-            aria-label={item.caption || item.content || `Post ${idx + 1}`}
+            aria-label={item?.caption || item?.content || `Post ${idx + 1}`}
           >
-            {item.mediaType === "video" ? (
+            {item?.mediaType === "video" ? (
               <div className="portfolio-cell__video-thumb">
                 <span className="portfolio-cell__play" aria-hidden="true">▶</span>
               </div>
             ) : (
               <img 
                 src={getMediaUrl(item)} 
-                alt={item.caption || item.content || ""} 
+                alt={item?.caption || item?.content || ""} 
                 className="portfolio-cell__img" 
                 loading="lazy" 
                 style={{ transition: 'opacity 0.3s' }}

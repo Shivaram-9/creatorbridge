@@ -216,18 +216,18 @@ export default function Navbar({
                       {(!notifications || notifications.length === 0) ? (
                         <div className="p-6 text-center text-gray-500 text-sm">No notifications</div>
                       ) : (
-                        notifications.map(n => (
+                        notifications.map(n => n && (
                           <div 
-                            key={n?._id} 
-                            className={`p-4 border-b border-gray-50 hover:bg-gray-50 transition-colors ${!n?.read ? 'bg-blue-50/50' : 'bg-white'}`}
+                            key={n._id} 
+                            className={`p-4 border-b border-gray-50 hover:bg-gray-50 transition-colors ${!n.read ? 'bg-blue-50/50' : 'bg-white'}`}
                           >
                             <div className="flex gap-3" onClick={() => handleNotifClick(n)} style={{ cursor: n.type === 'align_request' ? 'default' : 'pointer' }}>
                               <Avatar user={n.sender} size="sm" />
                               <div style={{ flex: 1 }}>
                                 <p className="text-sm text-gray-800 m-0 leading-snug">
-                                  <strong>{n.sender?.username || n.sender?.name}</strong> {n?.message}
+                                  <strong>{n.sender?.username || n.sender?.name || "User"}</strong> {n.message}
                                 </p>
-                                <span className="text-xs text-gray-500 mt-1 block">{n?.createdAt ? formatTime(n.createdAt) : ""}</span>
+                                <span className="text-xs text-gray-500 mt-1 block">{n.createdAt ? formatTime(n.createdAt) : ""}</span>
                                 
                                 {n.type === "align_request" && !n.read && (
                                   <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>

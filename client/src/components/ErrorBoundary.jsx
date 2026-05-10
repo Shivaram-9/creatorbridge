@@ -3,11 +3,11 @@ import React from 'react';
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { hasError: false };
+    this.state = { hasError: false, error: null };
   }
 
   static getDerivedStateFromError(error) {
-    return { hasError: true };
+    return { hasError: true, error };
   }
 
   componentDidCatch(error, errorInfo) {
@@ -29,12 +29,18 @@ class ErrorBoundary extends React.Component {
         }}>
           <h1 style={{ fontSize: '4rem', marginBottom: '1rem' }}>⚠️</h1>
           <h2 style={{ fontSize: '1.5rem', color: '#1e293b' }}>Something went wrong.</h2>
-          <p style={{ color: '#64748b', marginBottom: '2rem', maxWidth: '400px' }}>
-            The platform encountered an unexpected error. We've been notified and are working on it.
+          <p style={{ color: '#64748b', marginBottom: '1rem', maxWidth: '400px' }}>
+            The platform encountered an unexpected error.
           </p>
+          {process.env.NODE_ENV === 'development' && this.state.error && (
+            <pre style={{ textAlign: 'left', fontSize: '10px', background: '#eee', padding: '10px', borderRadius: '4px', overflow: 'auto', maxWidth: '90vw' }}>
+              {this.state.error.toString()}
+            </pre>
+          )}
           <button 
             className="btn btn-primary" 
             onClick={() => window.location.href = '/home'}
+            style={{ marginTop: '1rem' }}
           >
             Back to Home
           </button>

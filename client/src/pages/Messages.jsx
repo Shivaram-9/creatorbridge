@@ -41,12 +41,12 @@ export default function Messages() {
   }, [userId]);
 
   const filteredConversations = conversations.filter(conv => {
+    if (!conv || !conv.partner) return false;
     const q = searchQuery.toLowerCase();
-    const partner = conv.partner || {};
-    return (
-      (partner.username?.toLowerCase().includes(q)) ||
-      (partner.name?.toLowerCase().includes(q))
-    );
+    const partner = conv.partner;
+    const username = (partner.username || "").toLowerCase();
+    const name = (partner.name || "").toLowerCase();
+    return username.includes(q) || name.includes(q);
   });
 
   const formatTime = (date) => {

@@ -191,7 +191,11 @@ export const api = {
   discovery: {
     getSuggested: () => request("/discovery/suggested"),
     getTrending: () => request("/discovery/trending"),
-    search: (q, type) => request(`/discovery/search?q=${encodeURIComponent(q || "")}${type ? `&type=${type}` : ""}`),
+    search: (q, options = {}) => {
+      const type = typeof options === 'string' ? options : options.type;
+      const signal = options.signal;
+      return request(`/discovery/search?q=${encodeURIComponent(q || "")}${type ? `&type=${type}` : ""}`, { signal });
+    },
     trackView: (targetId, category) => request("/discovery/track-view", { method: "POST", body: { targetId, category } }),
   },
   privacy: {

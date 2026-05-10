@@ -91,8 +91,13 @@ export default function Discover() {
   }, []);
 
   const filteredUsers = allUsers.filter(u => {
+    if (!u) return false;
     const q = searchQuery.toLowerCase();
-    const matchSearch = !q || (u.name?.toLowerCase().includes(q) || u.username?.toLowerCase().includes(q) || u.bio?.toLowerCase().includes(q));
+    const name = (u.name || "").toLowerCase();
+    const username = (u.username || "").toLowerCase();
+    const bio = (u.bio || "").toLowerCase();
+    
+    const matchSearch = !q || (name.includes(q) || username.includes(q) || bio.includes(q));
     const matchCategory = activeCategory === "All" || u.category === activeCategory;
     const matchRole = activeRole === "all" || u.role === activeRole;
     return matchSearch && matchCategory && matchRole;

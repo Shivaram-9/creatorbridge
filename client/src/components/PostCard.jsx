@@ -44,6 +44,8 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
   const [showReportModal, setShowReportModal] = useState(false);
   const [showCollectionModal, setShowCollectionModal] = useState(false);
 
+  if (!post) return null;
+
   const isOwner = user?._id === (post.user?._id || post.user);
 
   const handleDelete = async () => {
