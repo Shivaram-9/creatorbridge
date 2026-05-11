@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext.jsx";
-import { api } from "../services/api.js";
+import { api, getToken } from "../services/api.js";
 import ErrorBanner from "../components/ErrorBanner.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import "./Settings.css";
@@ -109,7 +109,7 @@ export default function Settings() {
   const logoutOthers = async () => {
     try {
       await api.security.logoutOthers();
-      const currentToken = api.getToken();
+      const currentToken = getToken();
       setSessions(prev => prev.filter(s => s.token === currentToken));
       setSuccess("Logged out from all other devices");
     } catch {
@@ -221,9 +221,9 @@ export default function Settings() {
                       <p className="session-meta">
                         {sess.device?.ip || 'Unknown IP'} • Last active {sess.lastUsed ? new Date(sess.lastUsed).toLocaleString() : 'Recently'}
                       </p>
-                      {sess.token === api.getToken() && <span className="current-badge">This device</span>}
+                      {sess.token === getToken() && <span className="current-badge">This device</span>}
                     </div>
-                    {sess.token !== api.getToken() && (
+                    {sess.token !== getToken() && (
                       <button className="btn-text danger" onClick={() => revokeSession(sess._id)}>Revoke</button>
                     )}
                   </div>
