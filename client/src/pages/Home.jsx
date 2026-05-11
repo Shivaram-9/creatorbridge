@@ -184,6 +184,7 @@ export default function Home() {
             Discover Creators
           </button>
         </div>
+        </>
       )}
     </div>
   );
