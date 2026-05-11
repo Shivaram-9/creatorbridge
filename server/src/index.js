@@ -58,7 +58,8 @@ app.use(express.urlencoded({ extended: true }));
 // app.use("/api", apiLimiter);
 
 app.get("/api/health", (_, res) => {
-  res.json({ ok: true, name: "CreatorBridge API" });
+  // Health check - triggered at 2026-05-11
+  res.json({ ok: true, name: "CreatorBridge API", version: "1.0.1" });
 });
 
 // 3. Auth Routes (Bypassing limiter for now)

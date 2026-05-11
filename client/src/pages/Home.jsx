@@ -117,7 +117,15 @@ export default function Home() {
           ))}
         </div>
       ) : (
-        <div className="empty-state" style={{ marginTop: '60px' }}>
+        <div className="empty-state" style={{ 
+          marginTop: '60px', 
+          display: 'flex', 
+          flexDirection: 'column', 
+          alignItems: 'center', 
+          justifyContent: 'center',
+          textAlign: 'center',
+          width: '100%'
+        }}>
           <div style={{ fontSize: '48px', marginBottom: '16px' }}>🤝</div>
           <h2 style={{ fontSize: '24px', fontWeight: '800', color: '#0f172a', marginBottom: '8px' }}>Welcome! Your Alliance Feed is Empty</h2>
           <p style={{ color: '#64748b', maxWidth: '300px', margin: '0 auto 24px' }}>
