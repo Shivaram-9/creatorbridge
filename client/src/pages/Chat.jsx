@@ -68,7 +68,11 @@ export default function Chat({ standalone = true }) {
       const sid = msg.sender?._id || msg.sender;
       const rid = msg.receiver?._id || msg.receiver;
       if ((sid === partnerId || rid === partnerId) && (sid === user?._id || rid === user?._id)) {
-        setMessages(prev => [...prev, msg]);
+        setMessages(prev => {
+          // Prevent duplicates by checking ID
+          if (msg._id && prev.some(m => m._id === msg._id)) return prev;
+          return [...prev, msg];
+        });
         setIsPartnerTyping(false);
         if (rid === user?._id) api.messages.markAsRead(partnerId).catch(() => {});
       }
@@ -132,7 +136,10 @@ export default function Chat({ standalone = true }) {
         setError(msg.error);
         console.error("Message error:", msg.error);
       } else if (msg && msg._id) {
-        setMessages(prev => [...prev, msg]);
+        setMessages(prev => {
+          if (prev.some(m => m._id === msg._id)) return prev;
+          return [...prev, msg];
+        });
         setInput("");
         setSelectedFile(null);
         setPreviewUrl("");

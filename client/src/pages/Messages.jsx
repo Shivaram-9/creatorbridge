@@ -91,7 +91,11 @@ export default function Messages() {
       <aside className={`messages-sidebar-pro ${userId ? 'hidden-mobile' : ''}`}>
         <header className="sidebar-header-pro" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px' }}>
           <h1 style={{ fontSize: '1.2rem', fontWeight: 'bold', margin: 0 }}>Messages</h1>
-          <button style={{ padding: '8px', background: 'none', border: 'none', cursor: 'pointer' }}>
+          <button 
+            onClick={() => document.getElementById('message-search-input')?.focus()}
+            style={{ padding: '8px', background: 'none', border: 'none', cursor: 'pointer' }}
+            title="New Message"
+          >
             <svg style={{ width: '24px', height: '24px', color: 'var(--text-main)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
             </svg>
@@ -102,6 +106,7 @@ export default function Messages() {
           <div style={{ background: '#f5f5f5', borderRadius: '8px', padding: '8px 12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span style={{ color: '#8e8e8e' }}>🔍</span>
             <input 
+              id="message-search-input"
               type="text" 
               placeholder="Search people or messages" 
               style={{ background: 'transparent', border: 'none', outline: 'none', fontSize: '14px', width: '100%' }} 
