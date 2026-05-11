@@ -13,7 +13,8 @@ export default function Messages() {
   const { userId } = useParams();
   const navigate = useNavigate();
 
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
 
   useEffect(() => {
     async function fetchConversations() {
@@ -39,6 +40,27 @@ export default function Messages() {
     }
     fetchConversations();
   }, [userId]);
+
+  useEffect(() => {
+    async function searchUsers() {
+      if (!searchQuery.trim()) {
+        setSearchResults([]);
+        setIsSearching(false);
+        return;
+      }
+      setIsSearching(true);
+      try {
+        const results = await api.users.search(searchQuery);
+        setSearchResults(Array.isArray(results) ? results : []);
+      } catch {
+        console.error("Failed to search users");
+      } finally {
+        setIsSearching(false);
+      }
+    }
+    const timer = setTimeout(searchUsers, 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
   const filteredConversations = conversations.filter(conv => {
     if (!conv || !conv.partner) return false;
@@ -76,11 +98,11 @@ export default function Messages() {
         </header>
 
         <div style={{ padding: '0 20px 16px' }}>
-          <div style={{ background: '#efefef', borderRadius: '8px', padding: '8px 12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ background: '#f5f5f5', borderRadius: '8px', padding: '8px 12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span style={{ color: '#8e8e8e' }}>🔍</span>
             <input 
               type="text" 
-              placeholder="Search" 
+              placeholder="Search people or messages" 
               style={{ background: 'transparent', border: 'none', outline: 'none', fontSize: '14px', width: '100%' }} 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -88,23 +110,46 @@ export default function Messages() {
           </div>
         </div>
 
-        {/* Active Notes / Users row (Static UI per IG style) */}
-        <div style={{ display: 'flex', gap: '16px', overflowX: 'auto', padding: '0 20px 16px', borderBottom: '1px solid var(--border-light)' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
-            <div style={{ width: '60px', height: '60px', borderRadius: '50%', background: '#eee', position: 'relative' }}>
-              <span style={{ position: 'absolute', top: '-6px', left: '50%', transform: 'translateX(-50%)', background: 'white', border: '1px solid #dbdbdb', borderRadius: '12px', padding: '2px 8px', fontSize: '10px', boxShadow: '0 1px 2px rgba(0,0,0,0.1)', whiteSpace: 'nowrap' }}>Note...</span>
-            </div>
-            <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Your note</span>
-          </div>
-        </div>
-
         <ErrorBanner message={error} onDismiss={() => setError("")} />
 
         <div className="sidebar-scroll-area" style={{ flex: 1, overflowY: 'auto' }}>
+          {searchQuery && (
+            <div className="search-results-section" style={{ borderBottom: '1px solid var(--border-light)', marginBottom: '10px' }}>
+              <p style={{ padding: '0 20px 8px', fontSize: '12px', fontWeight: '600', color: '#94a3b8', textTransform: 'uppercase' }}>Profiles</p>
+              {isSearching ? (
+                <div style={{ padding: '10px 20px', fontSize: '13px', color: '#64748b' }}>Searching...</div>
+              ) : searchResults.length === 0 ? (
+                <div style={{ padding: '10px 20px', fontSize: '13px', color: '#64748b' }}>No profiles found</div>
+              ) : (
+                searchResults.map(user => (
+                  <div 
+                    key={user._id} 
+                    className={`chat-item-v3 search-result-item ${userId === user._id ? 'active' : ''}`}
+                    onClick={() => {
+                      setSearchQuery("");
+                      navigate(`/messages/${user._id}`);
+                    }}
+                    style={{ padding: '8px 20px' }}
+                  >
+                    <Avatar user={user} size="sm" />
+                    <div className="chat-item-info" style={{ marginLeft: '12px' }}>
+                      <span style={{ fontWeight: '600', fontSize: '14px', color: 'var(--text-main)' }}>{user.name || user.username}</span>
+                      <p style={{ fontSize: '12px', color: '#64748b', margin: 0 }}>@{user.username}</p>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          )}
+
+          {!searchQuery && (
+            <p style={{ padding: '0 20px 8px', fontSize: '12px', fontWeight: '600', color: '#94a3b8', textTransform: 'uppercase' }}>Recent</p>
+          )}
+
           {loading ? (
             <div style={{ padding: '48px', textAlign: 'center', color: '#94a3b8' }}>Loading chats...</div>
-          ) : filteredConversations.length === 0 ? (
-            <div style={{ padding: '48px', textAlign: 'center', color: '#94a3b8' }}>{searchQuery ? "No matches found." : "No messages yet."}</div>
+          ) : filteredConversations.length === 0 && !searchQuery ? (
+            <div style={{ padding: '48px', textAlign: 'center', color: '#94a3b8' }}>No messages yet.</div>
           ) : (
             filteredConversations.map(conv => conv && conv.partner && (
               <div 
