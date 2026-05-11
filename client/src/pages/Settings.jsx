@@ -192,14 +192,18 @@ export default function Settings() {
                   <h4>Active Sessions</h4>
                   <button className="btn-text danger" onClick={logoutOthers}>Logout from all other devices</button>
                 </div>
-                {sessions.map(sess => (
+                {Array.isArray(sessions) && sessions.map(sess => (
                   <div key={sess._id} className="session-item">
                     <div className="session-icon">
                       {sess.device?.type === 'mobile' ? '📱' : '💻'}
                     </div>
                     <div className="session-info">
-                      <p className="device-name">{sess.device?.os} • {sess.device?.browser}</p>
-                      <p className="session-meta">{sess.device?.ip} • Last active {new Date(sess.lastUsed).toLocaleString()}</p>
+                      <p className="device-name">
+                        {sess.device?.os || 'Unknown OS'} • {sess.device?.browser || 'Unknown Browser'}
+                      </p>
+                      <p className="session-meta">
+                        {sess.device?.ip || 'Unknown IP'} • Last active {sess.lastUsed ? new Date(sess.lastUsed).toLocaleString() : 'Recently'}
+                      </p>
                       {sess.token === api.getToken() && <span className="current-badge">This device</span>}
                     </div>
                     {sess.token !== api.getToken() && (
@@ -207,18 +211,19 @@ export default function Settings() {
                     )}
                   </div>
                 ))}
+                {(!sessions || sessions.length === 0) && <p className="empty-text">No active sessions found.</p>}
               </div>
 
               <div className="alerts-list">
                 <h4>Security Alerts</h4>
-                {alerts.length === 0 ? (
+                {!Array.isArray(alerts) || alerts.length === 0 ? (
                   <p className="empty-text">No recent security alerts.</p>
                 ) : (
                   alerts.map(alert => (
                     <div key={alert._id} className={`alert-item ${alert.isRead ? '' : 'unread'}`}>
                       <div className="alert-content">
                         <p className="alert-msg">{alert.message}</p>
-                        <p className="alert-date">{new Date(alert.createdAt).toLocaleString()}</p>
+                        <p className="alert-date">{alert.createdAt ? new Date(alert.createdAt).toLocaleString() : 'Just now'}</p>
                       </div>
                     </div>
                   ))
@@ -231,7 +236,7 @@ export default function Settings() {
             <div className="settings-section">
               <h3>Notification Preferences</h3>
               <div className="settings-list">
-                {Object.entries(settings.notifSettings).map(([key, val]) => (
+                {settings.notifSettings && Object.entries(settings.notifSettings).map(([key, val]) => (
                   <div key={key} className="setting-item">
                     <div className="setting-info">
                       <h4 style={{ textTransform: 'capitalize' }}>{key} Notifications</h4>
