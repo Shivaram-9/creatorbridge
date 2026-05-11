@@ -13,6 +13,7 @@ export default function Messages() {
   const { userId } = useParams();
   const navigate = useNavigate();
 
+  const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
 
