@@ -47,18 +47,18 @@ router.get("/feed-alliances", authMiddleware, async (req, res) => {
     const followers = Array.isArray(user.followers) ? user.followers : [];
 
     // Combine following and followers to get all "alliances"
-    const allianceIds = [...new Set([
-      ...following.map(id => id.toString()),
-      ...followers.map(id => id.toString()),
-      req.userId.toString()
-    ])].filter(Boolean);
+    const allianceIds = [
+      req.userId,
+      ...(Array.isArray(user.following) ? user.following : []),
+      ...(Array.isArray(user.followers) ? user.followers : [])
+    ].filter(Boolean);
 
     const posts = await Post.find({ 
       user: { $in: allianceIds },
       isArchived: { $ne: true }
     })
       .populate("user", "name username avatar role isVerified isPremium")
-      .sort({ isPinned: -1, createdAt: -1 })
+      .sort({ createdAt: -1 })
       .limit(50);
       
     res.json(posts);
