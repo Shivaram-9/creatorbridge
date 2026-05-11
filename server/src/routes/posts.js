@@ -18,7 +18,7 @@ router.post("/", authMiddleware, postUpload.array("media", 10), async (req, res)
       : [];
 
     const post = await Post.create({
-      user: req.userId,
+      user: new mongoose.Types.ObjectId(req.userId),
       content: content || "",
       media: mediaFiles || [],
       mediaType: mediaFiles.length > 1 ? "gallery" : mediaFiles.length === 1 ? "image" : "none",
@@ -43,14 +43,15 @@ router.get("/feed-alliances", authMiddleware, async (req, res) => {
     const user = await User.findById(req.userId).select("following followers");
     if (!user) return res.status(404).json({ error: "User not found" });
 
+    const currentUserObjectId = new mongoose.Types.ObjectId(req.userId);
     const following = Array.isArray(user.following) ? user.following : [];
     const followers = Array.isArray(user.followers) ? user.followers : [];
 
-    // Combine following and followers to get all "alliances"
+    // Combine following and followers to get all "alliances" plus current user
     const allianceIds = [
-      req.userId,
-      ...(Array.isArray(user.following) ? user.following : []),
-      ...(Array.isArray(user.followers) ? user.followers : [])
+      currentUserObjectId,
+      ...following,
+      ...followers
     ].filter(Boolean);
 
     const posts = await Post.find({ 
