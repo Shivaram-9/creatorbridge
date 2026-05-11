@@ -306,6 +306,14 @@ export default function UserProfile() {
                 <div className="up-detail-list">
                   {profile.location && <div className="up-detail"><span>📍</span> {profile.location}</div>}
                   {profile.category && <div className="up-detail"><span>🏷️</span> {profile.category}</div>}
+                  {profile.website && (
+                    <div className="up-detail">
+                      <span>🔗</span> 
+                      <a href={profile.website.startsWith('http') ? profile.website : `https://${profile.website}`} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary)', textDecoration: 'none' }}>
+                        {profile.website.replace(/^https?:\/\//, '')}
+                      </a>
+                    </div>
+                  )}
                 </div>
               </div>
             </section>

@@ -250,7 +250,7 @@ export default function EditProfile() {
               value={form.website}
               onChange={handleChange}
               placeholder="https://yourwebsite.com"
-              type="url"
+              type="text"
             />
           </div>
         </div>
