@@ -21,7 +21,7 @@ export default function Home() {
   const loadPosts = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await api.posts.list();
+      const data = await api.posts.list({ _t: Date.now() });
       if (data?.error) {
         toast.error(data.error);
       } else {

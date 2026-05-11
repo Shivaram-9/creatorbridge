@@ -234,7 +234,11 @@ export const api = {
     markAllRead: () => request("/notifications/read-all", { method: "POST" }),
   },
   posts: {
-    list: () => request("/posts"),
+    list: (params = {}) => {
+      const sp = new URLSearchParams(params);
+      const query = sp.toString() ? `?${sp.toString()}` : "";
+      return request(`/posts${query}`);
+    },
     userPosts: (userId) => request(`/posts/user/${userId}`),
     create: (formData) => request("/posts", { 
       method: "POST", 

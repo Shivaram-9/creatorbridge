@@ -41,12 +41,15 @@ router.get("/", authMiddleware, async (req, res) => {
     const user = await User.findById(req.userId).select("following followers");
     if (!user) return res.status(404).json({ error: "User not found" });
 
+    const following = Array.isArray(user.following) ? user.following : [];
+    const followers = Array.isArray(user.followers) ? user.followers : [];
+
     // Combine following and followers to get all "alliances"
     const alliances = [...new Set([
-      ...(user.following || []),
-      ...(user.followers || []),
-      req.userId // include own posts
-    ])];
+      ...following.map(id => id?.toString()),
+      ...followers.map(id => id?.toString()),
+      req.userId.toString()
+    ])].filter(Boolean);
 
     const posts = await Post.find({ 
       user: { $in: alliances },
