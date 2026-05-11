@@ -26,7 +26,26 @@ export default function UsersList() {
         listPromise = api.posts.getLikes(postId);
       } else {
         pPromise = api.users.get(userId);
-        listPromise = type === "followers" ? api.users.getFollowers(userId) : api.users.getFollowing(userId);
+        if (type === "alliances") {
+          listPromise = Promise.all([
+            api.users.getFollowers(userId),
+            api.users.getFollowing(userId)
+          ]).then(([followers, following]) => {
+            const combined = [...(Array.isArray(followers) ? followers : []), ...(Array.isArray(following) ? following : [])];
+            // Unique by _id
+            const unique = [];
+            const seen = new Set();
+            for (const u of combined) {
+              if (u && u._id && !seen.has(u._id)) {
+                seen.add(u._id);
+                unique.push(u);
+              }
+            }
+            return unique;
+          });
+        } else {
+          listPromise = type === "followers" ? api.users.getFollowers(userId) : api.users.getFollowing(userId);
+        }
       }
 
       const [p, list] = await Promise.all([pPromise, listPromise]);
@@ -42,7 +61,7 @@ export default function UsersList() {
     } finally {
       setLoading(false);
     }
-  }, [userId, type]);
+  }, [userId, type, postId]);
 
   useEffect(() => {
     loadData();
@@ -52,6 +71,7 @@ export default function UsersList() {
   if (postId) title = "Likes";
   else if (type === "followers") title = "Aligners";
   else if (type === "following") title = "Aligned";
+  else if (type === "alliances") title = "Alliances";
 
   return (
     <div className="container" style={{ maxWidth: '600px', margin: '0 auto' }}>

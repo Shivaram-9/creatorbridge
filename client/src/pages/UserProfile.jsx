@@ -58,6 +58,24 @@ export default function UserProfile() {
     }
   }, [userId]);
 
+  const [incomingRequest, setIncomingRequest] = useState(null);
+
+  const handleRespondRequest = async (action) => {
+    if (!incomingRequest?.id) return;
+    setActionBusy(true);
+    try {
+      const res = await api.privacy.respondRequest(incomingRequest.id, action);
+      if (res.error) setError(res.error);
+      else {
+        load(); // Refresh
+      }
+    } catch {
+      setError("Failed to respond to request");
+    } finally {
+      setActionBusy(false);
+    }
+  };
+
   const load = useCallback(async () => {
     setLoading(true);
     setError("");
@@ -70,6 +88,7 @@ export default function UserProfile() {
       }
       setProfile(data);
       setHasRequested(!!data.isRequested);
+      setIncomingRequest(data.hasIncomingRequest ? { id: data.incomingRequestId } : null);
       
       // Track view for AI Discovery (Prompt-7)
       if (!isOwn && me) {
@@ -207,32 +226,44 @@ export default function UserProfile() {
             {profile.category && <span className="up-cat-badge">{profile.category}</span>}
           </div>
 
-          <div className="up-actions">
-            {isOwn ? (
-              <Link to="/profile" className="btn btn-primary">✏️ Edit Profile</Link>
-            ) : (
-              <>
-                <button
-                  className={`btn ${isFollowing ? 'btn-secondary' : 'btn-primary'} ${hasRequested ? 'btn-outline' : ''}`}
-                  disabled={actionBusy || hasRequested}
-                  onClick={handleFollowToggle}
-                >
-                  {actionBusy ? "..." : hasRequested ? "Requested" : isFollowing ? "Aligned" : "Align"}
-                </button>
-                {isFollowing && me?.followers && Array.isArray(me.followers) && me.followers.some(f => f && (f?._id || f) === userId) && (
-                  <Link to={`/messages/${userId}`} className="btn btn-primary">💬 Message</Link>
-                )}
-                <div className="profile-more-actions">
-                   <button className="btn btn-icon" onClick={() => setShowAlignMenu(!showAlignMenu)}>•••</button>
-                   {showAlignMenu && (
-                     <div className="dropdown-menu show slide-in">
+          <div className="up-actions-wrap">
+            <div className="up-actions-row">
+              {isOwn ? (
+                <Link to="/profile" className="btn btn-primary">✏️ Edit Profile</Link>
+              ) : (
+                <>
+                  {incomingRequest ? (
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <button className="btn btn-primary" onClick={() => handleRespondRequest('accept')} disabled={actionBusy}>Accept</button>
+                      <button className="btn btn-secondary" onClick={() => handleRespondRequest('reject')} disabled={actionBusy}>Decline</button>
+                    </div>
+                  ) : (
+                    <button
+                      className={`btn ${isFollowing ? 'btn-secondary' : 'btn-primary'} ${hasRequested ? 'btn-outline' : ''}`}
+                      disabled={actionBusy || hasRequested}
+                      onClick={handleFollowToggle}
+                    >
+                      {actionBusy ? "..." : hasRequested ? "Requested" : isFollowing ? "Aligned" : "Align"}
+                    </button>
+                  )}
+                  <div className="profile-more-actions">
+                    <button className="btn btn-icon" onClick={() => setShowAlignMenu(!showAlignMenu)}>•••</button>
+                    {showAlignMenu && (
+                      <div className="dropdown-menu show slide-in">
                         <button className="dropdown-item" onClick={handleShareProfile}>{copyStatus ? "Copied!" : "Share Profile"}</button>
                         <button className="dropdown-item danger" onClick={handleBlock}>Block User</button>
                         <button className="dropdown-item" onClick={handleReport}>Report User</button>
-                     </div>
-                   )}
-                </div>
-              </>
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
+            
+            {!isOwn && (isFollowing || !profile.isPrivate) && (
+              <div className="up-message-row">
+                <Link to={`/messages/${userId}`} className="up-message-box">Messages</Link>
+              </div>
             )}
           </div>
         </div>
@@ -240,14 +271,12 @@ export default function UserProfile() {
 
       <ErrorBanner message={error} onDismiss={() => setError("")} />
 
-      <div className="up-stats">
-        <div className="up-stat" onClick={() => !isPrivateAndHidden && navigate(`/user/${userId}/followers`)}>
-          <span className="up-stat__value">{fmtFollowers(followersCount) || "0"}</span>
-          <span className="up-stat__label">Aligners</span>
-        </div>
-        <div className="up-stat" onClick={() => !isPrivateAndHidden && navigate(`/user/${userId}/following`)}>
-          <span className="up-stat__value">{Array.isArray(profile?.following) ? profile.following.length : "0"}</span>
-          <span className="up-stat__label">Aligned</span>
+      <div className="up-stats-alliances">
+        <div className="up-stat" onClick={() => !isPrivateAndHidden && navigate(`/user/${userId}/alliances`)}>
+          <span className="up-stat__value">
+            {fmtFollowers((Array.isArray(profile?.followers) ? profile.followers.length : 0) + (Array.isArray(profile?.following) ? profile.following.length : 0)) || "0"}
+          </span>
+          <span className="up-stat__label">Alliances</span>
         </div>
         <div className="up-stat">
           <span className="up-stat__value">{isPrivateAndHidden ? "?" : (userPosts?.length || 0)}</span>

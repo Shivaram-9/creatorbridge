@@ -113,24 +113,17 @@ export default function Profile() {
           </div>
 
           {/* Stats */}
-          <div className="profile-ig-stats">
+          <div className="profile-ig-stats-alliances">
             <div className="profile-ig-stat">
               <strong>{posts.length}</strong>
               <span>posts</span>
             </div>
             <div
               className="profile-ig-stat clickable"
-              onClick={() => navigate(`/user/${user._id}/followers`)}
+              onClick={() => navigate(`/user/${user._id}/alliances`)}
             >
-              <strong>{fmtCount(user?.followers?.length)}</strong>
-              <span>Aligners</span>
-            </div>
-            <div
-              className="profile-ig-stat clickable"
-              onClick={() => navigate(`/user/${user._id}/following`)}
-            >
-              <strong>{fmtCount(user?.following?.length)}</strong>
-              <span>Aligned</span>
+              <strong>{fmtCount((user?.followers?.length || 0) + (user?.following?.length || 0))}</strong>
+              <span>Alliances</span>
             </div>
           </div>
 

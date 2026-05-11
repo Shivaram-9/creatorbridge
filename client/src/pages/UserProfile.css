@@ -107,15 +107,49 @@
   text-transform: capitalize;
 }
 
-.up-actions {
+.up-actions-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.up-actions-row {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.up-stats {
+.up-message-row {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 2px;
+}
+
+.up-message-box {
+  background: white;
+  border: 1px solid var(--border-light);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-main);
+  text-decoration: none;
+  transition: all 0.2s;
+  min-width: 100px;
+  text-align: center;
+}
+
+.up-message-box:hover {
+  background: #f8fafc;
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.up-stats-alliances {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 16px;
   margin-bottom: 40px;
 }

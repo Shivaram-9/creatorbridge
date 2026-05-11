@@ -35,14 +35,29 @@ router.post("/", authMiddleware, postUpload.array("media", 10), async (req, res)
   }
 });
 
-// Get Feed (exclude archived)
-router.get("/", async (req, res) => {
+// Get Feed (Alliances only)
+router.get("/", authMiddleware, async (req, res) => {
   try {
-    const posts = await Post.find({ isArchived: false })
-      .populate("user", "name avatar role")
+    const user = await User.findById(req.userId).select("following followers");
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    // Combine following and followers to get all "alliances"
+    const alliances = [...new Set([
+      ...(user.following || []),
+      ...(user.followers || []),
+      req.userId // include own posts
+    ])];
+
+    const posts = await Post.find({ 
+      user: { $in: alliances },
+      isArchived: false 
+    })
+      .populate("user", "name username avatar role isVerified isPremium")
       .sort("-isPinned -createdAt");
+      
     res.json(posts);
   } catch (err) {
+    console.error("Feed error:", err);
     res.status(500).json({ error: err.message });
   }
 });

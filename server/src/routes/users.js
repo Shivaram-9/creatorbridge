@@ -386,12 +386,22 @@ usersRouter.get("/:id", async (req, res) => {
 
     // Add request status for the frontend
     if (req.userId) {
-      const request = await AlignRequest.findOne({ 
+      // Outgoing request (I sent to them)
+      const outgoing = await AlignRequest.findOne({ 
         sender: req.userId, 
         receiver: req.params.id,
         status: "pending" 
       });
-      user.isRequested = !!request;
+      user.isRequested = !!outgoing;
+
+      // Incoming request (They sent to me)
+      const incoming = await AlignRequest.findOne({
+        sender: req.params.id,
+        receiver: req.userId,
+        status: "pending"
+      });
+      user.hasIncomingRequest = !!incoming;
+      if (incoming) user.incomingRequestId = incoming._id;
     }
 
     res.json(user);
