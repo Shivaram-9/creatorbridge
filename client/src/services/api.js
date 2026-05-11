@@ -52,7 +52,12 @@ async function request(path, options = {}) {
   }
 
   const url = urlFor(path);
-  const headers = { ...options.headers };
+  const headers = { 
+    "Cache-Control": "no-cache, no-store, must-revalidate",
+    "Pragma": "no-cache",
+    "Expires": "0",
+    ...options.headers 
+  };
   const token = getToken();
   if (token) headers.Authorization = `Bearer ${token}`;
   if (options.body && !(options.body instanceof FormData) && !headers["Content-Type"]) {
@@ -111,7 +116,12 @@ export const login = async (body) => {
   try {
     res = await fetch(url, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Content-Type": "application/json",
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "0"
+      },
       credentials: "include",
       body: JSON.stringify(body),
     });

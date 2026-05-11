@@ -39,6 +39,9 @@ export default function Home() {
 
   useEffect(() => {
     loadPosts();
+    // Auto-refresh feed every 2 minutes for real-time feel
+    const interval = setInterval(loadPosts, 120000);
+    return () => clearInterval(interval);
   }, [loadPosts]);
 
   const handleAddPost = async (formData) => {
@@ -48,7 +51,8 @@ export default function Home() {
         toast.error(res.error);
       } else {
         toast.success("Post published!");
-        setPosts(prev => [res, ...prev]);
+        // Refresh feed immediately to show new post
+        loadPosts();
       }
     } catch (err) {
       console.error("Alliance feed error:", err);
