@@ -238,35 +238,41 @@ export default function UserProfile() {
                       <button className="btn btn-secondary" onClick={() => handleRespondRequest('reject')} disabled={actionBusy}>Decline</button>
                     </div>
                   ) : (
-                    <button
-                      className={`btn ${isFollowing ? 'btn-secondary' : 'btn-primary'} ${hasRequested ? 'btn-outline' : ''}`}
-                      disabled={actionBusy || hasRequested}
-                      onClick={handleFollowToggle}
-                    >
-                      {actionBusy ? "..." : hasRequested ? "Requested" : isFollowing ? "Aligned" : "Align"}
-                    </button>
+                    <div className="up-dual-actions">
+                      <button
+                        className={`btn ${isFollowing ? 'btn-secondary' : 'btn-primary'} ${hasRequested ? 'btn-outline' : ''}`}
+                        disabled={actionBusy || hasRequested}
+                        onClick={handleFollowToggle}
+                      >
+                        {actionBusy ? "..." : hasRequested ? "Requested" : isFollowing ? "Aligned" : "Align"}
+                      </button>
+                      
+                      {!isOwn && (isFollowing || !profile.isPrivate) && (
+                        <Link to={`/messages/${userId}`} className="up-message-box">Messages</Link>
+                      )}
+                    </div>
                   )}
-                  <div className="profile-more-actions">
-                    <button className="btn btn-icon" onClick={() => setShowAlignMenu(!showAlignMenu)}>•••</button>
-                    {showAlignMenu && (
-                      <div className="dropdown-menu show slide-in">
-                        <button className="dropdown-item" onClick={handleShareProfile}>{copyStatus ? "Copied!" : "Share Profile"}</button>
-                        <button className="dropdown-item danger" onClick={handleBlock}>Block User</button>
-                        <button className="dropdown-item" onClick={handleReport}>Report User</button>
-                      </div>
-                    )}
-                  </div>
                 </>
               )}
             </div>
-            
-            {!isOwn && (isFollowing || !profile.isPrivate) && (
-              <div className="up-message-row">
-                <Link to={`/messages/${userId}`} className="up-message-box">Messages</Link>
+          </div>
+        </div>
+        
+        {/* More Actions Menu (Top Right) */}
+        {!isOwn && (
+          <div className="up-abs-actions">
+            <button className="btn btn-icon up-more-trigger" onClick={() => setShowAlignMenu(!showAlignMenu)}>•••</button>
+            {showAlignMenu && (
+              <div className="dropdown-menu show slide-in">
+                {isFollowing && (
+                  <button className="dropdown-item danger" onClick={handleFollowToggle}>End Align</button>
+                )}
+                <button className="dropdown-item" onClick={handleShareProfile}>{copyStatus ? "Copied!" : "Share Profile"}</button>
+                <button className="dropdown-item danger" onClick={handleBlock}>Block User</button>
               </div>
             )}
           </div>
-        </div>
+        )}
       </div>
 
       <ErrorBanner message={error} onDismiss={() => setError("")} />

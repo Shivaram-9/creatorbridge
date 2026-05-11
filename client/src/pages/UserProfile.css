@@ -108,10 +108,17 @@
 }
 
 .up-actions-wrap {
+  width: 100%;
+  max-width: 400px;
+  margin-top: 8px;
+}
+
+.up-dual-actions {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
-  gap: 8px;
+  width: 100%;
+  gap: 20px;
 }
 
 .up-actions-row {
@@ -130,14 +137,14 @@
 .up-message-box {
   background: white;
   border: 1px solid var(--border-light);
-  padding: 6px 12px;
-  border-radius: 6px;
+  padding: 8px 20px;
+  border-radius: 8px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-main);
   text-decoration: none;
   transition: all 0.2s;
-  min-width: 100px;
+  flex: 1;
   text-align: center;
 }
 
@@ -258,8 +265,39 @@
   color: #64748b;
 }
 
-.profile-more-actions {
-  position: relative;
+.up-abs-actions {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 10;
+}
+
+.up-more-trigger {
+  color: #475569;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(4px);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(0,0,0,0.05);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.up-dual-actions .btn {
+  flex: 1;
+  padding: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 8px;
+}
+
+.up-abs-actions .dropdown-menu {
+  right: 0;
+  top: 45px;
+  min-width: 160px;
 }
 
 /* Responsive adjustments */
