@@ -176,7 +176,12 @@ messagesRouter.post("/media", chatUpload.single("media"), async (req, res) => {
     }
 
     const mediaType = req.file.mimetype.startsWith("video") ? "video" : "image";
-    const mediaPath = `/uploads/chat/${req.file.filename}`;
+    
+    // If using Cloudinary, req.file.path is the full URL
+    // If using local disk, we construct the path
+    const mediaPath = req.file.path.startsWith("http") 
+      ? req.file.path 
+      : `/uploads/chat/${req.file.filename}`;
 
     const msg = await Message.create({
       sender: req.userId,
