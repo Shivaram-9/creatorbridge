@@ -1,4 +1,5 @@
 import express from "express";
+import mongoose from "mongoose";
 import { Post } from "../models/Post.js";
 import { User } from "../models/User.js";
 import { authMiddleware } from "../middleware/auth.js";
@@ -35,19 +36,6 @@ router.post("/", authMiddleware, postUpload.array("media", 10), async (req, res)
   }
 });
 
-// Get Feed (Public / Discover fallback)
-router.get("/", async (req, res) => {
-  try {
-    const posts = await Post.find({ isArchived: false })
-      .populate("user", "name username avatar role isVerified isPremium")
-      .sort("-isPinned -createdAt")
-      .limit(20);
-    res.json(posts);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
 // Get Feed (Alliances only) - Dedicated Route
 router.get("/feed-alliances", authMiddleware, async (req, res) => {
   try {
@@ -58,14 +46,17 @@ router.get("/feed-alliances", authMiddleware, async (req, res) => {
     const followers = Array.isArray(user.followers) ? user.followers : [];
 
     // Combine following and followers to get all "alliances"
-    const alliances = [...new Set([
+    const allianceIds = [...new Set([
       ...following.map(id => (id?._id || id)?.toString()),
       ...followers.map(id => (id?._id || id)?.toString()),
       req.userId.toString()
     ])].filter(Boolean);
 
+    // Convert to ObjectIds for Mongoose query robustness
+    const allianceObjectIds = allianceIds.map(id => new mongoose.Types.ObjectId(id));
+
     const posts = await Post.find({ 
-      user: { $in: alliances },
+      user: { $in: allianceObjectIds },
       isArchived: false 
     })
       .populate("user", "name username avatar role isVerified isPremium")
@@ -75,6 +66,19 @@ router.get("/feed-alliances", authMiddleware, async (req, res) => {
   } catch (err) {
     console.error("Alliance feed error:", err);
     res.status(500).json({ error: "Backend Feed Error: " + err.message });
+  }
+});
+
+// Get Feed (Public / Discover fallback)
+router.get("/", async (req, res) => {
+  try {
+    const posts = await Post.find({ isArchived: false })
+      .populate("user", "name username avatar role isVerified isPremium")
+      .sort("-isPinned -createdAt")
+      .limit(20);
+    res.json(posts);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 
