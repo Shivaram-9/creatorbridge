@@ -198,15 +198,30 @@ export default function Chat({ standalone = true }) {
           const media = m.media || m.mediaUrl;
           const time = m.createdAt ? new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "";
 
+          const getMediaUrl = (url) => {
+            if (!url) return null;
+            if (url.startsWith("http")) return url;
+            // Ensure no double slashes
+            const cleanPath = url.startsWith("/") ? url : `/${url}`;
+            return `${api.BASE_URL}${cleanPath}`;
+          };
+
+          const mediaUrl = getMediaUrl(media);
+
           return (
             <div key={m._id || idx} style={{ display: 'flex', justifyContent: isMine ? 'flex-end' : 'flex-start', marginBottom: '16px' }}>
               <div style={{ maxWidth: '75%', padding: '12px 16px', borderRadius: '16px', borderBottomLeftRadius: isMine ? '16px' : '0', borderBottomRightRadius: isMine ? '0' : '16px', background: isMine ? '#6366f1' : '#f1f5f9', color: isMine ? 'white' : '#1e293b' }}>
-                {media && (
-                  <div style={{ marginBottom: '8px' }}>
+                {mediaUrl && (
+                  <div style={{ marginBottom: m.content ? '8px' : '0', minWidth: '200px' }}>
                     {m.mediaType === "video" ? (
-                      <video src={media.startsWith("http") ? media : `${api.BASE_URL}${media}`} controls style={{ width: '100%', maxHeight: '256px', borderRadius: '12px' }} />
+                      <video src={mediaUrl} controls style={{ width: '100%', maxHeight: '256px', borderRadius: '12px', background: '#000' }} />
                     ) : (
-                      <img src={media.startsWith("http") ? media : `${api.BASE_URL}${media}`} alt="" style={{ width: '100%', maxHeight: '256px', borderRadius: '12px', objectFit: 'cover' }} />
+                      <img 
+                        src={mediaUrl} 
+                        alt="Media" 
+                        style={{ width: '100%', maxHeight: '256px', borderRadius: '12px', objectFit: 'cover', display: 'block' }} 
+                        onError={(e) => { e.target.style.display = 'none'; console.error('Media load failed:', mediaUrl); }}
+                      />
                     )}
                   </div>
                 )}
