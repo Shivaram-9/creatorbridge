@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 import { api } from "../services/api.js";
 import { BASE_URL } from "../config/api.js";
@@ -12,6 +13,7 @@ import toast from "react-hot-toast";
 
 export default function Home() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -104,15 +106,26 @@ export default function Home() {
           <PostSkeleton />
           <PostSkeleton />
         </div>
-      ) : (
+      ) : posts.length > 0 ? (
         <div style={{ marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          {(posts.length > 0 ? posts : demoPosts).map((post) => (
+          {posts.map((post) => (
             <PostCard 
               key={post._id} 
               post={formatPost(post)} 
               onDelete={(id) => setPosts(prev => prev.filter(p => p._id !== id))}
             />
           ))}
+        </div>
+      ) : (
+        <div className="empty-state" style={{ marginTop: '60px' }}>
+          <div style={{ fontSize: '48px', marginBottom: '16px' }}>🤝</div>
+          <h2 style={{ fontSize: '24px', fontWeight: '800', color: '#0f172a', marginBottom: '8px' }}>Your Feed is Empty</h2>
+          <p style={{ color: '#64748b', maxWidth: '300px', margin: '0 auto 24px' }}>
+            Align with creators and brands to see their latest posts here!
+          </p>
+          <button className="btn btn-primary" onClick={() => navigate("/discover")}>
+            Discover Creators
+          </button>
         </div>
       )}
     </div>
