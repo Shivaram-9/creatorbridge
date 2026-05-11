@@ -27,6 +27,7 @@ export default function RoleSelect() {
 
   const [selected, setSelected] = useState(user?.role || "");
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
   const [showTerms, setShowTerms] = useState(false);
 
   async function handleAgreeAndContinue() {
