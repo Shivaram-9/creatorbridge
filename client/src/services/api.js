@@ -52,10 +52,13 @@ async function request(path, options = {}) {
   }
 
   const url = urlFor(path);
+  const isGet = !options.method || options.method.toUpperCase() === "GET";
   const headers = { 
-    "Cache-Control": "no-cache, no-store, must-revalidate",
-    "Pragma": "no-cache",
-    "Expires": "0",
+    ...(isGet ? {
+      "Cache-Control": "no-cache, no-store, must-revalidate",
+      "Pragma": "no-cache",
+      "Expires": "0"
+    } : {}),
     ...options.headers 
   };
   const token = getToken();
