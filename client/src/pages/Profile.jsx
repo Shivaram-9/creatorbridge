@@ -82,7 +82,7 @@ export default function Profile() {
       {/* Profile Header */}
       <div className="profile-ig-header">
         {/* Avatar - explicitly sized wrapper */}
-        <div className="profile-ig-avatar-wrap">
+        <div className="profile-ig-avatar-wrap" style={{ width: '150px', height: '150px', minWidth: '150px', borderRadius: '50%', overflow: 'hidden' }}>
           <Avatar user={user} size="xl" />
         </div>
 
