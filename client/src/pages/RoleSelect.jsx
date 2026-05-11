@@ -51,7 +51,7 @@ export default function RoleSelect() {
   return (
     <>
       <OfflineBanner />
-      <div className="container role-select-page">
+      <div className="role-select-page">
         <div className="role-select-header">
           <h1 className="page-title">Who are you?</h1>
           <p className="subtitle">Choose your role to get the best experience on CreatorBridge.</p>
