@@ -48,8 +48,7 @@ export default function Home() {
         toast.error(res.error);
       } else {
         toast.success("Post published!");
-        // Refresh feed after a tiny delay to ensure DB indexing
-        setTimeout(loadPosts, 500);
+        loadPosts();
       }
     } catch (err) {
       console.error("Alliance feed error:", err);
