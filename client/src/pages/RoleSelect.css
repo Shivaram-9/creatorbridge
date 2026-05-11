@@ -159,3 +159,94 @@
     padding: 32px 24px;
   }
 }
+
+/* Terms Modal Styles */
+.terms-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 20px;
+}
+
+.terms-modal-card {
+  background: white;
+  width: 100%;
+  max-width: 540px;
+  max-height: 85vh;
+  border-radius: 32px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.3);
+}
+
+.terms-modal-header {
+  padding: 32px;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.terms-modal-header h2 {
+  font-size: 24px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.terms-close {
+  background: #f1f5f9;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: #64748b;
+  transition: all 0.2s;
+}
+
+.terms-close:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.terms-modal-body {
+  padding: 32px;
+  overflow-y: auto;
+  line-height: 1.7;
+  color: #475569;
+}
+
+.terms-modal-body h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 24px 0 12px;
+}
+
+.terms-modal-body p {
+  margin-bottom: 16px;
+  font-size: 15px;
+}
+
+.terms-modal-footer {
+  padding: 32px;
+  background: #f8fafc;
+  border-top: 1px solid #f1f5f9;
+}
+
+.terms-modal-footer button {
+  padding: 18px;
+  border-radius: 18px;
+  font-size: 16px;
+}
