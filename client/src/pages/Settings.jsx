@@ -6,9 +6,9 @@ import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import "./Settings.css";
 
 export default function Settings() {
-  const { user, setUser } = useAuth();
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("privacy");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   
@@ -30,40 +30,57 @@ export default function Settings() {
   const [alerts, setAlerts] = useState([]);
 
   useEffect(() => {
+    let mounted = true;
     async function loadData() {
-      setLoading(true);
       try {
-        const [priv, sess, alrt] = await Promise.all([
+        setLoading(true);
+        const [priv, sess, alrt] = await Promise.allSettled([
           api.privacy.getSettings(),
           api.security.getSessions(),
           api.security.getAlerts()
         ]);
-        if (priv && !priv.error) setSettings(priv);
-        if (sess && !sess.error) setSessions(sess);
-        if (alrt && !alrt.error) setAlerts(alrt);
+        
+        if (!mounted) return;
+
+        if (priv.status === 'fulfilled' && priv.value && !priv.value.error) {
+          setSettings(prev => ({ 
+            ...prev, 
+            ...priv.value,
+            notifSettings: { ...prev.notifSettings, ...(priv.value.notifSettings || {}) }
+          }));
+        }
+        if (sess.status === 'fulfilled' && Array.isArray(sess.value)) {
+          setSessions(sess.value);
+        }
+        if (alrt.status === 'fulfilled' && Array.isArray(alrt.value)) {
+          setAlerts(alrt.value);
+        }
       } catch (err) {
-        setError("Failed to load settings");
+        console.error("Settings load error:", err);
+        setError("Failed to load some settings");
       } finally {
-        setLoading(false);
+        if (mounted) setLoading(false);
       }
     }
     loadData();
+    return () => { mounted = false; };
   }, []);
 
   const handleUpdate = async (updates) => {
-    setLoading(true);
     try {
       const res = await api.privacy.updateSettings(updates);
       if (res.error) setError(res.error);
       else {
-        setSettings(res);
+        setSettings(prev => ({ 
+          ...prev, 
+          ...res,
+          notifSettings: { ...prev.notifSettings, ...(res.notifSettings || {}) }
+        }));
         setSuccess("Settings updated successfully");
         setTimeout(() => setSuccess(""), 3000);
       }
     } catch {
       setError("Failed to update settings");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -74,6 +91,7 @@ export default function Settings() {
   };
 
   const handleNotifToggle = (key) => {
+    if (!settings.notifSettings) return;
     const newNotifs = { ...settings.notifSettings, [key]: !settings.notifSettings[key] };
     setSettings(prev => ({ ...prev, notifSettings: newNotifs }));
     handleUpdate({ notifSettings: newNotifs });
@@ -91,19 +109,19 @@ export default function Settings() {
   const logoutOthers = async () => {
     try {
       await api.security.logoutOthers();
-      setSessions(prev => prev.filter(s => s.token === api.getToken()));
+      const currentToken = api.getToken();
+      setSessions(prev => prev.filter(s => s.token === currentToken));
       setSuccess("Logged out from all other devices");
     } catch {
       setError("Failed to logout from others");
     }
   };
 
-  if (loading && !settings) return <LoadingSpinner centered />;
+  if (loading) return <LoadingSpinner centered />;
 
   return (
     <div className="settings-page container slide-in">
       <div className="settings-layout">
-        {/* Sidebar */}
         <aside className="settings-sidebar">
           <h2>Settings</h2>
           <nav>
@@ -122,7 +140,6 @@ export default function Settings() {
           </nav>
         </aside>
 
-        {/* Content */}
         <main className="settings-content">
           <ErrorBanner message={error} onDismiss={() => setError("")} />
           {success && <div className="success-banner">{success}</div>}
@@ -137,7 +154,7 @@ export default function Settings() {
                     <p>When your account is private, only people you approve can see your posts and content.</p>
                   </div>
                   <label className="toggle">
-                    <input type="checkbox" checked={settings.isPrivate} onChange={() => handleToggle('isPrivate')} />
+                    <input type="checkbox" checked={!!settings.isPrivate} onChange={() => handleToggle('isPrivate')} />
                     <span className="slider"></span>
                   </label>
                 </div>
@@ -148,7 +165,7 @@ export default function Settings() {
                     <p>Allow accounts you follow and anyone you message to see when you were last active or are currently online.</p>
                   </div>
                   <label className="toggle">
-                    <input type="checkbox" checked={settings.showActivityStatus} onChange={() => handleToggle('showActivityStatus')} />
+                    <input type="checkbox" checked={!!settings.showActivityStatus} onChange={() => handleToggle('showActivityStatus')} />
                     <span className="slider"></span>
                   </label>
                 </div>
@@ -159,7 +176,7 @@ export default function Settings() {
                     <p>Allow your profile to be recommended to others in the Discover section.</p>
                   </div>
                   <label className="toggle">
-                    <input type="checkbox" checked={settings.isDiscoverable} onChange={() => handleToggle('isDiscoverable')} />
+                    <input type="checkbox" checked={!!settings.isDiscoverable} onChange={() => handleToggle('isDiscoverable')} />
                     <span className="slider"></span>
                   </label>
                 </div>
@@ -170,7 +187,7 @@ export default function Settings() {
                     <p>Control who can start new conversations with you.</p>
                   </div>
                   <select 
-                    value={settings.allowMessagesFrom} 
+                    value={settings.allowMessagesFrom || "everyone"} 
                     onChange={(e) => handleUpdate({ allowMessagesFrom: e.target.value })}
                     className="settings-select"
                   >
@@ -193,7 +210,7 @@ export default function Settings() {
                   <button className="btn-text danger" onClick={logoutOthers}>Logout from all other devices</button>
                 </div>
                 {Array.isArray(sessions) && sessions.map(sess => (
-                  <div key={sess._id} className="session-item">
+                  <div key={sess._id || Math.random()} className="session-item">
                     <div className="session-icon">
                       {sess.device?.type === 'mobile' ? '📱' : '💻'}
                     </div>
@@ -220,9 +237,9 @@ export default function Settings() {
                   <p className="empty-text">No recent security alerts.</p>
                 ) : (
                   alerts.map(alert => (
-                    <div key={alert._id} className={`alert-item ${alert.isRead ? '' : 'unread'}`}>
+                    <div key={alert._id || Math.random()} className={`alert-item ${alert.isRead ? '' : 'unread'}`}>
                       <div className="alert-content">
-                        <p className="alert-msg">{alert.message}</p>
+                        <p className="alert-msg">{alert.message || "Security update"}</p>
                         <p className="alert-date">{alert.createdAt ? new Date(alert.createdAt).toLocaleString() : 'Just now'}</p>
                       </div>
                     </div>
@@ -243,7 +260,7 @@ export default function Settings() {
                       <p>Receive push notifications for new {key}.</p>
                     </div>
                     <label className="toggle">
-                      <input type="checkbox" checked={val} onChange={() => handleNotifToggle(key)} />
+                      <input type="checkbox" checked={!!val} onChange={() => handleNotifToggle(key)} />
                       <span className="slider"></span>
                     </label>
                   </div>
@@ -259,15 +276,15 @@ export default function Settings() {
               <div className="account-preview">
                 <div className="account-row">
                   <span>Username</span>
-                  <strong>@{user?.username}</strong>
+                  <strong>@{user?.username || "N/A"}</strong>
                 </div>
                 <div className="account-row">
                   <span>Email</span>
-                  <strong>{user?.email}</strong>
+                  <strong>{user?.email || "N/A"}</strong>
                 </div>
                 <div className="account-row">
                   <span>Joined</span>
-                  <strong>{new Date(user?.createdAt).toLocaleDateString()}</strong>
+                  <strong>{user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : "Recently"}</strong>
                 </div>
               </div>
               <button className="btn btn-outline" onClick={() => window.location.href = '/verify-email'}>
