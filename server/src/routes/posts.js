@@ -42,26 +42,28 @@ router.get("/feed-alliances", authMiddleware, async (req, res) => {
     const user = await User.findById(req.userId).select("following followers");
     if (!user) return res.status(404).json({ error: "User not found" });
 
-    const following = Array.isArray(user.following) ? user.following : [];
-    const followers = Array.isArray(user.followers) ? user.followers : [];
+    // Extract clean string IDs from following/followers arrays
+    const rawIds = [
+      ...(user.following || []),
+      ...(user.followers || []),
+      req.userId
+    ];
 
-    // Combine following and followers to get all "alliances"
-    const allianceIds = [...new Set([
-      ...following.map(id => (id?._id || id)?.toString()),
-      ...followers.map(id => (id?._id || id)?.toString()),
-      req.userId.toString()
-    ])].filter(Boolean);
+    const cleanIds = rawIds
+      .map(id => (id?._id || id)?.toString())
+      .filter(id => id && mongoose.Types.ObjectId.isValid(id));
 
-    // Convert to ObjectIds for Mongoose query robustness
-    const allianceObjectIds = allianceIds.map(id => new mongoose.Types.ObjectId(id));
+    const uniqueIds = [...new Set(cleanIds)];
 
+    // Query using the unique list of IDs
     const posts = await Post.find({ 
-      user: { $in: allianceObjectIds },
+      user: { $in: uniqueIds.map(id => new mongoose.Types.ObjectId(id)) },
       isArchived: false 
     })
       .populate("user", "name username avatar role isVerified isPremium")
-      .sort("-isPinned -createdAt");
-      
+      .sort("-isPinned -createdAt")
+      .limit(50);
+
     res.json(posts);
   } catch (err) {
     console.error("Alliance feed error:", err);
