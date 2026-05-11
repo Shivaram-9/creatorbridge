@@ -210,23 +210,50 @@ export default function Chat({ standalone = true }) {
 
           return (
             <div key={m._id || idx} style={{ display: 'flex', justifyContent: isMine ? 'flex-end' : 'flex-start', marginBottom: '16px' }}>
-              <div style={{ maxWidth: '75%', padding: '12px 16px', borderRadius: '16px', borderBottomLeftRadius: isMine ? '16px' : '0', borderBottomRightRadius: isMine ? '0' : '16px', background: isMine ? '#6366f1' : '#f1f5f9', color: isMine ? 'white' : '#1e293b' }}>
+              <div style={{ 
+                maxWidth: '75%', 
+                padding: '12px 16px', 
+                borderRadius: '16px', 
+                borderBottomLeftRadius: isMine ? '16px' : '0', 
+                borderBottomRightRadius: isMine ? '0' : '16px', 
+                background: isMine ? '#6366f1' : '#f1f5f9', 
+                color: isMine ? 'white' : '#1e293b',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
+              }}>
                 {mediaUrl && (
-                  <div style={{ marginBottom: m.content ? '8px' : '0', minWidth: '200px' }}>
+                  <div style={{ marginBottom: m.content ? '8px' : '0', minWidth: '200px', borderRadius: '12px', overflow: 'hidden', background: '#e2e8f0' }}>
                     {m.mediaType === "video" ? (
-                      <video src={mediaUrl} controls style={{ width: '100%', maxHeight: '256px', borderRadius: '12px', background: '#000' }} />
+                      <video src={mediaUrl} controls style={{ width: '100%', maxHeight: '300px', display: 'block' }} />
                     ) : (
                       <img 
                         src={mediaUrl} 
-                        alt="Media" 
-                        style={{ width: '100%', maxHeight: '256px', borderRadius: '12px', objectFit: 'cover', display: 'block' }} 
-                        onError={(e) => { e.target.style.display = 'none'; console.error('Media load failed:', mediaUrl); }}
+                        alt="Shared media" 
+                        style={{ width: '100%', height: 'auto', maxHeight: '400px', display: 'block', objectFit: 'contain' }} 
+                        crossOrigin="anonymous"
+                        loading="lazy"
+                        onError={(e) => {
+                          console.error('Chat media failed to load:', mediaUrl);
+                          e.target.style.display = 'none';
+                          // Show a fallback text inside the parent
+                          const parent = e.target.parentElement;
+                          if (parent && !parent.querySelector('.media-fallback')) {
+                            const span = document.createElement('span');
+                            span.className = 'media-fallback';
+                            span.innerText = '⚠️ Image failed to load';
+                            span.style.padding = '20px';
+                            span.style.display = 'block';
+                            span.style.fontSize = '12px';
+                            span.style.color = '#64748b';
+                            span.style.textAlign = 'center';
+                            parent.appendChild(span);
+                          }
+                        }}
                       />
                     )}
                   </div>
                 )}
-                {m.content && <p style={{ fontSize: '15px', margin: 0, wordBreak: 'break-word' }}>{m.content}</p>}
-                <span style={{ fontSize: '10px', marginTop: '4px', display: 'block', opacity: 0.6, textAlign: isMine ? 'right' : 'left' }}>{time}</span>
+                {m.content && <p style={{ fontSize: '15px', margin: 0, wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}>{m.content}</p>}
+                <span style={{ fontSize: '10px', marginTop: '6px', display: 'block', opacity: 0.7, textAlign: isMine ? 'right' : 'left', fontWeight: '500' }}>{time}</span>
               </div>
             </div>
           );
