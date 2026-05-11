@@ -61,7 +61,7 @@ router.get("/alliance-feed", authMiddleware, async (req, res) => {
     res.json(posts);
   } catch (err) {
     console.error("Alliance feed error:", err);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: "Backend Feed Error: " + err.message });
   }
 });
 

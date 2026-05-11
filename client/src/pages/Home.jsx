@@ -47,7 +47,8 @@ export default function Home() {
         toast.success("Post published!");
         setPosts(prev => [res, ...prev]);
       }
-    } catch {
+    } catch (err) {
+      console.error("Alliance feed error:", err);
       toast.error("Failed to create post");
     }
   };
@@ -131,7 +132,16 @@ export default function Home() {
           <p style={{ color: '#64748b', maxWidth: '300px', margin: '0 auto 24px' }}>
             Align with creators and brands to see their latest posts here!
           </p>
-          <button className="btn btn-primary" onClick={() => navigate("/discover")}>
+          <button 
+            className="btn btn-primary" 
+            style={{ 
+              marginTop: '8px',
+              padding: '10px 24px',
+              borderRadius: '8px',
+              fontWeight: '600'
+            }}
+            onClick={() => navigate("/discover")}
+          >
             Discover Creators
           </button>
         </div>
