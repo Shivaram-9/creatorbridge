@@ -35,8 +35,21 @@ router.post("/", authMiddleware, postUpload.array("media", 10), async (req, res)
   }
 });
 
+// Get Feed (Public / Discover fallback)
+router.get("/", async (req, res) => {
+  try {
+    const posts = await Post.find({ isArchived: false })
+      .populate("user", "name username avatar role isVerified isPremium")
+      .sort("-isPinned -createdAt")
+      .limit(20);
+    res.json(posts);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Get Feed (Alliances only) - Dedicated Route
-router.get("/alliance-feed", authMiddleware, async (req, res) => {
+router.get("/feed-alliances", authMiddleware, async (req, res) => {
   try {
     const user = await User.findById(req.userId).select("following followers");
     if (!user) return res.status(404).json({ error: "User not found" });
@@ -62,19 +75,6 @@ router.get("/alliance-feed", authMiddleware, async (req, res) => {
   } catch (err) {
     console.error("Alliance feed error:", err);
     res.status(500).json({ error: "Backend Feed Error: " + err.message });
-  }
-});
-
-// Get Feed (Public / Discover fallback)
-router.get("/", async (req, res) => {
-  try {
-    const posts = await Post.find({ isArchived: false })
-      .populate("user", "name username avatar role isVerified isPremium")
-      .sort("-isPinned -createdAt")
-      .limit(20);
-    res.json(posts);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
   }
 });
 

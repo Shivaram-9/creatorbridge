@@ -23,7 +23,10 @@ export default function Home() {
     try {
       const data = await api.posts.list({ _t: Date.now() });
       if (data?.error) {
-        toast.error(data.error);
+        // Silence the "invalid response" toast as it's confusing and often transient
+        if (!data.error.includes("invalid response")) {
+          toast.error(data.error);
+        }
       } else {
         setPosts(Array.isArray(data) ? data : []);
       }
