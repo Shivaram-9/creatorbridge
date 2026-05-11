@@ -17,13 +17,19 @@
 .profile-ig-avatar-wrap {
   flex-shrink: 0;
   position: relative;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  overflow: hidden;
 }
 
 /* Override avatar to fill the wrapper */
-.profile-ig-avatar-wrap .avatar-container {
+.profile-ig-avatar-wrap .avatar-container,
+.profile-ig-avatar-wrap .avatar-img {
   width: 100% !important;
   height: 100% !important;
-  font-size: 36px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
 }
 
 .profile-ig-info {
