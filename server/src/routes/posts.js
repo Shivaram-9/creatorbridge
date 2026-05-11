@@ -46,8 +46,8 @@ router.get("/alliance-feed", authMiddleware, async (req, res) => {
 
     // Combine following and followers to get all "alliances"
     const alliances = [...new Set([
-      ...following.map(id => id?.toString()),
-      ...followers.map(id => id?.toString()),
+      ...following.map(id => (id?._id || id)?.toString()),
+      ...followers.map(id => (id?._id || id)?.toString()),
       req.userId.toString()
     ])].filter(Boolean);
 

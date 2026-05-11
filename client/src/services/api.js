@@ -81,11 +81,13 @@ async function request(path, options = {}) {
   }
 
   let data;
+  let text = "";
   try {
-    const text = await res.text();
+    text = await res.text();
     data = text ? JSON.parse(text) : null;
   } catch {
-    return { error: "Server returned an invalid response" };
+    const preview = text?.slice(0, 50) || "Empty response";
+    return { error: `Server returned an invalid response: ${preview}...` };
   }
 
   if (!res.ok) {

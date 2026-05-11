@@ -150,45 +150,7 @@ export default function Discover() {
         </div>
       ) : (
         <>
-          {/* Explore Grid (Instagram-style image grid) */}
-          <div className="discover-explore-grid">
-            {exploreGrid ? (
-              exploreGrid.map((post, i) => {
-                const src = post.media?.[0]?.startsWith("http")
-                  ? post.media[0]
-                  : post.media?.[0]
-                  ? `${api.BASE_URL}${post.media[0]}`
-                  : EXPLORE_PHOTOS[i % EXPLORE_PHOTOS.length];
-                return (
-                  <div
-                    key={post._id}
-                    className={`discover-grid-item ${i % 5 === 0 ? "large" : ""}`}
-                    onClick={() => navigate(`/user/${post.user?._id || ""}`)}
-                  >
-                    <img
-                      src={src}
-                      alt=""
-                      className="discover-grid-img"
-                      onError={e => { e.target.src = EXPLORE_PHOTOS[i % EXPLORE_PHOTOS.length]; }}
-                    />
-                    <div className="discover-grid-overlay">
-                      <span>❤️ {post.likes?.length || 0}</span>
-                      <span>💬 {post.comments?.length || 0}</span>
-                    </div>
-                  </div>
-                );
-              })
-            ) : (
-              EXPLORE_PHOTOS.map((src, i) => (
-                <div key={i} className={`discover-grid-item ${i % 5 === 0 ? "large" : ""}`}>
-                  <img src={src} alt="Explore" className="discover-grid-img" />
-                  <div className="discover-grid-overlay">
-                    <span>❤️ {Math.floor(Math.random() * 500 + 50)}</span>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
+          {/* Global Marketplace Section */}
 
           {/* Global Marketplace Section */}
           <div className="discover-marketplace-section">
