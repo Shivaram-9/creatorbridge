@@ -147,43 +147,44 @@ export default function Home() {
         </div>
 
         {posts.length > 0 ? (
-        <div style={{ marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          {posts.map((post) => (
-            <PostCard 
-              key={post._id} 
-              post={formatPost(post)} 
-              onDelete={(id) => setPosts(prev => prev.filter(p => p._id !== id))}
-            />
-          ))}
-        </div>
-      ) : (
-        <div className="empty-state" style={{ 
-          marginTop: '60px', 
-          display: 'flex', 
-          flexDirection: 'column', 
-          alignItems: 'center', 
-          justifyContent: 'center',
-          textAlign: 'center',
-          width: '100%'
-        }}>
-          <div style={{ fontSize: '48px', marginBottom: '16px' }}>🤝</div>
-          <h2 style={{ fontSize: '24px', fontWeight: '800', color: '#0f172a', marginBottom: '8px' }}>Welcome! Your Alliance Feed is Empty</h2>
-          <p style={{ color: '#64748b', maxWidth: '300px', margin: '0 auto 24px' }}>
-            Align with creators and brands to see their latest posts here!
-          </p>
-          <button 
-            className="btn btn-primary" 
-            style={{ 
-              marginTop: '8px',
-              padding: '10px 24px',
-              borderRadius: '8px',
-              fontWeight: '600'
-            }}
-            onClick={() => navigate("/discover")}
-          >
-            Discover Creators
-          </button>
-        </div>
+          <div style={{ marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {posts.map((post) => (
+              <PostCard 
+                key={post._id} 
+                post={formatPost(post)} 
+                onDelete={(id) => setPosts(prev => prev.filter(p => p._id !== id))}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="empty-state" style={{ 
+            marginTop: '60px', 
+            display: 'flex', 
+            flexDirection: 'column', 
+            alignItems: 'center', 
+            justifyContent: 'center',
+            textAlign: 'center',
+            width: '100%'
+          }}>
+            <div style={{ fontSize: '48px', marginBottom: '16px' }}>🤝</div>
+            <h2 style={{ fontSize: '24px', fontWeight: '800', color: '#0f172a', marginBottom: '8px' }}>Welcome! Your Alliance Feed is Empty</h2>
+            <p style={{ color: '#64748b', maxWidth: '300px', margin: '0 auto 24px' }}>
+              Align with creators and brands to see their latest posts here!
+            </p>
+            <button 
+              className="btn btn-primary" 
+              style={{ 
+                marginTop: '8px',
+                padding: '10px 24px',
+                borderRadius: '8px',
+                fontWeight: '600'
+              }}
+              onClick={() => navigate("/discover")}
+            >
+              Discover Creators
+            </button>
+          </div>
+        )}
         </>
       )}
     </div>
