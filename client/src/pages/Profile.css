@@ -387,51 +387,60 @@
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
   .profile-ig-header {
-    gap: 28px;
-    padding: 20px 16px 16px;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 24px 16px;
+    text-align: center;
   }
 
-  /* Smaller avatar on mobile */
-  .profile-ig-header .profile-ig-avatar-wrap > * {
-    width: 80px !important;
-    height: 80px !important;
+  .profile-ig-avatar-wrap {
+    margin: 0 auto;
+  }
+
+  .profile-ig-avatar-wrap,
+  .profile-ig-avatar-wrap > *,
+  .profile-ig-avatar-wrap .avatar-container {
+    width: 100px !important;
+    height: 100px !important;
     border-radius: 50% !important;
     overflow: hidden !important;
   }
 
-  /* Hide desktop bio in header */
-  .profile-ig-info .profile-ig-bio {
-    display: none;
+  .profile-ig-info {
+    width: 100%;
+    align-items: center;
   }
 
-  /* Hide desktop action buttons */
-  .profile-ig-actions {
-    display: none;
-  }
-
-  /* Show mobile bio */
-  .profile-ig-bio-mobile {
-    display: flex;
-  }
-
-  /* Show mobile action buttons */
-  .profile-ig-actions-mobile {
-    display: flex;
+  .profile-ig-top {
+    justify-content: center;
+    flex-direction: column;
+    gap: 12px;
   }
 
   .profile-ig-username {
-    font-size: 16px;
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  /* Hide desktop bio and actions as they are handled by mobile-specific components */
+  .profile-ig-info .profile-ig-bio,
+  .profile-ig-info .profile-ig-actions {
+    display: none;
   }
 
   .profile-ig-stats {
-    gap: 20px;
+    gap: 32px;
+    justify-content: center;
+    width: 100%;
+    margin: 12px 0;
   }
 
   .profile-ig-stat {
     font-size: 14px;
     flex-direction: column;
     align-items: center;
-    gap: 2px;
+    gap: 4px;
   }
 
   .profile-ig-tab span {
