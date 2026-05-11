@@ -70,13 +70,14 @@ usersRouter.post("/me/avatar", profileUpload.single("avatar"), async (req, res) 
 
 usersRouter.patch("/me", async (req, res) => {
   try {
-    const { name, username, category, bio, location, role, avatar, instagram, youtube } = req.body;
+    const { name, username, category, bio, location, role, avatar, website, instagram, youtube } = req.body;
     const updates = {};
     if (name !== undefined) updates.name = String(name).slice(0, 120);
     if (username !== undefined) updates.username = String(username).slice(0, 60);
     if (category !== undefined) updates.category = String(category).slice(0, 80);
     if (bio !== undefined) updates.bio = String(bio).slice(0, 2000);
     if (location !== undefined) updates.location = String(location).slice(0, 120);
+    if (website !== undefined) updates.website = String(website).slice(0, 200);
     if (role !== undefined && ["influencer", "brand"].includes(role)) updates.role = role;
     if (avatar !== undefined) updates.avatar = String(avatar).slice(0, 1000); // Allow longer paths or base64 if needed
     if (instagram !== undefined) updates.instagram = String(instagram).slice(0, 200);
