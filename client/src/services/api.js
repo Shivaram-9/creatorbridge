@@ -237,7 +237,7 @@ export const api = {
     list: (params = {}) => {
       const sp = new URLSearchParams(params);
       const query = sp.toString() ? `?${sp.toString()}` : "";
-      return request(`/posts${query}`);
+      return request(`/posts/alliance-feed${query}`);
     },
     userPosts: (userId) => request(`/posts/user/${userId}`),
     create: (formData) => request("/posts", { 

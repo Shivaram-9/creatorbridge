@@ -35,8 +35,8 @@ router.post("/", authMiddleware, postUpload.array("media", 10), async (req, res)
   }
 });
 
-// Get Feed (Alliances only)
-router.get("/", authMiddleware, async (req, res) => {
+// Get Feed (Alliances only) - Dedicated Route
+router.get("/alliance-feed", authMiddleware, async (req, res) => {
   try {
     const user = await User.findById(req.userId).select("following followers");
     if (!user) return res.status(404).json({ error: "User not found" });
@@ -60,7 +60,20 @@ router.get("/", authMiddleware, async (req, res) => {
       
     res.json(posts);
   } catch (err) {
-    console.error("Feed error:", err);
+    console.error("Alliance feed error:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get Feed (Public / Discover fallback)
+router.get("/", async (req, res) => {
+  try {
+    const posts = await Post.find({ isArchived: false })
+      .populate("user", "name username avatar role isVerified isPremium")
+      .sort("-isPinned -createdAt")
+      .limit(20);
+    res.json(posts);
+  } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
