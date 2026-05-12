@@ -52,7 +52,6 @@ const UserCard = memo(({ user }) => {
             setHasRequested(true);
             import("react-hot-toast").then(m => m.default.success("Request pending"));
           }
-          else setIsFollowing(true);
         }
       }
     } catch (err) {

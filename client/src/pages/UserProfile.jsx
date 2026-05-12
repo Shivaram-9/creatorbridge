@@ -155,19 +155,15 @@ export default function UserProfile() {
       } else {
         const result = await api.users.follow(userId);
         if (result.error) toast.error(result.error);
-        // Aggressive check for pending state
-        const bodyText = JSON.stringify(result).toLowerCase();
-        const isReq = result.requested === true || bodyText.includes("sent") || bodyText.includes("pending");
-        
-        if (isReq) {
-          setHasRequested(true);
-          toast.success("Request pending");
-        } else {
-          setIsFollowing(true);
-          toast.success("Aligned!");
+        else {
+          const isReq = result.requested === true || (result.message && result.message.toLowerCase().includes("sent"));
+          if (isReq) {
+            setHasRequested(true);
+            toast.success("Request pending");
+          }
         }
+        load();
       }
-      load(); // Refresh profile state
     } catch {
       toast.error("Action failed");
     } finally {

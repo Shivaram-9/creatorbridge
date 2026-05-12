@@ -112,6 +112,12 @@ usersRouter.post("/follow/:id", async (req, res) => {
     }
 
     // ALWAYS use AlignRequest instead of immediate follow as per user requirement
+    // Check legacy follow data first
+    const me = await User.findById(currentId);
+    if (me.following.includes(targetId)) {
+      return res.status(400).json({ error: "Already aligned. End align first if you wish to reset." });
+    }
+
     const existing = await AlignRequest.findOne({ sender: currentId, receiver: targetId });
     if (existing) {
       if (existing.status === "pending") return res.status(400).json({ error: "Request already pending" });
