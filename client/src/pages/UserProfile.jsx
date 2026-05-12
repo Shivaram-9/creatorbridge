@@ -155,7 +155,10 @@ export default function UserProfile() {
       } else {
         const result = await api.users.follow(userId);
         if (result.error) toast.error(result.error);
-        const isReq = result.requested === true || (result.message && result.message.toLowerCase().includes("sent"));
+        // Aggressive check for pending state
+        const bodyText = JSON.stringify(result).toLowerCase();
+        const isReq = result.requested === true || bodyText.includes("sent") || bodyText.includes("pending");
+        
         if (isReq) {
           setHasRequested(true);
           toast.success("Request pending");
@@ -275,8 +278,13 @@ export default function UserProfile() {
                         {actionBusy ? "..." : hasRequested ? "Request pending" : isFollowing ? "Aligned" : "Align"}
                       </button>
                       
-                      {!isOwn && (isFollowing || !profile.isPrivate) && (
-                        <Link to={`/messages/${userId}`} className="up-message-box">Messages</Link>
+                      {!isOwn && (
+                        <Link
+                          to={`/messages/${userId}`}
+                          className="up-message-box"
+                        >
+                          Messages
+                        </Link>
                       )}
                     </div>
                   )}
