@@ -57,27 +57,73 @@ export default function Profile() {
   const handleLike = async (e, post) => {
     e.stopPropagation();
     if (!user) return;
+
+    // Optimistic Update
+    const isLiked = post.likes?.some(l => (l._id || l) === user._id);
+    const newLikes = isLiked 
+      ? post.likes.filter(l => (l._id || l) !== user._id)
+      : [...(post.likes || []), user._id];
+    
+    setPosts(prev => prev.map(p => p._id === post._id ? { ...p, likes: newLikes } : p));
+    if (lightboxPost?._id === post._id) setLightboxPost({ ...lightboxPost, likes: newLikes });
+
     try {
       const res = await api.posts.like(post._id);
-      if (!res.error) {
+      if (res.error) {
+        // Revert on error
+        setPosts(prev => prev.map(p => p._id === post._id ? { ...p, likes: post.likes } : p));
+        if (lightboxPost?._id === post._id) setLightboxPost(post);
+        toast.error("Failed to like post");
+      } else {
+        // Sync with actual server data
         setPosts(prev => prev.map(p => p._id === post._id ? { ...p, likes: res.likes } : p));
         if (lightboxPost?._id === post._id) setLightboxPost({ ...lightboxPost, likes: res.likes });
       }
     } catch (err) {
-      toast.error("Failed to like post");
+      // Revert on catch
+      setPosts(prev => prev.map(p => p._id === post._id ? { ...p, likes: post.likes } : p));
+      if (lightboxPost?._id === post._id) setLightboxPost(post);
     }
   };
 
   const handleSave = async (e, post) => {
     e.stopPropagation();
     if (!user) return;
+    
     try {
       const res = await api.posts.save(post._id);
       if (!res.error) {
         toast.success(res.saved ? "Post saved" : "Post removed from saves");
+        // Update user state if needed (optional since we rely on icon logic)
       }
     } catch (err) {
       toast.error("Failed to save post");
+    }
+  };
+
+  const handleCommentSubmit = async (e, postId, text) => {
+    e.preventDefault();
+    if (!text?.trim() || !user) return;
+
+    try {
+      const res = await api.posts.comment(postId, text);
+      if (!res.error) {
+        setPosts(prev => prev.map(p => {
+          if (p._id === postId) {
+            return { ...p, comments: [...(p.comments || []), res] };
+          }
+          return p;
+        }));
+        if (lightboxPost?._id === postId) {
+          setLightboxPost(prev => ({
+            ...prev,
+            comments: [...(prev.comments || []), res]
+          }));
+        }
+        toast.success("Comment posted!");
+      }
+    } catch (err) {
+      toast.error("Failed to post comment");
     }
   };
 
@@ -86,12 +132,6 @@ export default function Profile() {
     const postUrl = `${window.location.origin}/post/${post._id}`;
     navigator.clipboard.writeText(postUrl);
     toast.success("Link copied to clipboard");
-  };
-
-  const handleComment = (e, post) => {
-    e.stopPropagation();
-    // For now, navigate to post detail or just show toast
-    toast("Comments coming soon to profile view!");
   };
 
   const handleShare = async () => {
@@ -390,9 +430,15 @@ export default function Profile() {
                   <Avatar user={user} size="sm" />
                   <strong>{user?.username}</strong>
                 </div>
-                <p className="profile-ig-lightbox-text">{lightboxPost.content}</p>
-                <div className="profile-ig-lightbox-meta">
-                  <span>{new Date(lightboxPost.createdAt).toLocaleDateString()}</span>
+                <div className="profile-ig-lightbox-scroll">
+                  <div className="comment-item main-caption">
+                    <strong>{user?.username}</strong> {lightboxPost.content}
+                  </div>
+                  {lightboxPost.comments?.map((c, i) => (
+                    <div key={i} className="comment-item">
+                      <strong>{c.user?.username || c.user?.name || "User"}</strong> {c.text}
+                    </div>
+                  ))}
                 </div>
               </div>
 
@@ -402,7 +448,7 @@ export default function Profile() {
                     <button className="action-btn" onClick={(e) => handleLike(e, lightboxPost)}>
                       <HeartIcon filled={lightboxPost.likes?.some(l => (l._id || l) === user?._id)} />
                     </button>
-                    <button className="action-btn" onClick={(e) => handleComment(e, lightboxPost)}>
+                    <button className="action-btn">
                       <MessageCircleIcon />
                     </button>
                     <button className="action-btn" onClick={(e) => handleSharePost(e, lightboxPost)}>
@@ -410,13 +456,24 @@ export default function Profile() {
                     </button>
                   </div>
                   <button className="action-btn" onClick={(e) => handleSave(e, lightboxPost)}>
-                    <BookmarkIcon />
+                    <BookmarkIcon filled={user?.savedPosts?.some(id => id.toString() === lightboxPost._id)} />
                   </button>
                 </div>
                 <div className="profile-ig-lightbox-counts">
                   <strong>{lightboxPost.likes?.length || 0} likes</strong>
-                  <p>View all {lightboxPost.comments?.length || 0} comments</p>
+                  <span className="post-date">{new Date(lightboxPost.createdAt).toLocaleDateString()}</span>
                 </div>
+                <form 
+                  className="profile-ig-lightbox-comment-form"
+                  onSubmit={(e) => {
+                    const text = e.target.comment.value;
+                    handleCommentSubmit(e, lightboxPost._id, text);
+                    e.target.reset();
+                  }}
+                >
+                  <input name="comment" placeholder="Add a comment..." autoComplete="off" />
+                  <button type="submit">Post</button>
+                </form>
               </div>
             </div>
           </div>
