@@ -114,37 +114,29 @@
 }
 
 .btn-submit {
-  background: var(--primary);
+  background-color: #0095f6 !important;
   color: #ffffff !important;
-  border: none;
-  padding: 10px 24px;
-  border-radius: var(--radius-md);
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 140px;
-  box-shadow: 0 4px 6px -1px rgba(0, 149, 246, 0.3);
+  border: none !important;
+  padding: 12px 24px !important;
+  border-radius: 8px !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 140px !important;
+  text-decoration: none !important;
+  opacity: 1 !important;
 }
 
 .btn-submit:disabled {
-  background: var(--primary);
-  opacity: 0.4;
-  cursor: not-allowed;
-  box-shadow: none;
-  pointer-events: none;
+  background-color: #0095f6 !important;
+  opacity: 0.3 !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
 }
 
 .btn-submit:hover:not(:disabled) {
-  background: var(--primary-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 10px 15px -3px rgba(0, 149, 246, 0.4);
-}
-
-.btn-submit:active:not(:disabled) {
-  transform: translateY(0);
-  box-shadow: 0 4px 6px -1px rgba(0, 149, 246, 0.3);
+  background-color: #1877f2 !important; /* Slightly darker blue on hover without effects */
 }
