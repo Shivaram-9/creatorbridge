@@ -154,13 +154,11 @@ export default function UserProfile() {
         await handleEndAlign();
       } else {
         const result = await api.users.follow(userId);
-        if (result.error) toast.error(result.error);
-        else {
-          const isReq = result.requested === true || (result.message && result.message.toLowerCase().includes("sent"));
-          if (isReq) {
-            setHasRequested(true);
-            toast.success("Request pending");
-          }
+        if (result.error) {
+          toast.error(result.error);
+        } else {
+          setHasRequested(true);
+          toast.success("Request pending");
         }
         load();
       }

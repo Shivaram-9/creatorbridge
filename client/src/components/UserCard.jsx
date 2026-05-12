@@ -46,13 +46,13 @@ const UserCard = memo(({ user }) => {
         if (!result.error) setIsFollowing(false);
       } else {
         const result = await api.users.follow(user._id);
-        if (!result.error) {
-          const isReq = result.requested === true || (result.message && result.message.toLowerCase().includes("sent"));
-          if (isReq) {
-            setHasRequested(true);
-            import("react-hot-toast").then(m => m.default.success("Request pending"));
-          }
+        if (result.error) {
+          import("react-hot-toast").then(m => m.default.error(result.error));
+        } else {
+          setHasRequested(true);
+          import("react-hot-toast").then(m => m.default.success("Request pending"));
         }
+      }
       }
     } catch (err) {
       console.error("Action failed", err);
