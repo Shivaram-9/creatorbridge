@@ -86,9 +86,9 @@ app.use("/api/verification", verificationRouter);
 app.use("/api/brand", brandRouter);
 
 
-// Serve static uploads
-app.use("/uploads", express.static("uploads"));
-app.use("/uploads/stories", express.static("uploads/stories"));
+// Serve static uploads with explicit CORS for cross-origin media loading
+app.use("/uploads", cors(), express.static("uploads"));
+app.use("/uploads/stories", cors(), express.static("uploads/stories"));
 
 const server = http.createServer(app);
 

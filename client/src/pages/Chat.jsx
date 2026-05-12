@@ -201,9 +201,10 @@ export default function Chat({ standalone = true }) {
           const getMediaUrl = (url) => {
             if (!url) return null;
             if (url.startsWith("http")) return url;
-            // Ensure no double slashes
-            const cleanPath = url.startsWith("/") ? url : `/${url}`;
-            return `${api.BASE_URL}${cleanPath}`;
+            // Ensure no double slashes and no leading slash in the combined path
+            const cleanPath = url.startsWith("/") ? url.substring(1) : url;
+            const baseUrl = api.BASE_URL.endsWith("/") ? api.BASE_URL : `${api.BASE_URL}/`;
+            return `${baseUrl}${cleanPath}`;
           };
 
           const mediaUrl = getMediaUrl(media);
@@ -229,7 +230,6 @@ export default function Chat({ standalone = true }) {
                         src={mediaUrl} 
                         alt="Shared media" 
                         style={{ width: '100%', height: 'auto', maxHeight: '400px', display: 'block', objectFit: 'contain' }} 
-                        crossOrigin="anonymous"
                         loading="lazy"
                         onError={(e) => {
                           console.error('Chat media failed to load:', mediaUrl);
