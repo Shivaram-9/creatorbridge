@@ -27,6 +27,7 @@ export default function Profile() {
   const [loadingData, setLoadingData] = useState(true);
   const [activeTab, setActiveTab] = useState("posts");
   const [copyStatus, setCopyStatus] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
   const [lightboxPost, setLightboxPost] = useState(null);
 
   const loadData = useCallback(async () => {
@@ -171,6 +172,19 @@ export default function Profile() {
         {/* Avatar - explicitly sized wrapper */}
         <div className="profile-ig-avatar-wrap" style={{ width: '150px', height: '150px', minWidth: '150px', borderRadius: '50%', overflow: 'hidden' }}>
           <Avatar user={user} size="xl" />
+        </div>
+
+        {/* Three Dots Menu for Owner */}
+        <div className="up-abs-actions" style={{ position: 'absolute', top: '20px', right: '20px' }}>
+          <button className="up-more-trigger" onClick={() => setShowMenu(!showMenu)}>•••</button>
+          {showMenu && (
+            <div className="dropdown-menu show slide-in" style={{ position: 'absolute', right: 0, top: '40px', background: 'white', border: '1px solid #eee', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', zIndex: 100 }}>
+              <button className="dropdown-item" onClick={() => navigate("/profile/edit")}>Edit Profile</button>
+              <button className="dropdown-item" onClick={handleShare}>Share Profile</button>
+              <button className="dropdown-item" onClick={() => navigate("/settings")}>Settings</button>
+              <button className="dropdown-item danger" onClick={() => { localStorage.clear(); window.location.href = "/login"; }}>Logout</button>
+            </div>
+          )}
         </div>
 
         {/* Info Column */}
