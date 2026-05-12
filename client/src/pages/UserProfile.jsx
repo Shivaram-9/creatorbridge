@@ -131,11 +131,21 @@ export default function UserProfile() {
     setActionBusy(true);
     try {
       const result = await api.users.unfollow(userId);
-      if (result.error) toast.error(result.error);
-      else {
+      if (result.error) {
+        toast.error(result.error);
+      } else {
         setIsFollowing(false);
+        setHasRequested(false);
         toast.success("Alignment ended");
-        load();
+        
+        // Immediate local state update to prevent refresh glitch
+        setProfile(prev => {
+          if (!prev) return prev;
+          const updatedFollowers = (prev.followers || []).filter(
+            id => (id._id || id).toString() !== me?._id?.toString()
+          );
+          return { ...prev, followers: updatedFollowers };
+        });
       }
     } catch {
       toast.error("Action failed");
