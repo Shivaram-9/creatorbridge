@@ -244,7 +244,7 @@ export default function UserProfile() {
                         disabled={actionBusy || hasRequested}
                         onClick={handleFollowToggle}
                       >
-                        {actionBusy ? "..." : hasRequested ? "Requested" : isFollowing ? "Aligned" : "Align"}
+                        {actionBusy ? "..." : hasRequested ? "Request sent" : isFollowing ? "Aligned" : "Align"}
                       </button>
                       
                       {!isOwn && (isFollowing || !profile.isPrivate) && (

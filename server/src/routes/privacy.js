@@ -55,19 +55,29 @@ privacyRouter.post("/requests/:requestId/:action", async (req, res) => {
 
     if (action === "accept") {
       request.status = "accepted";
-      await User.findByIdAndUpdate(request.receiver, { $addToSet: { followers: request.sender } });
-      await User.findByIdAndUpdate(request.sender, { $addToSet: { following: request.receiver } });
+      // Mutual alignment: Both follow each other
+      await Promise.all([
+        User.findByIdAndUpdate(request.receiver, { $addToSet: { followers: request.sender, following: request.sender } }),
+        User.findByIdAndUpdate(request.sender, { $addToSet: { followers: request.receiver, following: request.receiver } })
+      ]);
       
-      // Send notification to the person who sent the request
       const Notification = mongoose.model("Notification");
       await Notification.create({
         user: request.sender,
         sender: request.receiver,
         type: "follow",
-        message: "has aligned you",
+        message: "has accepted your request",
       });
     } else {
       request.status = "rejected";
+      
+      const Notification = mongoose.model("Notification");
+      await Notification.create({
+        user: request.sender,
+        sender: request.receiver,
+        type: "align_request",
+        message: "has declined your request",
+      });
     }
 
     await request.save();

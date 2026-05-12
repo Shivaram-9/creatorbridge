@@ -69,7 +69,7 @@ export default function Requests() {
               </div>
               <div className="request-actions">
                 <button className="btn btn-primary" onClick={() => handleAction(req._id, 'accept')}>Accept</button>
-                <button className="btn btn-secondary" onClick={() => handleAction(req._id, 'reject')}>Reject</button>
+                <button className="btn btn-secondary" onClick={() => handleAction(req._id, 'reject')}>Decline</button>
               </div>
             </div>
           ))}

@@ -20,7 +20,10 @@ const UserCard = memo(({ user }) => {
     if (me && me.following) {
       setIsFollowing(me.following.includes(user._id));
     }
-  }, [me, user._id]);
+    if (user.isRequested) {
+      setHasRequested(true);
+    }
+  }, [me, user._id, user.isRequested]);
 
   const isOwn = me?._id === user._id;
 
@@ -178,7 +181,7 @@ const UserCard = memo(({ user }) => {
             transition: 'all 0.2s'
           }}
         >
-          {actionBusy ? "..." : isOwn ? "Edit Profile" : hasRequested ? "Requested" : isFollowing ? "Aligned" : "Align"}
+          {actionBusy ? "..." : isOwn ? "Edit Profile" : hasRequested ? "Request sent" : isFollowing ? "Aligned" : "Align"}
         </button>
       </div>
     </div>
