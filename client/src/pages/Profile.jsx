@@ -19,7 +19,7 @@ function fmtCount(n) {
 }
 
 export default function Profile() {
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
   const navigate = useNavigate();
 
   const [posts, setPosts] = useState([]);
@@ -94,7 +94,13 @@ export default function Profile() {
       const res = await api.posts.save(post._id);
       if (!res.error) {
         toast.success(res.saved ? "Post saved" : "Post removed from saves");
-        // Update user state if needed (optional since we rely on icon logic)
+        
+        // Update global user state for saved posts
+        const updatedSavedPosts = res.saved 
+          ? [...(user.savedPosts || []), post._id]
+          : (user.savedPosts || []).filter(id => id.toString() !== post._id);
+        
+        setUser({ ...user, savedPosts: updatedSavedPosts });
       }
     } catch (err) {
       toast.error("Failed to save post");
