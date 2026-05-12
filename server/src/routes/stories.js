@@ -13,7 +13,9 @@ storiesRouter.post("/", storyUpload.single("media"), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: "Media file is required" });
 
-    const mediaPath = `/uploads/stories/${req.file.filename}`;
+    const mediaPath = (req.file.secure_url || req.file.path || "").startsWith("http") 
+      ? (req.file.secure_url || req.file.path) 
+      : `/uploads/stories/${req.file.filename}`;
     const mediaType = req.file.mimetype.startsWith("video") ? "video" : "image";
 
     const story = await Story.create({

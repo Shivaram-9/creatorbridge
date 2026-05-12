@@ -12,9 +12,12 @@ router.post("/", authMiddleware, postUpload.array("media", 10), async (req, res)
   try {
     const { content, category, location, hashtags, taggedUsers } = req.body;
 
-    // Cloudinary returns file.path (full https URL); disk storage uses filename
+    // Cloudinary returns file.path or file.secure_url (full https URL); disk storage uses filename
     const mediaFiles = req.files
-      ? req.files.map(f => f.path || `/uploads/posts/${f.filename}`)
+      ? req.files.map(f => {
+          const url = f.secure_url || f.path || "";
+          return url.startsWith("http") ? url : `/uploads/posts/${f.filename}`;
+        })
       : [];
 
     const post = await Post.create({
