@@ -122,12 +122,7 @@ export default function UserProfile() {
   const [showAlignMenu, setShowAlignMenu] = useState(false);
 
   const handleEndAlign = async () => {
-    if (!isFollowing) {
-      toast.error("You are not aligned with this user");
-      setShowAlignMenu(false);
-      return;
-    }
-    if (!window.confirm("End alignment with this user?")) return;
+    // Immediate UI feedback
     setActionBusy(true);
     try {
       const result = await api.users.unfollow(userId);
@@ -138,7 +133,7 @@ export default function UserProfile() {
         setHasRequested(false);
         toast.success("Alignment ended");
         
-        // Immediate local state update to prevent refresh glitch
+        // Immediate local count update
         setProfile(prev => {
           if (!prev) return prev;
           const updatedFollowers = (prev.followers || []).filter(
@@ -148,7 +143,7 @@ export default function UserProfile() {
         });
       }
     } catch {
-      toast.error("Action failed");
+      toast.error("Failed to end alignment");
     } finally {
       setActionBusy(false);
       setShowAlignMenu(false);
@@ -168,9 +163,9 @@ export default function UserProfile() {
           toast.error(result.error);
         } else {
           setHasRequested(true);
+          setIsFollowing(false); // Ensure it's not Aligned yet
           toast.success("Request pending");
         }
-        load();
       }
     } catch {
       toast.error("Action failed");
