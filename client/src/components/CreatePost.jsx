@@ -31,24 +31,34 @@ export default function CreatePost({ onPost, user }) {
     setPreviews(prev => prev.filter((_, i) => i !== index));
   };
 
-  const handleSubmit = (e) => {
+  const [isPosting, setIsPosting] = useState(false);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!content.trim() && mediaFiles.length === 0) return;
+    if (isPosting) return;
 
-    const formData = new FormData();
-    formData.append("content", content);
-    formData.append("category", category);
-    formData.append("location", location);
-    mediaFiles.forEach(file => formData.append("media", file));
+    setIsPosting(true);
+    try {
+      const formData = new FormData();
+      formData.append("content", content);
+      formData.append("category", category);
+      formData.append("location", location);
+      mediaFiles.forEach(file => formData.append("media", file));
 
-    onPost(formData);
+      await onPost(formData);
 
-    setContent("");
-    setCategory("Lifestyle");
-    setLocation("");
-    setMediaFiles([]);
-    setPreviews([]);
-    if (fileInputRef.current) fileInputRef.current.value = "";
+      setContent("");
+      setCategory("Lifestyle");
+      setLocation("");
+      setMediaFiles([]);
+      setPreviews([]);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    } catch (err) {
+      console.error("Post failed", err);
+    } finally {
+      setIsPosting(false);
+    }
   };
 
   return (
@@ -107,8 +117,12 @@ export default function CreatePost({ onPost, user }) {
             accept="image/*,video/*"
             onChange={handleMediaChange}
           />
-          <button type="submit" className="btn-submit" disabled={!content.trim() && mediaFiles.length === 0}>
-            Post to Profile
+          <button 
+            type="submit" 
+            className="btn-submit" 
+            disabled={isPosting || (!content.trim() && mediaFiles.length === 0)}
+          >
+            {isPosting ? "Posting..." : "Post to Profile"}
           </button>
         </div>
       </form>

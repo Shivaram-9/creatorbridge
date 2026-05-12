@@ -115,21 +115,36 @@
 
 .btn-submit {
   background: var(--primary);
-  color: white;
+  color: #ffffff !important;
   border: none;
-  padding: 8px 16px;
+  padding: 10px 24px;
   border-radius: var(--radius-md);
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 140px;
+  box-shadow: 0 4px 6px -1px rgba(0, 149, 246, 0.3);
 }
 
 .btn-submit:disabled {
-  background: #b3dbff;
+  background: var(--primary);
+  opacity: 0.4;
   cursor: not-allowed;
+  box-shadow: none;
+  pointer-events: none;
 }
 
 .btn-submit:hover:not(:disabled) {
   background: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 149, 246, 0.4);
+}
+
+.btn-submit:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 4px 6px -1px rgba(0, 149, 246, 0.3);
 }
