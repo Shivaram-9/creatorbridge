@@ -7,6 +7,7 @@ import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import Avatar from "../components/Avatar.jsx";
 import VerifiedBadge from "../components/VerifiedBadge.jsx";
 import PortfolioGrid from "../components/PortfolioGrid.jsx";
+import { HeartIcon, MessageCircleIcon, SendIcon, BookmarkIcon } from "../components/Icons.jsx";
 import toast from "react-hot-toast";
 import "./Profile.css";
 
@@ -51,6 +52,46 @@ export default function Profile() {
 
   const handleDelete = (postId) => {
     setPosts(prev => prev.filter(p => p._id !== postId));
+  };
+
+  const handleLike = async (e, post) => {
+    e.stopPropagation();
+    if (!user) return;
+    try {
+      const res = await api.posts.like(post._id);
+      if (!res.error) {
+        setPosts(prev => prev.map(p => p._id === post._id ? { ...p, likes: res.likes } : p));
+        if (lightboxPost?._id === post._id) setLightboxPost({ ...lightboxPost, likes: res.likes });
+      }
+    } catch (err) {
+      toast.error("Failed to like post");
+    }
+  };
+
+  const handleSave = async (e, post) => {
+    e.stopPropagation();
+    if (!user) return;
+    try {
+      const res = await api.posts.save(post._id);
+      if (!res.error) {
+        toast.success(res.saved ? "Post saved" : "Post removed from saves");
+      }
+    } catch (err) {
+      toast.error("Failed to save post");
+    }
+  };
+
+  const handleSharePost = (e, post) => {
+    e.stopPropagation();
+    const postUrl = `${window.location.origin}/post/${post._id}`;
+    navigator.clipboard.writeText(postUrl);
+    toast.success("Link copied to clipboard");
+  };
+
+  const handleComment = (e, post) => {
+    e.stopPropagation();
+    // For now, navigate to post detail or just show toast
+    toast("Comments coming soon to profile view!");
   };
 
   const handleShare = async () => {
@@ -339,13 +380,43 @@ export default function Profile() {
           <div className="profile-ig-lightbox-inner" onClick={e => e.stopPropagation()}>
             <button className="profile-ig-lightbox-close" onClick={() => setLightboxPost(null)}>✕</button>
             {getPostImage(lightboxPost) && (
-              <img src={getPostImage(lightboxPost)} alt="" className="profile-ig-lightbox-img" />
+              <div className="profile-ig-lightbox-media">
+                <img src={getPostImage(lightboxPost)} alt="" className="profile-ig-lightbox-img" />
+              </div>
             )}
             <div className="profile-ig-lightbox-body">
-              <p>{lightboxPost.content}</p>
-              <div className="profile-ig-lightbox-actions">
-                <span>❤️ {lightboxPost.likes?.length || 0} likes</span>
-                <span>💬 {lightboxPost.comments?.length || 0} comments</span>
+              <div className="profile-ig-lightbox-content">
+                <div className="profile-ig-lightbox-header">
+                  <Avatar user={user} size="sm" />
+                  <strong>{user?.username}</strong>
+                </div>
+                <p className="profile-ig-lightbox-text">{lightboxPost.content}</p>
+                <div className="profile-ig-lightbox-meta">
+                  <span>{new Date(lightboxPost.createdAt).toLocaleDateString()}</span>
+                </div>
+              </div>
+
+              <div className="profile-ig-lightbox-footer">
+                <div className="profile-ig-lightbox-actions">
+                  <div className="actions-left">
+                    <button className="action-btn" onClick={(e) => handleLike(e, lightboxPost)}>
+                      <HeartIcon filled={lightboxPost.likes?.some(l => (l._id || l) === user?._id)} />
+                    </button>
+                    <button className="action-btn" onClick={(e) => handleComment(e, lightboxPost)}>
+                      <MessageCircleIcon />
+                    </button>
+                    <button className="action-btn" onClick={(e) => handleSharePost(e, lightboxPost)}>
+                      <SendIcon />
+                    </button>
+                  </div>
+                  <button className="action-btn" onClick={(e) => handleSave(e, lightboxPost)}>
+                    <BookmarkIcon />
+                  </button>
+                </div>
+                <div className="profile-ig-lightbox-counts">
+                  <strong>{lightboxPost.likes?.length || 0} likes</strong>
+                  <p>View all {lightboxPost.comments?.length || 0} comments</p>
+                </div>
               </div>
             </div>
           </div>
