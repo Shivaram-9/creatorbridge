@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import Avatar from "./Avatar.jsx";
+import { MediaIcon } from "./Icons.jsx";
 import "./CreatePost.css";
 
 export default function CreatePost({ onPost, user }) {
@@ -93,8 +94,10 @@ export default function CreatePost({ onPost, user }) {
             type="button" 
             className="btn-media" 
             onClick={() => fileInputRef.current.click()}
+            style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
           >
-            🖼️ Add Media
+            <MediaIcon />
+            <span>Add Media</span>
           </button>
           <input
             type="file"
