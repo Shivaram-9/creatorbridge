@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { Router } from "express";
+import { v2 as cloudinary } from "cloudinary";
 import { Message } from "../models/Message.js";
 import { authMiddleware } from "../middleware/auth.js";
 import { chatUpload } from "../middleware/upload.js";
