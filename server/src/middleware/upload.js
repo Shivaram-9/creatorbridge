@@ -101,9 +101,9 @@ export const storyUpload = multer({
   limits: { fileSize: 50 * 1024 * 1024 },
 });
 
-// Chat media upload
+// Chat media upload - Using memory storage for manual control in the route
 export const chatUpload = multer({
-  storage: useCloudinary ? cloudinaryStorage("chat", "auto") : diskStorage("uploads/chat/"),
+  storage: multer.memoryStorage(),
   fileFilter: mediaFilter,
   limits: { fileSize: 50 * 1024 * 1024 },
 });

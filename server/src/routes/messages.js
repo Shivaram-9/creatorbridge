@@ -175,42 +175,60 @@ messagesRouter.post("/media", chatUpload.single("media"), async (req, res) => {
       return res.status(400).json({ error: "Media file is required" });
     }
 
-    const mediaType = req.file.mimetype.startsWith("video") ? "video" : "image";
-    
-    // Robust media path resolution
-    const file = req.file;
-    let mediaPath = file.secure_url || file.path || file.url || "";
-    
-    // Check if this is a Cloudinary upload (filename or path contains 'creatorbridge')
-    const isCloudinary = (file.filename && file.filename.includes("creatorbridge/")) || 
-                         (mediaPath && mediaPath.includes("creatorbridge/"));
+    // ─── MEDIA PATH RESOLUTION ──────────────────────────────────────────────
+    let mediaPath = "";
+    const isCloudinary = !!(process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY);
 
-    if (isCloudinary && !mediaPath.startsWith("http")) {
-      // Rescue: Construct the Cloudinary URL using the relative path/filename
-      const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
-      const publicId = file.filename || mediaPath;
-      mediaPath = `https://res.cloudinary.com/${cloudName}/image/upload/${publicId}`;
-    } else if (!mediaPath.startsWith("http")) {
-      // Genuine local disk storage
-      mediaPath = `/uploads/chat/${file.filename}`;
+    if (isCloudinary && req.file.buffer) {
+      // Manual upload from memory buffer to Cloudinary
+      try {
+        const uploadResult = await new Promise((resolve, reject) => {
+          const stream = cloudinary.uploader.upload_stream(
+            { 
+              folder: "creatorbridge/chat",
+              resource_type: "auto"
+            },
+            (error, result) => {
+              if (error) reject(error);
+              else resolve(result);
+            }
+          );
+          stream.end(req.file.buffer);
+        });
+        mediaPath = uploadResult.secure_url || uploadResult.url;
+      } catch (err) {
+        console.error("Cloudinary manual upload failed:", err);
+        return res.status(500).json({ error: "Failed to upload media to cloud" });
+      }
+    } else if (req.file.buffer) {
+      // Fallback: If Cloudinary is off but we have a buffer, we must save it locally
+      // This is less common but good for safety
+      const filename = `${Date.now()}-${req.file.originalname}`;
+      const localPath = `uploads/chat/${filename}`;
+      const fs = await import("fs");
+      const path = await import("path");
+      const uploadDir = path.join(process.cwd(), "uploads/chat");
+      if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+      fs.writeFileSync(path.join(uploadDir, filename), req.file.buffer);
+      mediaPath = `/uploads/chat/${filename}`;
+    } else {
+      // Legacy support for disk storage if multer config was changed back
+      mediaPath = req.file.secure_url || req.file.path || req.file.url || "";
+      if (!mediaPath.startsWith("http")) {
+        mediaPath = `/uploads/chat/${req.file.filename}`;
+      }
     }
-    
-    // One final check: if it STILL accidentally has the local prefix but is Cloudinary
-    if (mediaPath.includes("/uploads/chat/creatorbridge/")) {
-      const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
-      const publicId = mediaPath.split("/uploads/chat/")[1];
-      mediaPath = `https://res.cloudinary.com/${cloudName}/image/upload/${publicId}`;
-    }
+
+    const mediaType = req.file.mimetype.startsWith("video") ? "video" : "image";
 
     const msg = await Message.create({
       sender: req.userId,
       receiver: receiverId,
-      content: content ? content.trim().slice(0, 5000) : "",
+      content: (content || "").trim(),
       media: mediaPath,
       mediaUrl: mediaPath,
-      mediaType,
+      mediaType: mediaType,
     });
-
     await msg.populate("sender", "name email role");
     await msg.populate("receiver", "name email role");
 
