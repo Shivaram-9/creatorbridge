@@ -270,18 +270,17 @@ export default function Chat({ standalone = true }) {
                         onError={(e) => {
                           console.error('Chat media failed to load:', mediaUrl);
                           e.target.style.display = 'none';
-                          // Show a fallback text with the URL for debugging
+                          // Show a standard fallback text
                           const parent = e.target.parentElement;
                           if (parent && !parent.querySelector('.media-fallback')) {
                             const span = document.createElement('span');
                             span.className = 'media-fallback';
-                            span.innerText = `⚠️ Load Failed: ${mediaUrl}`;
-                            span.style.padding = '12px';
+                            span.innerText = '⚠️ Image failed to load';
+                            span.style.padding = '20px';
                             span.style.display = 'block';
-                            span.style.fontSize = '10px';
-                            span.style.color = '#ef4444';
+                            span.style.fontSize = '12px';
+                            span.style.color = '#64748b';
                             span.style.textAlign = 'center';
-                            span.style.wordBreak = 'break-all';
                             parent.appendChild(span);
                           }
                         }}
