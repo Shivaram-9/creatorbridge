@@ -53,7 +53,6 @@ const UserCard = memo(({ user }) => {
           import("react-hot-toast").then(m => m.default.success("Request pending"));
         }
       }
-      }
     } catch (err) {
       console.error("Action failed", err);
     } finally {
