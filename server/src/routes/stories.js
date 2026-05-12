@@ -13,14 +13,25 @@ storiesRouter.post("/", storyUpload.single("media"), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: "Media file is required" });
 
-    let mediaPath = req.file.secure_url || req.file.path || req.file.url || "";
-    if (!mediaPath.startsWith("http") && (mediaPath.includes("creatorbridge/") || req.file.filename?.includes("creatorbridge/"))) {
+    let url = req.file.secure_url || req.file.path || req.file.url || "";
+    const isCloudinary = (req.file.filename && req.file.filename.includes("creatorbridge/")) || (url && url.includes("creatorbridge/"));
+
+    if (isCloudinary && !url.startsWith("http")) {
       const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
-      const publicId = req.file.filename || mediaPath;
-      mediaPath = `https://res.cloudinary.com/${cloudName}/image/upload/${publicId}`;
-    } else if (!mediaPath.startsWith("http")) {
-      mediaPath = `/uploads/stories/${req.file.filename}`;
+      const publicId = req.file.filename || url;
+      url = `https://res.cloudinary.com/${cloudName}/image/upload/${publicId}`;
+    } else if (!url.startsWith("http")) {
+      url = `/uploads/stories/${req.file.filename}`;
     }
+
+    // Ghost Path Rescue
+    if (url.includes("/uploads/stories/creatorbridge/")) {
+      const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+      const publicId = url.split("/uploads/stories/")[1];
+      url = `https://res.cloudinary.com/${cloudName}/image/upload/${publicId}`;
+    }
+    
+    const mediaPath = url;
     const mediaType = req.file.mimetype.startsWith("video") ? "video" : "image";
 
     const story = await Story.create({

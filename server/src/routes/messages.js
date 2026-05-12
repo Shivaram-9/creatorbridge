@@ -178,18 +178,28 @@ messagesRouter.post("/media", chatUpload.single("media"), async (req, res) => {
     const mediaType = req.file.mimetype.startsWith("video") ? "video" : "image";
     
     // Robust media path resolution
-    let mediaPath = req.file.secure_url || req.file.path || req.file.url || "";
+    const file = req.file;
+    let mediaPath = file.secure_url || file.path || file.url || "";
     
-    if (!mediaPath.startsWith("http")) {
-      // Rescue Cloudinary paths that are returned as relative
-      if (mediaPath.includes("creatorbridge/") || req.file.filename?.includes("creatorbridge/")) {
-        const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
-        const publicId = req.file.filename || mediaPath;
-        mediaPath = `https://res.cloudinary.com/${cloudName}/image/upload/${publicId}`;
-      } else {
-        // Genuine local disk storage
-        mediaPath = `/uploads/chat/${req.file.filename}`;
-      }
+    // Check if this is a Cloudinary upload (filename or path contains 'creatorbridge')
+    const isCloudinary = (file.filename && file.filename.includes("creatorbridge/")) || 
+                         (mediaPath && mediaPath.includes("creatorbridge/"));
+
+    if (isCloudinary && !mediaPath.startsWith("http")) {
+      // Rescue: Construct the Cloudinary URL using the relative path/filename
+      const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+      const publicId = file.filename || mediaPath;
+      mediaPath = `https://res.cloudinary.com/${cloudName}/image/upload/${publicId}`;
+    } else if (!mediaPath.startsWith("http")) {
+      // Genuine local disk storage
+      mediaPath = `/uploads/chat/${file.filename}`;
+    }
+    
+    // One final check: if it STILL accidentally has the local prefix but is Cloudinary
+    if (mediaPath.includes("/uploads/chat/creatorbridge/")) {
+      const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+      const publicId = mediaPath.split("/uploads/chat/")[1];
+      mediaPath = `https://res.cloudinary.com/${cloudName}/image/upload/${publicId}`;
     }
 
     const msg = await Message.create({

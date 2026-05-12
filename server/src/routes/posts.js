@@ -16,12 +16,21 @@ router.post("/", authMiddleware, postUpload.array("media", 10), async (req, res)
     const mediaFiles = req.files
       ? req.files.map(f => {
           let url = f.secure_url || f.path || f.url || "";
-          if (!url.startsWith("http") && (url.includes("creatorbridge/") || f.filename?.includes("creatorbridge/"))) {
+          const isCloudinary = (f.filename && f.filename.includes("creatorbridge/")) || (url && url.includes("creatorbridge/"));
+          
+          if (isCloudinary && !url.startsWith("http")) {
             const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
             const publicId = f.filename || url;
             url = `https://res.cloudinary.com/${cloudName}/image/upload/${publicId}`;
           } else if (!url.startsWith("http")) {
             url = `/uploads/posts/${f.filename}`;
+          }
+          
+          // Ghost Path Rescue
+          if (url.includes("/uploads/posts/creatorbridge/")) {
+            const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+            const publicId = url.split("/uploads/posts/")[1];
+            url = `https://res.cloudinary.com/${cloudName}/image/upload/${publicId}`;
           }
           return url;
         })
