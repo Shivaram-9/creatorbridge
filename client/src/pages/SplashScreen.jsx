@@ -26,7 +26,10 @@ export default function SplashScreen() {
 
   return (
     <div className="splash-container">
-      <img src="/splash_exact.jpg" alt="CreatorBridge" className="splash-full-image" />
+      <picture className="splash-picture">
+        <source media="(min-width: 1024px)" srcSet="/splash_pc.jpg" />
+        <img src="/splash_mobile.jpg" alt="CreatorBridge" className="splash-full-image" />
+      </picture>
     </div>
   );
 }
