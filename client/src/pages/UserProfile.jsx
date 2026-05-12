@@ -155,7 +155,8 @@ export default function UserProfile() {
       } else {
         const result = await api.users.follow(userId);
         if (result.error) toast.error(result.error);
-        else if (result.requested) {
+        const isReq = result.requested === true || (result.message && result.message.toLowerCase().includes("sent"));
+        if (isReq) {
           setHasRequested(true);
           toast.success("Request pending");
         } else {

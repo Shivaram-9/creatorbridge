@@ -47,7 +47,8 @@ const UserCard = memo(({ user }) => {
       } else {
         const result = await api.users.follow(user._id);
         if (!result.error) {
-          if (result.requested) {
+          const isReq = result.requested === true || (result.message && result.message.toLowerCase().includes("sent"));
+          if (isReq) {
             setHasRequested(true);
             import("react-hot-toast").then(m => m.default.success("Request pending"));
           }
