@@ -46,12 +46,11 @@ const mediaFilter = (req, file, cb) => {
 function cloudinaryStorage(folder, resourceType = "auto") {
   return new CloudinaryStorage({
     cloudinary,
-    params: (req, file) => ({
+    params: {
       folder: `creatorbridge/${folder}`,
       resource_type: resourceType,
-      public_id: `${Date.now()}-${uuidv4()}`,
-      overwrite: false,
-    }),
+      allowed_formats: ["jpg", "png", "webp", "gif", "mp4", "mov"],
+    },
   });
 }
 

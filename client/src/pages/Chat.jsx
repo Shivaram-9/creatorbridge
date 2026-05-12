@@ -114,9 +114,6 @@ export default function Chat({ standalone = true }) {
       return;
     }
     
-    setSending(true);
-    setError("");
-
     try {
       let msg;
       if (selectedFile) {
@@ -124,28 +121,44 @@ export default function Chat({ standalone = true }) {
         formData.append("media", selectedFile);
         formData.append("receiverId", partnerId);
         if (input.trim()) formData.append("content", input.trim());
+        
+        // Clear preview immediately to feel responsive
+        const currentFile = selectedFile;
+        const currentInput = input;
+        setSelectedFile(null);
+        setPreviewUrl("");
+        setInput("");
+
         msg = await api.messages.sendMedia(formData);
+        
+        if (msg?.error) {
+          // Restore on error
+          setSelectedFile(currentFile);
+          setPreviewUrl(URL.createObjectURL(currentFile));
+          setInput(currentInput);
+          setError(msg.error);
+          return;
+        }
       } else {
+        const currentInput = input;
+        setInput("");
         msg = await api.messages.send({ 
           receiverId: partnerId, 
-          content: input.trim() 
+          content: currentInput.trim() 
         });
+        if (msg?.error) {
+          setInput(currentInput);
+          setError(msg.error);
+          return;
+        }
       }
 
-      if (msg?.error) {
-        setError(msg.error);
-        console.error("Message error:", msg.error);
-      } else if (msg && msg._id) {
+      if (msg && msg._id) {
         setMessages(prev => {
           if (prev.some(m => m._id === msg._id)) return prev;
           return [...prev, msg];
         });
-        setInput("");
-        setSelectedFile(null);
-        setPreviewUrl("");
         scrollToBottom("smooth");
-      } else {
-        throw new Error("Invalid response from server");
       }
     } catch (err) {
       console.error("Send failed:", err);
@@ -262,6 +275,22 @@ export default function Chat({ standalone = true }) {
       </div>
 
       <form style={{ padding: '16px', background: 'white', borderTop: '1px solid #f1f5f9' }} onSubmit={handleSubmit}>
+        {previewUrl && (
+          <div style={{ marginBottom: '12px', position: 'relative', display: 'inline-block' }}>
+            {selectedFile?.type.startsWith("video") ? (
+              <video src={previewUrl} style={{ height: '100px', borderRadius: '8px', border: '1px solid #e2e8f0' }} />
+            ) : (
+              <img src={previewUrl} alt="Preview" style={{ height: '100px', borderRadius: '8px', border: '1px solid #e2e8f0' }} />
+            )}
+            <button 
+              type="button"
+              onClick={() => { setSelectedFile(null); setPreviewUrl(""); }}
+              style={{ position: 'absolute', top: '-8px', right: '-8px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '50%', width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: '12px' }}
+            >
+              ×
+            </button>
+          </div>
+        )}
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', background: '#f8fafc', padding: '8px', borderRadius: '24px' }}>
           <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*,video/*" style={{ display: 'none' }} />
           <button type="button" onClick={() => fileInputRef.current?.click()} style={{ border: 'none', background: 'none', cursor: 'pointer', padding: '8px', color: '#94a3b8' }}>
@@ -272,6 +301,7 @@ export default function Chat({ standalone = true }) {
             placeholder="Write a message..."
             value={input}
             onChange={handleInputChange}
+            autoComplete="off"
           />
           <button 
             type="submit" 
