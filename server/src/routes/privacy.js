@@ -81,6 +81,23 @@ privacyRouter.post("/requests/:requestId/:action", async (req, res) => {
     }
 
     await request.save();
+
+    // Emit Socket Event (Real-time)
+    const io = req.app.get("io");
+    if (io) {
+      if (action === "accept") {
+        io.to(`user:${request.sender}`).emit("align_request_accepted", {
+          receiverId: request.receiver,
+          message: "has accepted your request"
+        });
+      } else {
+        io.to(`user:${request.sender}`).emit("align_request_declined", {
+          receiverId: request.receiver,
+          message: "has declined your request"
+        });
+      }
+    }
+
     res.json({ success: true, action });
   } catch (err) {
     res.status(500).json({ error: "Failed to process request" });

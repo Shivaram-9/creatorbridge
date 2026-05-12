@@ -49,10 +49,28 @@ export default function Layout() {
 
     socket.on("message", fetchUnreadMessages);
     socket.on("notification", fetchNotifications);
+    
+    socket.on("align_request_received", (data) => {
+      fetchNotifications();
+      import("react-hot-toast").then(m => m.default.success(data.message || "New alignment request!"));
+    });
+
+    socket.on("align_request_accepted", (data) => {
+      fetchNotifications();
+      import("react-hot-toast").then(m => m.default.success("Your alignment request was accepted!"));
+    });
+
+    socket.on("align_request_declined", (data) => {
+      fetchNotifications();
+      import("react-hot-toast").then(m => m.default.error("Your alignment request was declined."));
+    });
 
     return () => {
       socket.off("message", fetchUnreadMessages);
       socket.off("notification", fetchNotifications);
+      socket.off("align_request_received");
+      socket.off("align_request_accepted");
+      socket.off("align_request_declined");
     };
   }, [user, fetchUnreadMessages, fetchNotifications]);
 

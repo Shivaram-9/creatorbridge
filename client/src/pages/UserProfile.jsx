@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { api, firstApiError } from "../services/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
+import { getSocket } from "../services/socket.js";
 import { roleBadgeClass } from "../utils/badges.js";
 import { BASE_URL } from "../config/api.js";
 import ErrorBanner from "../components/ErrorBanner.jsx";
@@ -118,6 +119,35 @@ export default function UserProfile() {
   useEffect(() => {
     load();
   }, [load]);
+
+  useEffect(() => {
+    const socket = getSocket();
+    if (!socket || !userId) return;
+
+    const onAccepted = (data) => {
+      if (data.receiverId === userId) {
+        setIsFollowing(true);
+        setHasRequested(false);
+        // Reload profile to get updated follower count
+        load();
+      }
+    };
+
+    const onDeclined = (data) => {
+      if (data.receiverId === userId) {
+        setIsFollowing(false);
+        setHasRequested(false);
+      }
+    };
+
+    socket.on("align_request_accepted", onAccepted);
+    socket.on("align_request_declined", onDeclined);
+
+    return () => {
+      socket.off("align_request_accepted", onAccepted);
+      socket.off("align_request_declined", onDeclined);
+    };
+  }, [userId, load]);
 
   const [showAlignMenu, setShowAlignMenu] = useState(false);
 

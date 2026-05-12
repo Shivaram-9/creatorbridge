@@ -4,6 +4,7 @@ import Avatar from "./Avatar.jsx";
 import VerifiedBadge from "./VerifiedBadge.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
 import { api } from "../services/api.js";
+import { getSocket } from "../services/socket.js";
 
 const UserCard = memo(({ user }) => {
   if (!user) return null;
@@ -24,6 +25,33 @@ const UserCard = memo(({ user }) => {
       setHasRequested(true);
     }
   }, [me, user._id, user.isRequested]);
+
+  useEffect(() => {
+    const socket = getSocket();
+    if (!socket || !user._id) return;
+
+    const onAccepted = (data) => {
+      if (data.receiverId === user._id) {
+        setIsFollowing(true);
+        setHasRequested(false);
+      }
+    };
+
+    const onDeclined = (data) => {
+      if (data.receiverId === user._id) {
+        setIsFollowing(false);
+        setHasRequested(false);
+      }
+    };
+
+    socket.on("align_request_accepted", onAccepted);
+    socket.on("align_request_declined", onDeclined);
+
+    return () => {
+      socket.off("align_request_accepted", onAccepted);
+      socket.off("align_request_declined", onDeclined);
+    };
+  }, [user._id]);
 
   const isOwn = me?._id === user._id;
 

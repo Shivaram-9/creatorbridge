@@ -47,6 +47,23 @@ usersRouter.patch("/verify/:id", async (req, res) => {
 
     user.isVerified = !user.isVerified;
     await user.save();
+    
+    // Emit Socket Event (Real-time)
+    const io = req.app.get("io");
+    if (io) {
+      if (user.isVerified) {
+        io.to(`user:${user._id}`).emit("verification_status_changed", {
+          isVerified: true,
+          message: "Your account has been verified"
+        });
+      } else {
+        io.to(`user:${user._id}`).emit("verification_status_changed", {
+          isVerified: false,
+          message: "Your verification status has been removed"
+        });
+      }
+    }
+
     res.json({ verified: user.isVerified });
   } catch (err) {
     console.error("Verification error:", err);
@@ -136,6 +153,15 @@ usersRouter.post("/follow/:id", async (req, res) => {
       type: "align_request",
       message: "requested to align with you",
     });
+
+    // Emit Socket Event (Real-time)
+    const io = req.app.get("io");
+    if (io) {
+      io.to(`user:${targetId}`).emit("align_request_received", {
+        senderId: currentId,
+        message: "requested to align with you"
+      });
+    }
 
     res.json({ message: "Align request sent", requested: true });
   } catch (err) {
