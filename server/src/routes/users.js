@@ -143,20 +143,21 @@ usersRouter.post("/unfollow/:id", async (req, res) => {
     const targetId = req.params.id;
     const currentId = req.userId;
 
-    // Remove target from current user's following
-    const me = await User.findByIdAndUpdate(
-      currentId,
-      { $pull: { following: targetId } },
-      { new: true }
-    );
+    // Mutual Unfollow: A stops following B AND B stops following A
+    // Also cleanup any AlignRequest records to allow fresh requests later
+    await Promise.all([
+      User.findByIdAndUpdate(currentId, { $pull: { following: targetId, followers: targetId } }),
+      User.findByIdAndUpdate(targetId, { $pull: { following: currentId, followers: currentId } }),
+      AlignRequest.deleteMany({
+        $or: [
+          { sender: currentId, receiver: targetId },
+          { sender: targetId, receiver: currentId }
+        ]
+      })
+    ]);
 
-    // Remove current user from target user's followers
-    await User.findByIdAndUpdate(
-      targetId,
-      { $pull: { followers: currentId } }
-    );
-
-    res.json(me);
+    const updatedMe = await User.findById(currentId).select("-password");
+    res.json(updatedMe);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to unfollow user" });

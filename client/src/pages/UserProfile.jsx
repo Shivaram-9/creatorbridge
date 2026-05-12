@@ -11,6 +11,7 @@ import Avatar from "../components/Avatar.jsx";
 import VerifiedBadge from "../components/VerifiedBadge.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import { PostSkeleton } from "../components/Skeleton.jsx";
+import toast from "react-hot-toast";
 import "./UserProfile.css";
 
 function fmtFollowers(n) {
@@ -65,12 +66,13 @@ export default function UserProfile() {
     setActionBusy(true);
     try {
       const res = await api.privacy.respondRequest(incomingRequest.id, action);
-      if (res.error) setError(res.error);
+      if (res.error) toast.error(res.error);
       else {
+        toast.success(action === 'accept' ? 'Request accepted!' : 'Request declined');
         load(); // Refresh
       }
     } catch {
-      setError("Failed to respond to request");
+      toast.error("Failed to respond to request");
     } finally {
       setActionBusy(false);
     }
@@ -125,22 +127,28 @@ export default function UserProfile() {
     setError("");
     try {
       if (isFollowing) {
+        if (!window.confirm("End alignment with this user?")) return;
         const result = await api.users.unfollow(userId);
-        if (result.error) setError(result.error);
-        else setIsFollowing(false);
+        if (result.error) toast.error(result.error);
+        else {
+          setIsFollowing(false);
+          toast.success("Alignment ended");
+        }
       } else {
         const result = await api.users.follow(userId);
-        if (result.error) setError(result.error);
+        if (result.error) toast.error(result.error);
         else if (result.requested) {
           setHasRequested(true);
+          toast.success("Align request sent!");
         } else {
           setIsFollowing(true);
+          toast.success("Aligned!");
         }
       }
       setShowAlignMenu(false);
       load(); // Refresh profile state
     } catch {
-      setError("Action failed");
+      toast.error("Action failed");
     } finally {
       setActionBusy(false);
     }
@@ -150,9 +158,10 @@ export default function UserProfile() {
     if (!window.confirm("Block this user? They won't be able to see your profile or message you.")) return;
     try {
       await api.moderation.block(userId);
+      toast.success(`${displayName} has been blocked`);
       navigate("/home");
     } catch {
-      setError("Failed to block user");
+      toast.error("Failed to block user");
     }
   };
 
@@ -176,9 +185,10 @@ export default function UserProfile() {
     try {
       await navigator.clipboard.writeText(url);
       setCopyStatus(true);
+      toast.success("Profile link copied!");
       setTimeout(() => setCopyStatus(false), 2000);
     } catch {
-      setError("Failed to copy link");
+      toast.error("Failed to copy link");
     }
   };
 
