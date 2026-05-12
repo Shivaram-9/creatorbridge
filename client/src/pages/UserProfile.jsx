@@ -157,7 +157,7 @@ export default function UserProfile() {
         if (result.error) toast.error(result.error);
         else if (result.requested) {
           setHasRequested(true);
-          toast.success("Align request sent!");
+          toast.success("Request pending");
         } else {
           setIsFollowing(true);
           toast.success("Aligned!");
@@ -271,7 +271,7 @@ export default function UserProfile() {
                         disabled={actionBusy || hasRequested}
                         onClick={handleFollowToggle}
                       >
-                        {actionBusy ? "..." : hasRequested ? "Request sent" : isFollowing ? "Aligned" : "Align"}
+                        {actionBusy ? "..." : hasRequested ? "Request pending" : isFollowing ? "Aligned" : "Align"}
                       </button>
                       
                       {!isOwn && (isFollowing || !profile.isPrivate) && (

@@ -47,7 +47,10 @@ const UserCard = memo(({ user }) => {
       } else {
         const result = await api.users.follow(user._id);
         if (!result.error) {
-          if (result.requested) setHasRequested(true);
+          if (result.requested) {
+            setHasRequested(true);
+            import("react-hot-toast").then(m => m.default.success("Request pending"));
+          }
           else setIsFollowing(true);
         }
       }
@@ -181,7 +184,7 @@ const UserCard = memo(({ user }) => {
             transition: 'all 0.2s'
           }}
         >
-          {actionBusy ? "..." : isOwn ? "Edit Profile" : hasRequested ? "Request sent" : isFollowing ? "Aligned" : "Align"}
+          {actionBusy ? "..." : isOwn ? "Edit Profile" : hasRequested ? "Request pending" : isFollowing ? "Aligned" : "Align"}
         </button>
       </div>
     </div>
