@@ -213,9 +213,32 @@ export default function Chat({ standalone = true }) {
 
           const getMediaUrl = (url) => {
             if (!url) return null;
-            if (url.startsWith("http")) return url;
-            // Ensure no double slashes and no leading slash in the combined path
+            if (url.startsWith("http")) {
+              // Rescue existing broken onrender paths
+              if (url.includes("onrender.com/uploads/chat/creatorbridge/")) {
+                const publicId = url.split("uploads/chat/")[1];
+                // Try to discover cloud name from user avatar or partner avatar
+                const discoveryUrl = user?.avatar || partner?.avatar || "";
+                if (discoveryUrl.includes("res.cloudinary.com/")) {
+                  const cloudName = discoveryUrl.split("res.cloudinary.com/")[1].split("/")[0];
+                  return `https://res.cloudinary.com/${cloudName}/image/upload/${publicId}`;
+                }
+              }
+              return url;
+            }
+            
+            // For local paths, strip any leading slash and prepend BASE_URL
             const cleanPath = url.startsWith("/") ? url.substring(1) : url;
+            
+            // Check for orphaned Cloudinary paths in local field
+            if (cleanPath.startsWith("creatorbridge/")) {
+                const discoveryUrl = user?.avatar || partner?.avatar || "";
+                if (discoveryUrl.includes("res.cloudinary.com/")) {
+                  const cloudName = discoveryUrl.split("res.cloudinary.com/")[1].split("/")[0];
+                  return `https://res.cloudinary.com/${cloudName}/image/upload/${cleanPath}`;
+                }
+            }
+
             const baseUrl = api.BASE_URL.endsWith("/") ? api.BASE_URL : `${api.BASE_URL}/`;
             return `${baseUrl}${cleanPath}`;
           };
