@@ -11,14 +11,14 @@ export default function SplashScreen() {
     // Wait for auth state to initialize
     if (loading) return;
 
-    // Show splash screen for 1 second then redirect
+    // Show splash screen for 2 seconds then redirect
     const timer = setTimeout(() => {
       if (user) {
         navigate("/home", { replace: true });
       } else {
         navigate("/login", { replace: true });
       }
-    }, 1000);
+    }, 2000);
 
     return () => clearTimeout(timer);
   }, [navigate, user, loading]);
