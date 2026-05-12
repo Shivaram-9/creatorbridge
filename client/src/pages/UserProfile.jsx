@@ -121,19 +121,37 @@ export default function UserProfile() {
 
   const [showAlignMenu, setShowAlignMenu] = useState(false);
 
+  const handleEndAlign = async () => {
+    if (!isFollowing) {
+      toast.error("You are not aligned with this user");
+      setShowAlignMenu(false);
+      return;
+    }
+    if (!window.confirm("End alignment with this user?")) return;
+    setActionBusy(true);
+    try {
+      const result = await api.users.unfollow(userId);
+      if (result.error) toast.error(result.error);
+      else {
+        setIsFollowing(false);
+        toast.success("Alignment ended");
+        load();
+      }
+    } catch {
+      toast.error("Action failed");
+    } finally {
+      setActionBusy(false);
+      setShowAlignMenu(false);
+    }
+  };
+
   async function handleFollowToggle() {
     if (!me) return;
     setActionBusy(true);
     setError("");
     try {
       if (isFollowing) {
-        if (!window.confirm("End alignment with this user?")) return;
-        const result = await api.users.unfollow(userId);
-        if (result.error) toast.error(result.error);
-        else {
-          setIsFollowing(false);
-          toast.success("Alignment ended");
-        }
+        await handleEndAlign();
       } else {
         const result = await api.users.follow(userId);
         if (result.error) toast.error(result.error);
@@ -145,7 +163,6 @@ export default function UserProfile() {
           toast.success("Aligned!");
         }
       }
-      setShowAlignMenu(false);
       load(); // Refresh profile state
     } catch {
       toast.error("Action failed");
@@ -274,10 +291,8 @@ export default function UserProfile() {
             <button className="btn btn-icon up-more-trigger" onClick={() => setShowAlignMenu(!showAlignMenu)}>•••</button>
             {showAlignMenu && (
               <div className="dropdown-menu show slide-in">
-                {isFollowing && (
-                  <button className="dropdown-item danger" onClick={handleFollowToggle}>End Align</button>
-                )}
-                <button className="dropdown-item" onClick={handleShareProfile}>{copyStatus ? "Copied!" : "Share Profile"}</button>
+                <button className="dropdown-item danger" onClick={handleEndAlign}>End Align</button>
+                <button className="dropdown-item" onClick={handleShareProfile}>Share Profile</button>
                 <button className="dropdown-item danger" onClick={handleBlock}>Block User</button>
               </div>
             )}
