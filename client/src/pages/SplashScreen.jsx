@@ -26,17 +26,7 @@ export default function SplashScreen() {
 
   return (
     <div className="splash-container">
-      <div className="splash-background">
-        <img src="/splash_bg.png" alt="Background" className="bg-image" />
-        <div className="bg-overlay"></div>
-      </div>
-      
-      <div className="splash-content">
-        <img src="/splash_logo.png" alt="CreatorBridge" className="splash-logo" />
-        <h1 className="splash-title">Creators bridge</h1>
-        <div className="splash-divider"></div>
-        <p className="splash-subtitle">Connect. Collaborate. Grow.</p>
-      </div>
+      <img src="/splash_exact.jpg" alt="CreatorBridge" className="splash-full-image" />
     </div>
   );
 }
