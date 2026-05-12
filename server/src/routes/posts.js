@@ -15,8 +15,15 @@ router.post("/", authMiddleware, postUpload.array("media", 10), async (req, res)
     // Cloudinary returns file.path or file.secure_url (full https URL); disk storage uses filename
     const mediaFiles = req.files
       ? req.files.map(f => {
-          const url = f.secure_url || f.path || "";
-          return url.startsWith("http") ? url : `/uploads/posts/${f.filename}`;
+          let url = f.secure_url || f.path || f.url || "";
+          if (!url.startsWith("http") && (url.includes("creatorbridge/") || f.filename?.includes("creatorbridge/"))) {
+            const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+            const publicId = f.filename || url;
+            url = `https://res.cloudinary.com/${cloudName}/image/upload/${publicId}`;
+          } else if (!url.startsWith("http")) {
+            url = `/uploads/posts/${f.filename}`;
+          }
+          return url;
         })
       : [];
 

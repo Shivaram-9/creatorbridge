@@ -177,11 +177,20 @@ messagesRouter.post("/media", chatUpload.single("media"), async (req, res) => {
 
     const mediaType = req.file.mimetype.startsWith("video") ? "video" : "image";
     
-    // If using Cloudinary, req.file.path or req.file.secure_url is the full URL
-    // If using local disk, we construct the path
-    const mediaPath = (req.file.secure_url || req.file.path || "").startsWith("http") 
-      ? (req.file.secure_url || req.file.path) 
-      : `/uploads/chat/${req.file.filename}`;
+    // Robust media path resolution
+    let mediaPath = req.file.secure_url || req.file.path || req.file.url || "";
+    
+    if (!mediaPath.startsWith("http")) {
+      // Rescue Cloudinary paths that are returned as relative
+      if (mediaPath.includes("creatorbridge/") || req.file.filename?.includes("creatorbridge/")) {
+        const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+        const publicId = req.file.filename || mediaPath;
+        mediaPath = `https://res.cloudinary.com/${cloudName}/image/upload/${publicId}`;
+      } else {
+        // Genuine local disk storage
+        mediaPath = `/uploads/chat/${req.file.filename}`;
+      }
+    }
 
     const msg = await Message.create({
       sender: req.userId,
