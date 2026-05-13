@@ -178,7 +178,20 @@ export default function Onboarding() {
           </div>
         )}
 
-        <button className="skip-btn" onClick={() => navigate("/home")}>Skip for now</button>
+        <button 
+          className="skip-btn" 
+          onClick={async () => {
+            try {
+              const res = await api.onboarding.complete({ onboardingComplete: true });
+              if (!res.error) setUser(res);
+            } catch (err) {
+              console.error("Skip failed", err);
+            }
+            navigate("/home");
+          }}
+        >
+          Skip for now
+        </button>
       </div>
     </div>
   );

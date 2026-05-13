@@ -4,49 +4,9 @@ import { Notification } from "../models/Notification.js";
 import { AlignRequest } from "../models/AlignRequest.js";
 import { authMiddleware } from "../middleware/auth.js";
 import { profileUpload } from "../middleware/upload.js";
+import { attachAlignmentStatus } from "../utils/alignment.js";
 
 export const usersRouter = Router();
-
-// Helper to attach alignment status to a user or list of users
-async function attachAlignmentStatus(req, users) {
-  if (!req.userId || !users) return users;
-  const isArray = Array.isArray(users);
-  const userList = isArray ? users : [users];
-
-  try {
-    const me = await User.findById(req.userId).select("following");
-    const followingIds = new Set(me?.following?.map(id => id.toString()) || []);
-
-    const pendingRequests = await AlignRequest.find({
-      sender: req.userId,
-      status: "pending"
-    }).select("receiver");
-    const requestedIds = new Set(pendingRequests.map(r => r.receiver.toString()));
-
-    const incomingRequests = await AlignRequest.find({
-      receiver: req.userId,
-      status: "pending"
-    }).select("sender");
-    const incomingIds = new Map(incomingRequests.map(r => [r.sender.toString(), r._id]));
-
-    const result = userList.map(u => {
-      const uObj = u.toObject ? u.toObject() : u;
-      const uid = uObj._id.toString();
-      return {
-        ...uObj,
-        isFollowing: followingIds.has(uid),
-        isRequested: requestedIds.has(uid),
-        hasIncomingRequest: incomingIds.has(uid),
-        incomingRequestId: incomingIds.get(uid)
-      };
-    });
-
-    return isArray ? result : result[0];
-  } catch (err) {
-    console.error("Error attaching alignment status:", err);
-    return users;
-  }
-}
 
 usersRouter.use(authMiddleware);
 
@@ -188,6 +148,9 @@ usersRouter.post("/follow/:id", async (req, res) => {
       await AlignRequest.create({ sender: currentId, receiver: targetId });
     }
 
+    const newRequest = existing || await AlignRequest.findOne({ sender: currentId, receiver: targetId });
+    const requestId = newRequest?._id;
+
     // Create notification for the receiver
     await Notification.create({
       user: targetId,
@@ -203,6 +166,7 @@ usersRouter.post("/follow/:id", async (req, res) => {
       io.to(`user:${targetId}`).emit("align_request_received", {
         senderId: currentId,
         senderName: me?.name || me?.username || "Someone",
+        requestId: requestId,
         message: "requested to align with you"
       });
     }

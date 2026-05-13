@@ -2,6 +2,7 @@ import { Router } from "express";
 import { User } from "../models/User.js";
 import { Post } from "../models/Post.js";
 import { authMiddleware } from "../middleware/auth.js";
+import { attachAlignmentStatus } from "../utils/alignment.js";
 
 export const discoveryRouter = Router();
 
@@ -54,7 +55,10 @@ discoveryRouter.get("/suggested", async (req, res) => {
     .limit(10)
     .lean();
 
-    res.json({ suggestedCreators, suggestedBrands });
+    const resultCreators = await attachAlignmentStatus(req, suggestedCreators);
+    const resultBrands = await attachAlignmentStatus(req, suggestedBrands);
+
+    res.json({ suggestedCreators: resultCreators, suggestedBrands: resultBrands });
   } catch (err) {
     console.error("Discovery error:", err);
     res.status(500).json({ error: "Discovery failed" });
@@ -108,7 +112,10 @@ discoveryRouter.get("/trending", async (req, res) => {
     .limit(10)
     .lean();
 
-    const responseData = { trendingPosts, trendingCreators, trendingBrands };
+    const resultCreators = await attachAlignmentStatus(req, trendingCreators);
+    const resultBrands = await attachAlignmentStatus(req, trendingBrands);
+
+    const responseData = { trendingPosts, trendingCreators: resultCreators, trendingBrands: resultBrands };
     trendingCache = responseData;
     lastCacheUpdate = Date.now();
 
@@ -157,7 +164,7 @@ discoveryRouter.get("/search", async (req, res) => {
       .limit(50)
       .lean();
 
-    res.json(results);
+    res.json(await attachAlignmentStatus(req, results));
   } catch (err) {
     res.status(500).json({ error: "Smart search failed" });
   }

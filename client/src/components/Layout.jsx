@@ -52,55 +52,77 @@ export default function Layout() {
     
     socket.on("align_request_received", (data) => {
       fetchNotifications();
-      const senderId = data.senderId;
-      const senderName = data.senderName || "Someone";
+      const { senderId, senderName, requestId } = data;
 
       import("react-hot-toast").then(m => {
         const toast = m.default;
         toast.custom((t) => (
-          <div className={`${t.visible ? 'animate-enter' : 'animate-leave'} max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`}>
-            <div className="flex-1 w-0 p-4">
+          <div className={`${t.visible ? 'animate-enter' : 'animate-leave'} max-w-md w-full bg-white shadow-xl rounded-2xl pointer-events-auto flex ring-1 ring-black ring-opacity-10 border border-indigo-50`}>
+            <div className="flex-1 w-0 p-5">
               <div className="flex items-start">
+                <div className="flex-shrink-0 pt-0.5">
+                  <div className="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold">
+                    {senderName[0]?.toUpperCase()}
+                  </div>
+                </div>
                 <div className="ml-3 flex-1">
-                  <p className="text-sm font-medium text-gray-900">
-                    New Alignment Request
+                  <p className="text-sm font-bold text-gray-900">
+                    Alignment Request
                   </p>
-                  <p className="mt-1 text-sm text-gray-500">
-                    {senderName} wants to align with you.
+                  <p className="mt-1 text-sm text-gray-600">
+                    <span className="font-semibold">{senderName}</span> wants to align with you.
                   </p>
                 </div>
               </div>
             </div>
-            <div className="flex border-l border-gray-200">
+            <div className="flex flex-col border-l border-gray-100">
               <button
                 onClick={async () => {
                   toast.dismiss(t.id);
                   try {
-                    // We need the requestId. The socket payload should ideally have it.
-                    // For now, let's refresh notifications and use the latest one.
-                    const reqs = await api.privacy.getRequests();
-                    const reqDoc = reqs.find(r => r.sender._id === senderId || r.sender === senderId);
-                    if (reqDoc) {
-                      await api.privacy.respondRequest(reqDoc._id, 'accept');
-                      toast.success("Aligned successfully!");
+                    let rId = requestId;
+                    if (!rId) {
+                      const reqs = await api.privacy.getRequests();
+                      const reqDoc = reqs.find(r => r.sender._id === senderId || r.sender === senderId);
+                      rId = reqDoc?._id;
+                    }
+                    if (rId) {
+                      await api.privacy.respondRequest(rId, 'accept');
+                      toast.success(`You are now aligned with ${senderName}!`);
                     }
                   } catch (err) {
                     toast.error("Failed to accept request");
                   }
                 }}
-                className="w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none"
+                className="w-full border-b border-gray-100 rounded-none rounded-tr-2xl p-4 flex items-center justify-center text-sm font-bold text-indigo-600 hover:bg-indigo-50 transition-colors"
               >
                 Accept
               </button>
               <button
-                onClick={() => toast.dismiss(t.id)}
-                className="w-full border border-transparent rounded-none p-4 flex items-center justify-center text-sm font-medium text-gray-600 hover:text-gray-500 focus:outline-none"
+                onClick={async () => {
+                  toast.dismiss(t.id);
+                  try {
+                    let rId = requestId;
+                    if (!rId) {
+                      const reqs = await api.privacy.getRequests();
+                      const reqDoc = reqs.find(r => r.sender._id === senderId || r.sender === senderId);
+                      rId = reqDoc?._id;
+                    }
+                    if (rId) {
+                      await api.privacy.respondRequest(rId, 'decline');
+                      toast.success(`Declined request from ${senderName}`);
+                    }
+                  } catch (err) {
+                    toast.error("Failed to decline request");
+                  }
+                }}
+                className="w-full rounded-none rounded-br-2xl p-4 flex items-center justify-center text-sm font-bold text-red-600 hover:bg-red-50 transition-colors"
               >
-                Close
+                Decline
               </button>
             </div>
           </div>
-        ), { duration: 6000 });
+        ), { duration: 8000, position: 'top-right' });
       });
     });
 
