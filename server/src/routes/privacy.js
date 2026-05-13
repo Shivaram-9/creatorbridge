@@ -85,14 +85,19 @@ privacyRouter.post("/requests/:requestId/:action", async (req, res) => {
     // Emit Socket Event (Real-time)
     const io = req.app.get("io");
     if (io) {
+      const me = await User.findById(req.userId).select("name username");
+      const senderName = me?.name || me?.username || "Someone";
+
       if (action === "accept") {
         io.to(`user:${request.sender}`).emit("align_request_accepted", {
           receiverId: request.receiver,
+          receiverName: senderName,
           message: "has accepted your request"
         });
       } else {
         io.to(`user:${request.sender}`).emit("align_request_declined", {
           receiverId: request.receiver,
+          receiverName: senderName,
           message: "has declined your request"
         });
       }

@@ -99,8 +99,7 @@ export default function UserProfile() {
       }
 
       if (!isOwn && me) {
-        const followingArr = Array.isArray(me.following) ? me.following : [];
-        setIsFollowing(followingArr.includes(userId));
+        setIsFollowing(!!data.isFollowing);
       }
       
       // If we can see posts (own, public, or following)

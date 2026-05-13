@@ -7,6 +7,47 @@ import { profileUpload } from "../middleware/upload.js";
 
 export const usersRouter = Router();
 
+// Helper to attach alignment status to a user or list of users
+async function attachAlignmentStatus(req, users) {
+  if (!req.userId || !users) return users;
+  const isArray = Array.isArray(users);
+  const userList = isArray ? users : [users];
+
+  try {
+    const me = await User.findById(req.userId).select("following");
+    const followingIds = new Set(me?.following?.map(id => id.toString()) || []);
+
+    const pendingRequests = await AlignRequest.find({
+      sender: req.userId,
+      status: "pending"
+    }).select("receiver");
+    const requestedIds = new Set(pendingRequests.map(r => r.receiver.toString()));
+
+    const incomingRequests = await AlignRequest.find({
+      receiver: req.userId,
+      status: "pending"
+    }).select("sender");
+    const incomingIds = new Map(incomingRequests.map(r => [r.sender.toString(), r._id]));
+
+    const result = userList.map(u => {
+      const uObj = u.toObject ? u.toObject() : u;
+      const uid = uObj._id.toString();
+      return {
+        ...uObj,
+        isFollowing: followingIds.has(uid),
+        isRequested: requestedIds.has(uid),
+        hasIncomingRequest: incomingIds.has(uid),
+        incomingRequestId: incomingIds.get(uid)
+      };
+    });
+
+    return isArray ? result : result[0];
+  } catch (err) {
+    console.error("Error attaching alignment status:", err);
+    return users;
+  }
+}
+
 usersRouter.use(authMiddleware);
 
 usersRouter.get("/me", async (req, res) => {
@@ -143,6 +184,7 @@ usersRouter.post("/follow/:id", async (req, res) => {
       existing.status = "pending";
       await existing.save();
     } else {
+      console.log(`Creating fresh AlignRequest from ${currentId} to ${targetId}`);
       await AlignRequest.create({ sender: currentId, receiver: targetId });
     }
 
@@ -157,8 +199,10 @@ usersRouter.post("/follow/:id", async (req, res) => {
     // Emit Socket Event (Real-time)
     const io = req.app.get("io");
     if (io) {
+      const me = await User.findById(currentId).select("name username");
       io.to(`user:${targetId}`).emit("align_request_received", {
         senderId: currentId,
+        senderName: me?.name || me?.username || "Someone",
         message: "requested to align with you"
       });
     }
@@ -260,7 +304,8 @@ usersRouter.get("/", async (req, res) => {
       .sort({ followers: -1, profileViews: -1 })
       .limit(100)
       .lean();
-    res.json(users);
+
+    res.json(await attachAlignmentStatus(req, users));
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to list users" });
@@ -300,7 +345,7 @@ usersRouter.get("/search", async (req, res) => {
       .limit(50)
       .lean();
 
-    res.json(users);
+    res.json(await attachAlignmentStatus(req, users));
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Search failed" });
@@ -321,7 +366,7 @@ usersRouter.get("/discover/trending", async (req, res) => {
       .sort({ followers: -1, profileViews: -1 })
       .limit(10)
       .lean();
-    res.json(users);
+    res.json(await attachAlignmentStatus(req, users));
   } catch (err) {
     res.status(500).json({ error: "Failed to load trending" });
   }
@@ -340,7 +385,7 @@ usersRouter.get("/discover/verified", async (req, res) => {
       .select("-password")
       .limit(15)
       .lean();
-    res.json(users);
+    res.json(await attachAlignmentStatus(req, users));
   } catch (err) {
     res.status(500).json({ error: "Failed to load verified" });
   }
@@ -359,7 +404,7 @@ usersRouter.get("/discover/brands", async (req, res) => {
       .select("-password")
       .limit(15)
       .lean();
-    res.json(users);
+    res.json(await attachAlignmentStatus(req, users));
   } catch (err) {
     res.status(500).json({ error: "Failed to load brands" });
   }
@@ -418,27 +463,7 @@ usersRouter.get("/:id", async (req, res) => {
       return res.status(403).json({ error: "This user has blocked you or you have blocked them." });
     }
 
-    // Add request status for the frontend
-    if (req.userId) {
-      // Outgoing request (I sent to them)
-      const outgoing = await AlignRequest.findOne({ 
-        sender: req.userId, 
-        receiver: req.params.id,
-        status: "pending" 
-      });
-      user.isRequested = !!outgoing;
-
-      // Incoming request (They sent to me)
-      const incoming = await AlignRequest.findOne({
-        sender: req.params.id,
-        receiver: req.userId,
-        status: "pending"
-      });
-      user.hasIncomingRequest = !!incoming;
-      if (incoming) user.incomingRequestId = incoming._id;
-    }
-
-    res.json(user);
+    res.json(await attachAlignmentStatus(req, user));
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to load user" });

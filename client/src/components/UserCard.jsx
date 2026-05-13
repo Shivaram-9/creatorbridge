@@ -18,8 +18,8 @@ const UserCard = memo(({ user }) => {
 
   // Initialize follow status
   useEffect(() => {
-    if (me && me.following) {
-      setIsFollowing(me.following.includes(user._id));
+    if (me) {
+      setIsFollowing(!!user.isFollowing);
     }
     if (user.isRequested) {
       setHasRequested(true);

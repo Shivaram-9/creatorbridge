@@ -52,17 +52,66 @@ export default function Layout() {
     
     socket.on("align_request_received", (data) => {
       fetchNotifications();
-      import("react-hot-toast").then(m => m.default.success(data.message || "New alignment request!"));
+      const senderId = data.senderId;
+      const senderName = data.senderName || "Someone";
+
+      import("react-hot-toast").then(m => {
+        const toast = m.default;
+        toast.custom((t) => (
+          <div className={`${t.visible ? 'animate-enter' : 'animate-leave'} max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`}>
+            <div className="flex-1 w-0 p-4">
+              <div className="flex items-start">
+                <div className="ml-3 flex-1">
+                  <p className="text-sm font-medium text-gray-900">
+                    New Alignment Request
+                  </p>
+                  <p className="mt-1 text-sm text-gray-500">
+                    {senderName} wants to align with you.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="flex border-l border-gray-200">
+              <button
+                onClick={async () => {
+                  toast.dismiss(t.id);
+                  try {
+                    // We need the requestId. The socket payload should ideally have it.
+                    // For now, let's refresh notifications and use the latest one.
+                    const reqs = await api.privacy.getRequests();
+                    const reqDoc = reqs.find(r => r.sender._id === senderId || r.sender === senderId);
+                    if (reqDoc) {
+                      await api.privacy.respondRequest(reqDoc._id, 'accept');
+                      toast.success("Aligned successfully!");
+                    }
+                  } catch (err) {
+                    toast.error("Failed to accept request");
+                  }
+                }}
+                className="w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none"
+              >
+                Accept
+              </button>
+              <button
+                onClick={() => toast.dismiss(t.id)}
+                className="w-full border border-transparent rounded-none p-4 flex items-center justify-center text-sm font-medium text-gray-600 hover:text-gray-500 focus:outline-none"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        ), { duration: 6000 });
+      });
     });
 
     socket.on("align_request_accepted", (data) => {
       fetchNotifications();
-      import("react-hot-toast").then(m => m.default.success("Your alignment request was accepted!"));
+      import("react-hot-toast").then(m => m.default.success(`${data.receiverName || "User"} accepted your alignment request!`));
     });
 
     socket.on("align_request_declined", (data) => {
       fetchNotifications();
-      import("react-hot-toast").then(m => m.default.error("Your alignment request was declined."));
+      import("react-hot-toast").then(m => m.default.error(`${data.receiverName || "User"} declined your alignment request.`));
     });
 
     return () => {
