@@ -70,7 +70,16 @@ export default function UserProfile() {
       if (res.error) toast.error(res.error);
       else {
         toast.success(action === 'accept' ? 'Request accepted!' : 'Request declined');
-        load(); // Refresh
+        if (action === 'accept') {
+          setIsFollowing(true);
+          setHasRequested(false);
+          setIncomingRequest(null);
+        } else {
+          setIsFollowing(false);
+          setHasRequested(false);
+          setIncomingRequest(null);
+        }
+        load(); // Re-sync with server for counts etc
       }
     } catch {
       toast.error("Failed to respond to request");
@@ -278,7 +287,7 @@ export default function UserProfile() {
             {displayName}
             {(profile.isVerified || profile.isPremium) && <VerifiedBadge size="md" tier={profile.premiumTier} />}
           </h1>
-          {profile.username && <p className="up-username">@{profile.username} {profile.isPrivate && "🔒"}</p>}
+          {profile.username && <p className="up-username">@{profile.username} {profile.isPrivate && "(Private)"}</p>}
 
           <div className="up-tags">
             <span className={`badge ${roleClass}`}>{profile.role}</span>
@@ -288,7 +297,7 @@ export default function UserProfile() {
           <div className="up-actions-wrap">
             <div className="up-actions-row">
               {isOwn ? (
-                <Link to="/profile" className="btn btn-primary">✏️ Edit Profile</Link>
+                <Link to="/profile" className="btn btn-primary">Edit Profile</Link>
               ) : (
                 <>
                   {incomingRequest ? (
@@ -366,11 +375,12 @@ export default function UserProfile() {
               <div className="up-section__card">
                 {profile.bio && <p className="up-bio">{profile.bio}</p>}
                 <div className="up-detail-list">
-                  {profile.location && <div className="up-detail"><span>📍</span> {profile.location}</div>}
-                  {profile.category && <div className="up-detail"><span>🏷️</span> {profile.category}</div>}
+                  {profile.location && <div className="up-detail"><span>Location:</span> {profile.location}</div>}
+                  {profile.category && <div className="up-detail"><span>Category:</span> {profile.category}</div>}
+                  {profile.isPrivate && " (Private)"}
                   {profile.website && (
                     <div className="up-detail">
-                      <span>🔗</span> 
+                      <span>Website:</span> 
                       <a href={profile.website.startsWith('http') ? profile.website : `https://${profile.website}`} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary)', textDecoration: 'none' }}>
                         {profile.website.replace(/^https?:\/\//, '')}
                       </a>

@@ -31,10 +31,16 @@ export async function attachAlignmentStatus(req, users) {
     const result = userList.map(u => {
       const uObj = u.toObject ? u.toObject() : u;
       const uid = uObj._id.toString();
+      
+      const isFollowing = followingIds.has(uid);
+      const isRequested = requestedIds.has(uid);
+      
       return {
         ...uObj,
-        isFollowing: followingIds.has(uid),
-        isRequested: requestedIds.has(uid),
+        // A user is ONLY 'following' if they are in the following list 
+        // AND we don't have a pending request (to avoid weird overlap states)
+        isFollowing: isFollowing && !isRequested,
+        isRequested: isRequested,
         hasIncomingRequest: incomingIds.has(uid),
         incomingRequestId: incomingIds.get(uid)
       };
