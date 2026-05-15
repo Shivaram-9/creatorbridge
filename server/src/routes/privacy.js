@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import { User } from "../models/User.js";
 import { AlignRequest } from "../models/AlignRequest.js";
 import { authMiddleware } from "../middleware/auth.js";
+import { createRealTimeNotification } from "../utils/notifications.js";
 
 export const privacyRouter = Router();
 
@@ -61,8 +62,8 @@ privacyRouter.post("/requests/:requestId/:action", async (req, res) => {
         User.findByIdAndUpdate(request.sender, { $addToSet: { followers: request.receiver, following: request.receiver } })
       ]);
       
-      const Notification = mongoose.model("Notification");
-      await Notification.create({
+      const io = req.app.get("io");
+      await createRealTimeNotification(io, {
         user: request.sender,
         sender: request.receiver,
         type: "follow",
@@ -71,8 +72,8 @@ privacyRouter.post("/requests/:requestId/:action", async (req, res) => {
     } else {
       request.status = "rejected";
       
-      const Notification = mongoose.model("Notification");
-      await Notification.create({
+      const io = req.app.get("io");
+      await createRealTimeNotification(io, {
         user: request.sender,
         sender: request.receiver,
         type: "align_request",

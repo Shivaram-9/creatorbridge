@@ -5,6 +5,7 @@ import { AlignRequest } from "../models/AlignRequest.js";
 import { authMiddleware } from "../middleware/auth.js";
 import { profileUpload } from "../middleware/upload.js";
 import { attachAlignmentStatus } from "../utils/alignment.js";
+import { createRealTimeNotification } from "../utils/notifications.js";
 
 export const usersRouter = Router();
 
@@ -152,15 +153,16 @@ usersRouter.post("/follow/:id", async (req, res) => {
     const requestId = newRequest?._id;
 
     // Create notification for the receiver
-    await Notification.create({
+    const io = req.app.get("io");
+    await createRealTimeNotification(io, {
       user: targetId,
       sender: currentId,
       type: "align_request",
       message: "requested to align with you",
     });
 
-    // Emit Socket Event (Real-time)
-    const io = req.app.get("io");
+    // Socket event for specifically triggering the interactive toast is still handled here
+    // But createRealTimeNotification already emits the generic "notification" event
     if (io) {
       const me = await User.findById(currentId).select("name username");
       io.to(`user:${targetId}`).emit("align_request_received", {

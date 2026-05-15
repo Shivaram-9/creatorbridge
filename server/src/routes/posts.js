@@ -4,6 +4,7 @@ import { Post } from "../models/Post.js";
 import { User } from "../models/User.js";
 import { authMiddleware } from "../middleware/auth.js";
 import { postUpload } from "../middleware/upload.js";
+import { createRealTimeNotification } from "../utils/notifications.js";
 
 const router = express.Router();
 
@@ -186,12 +187,27 @@ router.post("/save/:postId", authMiddleware, async (req, res) => {
 router.post("/like/:postId", authMiddleware, async (req, res) => {
   try {
     const post = await Post.findById(req.params.postId);
-    if (post.likes.includes(req.userId)) {
+    const isLiked = post.likes.includes(req.userId);
+    if (isLiked) {
       post.likes = post.likes.filter(id => id.toString() !== req.userId);
     } else {
       post.likes.push(req.userId);
     }
     await post.save();
+    
+    // Create Notification if liked
+    if (!isLiked && post.user.toString() !== req.userId) {
+      const io = req.app.get("io");
+      const me = await User.findById(req.userId).select("name username");
+      await createRealTimeNotification(io, {
+        user: post.user,
+        sender: req.userId,
+        type: "like",
+        message: "liked your post",
+        post: post._id
+      });
+    }
+
     await post.populate("user", "name avatar role");
     res.json(post);
   } catch (err) {
@@ -206,6 +222,19 @@ router.post("/comment/:postId", authMiddleware, async (req, res) => {
     const post = await Post.findById(req.params.postId);
     post.comments.push({ user: req.userId, text });
     await post.save();
+
+    // Create Notification
+    if (post.user.toString() !== req.userId) {
+      const io = req.app.get("io");
+      await createRealTimeNotification(io, {
+        user: post.user,
+        sender: req.userId,
+        type: "comment",
+        message: `commented: "${text.slice(0, 50)}${text.length > 50 ? '...' : ''}"`,
+        post: post._id
+      });
+    }
+
     await post.populate("comments.user", "name avatar");
     res.json(post.comments[post.comments.length - 1]);
   } catch (err) {
