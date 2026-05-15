@@ -157,6 +157,60 @@ export default function Notifications() {
                   <span className="username">{n.sender?.username || n.sender?.name || "System"}</span> {n.message}
                 </p>
                 <span className="notif-date">{timeAgo(n.createdAt)}</span>
+                
+                {n.type === "align_request" && !n.read && (
+                  <div className="notif-actions" onClick={(e) => e.stopPropagation()}>
+                    <button 
+                      className="btn-notif btn-accept"
+                      onClick={async () => {
+                        try {
+                          // Find request ID (n.requestId or fetch from privacy/requests)
+                          let rId = n.requestId;
+                          if (!rId) {
+                            const reqs = await api.privacy.getRequests();
+                            const reqDoc = reqs.find(r => r.sender._id === n.sender?._id || r.sender === n.sender?._id || r.sender === n.sender);
+                            rId = reqDoc?._id;
+                          }
+                          if (rId) {
+                            await api.privacy.respondRequest(rId, 'accept');
+                            api.notifications.markRead(n._id).catch(() => {});
+                            setItems(prev => prev.map(item => item._id === n._id ? { ...item, read: true } : item));
+                            import("react-hot-toast").then(m => m.default.success("Connection accepted!"));
+                          } else {
+                            import("react-hot-toast").then(m => m.default.error("Request no longer valid"));
+                          }
+                        } catch (err) {
+                          console.error(err);
+                        }
+                      }}
+                    >
+                      Accept
+                    </button>
+                    <button 
+                      className="btn-notif btn-decline"
+                      onClick={async () => {
+                        try {
+                          let rId = n.requestId;
+                          if (!rId) {
+                            const reqs = await api.privacy.getRequests();
+                            const reqDoc = reqs.find(r => r.sender._id === n.sender?._id || r.sender === n.sender?._id || r.sender === n.sender);
+                            rId = reqDoc?._id;
+                          }
+                          if (rId) {
+                            await api.privacy.respondRequest(rId, 'decline');
+                            api.notifications.markRead(n._id).catch(() => {});
+                            setItems(prev => prev.map(item => item._id === n._id ? { ...item, read: true } : item));
+                            import("react-hot-toast").then(m => m.default.success("Request declined"));
+                          }
+                        } catch (err) {
+                          console.error(err);
+                        }
+                      }}
+                    >
+                      Decline
+                    </button>
+                  </div>
+                )}
               </div>
               {!n.read && <div className="unread-dot" />}
             </div>

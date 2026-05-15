@@ -6,6 +6,7 @@ const notificationSchema = new mongoose.Schema(
     sender: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     type: { type: String, enum: ["like", "comment", "follow", "campaign_invite", "campaign_apply", "collab_status", "collab_message", "premium_upgrade", "chat", "milestone", "recommendation", "security_alert", "align_request"], required: true },
     post: { type: mongoose.Schema.Types.ObjectId, ref: "Post" },
+    requestId: { type: mongoose.Schema.Types.ObjectId, ref: "AlignRequest" },
     message: { type: String, required: true },
     read: { type: Boolean, default: false },
   },

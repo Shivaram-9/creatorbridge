@@ -35,10 +35,11 @@ export async function attachAlignmentStatus(req, users) {
       const isFollowing = followingIds.has(uid);
       const isRequested = requestedIds.has(uid);
       
+      // DEBUG LOGS (will show in server console)
+      if (isRequested) console.log(`[Alignment] User ${req.userId} has pending request to ${uid}`);
+      
       return {
         ...uObj,
-        // A user is ONLY 'following' if they are in the following list 
-        // AND we don't have a pending request (to avoid weird overlap states)
         isFollowing: isFollowing && !isRequested,
         isRequested: isRequested,
         hasIncomingRequest: incomingIds.has(uid),

@@ -10,10 +10,11 @@ import { User } from "../models/User.js";
  * @param {String} data.type - Type of notification
  * @param {String} data.message - Notification message
  * @param {String} [data.post] - Optional post ID
+ * @param {String} [data.requestId] - Optional request ID
  */
 export async function createRealTimeNotification(io, data) {
   try {
-    const { user, sender, type, message, post } = data;
+    const { user, sender, type, message, post, requestId } = data;
 
     // 1. Create in Database
     const notif = await Notification.create({
@@ -21,7 +22,8 @@ export async function createRealTimeNotification(io, data) {
       sender,
       type,
       message,
-      post
+      post,
+      requestId
     });
 
     // 2. Populate for Socket

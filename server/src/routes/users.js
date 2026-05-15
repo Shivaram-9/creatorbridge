@@ -159,7 +159,8 @@ usersRouter.post("/follow/:id", async (req, res) => {
       user: targetId,
       sender: currentId,
       type: "align_request",
-      message: "requested to connect with you",
+      message: "sent you a connection request",
+      requestId: requestId
     });
 
     // Socket event for specifically triggering the interactive toast is still handled here
