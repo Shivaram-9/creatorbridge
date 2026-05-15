@@ -271,6 +271,69 @@ input:checked + .slider:before {
   text-align: center;
 }
 
+/* Blocked Users Section */
+.blocked-users-section {
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 2px solid #f1f5f9;
+}
+
+.blocked-users-section h4 {
+  font-size: 18px;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 8px;
+}
+
+.blocked-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.blocked-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: #f8fafc;
+  border-radius: 16px;
+  transition: transform 0.2s;
+}
+
+.blocked-item:hover {
+  transform: translateY(-2px);
+}
+
+.blocked-user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.blocked-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.blocked-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+}
+
+.blocked-username {
+  font-size: 13px;
+  color: #94a3b8;
+  margin: 0;
+}
+
 @media (max-width: 900px) {
   .settings-page {
     padding: 0;

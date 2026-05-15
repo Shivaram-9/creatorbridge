@@ -11,7 +11,7 @@ privacyRouter.use(authMiddleware);
 // GET /api/privacy/settings
 privacyRouter.get("/settings", async (req, res) => {
   try {
-    const user = await User.findById(req.userId).select("isPrivate allowMessagesFrom showActivityStatus isDiscoverable notifSettings");
+    const user = await User.findById(req.userId).select("allowMessagesFrom showActivityStatus isDiscoverable notifSettings");
     res.json(user);
   } catch (err) {
     res.status(500).json({ error: "Failed to load privacy settings" });
@@ -21,7 +21,7 @@ privacyRouter.get("/settings", async (req, res) => {
 // PATCH /api/privacy/settings
 privacyRouter.patch("/settings", async (req, res) => {
   try {
-    const allowedFields = ["isPrivate", "allowMessagesFrom", "showActivityStatus", "isDiscoverable", "notifSettings"];
+    const allowedFields = ["allowMessagesFrom", "showActivityStatus", "isDiscoverable", "notifSettings"];
     const updates = {};
     for (const key of allowedFields) {
       if (req.body[key] !== undefined) updates[key] = req.body[key];

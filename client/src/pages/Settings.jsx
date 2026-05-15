@@ -3,6 +3,7 @@ import { useAuth } from "../context/AuthContext.jsx";
 import { api, getToken } from "../services/api.js";
 import ErrorBanner from "../components/ErrorBanner.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
+import { BASE_URL } from "../config/api.js";
 import "./Settings.css";
 
 export default function Settings() {
@@ -13,7 +14,6 @@ export default function Settings() {
   const [success, setSuccess] = useState("");
   
   const [settings, setSettings] = useState({
-    isPrivate: false,
     allowMessagesFrom: "everyone",
     showActivityStatus: true,
     isDiscoverable: true,
@@ -28,16 +28,19 @@ export default function Settings() {
 
   const [sessions, setSessions] = useState([]);
   const [alerts, setAlerts] = useState([]);
+  const [blockedUsers, setBlockedUsers] = useState([]);
+  const [loadingBlocked, setLoadingBlocked] = useState(false);
 
   useEffect(() => {
     let mounted = true;
     async function loadData() {
       try {
         setLoading(true);
-        const [priv, sess, alrt] = await Promise.allSettled([
+        const [priv, sess, alrt, blocked] = await Promise.allSettled([
           api.privacy.getSettings(),
           api.security.getSessions(),
-          api.security.getAlerts()
+          api.security.getAlerts(),
+          api.moderation.getBlocked()
         ]);
         
         if (!mounted) return;
@@ -54,6 +57,9 @@ export default function Settings() {
         }
         if (alrt.status === 'fulfilled' && Array.isArray(alrt.value)) {
           setAlerts(alrt.value);
+        }
+        if (blocked.status === 'fulfilled' && Array.isArray(blocked.value)) {
+          setBlockedUsers(blocked.value);
         }
       } catch (err) {
         console.error("Settings load error:", err);
@@ -117,6 +123,17 @@ export default function Settings() {
     }
   };
 
+  const handleUnblock = async (userId) => {
+    try {
+      await api.moderation.unblock(userId);
+      setBlockedUsers(prev => prev.filter(u => u._id !== userId));
+      setSuccess("User unblocked successfully");
+      setTimeout(() => setSuccess(""), 3000);
+    } catch {
+      setError("Failed to unblock user");
+    }
+  };
+
   if (loading) return <LoadingSpinner centered />;
 
   return (
@@ -148,17 +165,6 @@ export default function Settings() {
             <div className="settings-section">
               <h3>Privacy Settings</h3>
               <div className="settings-list">
-                <div className="setting-item">
-                  <div className="setting-info">
-                    <h4>Private Account</h4>
-                    <p>When your account is private, only people you approve can see your posts and content.</p>
-                  </div>
-                  <label className="toggle">
-                    <input type="checkbox" checked={!!settings.isPrivate} onChange={() => handleToggle('isPrivate')} />
-                    <span className="slider"></span>
-                  </label>
-                </div>
-
                 <div className="setting-item">
                   <div className="setting-info">
                     <h4>Show Activity Status</h4>
@@ -196,6 +202,35 @@ export default function Settings() {
                     <option value="none">No one</option>
                   </select>
                 </div>
+              </div>
+
+              <div className="blocked-users-section">
+                <h4>Blocked Users</h4>
+                <p className="subtitle">Manage the users you have blocked.</p>
+                {blockedUsers.length > 0 ? (
+                  <div className="blocked-list">
+                    {blockedUsers.map(u => (
+                      <div key={u._id} className="blocked-item">
+                        <div className="blocked-user-info">
+                          <img 
+                            src={u.avatar?.startsWith('http') ? u.avatar : (u.avatar ? `${BASE_URL}${u.avatar}` : '/default-avatar.png')} 
+                            alt={u.username} 
+                            className="blocked-avatar" 
+                          />
+                          <div>
+                            <p className="blocked-name">{u.name || u.username}</p>
+                            <p className="blocked-username">@{u.username}</p>
+                          </div>
+                        </div>
+                        <button className="btn btn-outline btn-sm" onClick={() => handleUnblock(u._id)}>
+                          Unblock
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="empty-text">You haven't blocked any users yet.</p>
+                )}
               </div>
             </div>
           )}
