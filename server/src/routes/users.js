@@ -158,7 +158,7 @@ usersRouter.post("/follow/:id", async (req, res) => {
       user: targetId,
       sender: currentId,
       type: "align_request",
-      message: "requested to align with you",
+      message: "requested to connect with you",
     });
 
     // Socket event for specifically triggering the interactive toast is still handled here
@@ -169,11 +169,11 @@ usersRouter.post("/follow/:id", async (req, res) => {
         senderId: currentId,
         senderName: me?.name || me?.username || "Someone",
         requestId: requestId,
-        message: "requested to align with you"
+        message: "requested to connect with you"
       });
     }
 
-    res.json({ message: "Align request sent", requested: true });
+    res.json({ message: "Connection request sent", requested: true });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to follow user" });

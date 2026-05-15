@@ -160,7 +160,7 @@ export default function UserProfile() {
       } else {
         setIsFollowing(false);
         setHasRequested(false);
-        toast.success("Alignment ended");
+        toast.success("Connection ended");
         
         // Immediate local count update
         setProfile(prev => {
@@ -172,7 +172,7 @@ export default function UserProfile() {
         });
       }
     } catch {
-      toast.error("Failed to end alignment");
+      toast.error("Failed to end connection");
     } finally {
       setActionBusy(false);
       setShowAlignMenu(false);
@@ -303,7 +303,7 @@ export default function UserProfile() {
                         disabled={actionBusy || hasRequested}
                         onClick={handleFollowToggle}
                       >
-                        {actionBusy ? "..." : hasRequested ? "Request pending" : isFollowing ? "Aligned" : "Align"}
+                        {actionBusy ? "..." : hasRequested ? "Request pending" : isFollowing ? "Connected" : "Connect"}
                       </button>
                       
                       {!isOwn && (
@@ -328,7 +328,7 @@ export default function UserProfile() {
             <button className="btn btn-icon up-more-trigger" onClick={() => setShowAlignMenu(!showAlignMenu)}>•••</button>
             {showAlignMenu && (
               <div className="dropdown-menu show slide-in">
-                <button className="dropdown-item danger" onClick={handleEndAlign}>End Align</button>
+                <button className="dropdown-item danger" onClick={handleEndAlign}>End Connection</button>
                 <button className="dropdown-item" onClick={handleShareProfile}>Share Profile</button>
                 <button className="dropdown-item danger" onClick={handleBlock}>Block User</button>
               </div>
@@ -356,7 +356,7 @@ export default function UserProfile() {
         <div className="private-account-message">
           <div className="icon">🔒</div>
           <h3>This account is private</h3>
-          <p>Align with this user to see their posts and connections.</p>
+          <p>Connect with this user to see their posts and connections.</p>
         </div>
       ) : (
         <>

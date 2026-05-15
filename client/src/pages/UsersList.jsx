@@ -69,9 +69,9 @@ export default function UsersList() {
 
   let title = "Users";
   if (postId) title = "Likes";
-  else if (type === "followers") title = "Aligners";
-  else if (type === "following") title = "Aligned";
-  else if (type === "alliances") title = "Alliances";
+  else if (type === "followers") title = "Connections";
+  else if (type === "following") title = "Connected";
+  else if (type === "alliances") title = "Connections";
 
   return (
     <div className="container" style={{ maxWidth: '600px', margin: '0 auto' }}>
@@ -157,7 +157,7 @@ function UserRow({ user, onUpdate }) {
           disabled={busy}
           style={{ minWidth: '80px' }}
         >
-          {busy ? "..." : isFollowing ? "Aligned" : "Align"}
+          {busy ? "..." : isFollowing ? "Connected" : "Connect"}
         </button>
       )}
     </div>

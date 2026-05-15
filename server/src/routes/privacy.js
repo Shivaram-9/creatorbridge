@@ -67,7 +67,7 @@ privacyRouter.post("/requests/:requestId/:action", async (req, res) => {
         user: request.sender,
         sender: request.receiver,
         type: "follow",
-        message: "has accepted your request",
+        message: "has accepted your connection request",
       });
     } else {
       request.status = "rejected";
@@ -77,7 +77,7 @@ privacyRouter.post("/requests/:requestId/:action", async (req, res) => {
         user: request.sender,
         sender: request.receiver,
         type: "align_request",
-        message: "has declined your request",
+        message: "has declined your connection request",
       });
     }
 

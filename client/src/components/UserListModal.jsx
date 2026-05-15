@@ -33,7 +33,7 @@ export default function UserListModal({ userId, type, onClose }) {
       <div className="modal-content slide-in" onClick={e => e.stopPropagation()} style={{ maxWidth: '400px', width: '90%', maxHeight: '80vh', overflowY: 'auto' }}>
         <div className="modal-header" style={{ padding: '1rem', borderBottom: '1px solid #eee', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h2 style={{ fontSize: '1.1rem', fontWeight: 600, textTransform: 'capitalize' }}>
-            {type === "followers" ? "Aligners" : "Aligned"}
+            {type === "followers" ? "Connections" : "Connected"}
           </h2>
           <button className="btn btn-ghost btn-sm" onClick={onClose}>✕</button>
         </div>

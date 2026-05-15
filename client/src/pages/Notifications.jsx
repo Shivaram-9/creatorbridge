@@ -123,7 +123,7 @@ export default function Notifications() {
             ))}
           </div>
           <div className="requests-preview-text">
-            <strong>Align Requests</strong>
+            <strong>Connection Requests</strong>
             <span>{pendingRequests.length} pending requests</span>
           </div>
           <span className="arrow">→</span>

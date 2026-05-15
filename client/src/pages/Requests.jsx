@@ -42,7 +42,7 @@ export default function Requests() {
   return (
     <div className="requests-page slide-up-fade">
       <header className="page-header-block">
-        <h1 className="page-title-main">Align Requests</h1>
+        <h1 className="page-title-main">Connection Requests</h1>
         <p className="page-subtitle-main">People who want to follow you and see your private content.</p>
       </header>
 
@@ -54,7 +54,7 @@ export default function Requests() {
         <div className="empty-requests">
           <span className="icon">👤</span>
           <h3>No pending requests</h3>
-          <p>When someone requests to align with you, they'll show up here.</p>
+          <p>When someone requests to connect with you, they'll show up here.</p>
         </div>
       ) : (
         <div className="requests-list">

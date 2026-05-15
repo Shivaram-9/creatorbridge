@@ -67,10 +67,10 @@ export default function Layout() {
                 </div>
                 <div className="ml-3 flex-1">
                   <p className="text-sm font-bold text-gray-900">
-                    Alignment Request
+                    Connection Request
                   </p>
                   <p className="mt-1 text-sm text-gray-600">
-                    <span className="font-semibold">{senderName}</span> wants to align with you.
+                    <span className="font-semibold">{senderName}</span> wants to connect with you.
                   </p>
                 </div>
               </div>
@@ -88,7 +88,7 @@ export default function Layout() {
                     }
                     if (rId) {
                       await api.privacy.respondRequest(rId, 'accept');
-                      toast.success(`You are now aligned with ${senderName}!`);
+                      toast.success(`You are now connected with ${senderName}!`);
                     }
                   } catch (err) {
                     toast.error("Failed to accept request");
@@ -128,12 +128,12 @@ export default function Layout() {
 
     socket.on("align_request_accepted", (data) => {
       fetchNotifications();
-      import("react-hot-toast").then(m => m.default.success(`${data.receiverName || "User"} accepted your alignment request!`));
+      import("react-hot-toast").then(m => m.default.success(`${data.receiverName || "User"} accepted your connection request!`));
     });
 
     socket.on("align_request_declined", (data) => {
       fetchNotifications();
-      import("react-hot-toast").then(m => m.default.error(`${data.receiverName || "User"} declined your alignment request.`));
+      import("react-hot-toast").then(m => m.default.error(`${data.receiverName || "User"} declined your connection request.`));
     });
 
     return () => {

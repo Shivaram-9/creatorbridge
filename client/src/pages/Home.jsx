@@ -80,7 +80,7 @@ export default function Home() {
       ) : (
         <>
           <div className="home-feed-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', marginTop: '20px' }}>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: '700', color: 'var(--text-main)', margin: 0 }}>Alliance Feed</h2>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: '700', color: 'var(--text-main)', margin: 0 }}>Connection Feed</h2>
             <button 
               onClick={loadPosts} 
               disabled={loading}
@@ -121,8 +121,8 @@ export default function Home() {
             </div>
           ) : (
             <EmptyState 
-              title="Welcome! Your Alliance Feed is Empty"
-              message="Align with creators and brands to see their latest posts here!"
+              title="Welcome! Your Connection Feed is Empty"
+              message="Connect with creators and brands to see their latest posts here!"
               actionText="Discover Creators"
               onAction={() => navigate("/discover")}
               icon="🤝"
