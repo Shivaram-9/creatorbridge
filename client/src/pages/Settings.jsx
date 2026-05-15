@@ -143,16 +143,16 @@ export default function Settings() {
           <h2>Settings</h2>
           <nav>
             <button className={activeTab === 'privacy' ? 'active' : ''} onClick={() => setActiveTab('privacy')}>
-              <span className="icon">🔒</span> Privacy
+              Privacy
             </button>
             <button className={activeTab === 'security' ? 'active' : ''} onClick={() => setActiveTab('security')}>
-              <span className="icon">🛡️</span> Security & Sessions
+              Security & Sessions
             </button>
             <button className={activeTab === 'notifications' ? 'active' : ''} onClick={() => setActiveTab('notifications')}>
-              <span className="icon">🔔</span> Notifications
+              Notifications
             </button>
             <button className={activeTab === 'account' ? 'active' : ''} onClick={() => setActiveTab('account')}>
-              <span className="icon">👤</span> Account Details
+              Account Details
             </button>
           </nav>
         </aside>
