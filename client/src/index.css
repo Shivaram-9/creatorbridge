@@ -251,6 +251,7 @@ body {
   border-radius: 50%;
   overflow: hidden;
   flex-shrink: 0;
+  aspect-ratio: 1 / 1;
   background: linear-gradient(135deg, #6366f1, #8b5cf6);
   color: white;
   font-weight: 600;
