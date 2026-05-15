@@ -187,7 +187,7 @@ const UserCard = memo(({ user }) => {
         }}>
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontSize: '14px', fontWeight: 800, color: '#1a1a1a' }}>{user.followers?.length || 0}</div>
-            <div style={{ fontSize: '10px', color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase' }}>Connections</div>
+            <div style={{ fontSize: '10px', color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase' }}>Alliances</div>
           </div>
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontSize: '14px', fontWeight: 800, color: '#1a1a1a' }}>{user.profileViews || 0}</div>

@@ -224,7 +224,7 @@ export default function Profile() {
               onClick={() => navigate(`/user/${user._id}/alliances`)}
             >
               <strong>{fmtCount((user?.followers?.length || 0) + (user?.following?.length || 0))}</strong>
-              <span>Connections</span>
+              <span>Alliances</span>
             </div>
           </div>
 

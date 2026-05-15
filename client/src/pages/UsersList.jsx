@@ -69,9 +69,9 @@ export default function UsersList() {
 
   let title = "Users";
   if (postId) title = "Likes";
-  else if (type === "followers") title = "Connections";
-  else if (type === "following") title = "Connected";
-  else if (type === "alliances") title = "Connections";
+  else if (type === "followers") title = "Alliances";
+  else if (type === "following") title = "Alliances";
+  else if (type === "alliances") title = "Alliances";
 
   return (
     <div className="container" style={{ maxWidth: '600px', margin: '0 auto' }}>
