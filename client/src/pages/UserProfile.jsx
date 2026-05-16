@@ -351,7 +351,7 @@ export default function UserProfile() {
       <div className="up-stats-alliances">
         <div className="up-stat" onClick={() => !isPrivateAndHidden && navigate(`/user/${userId}/alliances`)}>
           <span className="up-stat__value">
-            {fmtFollowers((Array.isArray(profile?.followers) ? profile.followers.length : 0) + (Array.isArray(profile?.following) ? profile.following.length : 0)) || "0"}
+            {fmtFollowers(new Set([...(Array.isArray(profile?.followers) ? profile.followers : []), ...(Array.isArray(profile?.following) ? profile.following : [])]).size) || "0"}
           </span>
           <span className="up-stat__label">Alliances</span>
         </div>

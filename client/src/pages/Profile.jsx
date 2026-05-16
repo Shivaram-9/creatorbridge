@@ -223,7 +223,7 @@ export default function Profile() {
               className="profile-ig-stat clickable"
               onClick={() => navigate(`/user/${user._id}/alliances`)}
             >
-              <strong>{fmtCount((user?.followers?.length || 0) + (user?.following?.length || 0))}</strong>
+              <strong>{fmtCount(new Set([...(user?.followers || []), ...(user?.following || [])]).size)}</strong>
               <span>Alliances</span>
             </div>
           </div>
