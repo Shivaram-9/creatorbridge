@@ -9,6 +9,7 @@ export default function UserListModal({ userId, type = "following", onClose, onS
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedUserId, setSelectedUserId] = useState(null);
 
   useEffect(() => {
     async function fetchUsers() {
@@ -19,7 +20,6 @@ export default function UserListModal({ userId, type = "following", onClose, onS
           setError(data.error);
         } else {
           setUsers(data || []);
-          console.log("UserListModal: fetched users", data);
         }
       } catch (err) {
         setError("Failed to load list");
@@ -35,14 +35,23 @@ export default function UserListModal({ userId, type = "following", onClose, onS
     (u.username || "").toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const handleSend = () => {
+    if (selectedUserId) {
+      const selectedUser = users.find(u => u._id === selectedUserId);
+      if (selectedUser && onSelect) {
+        onSelect(selectedUser);
+      }
+    }
+  };
+
   return (
-    <div className="modal-overlay" onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000 }}>
-      <div className="modal-content" onClick={e => e.stopPropagation()} style={{ background: '#121212', color: 'white', borderRadius: '16px', width: '90%', maxWidth: '400px', maxHeight: '80vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+    <div className="modal-overlay" onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000 }}>
+      <div className="modal-content" onClick={e => e.stopPropagation()} style={{ background: 'white', color: '#1a1a1a', borderRadius: '16px', width: '90%', maxWidth: '400px', maxHeight: '80vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }}>
         
         {/* Header */}
-        <div style={{ padding: '16px', borderBottom: '1px solid #262626', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ padding: '16px', borderBottom: '1px solid #eee', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h2 style={{ fontSize: '1rem', fontWeight: 600, margin: 0 }}>Share</h2>
-          <button style={{ background: 'none', border: 'none', color: 'white', fontSize: '1.2rem', cursor: 'pointer' }} onClick={onClose}>✕</button>
+          <button style={{ background: 'none', border: 'none', color: '#1a1a1a', fontSize: '1.2rem', cursor: 'pointer' }} onClick={onClose}>✕</button>
         </div>
 
         {/* Search */}
@@ -52,7 +61,7 @@ export default function UserListModal({ userId, type = "following", onClose, onS
             <input 
               type="text" 
               placeholder="Search" 
-              style={{ width: '100%', background: '#262626', border: 'none', borderRadius: '8px', padding: '10px 10px 10px 36px', color: 'white', fontSize: '14px', outline: 'none' }}
+              style={{ width: '100%', background: '#f5f5f5', border: 'none', borderRadius: '8px', padding: '10px 10px 10px 36px', color: '#1a1a1a', fontSize: '14px', outline: 'none' }}
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
             />
@@ -74,17 +83,45 @@ export default function UserListModal({ userId, type = "following", onClose, onS
               {filteredUsers.map(u => (
                 <div 
                   key={u._id} 
-                  style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer' }}
-                  onClick={() => onSelect && onSelect(u)}
+                  style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', position: 'relative' }}
+                  onClick={() => setSelectedUserId(u._id)}
                 >
-                  <Avatar user={u} size="lg" />
-                  <span style={{ fontSize: '0.8rem', color: '#e4e6eb', marginTop: '6px', textAlign: 'center', width: '100%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  <div style={{ position: 'relative' }}>
+                    <Avatar user={u} size="lg" />
+                    {selectedUserId === u._id && (
+                      <div style={{ position: 'absolute', top: '-5px', right: '-5px', background: '#6366f1', color: 'white', borderRadius: '50%', width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 'bold' }}>
+                        ✓
+                      </div>
+                    )}
+                  </div>
+                  <span style={{ fontSize: '0.8rem', color: '#1a1a1a', marginTop: '6px', textAlign: 'center', width: '100%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     {u.username || u.name}
                   </span>
                 </div>
               ))}
             </div>
           )}
+        </div>
+
+        {/* Footer with Send Button */}
+        <div style={{ padding: '16px', borderTop: '1px solid #eee', display: 'flex', justifyContent: 'center' }}>
+          <button 
+            style={{ 
+              width: '100%', 
+              background: selectedUserId ? '#6366f1' : '#a5a6f6', 
+              color: 'white', 
+              border: 'none', 
+              borderRadius: '8px', 
+              padding: '12px', 
+              fontWeight: 600, 
+              cursor: selectedUserId ? 'pointer' : 'not-allowed',
+              transition: 'background 0.2s'
+            }} 
+            onClick={handleSend}
+            disabled={!selectedUserId}
+          >
+            Send
+          </button>
         </div>
       </div>
     </div>

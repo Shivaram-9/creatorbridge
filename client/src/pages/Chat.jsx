@@ -7,6 +7,31 @@ import Avatar from "../components/Avatar.jsx";
 import ErrorBanner from "../components/ErrorBanner.jsx";
 import { MediaIcon } from "../components/Icons.jsx";
 
+const renderMessageContent = (text, isMine) => {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  const parts = text.split(urlRegex);
+  return parts.map((part, index) => {
+    if (part.match(urlRegex)) {
+      return (
+        <a 
+          key={index} 
+          href={part} 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          style={{ 
+            color: isMine ? 'white' : '#6366f1', 
+            textDecoration: 'underline',
+            wordBreak: 'break-all'
+          }}
+        >
+          {part}
+        </a>
+      );
+    }
+    return part;
+  });
+};
+
 export default function Chat({ standalone = true }) {
   const { userId: partnerId } = useParams();
   const { user } = useAuth();
@@ -290,7 +315,7 @@ export default function Chat({ standalone = true }) {
                     )}
                   </div>
                 )}
-                {m.content && <p style={{ fontSize: '15px', margin: 0, wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}>{m.content}</p>}
+                {m.content && <p style={{ fontSize: '15px', margin: 0, wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}>{renderMessageContent(m.content, isMine)}</p>}
                 <span style={{ fontSize: '10px', marginTop: '6px', display: 'block', opacity: 0.7, textAlign: isMine ? 'right' : 'left', fontWeight: '500' }}>{time}</span>
               </div>
             </div>
