@@ -179,7 +179,6 @@ export default function Discover() {
 
             {filteredUsers.length === 0 ? (
               <div className="discover-empty">
-                <span>👥</span>
                 <p>No creators found for this filter.</p>
               </div>
             ) : (
