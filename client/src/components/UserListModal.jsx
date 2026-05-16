@@ -19,6 +19,7 @@ export default function UserListModal({ userId, type = "following", onClose, onS
           setError(data.error);
         } else {
           setUsers(data || []);
+          console.log("UserListModal: fetched users", data);
         }
       } catch (err) {
         setError("Failed to load list");
@@ -66,7 +67,7 @@ export default function UserListModal({ userId, type = "following", onClose, onS
             <ErrorBanner message={error} onDismiss={() => setError("")} />
           ) : filteredUsers.length === 0 ? (
             <div style={{ textAlign: 'center', color: '#8e8e8e', padding: '20px' }}>
-              No users found
+              {searchQuery ? "No users found matching your search" : "You are not following anyone yet. Follow users to share profiles with them."}
             </div>
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
