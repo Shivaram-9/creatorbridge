@@ -14,6 +14,7 @@ import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import { PostSkeleton } from "../components/Skeleton.jsx";
 import toast from "react-hot-toast";
 import "./UserProfile.css";
+import UserListModal from "../components/UserListModal.jsx";
 
 function fmtFollowers(n) {
   if (!n || n <= 0) return null;
@@ -36,6 +37,7 @@ export default function UserProfile() {
   
   const [userPosts, setUserPosts] = useState([]);
   const [loadingPosts, setLoadingPosts] = useState(true);
+  const [showShareModal, setShowShareModal] = useState(false);
 
   const isOwn = me?._id === userId;
   const navigate = useNavigate();
@@ -238,15 +240,25 @@ export default function UserProfile() {
     }
   };
 
-  const handleShareProfile = async () => {
-    const url = `${window.location.origin}/user/${userId}`;
+  const handleShareProfile = () => {
+    setShowShareModal(true);
+  };
+
+  const handleShareToUser = async (targetUser) => {
     try {
-      await navigator.clipboard.writeText(url);
-      setCopyStatus(true);
-      toast.success("Profile link copied!");
-      setTimeout(() => setCopyStatus(false), 2000);
-    } catch {
-      toast.error("Failed to copy link");
+      const profileUrl = `${window.location.origin}/user/${userId}`;
+      const res = await api.messages.send({
+        receiverId: targetUser._id,
+        content: `Check out this profile: ${profileUrl}`
+      });
+      if (res.error) {
+        toast.error(res.error);
+      } else {
+        toast.success(`Shared with @${targetUser.username}!`);
+        setShowShareModal(false);
+      }
+    } catch (err) {
+      toast.error("Failed to share profile");
     }
   };
 
@@ -406,6 +418,14 @@ export default function UserProfile() {
             )}
           </section>
         </>
+      )}
+      {showShareModal && (
+        <UserListModal 
+          userId={me?._id} 
+          type="following" 
+          onClose={() => setShowShareModal(false)} 
+          onSelect={handleShareToUser}
+        />
       )}
     </div>
   );

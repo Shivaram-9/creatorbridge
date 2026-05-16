@@ -10,6 +10,7 @@ import PortfolioGrid from "../components/PortfolioGrid.jsx";
 import { HeartIcon, MessageCircleIcon, SendIcon, BookmarkIcon } from "../components/Icons.jsx";
 import toast from "react-hot-toast";
 import "./Profile.css";
+import UserListModal from "../components/UserListModal.jsx";
 
 function fmtCount(n) {
   if (!n || n <= 0) return "0";
@@ -29,6 +30,7 @@ export default function Profile() {
   const [copyStatus, setCopyStatus] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [lightboxPost, setLightboxPost] = useState(null);
+  const [showShareModal, setShowShareModal] = useState(false);
 
   const loadData = useCallback(async () => {
     if (!user?._id) return;
@@ -141,14 +143,25 @@ export default function Profile() {
     toast.success("Link copied to clipboard");
   };
 
-  const handleShare = async () => {
+  const handleShare = () => {
+    setShowShareModal(true);
+  };
+
+  const handleShareToUser = async (targetUser) => {
     try {
-      await navigator.clipboard.writeText(`${window.location.origin}/user/${user._id}`);
-      setCopyStatus(true);
-      toast.success("Profile link copied!");
-      setTimeout(() => setCopyStatus(false), 2000);
-    } catch {
-      toast.error("Failed to copy link");
+      const profileUrl = `${window.location.origin}/user/${user._id}`;
+      const res = await api.messages.send({
+        receiverId: targetUser._id,
+        content: `Check out this profile: ${profileUrl}`
+      });
+      if (res.error) {
+        toast.error(res.error);
+      } else {
+        toast.success(`Shared with @${targetUser.username}!`);
+        setShowShareModal(false);
+      }
+    } catch (err) {
+      toast.error("Failed to share profile");
     }
   };
 
@@ -498,6 +511,14 @@ export default function Profile() {
             </div>
           </div>
         </div>
+      )}
+      {showShareModal && (
+        <UserListModal 
+          userId={user._id} 
+          type="following" 
+          onClose={() => setShowShareModal(false)} 
+          onSelect={handleShareToUser}
+        />
       )}
     </div>
   );

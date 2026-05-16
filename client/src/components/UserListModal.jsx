@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { api } from "../services/api.js";
 import LoadingSpinner from "./LoadingSpinner.jsx";
 import Avatar from "./Avatar.jsx";
+import ErrorBanner from "./ErrorBanner.jsx";
 
-export default function UserListModal({ userId, type, onClose }) {
+export default function UserListModal({ userId, type = "following", onClose, onSelect }) {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     async function fetchUsers() {
@@ -28,36 +29,57 @@ export default function UserListModal({ userId, type, onClose }) {
     fetchUsers();
   }, [userId, type]);
 
+  const filteredUsers = users.filter(u => 
+    (u.name || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (u.username || "").toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content slide-in" onClick={e => e.stopPropagation()} style={{ maxWidth: '400px', width: '90%', maxHeight: '80vh', overflowY: 'auto' }}>
-        <div className="modal-header" style={{ padding: '1rem', borderBottom: '1px solid #eee', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h2 style={{ fontSize: '1.1rem', fontWeight: 600, textTransform: 'capitalize' }}>
-            {type === "followers" ? "Alliances" : "Alliances"}
-          </h2>
-          <button className="btn btn-ghost btn-sm" onClick={onClose}>✕</button>
+    <div className="modal-overlay" onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000 }}>
+      <div className="modal-content" onClick={e => e.stopPropagation()} style={{ background: '#121212', color: 'white', borderRadius: '16px', width: '90%', maxWidth: '400px', maxHeight: '80vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        
+        {/* Header */}
+        <div style={{ padding: '16px', borderBottom: '1px solid #262626', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h2 style={{ fontSize: '1rem', fontWeight: 600, margin: 0 }}>Share</h2>
+          <button style={{ background: 'none', border: 'none', color: 'white', fontSize: '1.2rem', cursor: 'pointer' }} onClick={onClose}>✕</button>
         </div>
 
-        <div className="modal-body" style={{ padding: '1rem' }}>
+        {/* Search */}
+        <div style={{ padding: '12px 16px' }}>
+          <div style={{ position: 'relative' }}>
+            <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#8e8e8e' }}>🔍</span>
+            <input 
+              type="text" 
+              placeholder="Search" 
+              style={{ width: '100%', background: '#262626', border: 'none', borderRadius: '8px', padding: '10px 10px 10px 36px', color: 'white', fontSize: '14px', outline: 'none' }}
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+            />
+          </div>
+        </div>
+
+        {/* Body */}
+        <div style={{ flex: 1, overflowY: 'auto', padding: '16px' }}>
           {loading ? (
             <LoadingSpinner centered />
           ) : error ? (
-            <p className="error-text" style={{ textAlign: 'center' }}>{error}</p>
-          ) : users.length === 0 ? (
-            <p style={{ textAlign: 'center', opacity: 0.6, padding: '2rem 0' }}>No users found.</p>
+            <ErrorBanner message={error} onDismiss={() => setError("")} />
+          ) : filteredUsers.length === 0 ? (
+            <div style={{ textAlign: 'center', color: '#8e8e8e', padding: '20px' }}>
+              No users found
+            </div>
           ) : (
-            <div className="user-list">
-              {users.map(u => (
-                <div key={u._id} className="user-list-item" style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '1rem' }}>
-                  <Link to={`/user/${u._id}`} onClick={onClose}>
-                    <Avatar user={u} size="md" />
-                  </Link>
-                  <div className="user-info">
-                    <Link to={`/user/${u._id}`} onClick={onClose} style={{ textDecoration: 'none', color: 'inherit' }}>
-                      <div style={{ fontWeight: 600 }}>{u.name || u.username}</div>
-                      <div style={{ fontSize: '0.85rem', opacity: 0.6 }}>@{u.username}</div>
-                    </Link>
-                  </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
+              {filteredUsers.map(u => (
+                <div 
+                  key={u._id} 
+                  style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer' }}
+                  onClick={() => onSelect && onSelect(u)}
+                >
+                  <Avatar user={u} size="lg" />
+                  <span style={{ fontSize: '0.8rem', color: '#e4e6eb', marginTop: '6px', textAlign: 'center', width: '100%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {u.username || u.name}
+                  </span>
                 </div>
               ))}
             </div>
