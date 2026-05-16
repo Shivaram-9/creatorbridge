@@ -178,7 +178,11 @@ messagesRouter.post("/media", chatUpload.single("media"), async (req, res) => {
 
     // ─── MEDIA PATH RESOLUTION ──────────────────────────────────────────────
     let mediaPath = "";
-    const isCloudinary = !!(process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY);
+    const isCloudinary = !!(
+      process.env.CLOUDINARY_CLOUD_NAME &&
+      process.env.CLOUDINARY_API_KEY &&
+      process.env.CLOUDINARY_API_SECRET
+    );
 
     if (isCloudinary && req.file.buffer) {
       // Manual upload from memory buffer to Cloudinary

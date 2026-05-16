@@ -206,6 +206,7 @@ export default function Chat({ standalone = true }) {
       </header>
 
       <div style={{ flex: 1, overflowY: 'auto', padding: '24px' }}>
+        <ErrorBanner message={error} onDismiss={() => setError("")} />
         {messages.map((m, idx) => {
           if (!m) return null;
           const isMine = (m.sender?._id || m.sender) === user?._id;
