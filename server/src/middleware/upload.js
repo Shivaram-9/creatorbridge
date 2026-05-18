@@ -87,6 +87,13 @@ export const profileUpload = multer({
   limits: { fileSize: 2 * 1024 * 1024 },
 });
 
+// Cover upload specifically
+export const coverUpload = multer({
+  storage: useCloudinary ? cloudinaryStorage("covers", "image") : diskStorage("uploads/covers/"),
+  fileFilter: imageFilter,
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+});
+
 // Post media upload (images + video)
 export const postUpload = multer({
   storage: useCloudinary ? cloudinaryStorage("posts", "auto") : diskStorage("uploads/posts/"),

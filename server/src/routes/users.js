@@ -3,7 +3,7 @@ import { User } from "../models/User.js";
 import { Notification } from "../models/Notification.js";
 import { AlignRequest } from "../models/AlignRequest.js";
 import { authMiddleware } from "../middleware/auth.js";
-import { profileUpload } from "../middleware/upload.js";
+import { profileUpload, coverUpload } from "../middleware/upload.js";
 import { attachAlignmentStatus } from "../utils/alignment.js";
 import { createRealTimeNotification } from "../utils/notifications.js";
 
@@ -87,7 +87,7 @@ usersRouter.post("/me/avatar", profileUpload.single("avatar"), async (req, res) 
   }
 });
 
-usersRouter.post("/me/cover", profileUpload.single("cover"), async (req, res) => {
+usersRouter.post("/me/cover", coverUpload.single("cover"), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: "Cover file is required" });
     const coverPath = req.file.path || `/uploads/covers/${req.file.filename}`;
