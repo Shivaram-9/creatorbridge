@@ -280,8 +280,9 @@ export default function Navbar({
                       style={{ 
                         position: 'fixed',
                         top: '70px',
-                        left: '50%',
-                        transform: 'translateX(-50%)',
+                        left: '0',
+                        right: '0',
+                        margin: '0 auto',
                         width: '92%',
                         maxWidth: '400px',
                         backgroundColor: '#ffffff',
