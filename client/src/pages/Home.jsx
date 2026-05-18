@@ -110,20 +110,7 @@ export default function Home() {
         </div>
 
         {/* New Post Box */}
-        <div className="post-box-container">
-          <div className="post-box-top">
-            <img src={user?.avatar || "/placeholder_avatar.png"} alt="My Avatar" className="post-box-avatar" />
-            <div className="post-box-input" onClick={() => navigate("/home")}>
-              What's on your mind?
-            </div>
-          </div>
-          <div className="post-box-actions">
-            <button className="post-action-btn"><span>🖼️</span> Media</button>
-            <button className="post-action-btn"><span>🎥</span> Video</button>
-            <button className="post-action-btn"><span>📁</span> Project</button>
-            <button className="post-action-btn"><span>📅</span> Event</button>
-          </div>
-        </div>
+        <CreatePost onPost={handleAddPost} user={user} />
 
         {/* Feed Posts */}
         {loading ? (

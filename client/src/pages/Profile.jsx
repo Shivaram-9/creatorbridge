@@ -193,7 +193,7 @@ export default function Profile() {
       {/* Profile Header (Overlapping) */}
       <div className="profile-header-wrap">
         <div className="profile-avatar-wrap">
-          <Avatar user={user} size="xl" />
+          <img src={user?.avatar || "/placeholder_avatar.png"} alt="Avatar" />
         </div>
         
         <div className="profile-actions">

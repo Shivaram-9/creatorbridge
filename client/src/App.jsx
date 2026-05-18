@@ -18,6 +18,7 @@ const Notifications = lazy(() => import("./pages/Notifications.jsx"));
 const Settings = lazy(() => import("./pages/Settings.jsx"));
 const Chat = lazy(() => import("./pages/Chat.jsx"));
 const Saved = lazy(() => import("./pages/Saved.jsx"));
+const Collaborations = lazy(() => import("./pages/Collaborations.jsx"));
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard.jsx"));
 const Analytics = lazy(() => import("./pages/Analytics.jsx"));
 const Premium = lazy(() => import("./pages/Premium.jsx"));
@@ -81,6 +82,7 @@ export default function App() {
           <Route path="/messages" element={<Messages />} />
           <Route path="/messages/:userId" element={<Messages />} />
           <Route path="/saved" element={<Saved />} />
+          <Route path="/collaborations" element={<Collaborations />} />
           <Route path="/admin" element={
             <AdminRoute>
               <AdminDashboard />

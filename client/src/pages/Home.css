@@ -2,9 +2,9 @@
 
 .home-grid {
   display: grid;
-  grid-template-columns: 2.5fr 1fr;
+  grid-template-columns: 3fr 1fr;
   gap: 30px;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 20px;
   box-sizing: border-box;

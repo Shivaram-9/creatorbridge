@@ -16,11 +16,11 @@ export default function Sidebar({ user, msgUnreadCount = 0, logout }) {
   const menuItems = [
     { name: "Home", path: "/home", icon: <HomeIcon /> },
     { name: "Discover", path: "/discover", icon: <SearchIcon /> },
-    { name: "Creators", path: "/creators", icon: <UsersIcon /> },
-    { name: "Brands", path: "/brands", icon: <UsersIcon /> },
+    { name: "Creators", path: "/discover?type=creator", icon: <UsersIcon /> },
+    { name: "Brands", path: "/discover?type=brand", icon: <UsersIcon /> },
     { name: "Opportunities", path: "/collaborations", icon: <BriefcaseIcon /> },
     { name: "Messages", path: "/messages", icon: <MessageIcon />, badge: msgUnreadCount },
-    { name: "Bookmarks", path: "/bookmarks", icon: <BookmarkIcon /> },
+    { name: "Bookmarks", path: "/saved", icon: <BookmarkIcon /> },
     { name: "Profile", path: user ? `/user/${user._id}` : "/profile", icon: <ProfileIcon /> },
   ];
 
@@ -56,7 +56,7 @@ export default function Sidebar({ user, msgUnreadCount = 0, logout }) {
           <span className="sidebar-icon">⚙️</span>
           <span className="sidebar-label">Settings</span>
         </Link>
-        <Link to="/help" className="sidebar-item">
+        <Link to="/settings" className="sidebar-item">
           <span className="sidebar-icon">❓</span>
           <span className="sidebar-label">Help Center</span>
         </Link>
