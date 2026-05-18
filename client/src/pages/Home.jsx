@@ -9,6 +9,7 @@ import StoriesBar from "../components/StoriesBar.jsx";
 import EmptyState from "../components/EmptyState.jsx";
 import { PostSkeleton } from "../components/Skeleton.jsx";
 import toast from "react-hot-toast";
+import "./Home.css";
 
 export default function Home() {
   const { user } = useAuth();
@@ -16,6 +17,24 @@ export default function Home() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [verifiedCreators, setVerifiedCreators] = useState([]);
+  const [suggestedUsers, setSuggestedUsers] = useState([]);
+
+  const loadSidebarData = useCallback(async () => {
+    try {
+      const discoverRes = await api.search.discover();
+      if (!discoverRes.error) {
+        setSuggestedUsers(discoverRes.creators?.slice(0, 5) || []);
+        setVerifiedCreators(discoverRes.creators?.filter(u => u.isVerified).slice(0, 5) || []);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadSidebarData();
+  }, [loadSidebarData]);
 
   const loadPosts = useCallback(async () => {
     setLoading(true);
@@ -67,69 +86,137 @@ export default function Home() {
   };
 
   return (
-    <div style={{ paddingBottom: '80px', paddingTop: '16px' }}>
-      <StoriesBar />
-      <CreatePost onPost={handleAddPost} user={user} />
+    <div className="home-grid">
+      {/* Main Feed Column */}
+      <div className="feed-col">
+        <StoriesBar />
 
-      {loading ? (
-        <div style={{ marginTop: '32px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
-          <PostSkeleton />
-          <PostSkeleton />
-          <PostSkeleton />
-        </div>
-      ) : (
-        <>
-          <div className="home-feed-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', marginTop: '20px' }}>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: '700', color: 'var(--text-main)', margin: 0 }}>Alliance Feed</h2>
-            <button 
-              onClick={loadPosts} 
-              disabled={loading}
-              style={{ 
-                background: 'white', 
-                border: '1px solid #e2e8f0', 
-                padding: '6px 12px', 
-                borderRadius: '20px', 
-                fontSize: '12px', 
-                fontWeight: '600', 
-                color: '#64748b',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
-                transition: 'all 0.2s'
-              }}
-              onMouseOver={(e) => { e.currentTarget.style.background = '#f8fafc'; e.currentTarget.style.borderColor = '#cbd5e1'; }}
-              onMouseOut={(e) => { e.currentTarget.style.background = 'white'; e.currentTarget.style.borderColor = '#e2e8f0'; }}
-            >
-              <svg style={{ width: '14px', height: '14px', transform: loading ? 'rotate(360deg)' : 'none', transition: 'transform 0.5s linear' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-              {loading ? "Refreshing..." : "Refresh Feed"}
-            </button>
+        {/* People you may want to connect with (Carousel) */}
+        <div className="carousel-container">
+          <h2 className="carousel-title">People you may want to connect with 👥</h2>
+          <div className="carousel-items">
+            {suggestedUsers.length === 0 ? (
+              <div style={{ color: '#71839B', fontSize: '0.85rem' }}>No suggestions at the moment.</div>
+            ) : (
+              suggestedUsers.map(u => (
+                <div key={u._id} className="carousel-item" onClick={() => navigate(`/user/${u._id}`)}>
+                  <img src={u.avatar || "/placeholder_avatar.png"} alt={u.username} className="carousel-avatar" />
+                  <span className="carousel-name">{u.name || u.username}</span>
+                  <button className="carousel-btn" onClick={(e) => { e.stopPropagation(); navigate(`/user/${u._id}`); }}>View</button>
+                </div>
+              ))
+            )}
           </div>
+        </div>
 
-          {posts.length > 0 ? (
-            <div style={{ marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              {posts.map((post) => (
-                <PostCard 
-                  key={post._id} 
-                  post={formatPost(post)} 
-                  onDelete={(id) => setPosts(prev => prev.filter(p => p._id !== id))}
-                />
-              ))}
+        {/* New Post Box */}
+        <div className="post-box-container">
+          <div className="post-box-top">
+            <img src={user?.avatar || "/placeholder_avatar.png"} alt="My Avatar" className="post-box-avatar" />
+            <div className="post-box-input" onClick={() => navigate("/home")}>
+              What's on your mind?
             </div>
-          ) : (
-            <EmptyState 
-              title="Welcome! Your Alliance Feed is Empty"
-              message="Connect with creators and brands to see their latest posts here!"
-              actionText="Discover Creators"
-              onAction={() => navigate("/discover")}
-              icon="🤝"
-            />
-          )}
-        </>
-      )}
+          </div>
+          <div className="post-box-actions">
+            <button className="post-action-btn"><span>🖼️</span> Media</button>
+            <button className="post-action-btn"><span>🎥</span> Video</button>
+            <button className="post-action-btn"><span>📁</span> Project</button>
+            <button className="post-action-btn"><span>📅</span> Event</button>
+          </div>
+        </div>
+
+        {/* Feed Posts */}
+        {loading ? (
+          <div style={{ marginTop: '32px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            <PostSkeleton />
+            <PostSkeleton />
+            <PostSkeleton />
+          </div>
+        ) : (
+          <>
+            <div className="home-feed-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', marginTop: '10px' }}>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: '700', color: 'var(--text-main)', margin: 0 }}>Alliance Feed</h2>
+              <button 
+                onClick={loadPosts} 
+                disabled={loading}
+                style={{ 
+                  background: 'white', 
+                  border: '1px solid #e2e8f0', 
+                  padding: '6px 12px', 
+                  borderRadius: '20px', 
+                  fontSize: '12px', 
+                  fontWeight: '600', 
+                  color: '#64748b',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
+                  transition: 'all 0.2s'
+                }}
+              >
+                <svg style={{ width: '14px', height: '14px', transform: loading ? 'rotate(360deg)' : 'none', transition: 'transform 0.5s linear' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                {loading ? "Refreshing..." : "Refresh Feed"}
+              </button>
+            </div>
+
+            {posts.length > 0 ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                {posts.map((post) => (
+                  <PostCard 
+                    key={post._id} 
+                    post={formatPost(post)} 
+                    onDelete={(id) => setPosts(prev => prev.filter(p => p._id !== id))}
+                  />
+                ))}
+              </div>
+            ) : (
+              <EmptyState 
+                title="Welcome! Your Alliance Feed is Empty"
+                message="Connect with creators and brands to see their latest posts here!"
+                actionText="Discover Creators"
+                onAction={() => navigate("/discover")}
+                icon="🤝"
+              />
+            )}
+          </>
+        )}
+      </div>
+
+      {/* Right Sidebar Column */}
+      <div className="home-sidebar-col">
+        {/* Profile Strength Card */}
+        <div className="sidebar-card">
+          <h2 className="card-title">Profile Strength ⚡</h2>
+          <div className="strength-bar-container">
+            <div className="strength-bar" style={{ width: '75%' }}></div>
+          </div>
+          <span className="strength-text">75% Complete</span>
+        </div>
+
+        {/* Verified Creators Card */}
+        <div className="sidebar-card">
+          <h2 className="card-title">Verified Creators 💎</h2>
+          <div className="creator-list">
+            {verifiedCreators.length === 0 ? (
+              <div style={{ color: '#71839B', fontSize: '0.85rem' }}>No verified creators found.</div>
+            ) : (
+              verifiedCreators.map(c => (
+                <div key={c._id} className="creator-item">
+                  <img src={c.avatar || "/placeholder_avatar.png"} alt={c.username} className="creator-avatar" />
+                  <div className="creator-info">
+                    <span className="creator-name">{c.name || c.username}</span>
+                    <span className="creator-category">{c.category || "Creator"}</span>
+                  </div>
+                  <button className="creator-btn" onClick={() => navigate(`/user/${c._id}`)}>View</button>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
