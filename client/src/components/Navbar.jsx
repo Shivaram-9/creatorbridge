@@ -6,6 +6,7 @@ import Avatar from "./Avatar.jsx";
 import SearchDropdown from "./SearchDropdown.jsx";
 import { api } from "../services/api.js";
 import toast from "react-hot-toast";
+import { createPortal } from "react-dom";
 
 export default function Navbar({ 
   user, 
@@ -18,6 +19,13 @@ export default function Navbar({
   const [notifOpen, setNotifOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [socketStatus, setSocketStatus] = useState("connecting");
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
   const [searchResults, setSearchResults] = useState(null);
   const [searchLoading, setSearchLoading] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -169,6 +177,51 @@ export default function Navbar({
     setIsSearchOpen(false);
   }, [navigate]);
 
+  const renderDropdownContent = () => (
+    <>
+      <div className="p-4 border-b border-gray-100 font-bold text-gray-800">Notifications</div>
+      <div className="max-h-80 overflow-y-auto">
+        {(!notifications || notifications.length === 0) ? (
+          <div className="p-6 text-center text-gray-500 text-sm">No notifications</div>
+        ) : (
+          notifications.map(n => n && (
+            <div 
+              key={n._id} 
+              className={`p-4 border-b border-gray-50 hover:bg-gray-50 transition-colors ${!n.read ? 'bg-blue-50/50' : 'bg-white'}`}
+            >
+              <div className="flex gap-3" onClick={() => handleNotifClick(n)} style={{ cursor: n.type === 'align_request' ? 'default' : 'pointer' }}>
+                <Avatar user={n.sender} size="sm" />
+                <div style={{ flex: 1 }}>
+                  <p className="text-sm text-gray-800 m-0 leading-snug">
+                    <strong>{n.sender?.username || n.sender?.name || "User"}</strong> {n.message}
+                  </p>
+                  <span className="text-xs text-gray-400 mt-1 block">{formatTime(n.createdAt)}</span>
+                  
+                  {n.type === 'align_request' && n.requestId && (
+                    <div className="flex gap-2 mt-3" onClick={e => e.stopPropagation()}>
+                      <button 
+                        onClick={() => handleRequestAction(n.requestId._id || n.requestId, 'accept', n._id)}
+                        className="text-xs px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md transition-colors shadow-sm"
+                      >
+                        Accept
+                      </button>
+                      <button 
+                        onClick={() => handleRequestAction(n.requestId._id || n.requestId, 'decline', n._id)}
+                        className="text-xs px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-md transition-colors"
+                      >
+                        Decline
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+    </>
+  );
+
   return (
     <header className="navbar-fixed">
       <div className="navbar-inner">
@@ -221,48 +274,16 @@ export default function Navbar({
                   )}
                 </button>
                 {notifOpen && (
-                  <div className="fixed md:absolute top-16 md:top-12 left-1/2 md:left-auto md:right-0 -translate-x-1/2 md:translate-x-0 w-[95%] md:w-80 bg-white rounded-lg shadow-premium border border-gray-100 overflow-hidden fade-up" style={{ zIndex: 1000 }}>
-                    <div className="p-4 border-b border-gray-100 font-bold text-gray-800">Notifications</div>
-                    <div className="max-h-80 overflow-y-auto">
-                      {(!notifications || notifications.length === 0) ? (
-                        <div className="p-6 text-center text-gray-500 text-sm">No notifications</div>
-                      ) : (
-                        notifications.map(n => n && (
-                          <div 
-                            key={n._id} 
-                            className={`p-4 border-b border-gray-50 hover:bg-gray-50 transition-colors ${!n.read ? 'bg-blue-50/50' : 'bg-white'}`}
-                          >
-                            <div className="flex gap-3" onClick={() => handleNotifClick(n)} style={{ cursor: n.type === 'align_request' ? 'default' : 'pointer' }}>
-                              <Avatar user={n.sender} size="sm" />
-                              <div style={{ flex: 1 }}>
-                                <p className="text-sm text-gray-800 m-0 leading-snug">
-                                  <strong>{n.sender?.username || n.sender?.name || "User"}</strong> {n.message}
-                                </p>
-                                <span className="text-xs text-gray-500 mt-1 block">{n.createdAt ? formatTime(n.createdAt) : ""}</span>
-                                
-                                {n.type === "align_request" && !n.read && (
-                                  <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
-                                    <button 
-                                      style={{ flex: 1, padding: '6px', background: 'var(--primary)', color: 'white', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer', fontSize: '12px' }}
-                                      onClick={(e) => { e.stopPropagation(); handleRequestAction(n, 'accept'); }}
-                                    >
-                                      Accept
-                                    </button>
-                                    <button 
-                                      style={{ flex: 1, padding: '6px', background: '#efefef', color: 'var(--text-main)', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer', fontSize: '12px' }}
-                                      onClick={(e) => { e.stopPropagation(); handleRequestAction(n, 'reject'); }}
-                                    >
-                                      Decline
-                                    </button>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        ))
-                      )}
+                  isMobile ? createPortal(
+                    <div className="fixed top-16 left-1/2 -translate-x-1/2 w-[95%] max-w-sm bg-white rounded-lg shadow-premium border border-gray-100 overflow-hidden fade-up" style={{ zIndex: 10000 }}>
+                      {renderDropdownContent()}
+                    </div>,
+                    document.body
+                  ) : (
+                    <div className="absolute top-12 right-0 w-80 bg-white rounded-lg shadow-premium border border-gray-100 overflow-hidden fade-up">
+                      {renderDropdownContent()}
                     </div>
-                  </div>
+                  )
                 )}
               </div>
 
