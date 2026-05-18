@@ -221,7 +221,7 @@ export default function Navbar({
                   )}
                 </button>
                 {notifOpen && (
-                  <div className="absolute top-12 right-0 w-80 bg-white rounded-lg shadow-premium border border-gray-100 overflow-hidden fade-up">
+                  <div className="fixed md:absolute top-16 md:top-12 left-1/2 md:left-auto md:right-0 -translate-x-1/2 md:translate-x-0 w-[95%] md:w-80 bg-white rounded-lg shadow-premium border border-gray-100 overflow-hidden fade-up" style={{ zIndex: 1000 }}>
                     <div className="p-4 border-b border-gray-100 font-bold text-gray-800">Notifications</div>
                     <div className="max-h-80 overflow-y-auto">
                       {(!notifications || notifications.length === 0) ? (
