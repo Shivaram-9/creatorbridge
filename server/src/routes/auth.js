@@ -89,8 +89,8 @@ authRouter.post("/register", async (req, res) => {
 
     // Send verification email (non-blocking)
     const verifyUrl = `${process.env.CLIENT_URL}/verify-email?token=${hashedVerificationToken}`;
-    EmailService.send(email, "Verify your CreatorBridge account", "Verify Email", `
-      <p>Welcome to CreatorBridge!</p>
+    EmailService.send(email, "Verify your Pactogram account", "Verify Email", `
+      <p>Welcome to Pactogram!</p>
       <p>Please click the button below to verify your email address:</p>
       <a href="${verifyUrl}" class="btn">Verify Email</a>
     `).catch(err => console.error("Verification email error:", err.message));
@@ -249,7 +249,7 @@ authRouter.post("/send-otp", async (req, res) => {
     user.verificationCode = otp;
     await user.save();
 
-    await EmailService.send(email, "Your CreatorBridge Verification Code", "Verify Identity", `
+    await EmailService.send(email, "Your Pactogram Verification Code", "Verify Identity", `
       <p>Your verification code is: <strong style="font-size: 24px; color: #6366f1;">${otp}</strong></p>
       <p>This code will expire shortly. Do not share it with anyone.</p>
     `);

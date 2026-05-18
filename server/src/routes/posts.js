@@ -17,7 +17,7 @@ router.post("/", authMiddleware, postUpload.array("media", 10), async (req, res)
     const mediaFiles = req.files
       ? req.files.map(f => {
           let url = f.secure_url || f.path || f.url || "";
-          const isCloudinary = (f.filename && f.filename.includes("creatorbridge/")) || (url && url.includes("creatorbridge/"));
+          const isCloudinary = (f.filename && f.filename.includes("Pactogram/")) || (url && url.includes("Pactogram/"));
           
           if (isCloudinary && !url.startsWith("http")) {
             const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
@@ -28,7 +28,7 @@ router.post("/", authMiddleware, postUpload.array("media", 10), async (req, res)
           }
           
           // Ghost Path Rescue
-          if (url.includes("/uploads/posts/creatorbridge/")) {
+          if (url.includes("/uploads/posts/Pactogram/")) {
             const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
             const publicId = url.split("/uploads/posts/")[1];
             url = `https://res.cloudinary.com/${cloudName}/image/upload/${publicId}`;

@@ -179,272 +179,165 @@ export default function Profile() {
   };
 
   return (
-    <div className="profile-ig">
-      {/* Profile Header */}
-      <div className="profile-ig-header">
-        {/* Avatar - explicitly sized wrapper */}
-        <div className="profile-ig-avatar-wrap" style={{ width: '150px', height: '150px', minWidth: '150px', borderRadius: '50%', overflow: 'hidden' }}>
+    <div className="profile-container">
+      {/* Cover Image */}
+      <div className="cover-container">
+        <img src="/placeholder_cover.jpg" alt="Cover" className="cover-img" />
+        <div className="cover-actions">
+          <button className="cover-btn">
+            <span>📷</span> Edit cover
+          </button>
+        </div>
+      </div>
+
+      {/* Profile Header (Overlapping) */}
+      <div className="profile-header-wrap">
+        <div className="profile-avatar-wrap">
           <Avatar user={user} size="xl" />
         </div>
-
-        {/* Three Dots Menu for Owner */}
-        <div className="up-abs-actions" style={{ position: 'absolute', top: '20px', right: '20px' }}>
-          <button className="up-more-trigger" onClick={() => setShowMenu(!showMenu)}>•••</button>
+        
+        <div className="profile-actions">
+          <button className="action-btn secondary">Connect</button>
+          <button className="action-btn secondary">Message</button>
+          <button className="action-btn secondary" onClick={handleShare}>
+            {copyStatus ? "Copied!" : "Share Profile"}
+          </button>
+          <button className="action-btn secondary" onClick={() => setShowMenu(!showMenu)}>•••</button>
           {showMenu && (
-            <div className="dropdown-menu show slide-in" style={{ position: 'absolute', right: 0, top: '40px', background: 'white', border: '1px solid #eee', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', zIndex: 100 }}>
+            <div className="dropdown-menu show slide-in" style={{ position: 'absolute', right: 40, top: 'calc(100% + 10px)', background: 'white', border: '1px solid #eee', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', zIndex: 100 }}>
               <button className="dropdown-item" onClick={() => navigate("/profile/edit")}>Edit Profile</button>
-              <button className="dropdown-item" onClick={handleShare}>Share Profile</button>
               <button className="dropdown-item" onClick={() => navigate("/settings")}>Settings</button>
               <button className="dropdown-item danger" onClick={() => { localStorage.clear(); window.location.href = "/login"; }}>Logout</button>
             </div>
           )}
         </div>
+      </div>
 
-        {/* Info Column */}
-        <div className="profile-ig-info">
-          {/* Username + Actions */}
-          <div className="profile-ig-top">
-            <h2 className="profile-ig-username">
-              {user?.username}
+      {/* Profile Info & Content Grid */}
+      <div className="profile-content-grid">
+        {/* Main Info Column */}
+        <div className="main-info-col">
+          <div className="profile-name-section">
+            <h1 className="profile-display-name">
+              {user?.name || user?.username}
               {(user?.isVerified || user?.isPremium) && (
-                <VerifiedBadge size="sm" tier={user?.premiumTier} />
+                <span className="verified-badge-pill">Verified Creator</span>
               )}
-            </h2>
-            <div className="profile-ig-actions">
-              <button
-                className="profile-ig-btn profile-ig-btn--primary"
-                onClick={() => navigate("/profile/edit")}
-              >
-                Edit profile
-              </button>
-              <button
-                className="profile-ig-btn"
-                onClick={handleShare}
-              >
-                {copyStatus ? "Copied!" : "Share profile"}
-              </button>
-            </div>
+            </h1>
+            <span className="profile-title-text">{user?.category || "Content Creator"}</span>
           </div>
 
-          {/* Stats */}
-          <div className="profile-ig-stats-alliances">
-            <div className="profile-ig-stat">
-              <strong>{posts.length}</strong>
-              <span>posts</span>
-            </div>
-            <div
-              className="profile-ig-stat clickable"
-              onClick={() => navigate(`/user/${user._id}/alliances`)}
-            >
-              <strong>{fmtCount(new Set([...(user?.followers || []), ...(user?.following || [])]).size)}</strong>
-              <span>Alliances</span>
-            </div>
-          </div>
+          <p className="profile-bio-text">
+            {user?.bio || "No bio yet."}
+          </p>
 
-          {/* Bio */}
-          <div className="profile-ig-bio">
-            {user?.name && <strong className="profile-ig-name">{user.name}</strong>}
-            {user?.category && <span className="profile-ig-category">{user.category}</span>}
-            {user?.bio && <p className="profile-ig-bio-text">{user.bio}</p>}
+          <div className="profile-links">
             {user?.location && (
-              <span className="profile-ig-location">
-                <svg width="12" height="12" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-                </svg>
-                {user.location}
-              </span>
+              <span className="profile-link-item">📍 {user.location}</span>
             )}
             {user?.website && (
-              <a
-                className="profile-ig-website"
-                href={user.website}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {user.website.replace(/^https?:\/\//, "")}
+              <a href={user.website} target="_blank" rel="noopener noreferrer" className="profile-link-item">
+                🔗 {user.website}
               </a>
             )}
           </div>
-        </div>
-      </div>
 
-      {/* Mobile Bio (shows below avatar on mobile) */}
-      <div className="profile-ig-bio-mobile">
-        {user?.name && <strong className="profile-ig-name">{user.name}</strong>}
-        {user?.category && <span className="profile-ig-category">{user.category}</span>}
-        {user?.bio && <p className="profile-ig-bio-text">{user.bio}</p>}
-        {user?.location && (
-          <span className="profile-ig-location">📍 {user.location}</span>
-        )}
-        {user?.website && (
-          <a
-            className="profile-ig-website"
-            href={user.website}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {user.website.replace(/^https?:\/\//, "")}
-          </a>
-        )}
-      </div>
+          {/* Stats Cards */}
+          <div className="stats-cards-grid">
+            <div className="stat-card">
+              <span className="stat-value">{posts.length}</span>
+              <span className="stat-label">Posts</span>
+            </div>
+            <div className="stat-card clickable" onClick={() => navigate(`/user/${user._id}/alliances`)}>
+              <span className="stat-value">{fmtCount(new Set([...(user?.followers || []), ...(user?.following || [])]).size)}</span>
+              <span className="stat-label">Connections</span>
+            </div>
+            <div className="stat-card">
+              <span className="stat-value">120+</span>
+              <span className="stat-label">Profile Views</span>
+            </div>
+            <div className="stat-card">
+              <span className="stat-value">18</span>
+              <span className="stat-label">Profile Reach</span>
+            </div>
+          </div>
 
-      {/* Mobile Action Buttons */}
-      <div className="profile-ig-actions-mobile">
-        <button
-          className="profile-ig-btn profile-ig-btn--mobile"
-          onClick={() => navigate("/profile/edit")}
-        >
-          Edit profile
-        </button>
-        <button
-          className="profile-ig-btn profile-ig-btn--mobile"
-          onClick={handleShare}
-        >
-          {copyStatus ? "Copied!" : "Share profile"}
-        </button>
-      </div>
-
-      {/* Tabs */}
-      <div className="profile-ig-tabs">
-        <button
-          className={`profile-ig-tab ${activeTab === "posts" ? "active" : ""}`}
-          onClick={() => setActiveTab("posts")}
-        >
-          <svg width="12" height="12" fill="currentColor" viewBox="0 0 24 24">
-            <rect x="3" y="3" width="7" height="7" rx="1" />
-            <rect x="14" y="3" width="7" height="7" rx="1" />
-            <rect x="3" y="14" width="7" height="7" rx="1" />
-            <rect x="14" y="14" width="7" height="7" rx="1" />
-          </svg>
-          <span>POSTS</span>
-        </button>
-        <button
-          className={`profile-ig-tab ${activeTab === "portfolio" ? "active" : ""}`}
-          onClick={() => setActiveTab("portfolio")}
-        >
-          <svg width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
-            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
-          </svg>
-          <span>PORTFOLIO</span>
-        </button>
-        <button
-          className={`profile-ig-tab ${activeTab === "tagged" ? "active" : ""}`}
-          onClick={() => setActiveTab("tagged")}
-        >
-          <svg width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-            <path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z" />
-            <line x1="7" y1="7" x2="7.01" y2="7" />
-          </svg>
-          <span>TAGGED</span>
-        </button>
-        <button
-          className={`profile-ig-tab ${activeTab === "collabs" ? "active" : ""}`}
-          onClick={() => setActiveTab("collabs")}
-        >
-          <svg width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-            <circle cx="9" cy="7" r="4" />
-            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-          </svg>
-          <span>COLLABS</span>
-        </button>
-      </div>
-
-      {/* Content Grid */}
-      <div className="profile-ig-grid-wrap">
-        {activeTab === "posts" && (
-          <>
-            {posts.length === 0 ? (
-              <div className="profile-ig-empty">
-                <div className="profile-ig-empty-icon">
-                  <svg width="40" height="40" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                    <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z" />
-                    <circle cx="12" cy="13" r="4" />
-                  </svg>
-                </div>
-                <h3>Share Photos</h3>
-                <p>When you share photos, they'll appear on your profile.</p>
-                <button onClick={() => navigate("/home")} className="profile-ig-share-first">
-                  Share your first photo
-                </button>
-              </div>
-            ) : (
-              <div className="profile-ig-grid">
-                {posts.map(p => {
-                  const imgSrc = getPostImage(p);
-                  return (
-                    <div
-                      key={p._id}
-                      className="profile-ig-grid-item"
-                      onClick={() => setLightboxPost(p)}
-                    >
-                      {imgSrc ? (
-                        <img
-                          src={imgSrc}
-                          alt=""
-                          className="profile-ig-grid-img"
-                          onError={e => { e.target.style.display = "none"; }}
-                        />
+          {/* Tabs */}
+          <div className="profile-tabs">
+            <div className={`tab-item ${activeTab === 'posts' ? 'active' : ''}`} onClick={() => setActiveTab('posts')}>Posts</div>
+            <div className={`tab-item ${activeTab === 'portfolio' ? 'active' : ''}`} onClick={() => setActiveTab('portfolio')}>Portfolio</div>
+            <div className={`tab-item ${activeTab === 'tagged' ? 'active' : ''}`} onClick={() => setActiveTab('tagged')}>Tagged</div>
+            <div className={`tab-item ${activeTab === 'about' ? 'active' : ''}`} onClick={() => setActiveTab('about')}>About</div>
+          </div>
+          {/* Tab Content */}
+          <div className="profile-tab-content">
+            {activeTab === "posts" && (
+              <div className="profile-ig-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '15px', marginTop: '20px' }}>
+                {posts.length === 0 ? (
+                  <div className="profile-ig-no-posts" style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '40px' }}>
+                    <div className="no-posts-box">
+                      <span style={{ fontSize: '40px' }}>📷</span>
+                      <h3>No Posts Yet</h3>
+                    </div>
+                  </div>
+                ) : (
+                  posts.map(post => (
+                    <div key={post._id} className="profile-ig-grid-item" onClick={() => setLightboxPost(post)} style={{ position: 'relative', cursor: 'pointer', borderRadius: '12px', overflow: 'hidden' }}>
+                      {getPostImage(post) ? (
+                        <img src={getPostImage(post)} alt="" className="profile-ig-grid-img" style={{ width: '100%', height: '200px', objectFit: 'cover' }} />
                       ) : (
-                        <div className="profile-ig-grid-text">
-                          {p.content?.slice(0, 80)}
-                        </div>
+                        <div className="profile-ig-grid-text" style={{ padding: '20px', background: '#fff', border: '1px solid #eee', height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{post.content}</div>
                       )}
-                      <div className="profile-ig-grid-overlay">
-                        <span>❤️ {p.likes?.length || 0}</span>
-                        <span>💬 {p.comments?.length || 0}</span>
+                      <div className="profile-ig-grid-overlay" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.3)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '20px', opacity: 0, transition: 'opacity 0.2s ease' }} onMouseEnter={e => e.currentTarget.style.opacity = 1} onMouseLeave={e => e.currentTarget.style.opacity = 0}>
+                        <span>❤️ {post.likes?.length || 0}</span>
+                        <span>💬 {post.comments?.length || 0}</span>
                       </div>
                     </div>
-                  );
-                })}
+                  ))
+                )}
               </div>
             )}
-          </>
-        )}
-
-        {activeTab === "portfolio" && (
-          <PortfolioGrid userId={user?._id} />
-        )}
-
-        {activeTab === "tagged" && (
-          <div className="profile-ig-empty">
-            <div className="profile-ig-empty-icon">
-              <svg width="40" height="40" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                <path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z" />
-                <line x1="7" y1="7" x2="7.01" y2="7" />
-              </svg>
-            </div>
-            <h3>Photos of you</h3>
-            <p>When people tag you in photos, they'll appear here.</p>
+            {activeTab === "portfolio" && <PortfolioGrid userId={user._id} />}
+            {activeTab === "tagged" && <div style={{ textAlign: 'center', padding: '40px', color: '#71839B' }}>No tagged posts yet.</div>}
+            {activeTab === "about" && <div style={{ textAlign: 'center', padding: '40px', color: '#71839B' }}>{user?.bio || "No bio yet."}</div>}
           </div>
-        )}
+        </div>
 
-        {activeTab === "collabs" && (
-          collabs.length === 0 ? (
-            <div className="profile-ig-empty">
-              <div className="profile-ig-empty-icon">
-                <svg width="40" height="40" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                  <circle cx="9" cy="7" r="4" />
-                  <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                  <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                </svg>
+        {/* Identity Overview Sidebar */}
+        <div className="identity-overview-col">
+          <div className="identity-overview-card">
+            <h2 className="overview-title">Identity Overview ℹ️</h2>
+            <div className="overview-list">
+              <div className="overview-item">
+                <span className="overview-key">Professional Since</span>
+                <span className="overview-val">2020</span>
               </div>
-              <h3>No Collabs Yet</h3>
-              <p>Your collaborations will appear here.</p>
+              <div className="overview-item">
+                <span className="overview-key">Industry</span>
+                <span className="overview-val">{user?.category || "Not Specified"}</span>
+              </div>
+              <div className="overview-item">
+                <span className="overview-key">Creator Type</span>
+                <span className="overview-val">Content Creator</span>
+              </div>
+              <div className="overview-item">
+                <span className="overview-key">Verified Identity</span>
+                <span className="overview-val">{user?.isVerified ? "Verified" : "Not Verified"}</span>
+              </div>
+              <div className="overview-item">
+                <span className="overview-key">Network Reach</span>
+                <span className="overview-val">12.6K+</span>
+              </div>
             </div>
-          ) : (
-            <div className="profile-ig-grid">
-              {collabs.map(c => (
-                <div key={c._id} className="profile-ig-grid-item">
-                  <div className="profile-ig-grid-text">{c.title || c.description}</div>
-                </div>
-              ))}
-            </div>
-          )
-        )}
+
+            {(!user?.isVerified && !user?.isPremium) && (
+              <div className="get-verified-card">
+                <p className="get-verified-text">Build trust with brands. Get verified to unlock more opportunities.</p>
+                <button className="get-verified-btn" onClick={() => navigate("/apply-verification")}>Get Verified</button>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Post Lightbox */}

@@ -56,7 +56,7 @@ export default function RoleSelect() {
       <div className="role-select-page">
         <div className="role-select-header">
           <h1 className="page-title">Who are you?</h1>
-          <p className="subtitle">Choose your role to get the best experience on CreatorBridge.</p>
+          <p className="subtitle">Choose your role to get the best experience on Pactogram.</p>
         </div>
 
         <div className="role-cards">
@@ -99,19 +99,19 @@ export default function RoleSelect() {
                 <button className="terms-close" onClick={() => setShowTerms(false)}>✕</button>
               </div>
               <div className="terms-modal-body">
-                <p>Welcome to CreatorBridge! By clicking "I Agree", you acknowledge that you have read and agree to our Terms of Use and Privacy Policy.</p>
+                <p>Welcome to Pactogram! By clicking "I Agree", you acknowledge that you have read and agree to our Terms of Use and Privacy Policy.</p>
                 
                 <h3>1. User Agreement</h3>
-                <p>You agree to use CreatorBridge responsibly and maintain the integrity of the platform. All brand-creator alliances must be conducted with professional standards.</p>
+                <p>You agree to use Pactogram responsibly and maintain the integrity of the platform. All brand-creator alliances must be conducted with professional standards.</p>
                 
                 <h3>2. Content & Conduct</h3>
-                <p>You are responsible for the content you post. CreatorBridge maintains a zero-tolerance policy for harassment, hate speech, or fraudulent behavior.</p>
+                <p>You are responsible for the content you post. Pactogram maintains a zero-tolerance policy for harassment, hate speech, or fraudulent behavior.</p>
                 
                 <h3>3. Privacy</h3>
                 <p>Your data is protected under our privacy protocols. We will never share your personal data with third parties without your explicit consent.</p>
                 
                 <h3>4. Alliances</h3>
-                <p>CreatorBridge facilitates connections but is not responsible for the contractual details of external brand-creator agreements unless specified.</p>
+                <p>Pactogram facilitates connections but is not responsible for the contractual details of external brand-creator agreements unless specified.</p>
               </div>
               <div className="terms-modal-footer">
                 <button 

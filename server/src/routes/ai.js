@@ -16,7 +16,7 @@ const AI_RESPONSES = {
   captions: [
     "Sparkling with creativity! ✨ #CreatorLife #Auraon",
     "Behind every great post is a lot of coffee and even more passion. ☕️🚀",
-    "Turning dreams into content, one day at a time. 🌟 #CreatorBridge"
+    "Turning dreams into content, one day at a time. 🌟 #Pactogram"
   ],
   campaigns: [
     "Based on your profile, you would be a great fit for tech lifestyle brands.",
@@ -40,7 +40,7 @@ aiRouter.post("/chat", async (req, res) => {
     } else if (msg.includes("campaign") || msg.includes("brand")) {
       response = AI_RESPONSES.campaigns[Math.floor(Math.random() * AI_RESPONSES.campaigns.length)];
     } else {
-      response = `Hello ${user.name}! I am your CreatorBridge AI assistant. I can help you with captions, growth strategies, and campaign recommendations. What's on your mind?`;
+      response = `Hello ${user.name}! I am your Pactogram AI assistant. I can help you with captions, growth strategies, and campaign recommendations. What's on your mind?`;
     }
 
     res.json({ response });

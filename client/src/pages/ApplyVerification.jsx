@@ -90,7 +90,7 @@ export default function ApplyVerification() {
               </div>
               <p className="status-text">
                 {request.status === "pending" && "Our admin team is reviewing your application. This usually takes 2-3 business days."}
-                {request.status === "approved" && "Congratulations! You are now a verified CreatorBridge partner."}
+                {request.status === "approved" && "Congratulations! You are now a verified Pactogram partner."}
                 {request.status === "rejected" && `Reason: ${request.adminNotes || "Not specified."}`}
               </p>
               {request.status === "rejected" && (

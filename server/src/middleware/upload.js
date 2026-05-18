@@ -47,7 +47,7 @@ function cloudinaryStorage(folder, resourceType = "auto") {
   return new CloudinaryStorage({
     cloudinary,
     params: {
-      folder: `creatorbridge/${folder}`,
+      folder: `Pactogram/${folder}`,
       resource_type: resourceType,
       allowed_formats: ["jpg", "png", "webp", "gif", "mp4", "mov"],
     },

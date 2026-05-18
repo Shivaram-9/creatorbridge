@@ -1,6 +1,6 @@
 {
-  "appId": "com.creatorbridge.app",
-  "appName": "CreatorBridge",
+  "appId": "com.Pactogram.app",
+  "appName": "Pactogram",
   "webDir": "client/dist",
   "server": {
     "cleartext": true,

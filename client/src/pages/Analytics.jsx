@@ -62,7 +62,7 @@ export default function Analytics() {
     <div className="analytics-dashboard slide-up-fade">
       <header className="page-header-block">
         <h1 className="page-title-main">Performance Intelligence</h1>
-        <p className="page-subtitle-main">Real-time tracking powered by CreatorBridge AI Discovery.</p>
+        <p className="page-subtitle-main">Real-time tracking powered by Pactogram AI Discovery.</p>
       </header>
 
 

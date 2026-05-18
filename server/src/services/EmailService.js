@@ -10,7 +10,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const APP_NAME = "CreatorBridge";
+const APP_NAME = "Pactogram";
 const PRIMARY_COLOR = "#6366f1";
 
 const getTemplate = (title, content) => `

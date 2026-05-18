@@ -52,7 +52,7 @@ export default function ReportModal({ targetType, targetId, onClose }) {
           <div className="report-success">
             <span className="icon">✅</span>
             <h3>Thank you for reporting</h3>
-            <p>We use these reports to keep CreatorBridge safe. Our moderation team will review this shortly.</p>
+            <p>We use these reports to keep Pactogram safe. Our moderation team will review this shortly.</p>
             <button className="btn btn-primary" onClick={onClose}>Close</button>
           </div>
         ) : (

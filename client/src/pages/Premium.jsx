@@ -58,7 +58,7 @@ export default function Premium() {
         key: "rzp_test_placeholder", // This should ideally come from backend or config
         amount: order.amount,
         currency: order.currency,
-        name: "CreatorBridge",
+        name: "Pactogram",
         description: `${checkoutTier.name} Subscription`,
         order_id: order.id,
         handler: async (response) => {
@@ -108,7 +108,7 @@ export default function Premium() {
           <h1 className="success-title">Payment Successful!</h1>
           <p className="success-text">
             Congratulations! You are now a <strong>{user.premiumTier.toUpperCase()}</strong> member.
-            Your premium perks are active globally across CreatorBridge.
+            Your premium perks are active globally across Pactogram.
           </p>
           <div className="success-badge-preview">
             <span style={{ color: TIERS.find(t => t.id === user.premiumTier)?.color }}>
@@ -176,7 +176,7 @@ export default function Premium() {
     <div className="premium-page slide-up-fade">
       <header className="page-header-block">
         <h1 className="page-title-main">Elevate Your Presence</h1>
-        <p className="page-subtitle-main">Join the elite tier of creators and brands on CreatorBridge.</p>
+        <p className="page-subtitle-main">Join the elite tier of creators and brands on Pactogram.</p>
       </header>
 
 

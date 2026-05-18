@@ -179,7 +179,7 @@ premiumRouter.get("/invoice/:id", async (req, res) => {
     // In a real app, generate PDF here. For now, return HTML/JSON.
     res.send(`
       <div style="font-family: sans-serif; padding: 40px; border: 1px solid #eee; max-width: 800px; margin: auto;">
-        <h1>CreatorBridge Invoice</h1>
+        <h1>Pactogram Invoice</h1>
         <p>Transaction ID: ${tx.transactionId}</p>
         <p>Date: ${tx.createdAt.toLocaleDateString()}</p>
         <hr/>

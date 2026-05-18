@@ -190,7 +190,7 @@ messagesRouter.post("/media", chatUpload.single("media"), async (req, res) => {
         const uploadResult = await new Promise((resolve, reject) => {
           const stream = cloudinary.uploader.upload_stream(
             { 
-              folder: "creatorbridge/chat",
+              folder: "Pactogram/chat",
               resource_type: "auto"
             },
             (error, result) => {

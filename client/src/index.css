@@ -51,6 +51,17 @@ body {
   min-height: 100vh;
 }
 
+@media (min-width: 768px) {
+  .app-shell {
+    flex-direction: row;
+  }
+  
+  .main-content-wrapper {
+    margin-left: 250px;
+    width: calc(100% - 250px);
+  }
+}
+
 .main-viewport {
   flex: 1;
   margin-top: var(--header-height);
@@ -95,6 +106,12 @@ body {
   display: flex;
   justify-content: center;
   transition: all 0.3s ease;
+}
+
+@media (min-width: 768px) {
+  .navbar-fixed {
+    left: 250px;
+  }
 }
 
 .navbar-inner {
@@ -181,6 +198,12 @@ body {
   display: flex;
   justify-content: center;
   padding-bottom: env(safe-area-inset-bottom);
+}
+
+@media (min-width: 768px) {
+  .bottom-nav-fixed {
+    display: none;
+  }
 }
 
 

@@ -59,7 +59,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.get("/api/health", (_, res) => {
   // Health check - triggered at 2026-05-11
-  res.json({ ok: true, name: "CreatorBridge API", version: "1.0.1" });
+  res.json({ ok: true, name: "Pactogram API", version: "1.0.1" });
 });
 
 // 3. Auth Routes (Bypassing limiter for now)
@@ -201,7 +201,7 @@ mongoose
   .then(() => {
     console.log("MongoDB connected 🔥");
     server.listen(PORT, "0.0.0.0", () => {
-      console.log(`CreatorBridge API listening on http://localhost:${PORT}`);
+      console.log(`Pactogram API listening on http://localhost:${PORT}`);
     });
   })
   .catch((err) => {

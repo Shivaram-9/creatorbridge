@@ -1,6 +1,6 @@
 import { BASE_URL } from "../config/api.js";
 
-const TOKEN_KEY = "creatorbridge_token";
+const TOKEN_KEY = "Pactogram_token";
 
 /* ── Auth-failure callback (set by AuthContext) ── */
 let _onAuthFailure = null;

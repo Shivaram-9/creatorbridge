@@ -6,7 +6,7 @@ import "./AIAssistant.css";
 export default function AIAssistant() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
-    { role: "assistant", content: "Hello! I am your CreatorBridge AI. How can I help you today? I can suggest captions, campaign strategies, or growth tips." }
+    { role: "assistant", content: "Hello! I am your Pactogram AI. How can I help you today? I can suggest captions, campaign strategies, or growth tips." }
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);

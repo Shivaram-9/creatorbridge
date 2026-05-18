@@ -242,7 +242,7 @@ export default function Chat({ standalone = true }) {
             if (!url) return null;
             if (url.startsWith("http")) {
               // Rescue existing broken onrender paths
-              if (url.includes("onrender.com/uploads/chat/creatorbridge/")) {
+              if (url.includes("onrender.com/uploads/chat/Pactogram/")) {
                 const publicId = url.split("uploads/chat/")[1];
                 // Try to discover cloud name from user avatar or partner avatar
                 const discoveryUrl = user?.avatar || partner?.avatar || "";
@@ -258,7 +258,7 @@ export default function Chat({ standalone = true }) {
             const cleanPath = url.startsWith("/") ? url.substring(1) : url;
             
             // Check for orphaned Cloudinary paths in local field
-            if (cleanPath.startsWith("creatorbridge/")) {
+            if (cleanPath.startsWith("Pactogram/")) {
                 const discoveryUrl = user?.avatar || partner?.avatar || "";
                 if (discoveryUrl.includes("res.cloudinary.com/")) {
                   const cloudName = discoveryUrl.split("res.cloudinary.com/")[1].split("/")[0];

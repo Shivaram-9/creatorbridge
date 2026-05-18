@@ -12,7 +12,7 @@ const transporter = nodemailer.createTransport({
 
 export const sendEmail = async ({ to, subject, html }) => {
   const mailOptions = {
-    from: `"CreatorBridge" <${process.env.SMTP_USER}>`,
+    from: `"Pactogram" <${process.env.SMTP_USER}>`,
     to,
     subject,
     html,

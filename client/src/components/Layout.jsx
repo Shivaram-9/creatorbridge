@@ -3,6 +3,7 @@ import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 import Navbar from "./Navbar.jsx";
 import BottomNav from "./BottomNav.jsx";
+import Sidebar from "./Sidebar.jsx";
 import AIAssistant from "./AIAssistant.jsx";
 import { api } from "../services/api.js";
 import { connectSocket } from "../services/socket.js";
@@ -164,31 +165,35 @@ export default function Layout() {
 
   return (
     <div className="app-shell">
-      <Navbar 
-        user={user}
-        unreadCount={unreadCount}
-        msgUnreadCount={msgUnreadTotal}
-        notifications={notifications}
-        onMarkRead={handleMarkRead}
-        logout={logout}
-      />
+      <Sidebar user={user} msgUnreadCount={msgUnreadTotal} logout={logout} />
+      
+      <div className="main-content-wrapper" style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+        <Navbar 
+          user={user}
+          unreadCount={unreadCount}
+          msgUnreadCount={msgUnreadTotal}
+          notifications={notifications}
+          onMarkRead={handleMarkRead}
+          logout={logout}
+        />
 
-      <main className={`main-viewport ${isMessagesPage ? 'messages-view-active' : ''}`}>
-        <div
-          className={
-            shouldBeCentered
-              ? "feed-layout-centered"
-              : isMessagesPage
-              ? "messages-layout-wrap"
-              : "content-container-pro"
-          }
-        >
-          <Outlet />
-        </div>
-      </main>
+        <main className={`main-viewport ${isMessagesPage ? 'messages-view-active' : ''}`}>
+          <div
+            className={
+              shouldBeCentered
+                ? "feed-layout-centered"
+                : isMessagesPage
+                ? "messages-layout-wrap"
+                : "content-container-pro"
+            }
+          >
+            <Outlet />
+          </div>
+        </main>
 
-      {(!isChatActive) && <BottomNav msgUnreadCount={msgUnreadTotal} />}
-      {!isMessagesPage && <AIAssistant />}
+        {(!isChatActive) && <BottomNav msgUnreadCount={msgUnreadTotal} />}
+        {!isMessagesPage && <AIAssistant />}
+      </div>
     </div>
   );
 }

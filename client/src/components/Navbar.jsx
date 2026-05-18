@@ -227,7 +227,7 @@ export default function Navbar({
       <div className="navbar-inner">
         <div style={{ flex: '1 0 0' }}>
           <Link to="/home" className="logo-main-text">
-            CreatorBridge
+            Pactogram
           </Link>
         </div>
 

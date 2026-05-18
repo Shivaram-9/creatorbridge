@@ -18,7 +18,7 @@ export default function Avatar({ user, size = "md", className = "", showOnline =
     if (email) {
       return email.slice(0, 2).toUpperCase();
     }
-    return "CB"; // CreatorBridge fallback
+    return "CB"; // Pactogram fallback
   };
 
   const getFullUrl = (path) => {
