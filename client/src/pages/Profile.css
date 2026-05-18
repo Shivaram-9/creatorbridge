@@ -323,4 +323,8 @@
     padding: 0 20px;
     justify-content: center;
   }
+  
+  .stats-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }

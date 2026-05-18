@@ -184,7 +184,7 @@ export default function Navbar({
         {(!notifications || notifications.length === 0) ? (
           <div className="p-6 text-center text-gray-500 text-sm">No notifications</div>
         ) : (
-          notifications.map(n => n && (
+          notifications.filter(n => n && n.message && !n.message.includes("1000 views")).map(n => n && (
             <div 
               key={n._id} 
               className={`p-4 border-b border-gray-50 hover:bg-gray-50 transition-colors ${!n.read ? 'bg-blue-50/50' : 'bg-white'}`}
@@ -275,7 +275,23 @@ export default function Navbar({
                 </button>
                 {notifOpen && (
                   isMobile ? createPortal(
-                    <div className="fixed top-16 left-1/2 -translate-x-1/2 w-[95%] max-w-sm bg-white rounded-lg shadow-premium border border-gray-100 overflow-hidden fade-up" style={{ zIndex: 10000 }}>
+                    <div 
+                      className="fade-up" 
+                      style={{ 
+                        position: 'fixed',
+                        top: '70px',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        width: '92%',
+                        maxWidth: '400px',
+                        backgroundColor: '#ffffff',
+                        borderRadius: '12px',
+                        boxShadow: '0 8px 30px rgba(0,0,0,0.15)',
+                        border: '1px solid #f1f5f9',
+                        overflow: 'hidden',
+                        zIndex: 10000 
+                      }}
+                    >
                       {renderDropdownContent()}
                     </div>,
                     document.body

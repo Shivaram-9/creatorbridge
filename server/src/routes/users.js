@@ -87,6 +87,19 @@ usersRouter.post("/me/avatar", profileUpload.single("avatar"), async (req, res) 
   }
 });
 
+usersRouter.post("/me/cover", profileUpload.single("cover"), async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ error: "Cover file is required" });
+    const coverPath = req.file.path || `/uploads/covers/${req.file.filename}`;
+    const user = await User.findByIdAndUpdate(req.userId, { $set: { cover: coverPath } }, { new: true });
+    if (!user) return res.status(404).json({ error: "User not found" });
+    res.json(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to upload cover" });
+  }
+});
+
 usersRouter.patch("/me", async (req, res) => {
   try {
     const { name, username, category, bio, location, role, avatar, website, instagram, youtube } = req.body;

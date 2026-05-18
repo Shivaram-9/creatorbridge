@@ -21,6 +21,7 @@ const userSchema = new mongoose.Schema(
     bio: { type: String, default: "" },
     location: { type: String, default: "" },
     avatar: { type: String, default: "" },
+    cover: { type: String, default: "" },
     instagram: { type: String, default: "" },
     youtube: { type: String, default: "" },
     website: { type: String, default: "" },

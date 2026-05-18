@@ -170,6 +170,7 @@ export const api = {
     me: () => request("/users/me"),
     updateMe: (body) => request("/users/me", { method: "PATCH", body }),
     updateAvatar: (formData) => request("/users/me/avatar", { method: "POST", body: formData }),
+    updateCover: (formData) => request("/users/me/cover", { method: "POST", body: formData }),
     list: (category) => {
       const q = category ? `?category=${encodeURIComponent(category)}` : "";
       return request(`/users${q}`);

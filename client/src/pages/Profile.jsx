@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../services/api.js";
 import { BASE_URL } from "../config/api.js";
@@ -31,6 +31,7 @@ export default function Profile() {
   const [showMenu, setShowMenu] = useState(false);
   const [lightboxPost, setLightboxPost] = useState(null);
   const [showShareModal, setShowShareModal] = useState(false);
+  const coverInputRef = useRef(null);
 
   const loadData = useCallback(async () => {
     if (!user?._id) return;
@@ -178,15 +179,44 @@ export default function Profile() {
     return null;
   };
 
+  const handleCoverChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("cover", file);
+
+    try {
+      toast.loading("Uploading cover...", { id: "cover-upload" });
+      const res = await api.users.updateCover(formData);
+      if (res?.error) {
+        toast.error(res.error, { id: "cover-upload" });
+      } else {
+        toast.success("Cover updated!", { id: "cover-upload" });
+        setUser(res);
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to upload cover", { id: "cover-upload" });
+    }
+  };
+
   return (
     <div className="profile-container">
       {/* Cover Image */}
       <div className="cover-container">
-        <img src="/placeholder_cover.jpg" alt="Cover" className="cover-img" />
+        <img src={user?.cover ? (user.cover.startsWith("http") ? user.cover : `${BASE_URL}${user.cover}`) : "/placeholder_cover.jpg"} alt="Cover" className="cover-img" />
         <div className="cover-actions">
-          <button className="cover-btn">
+          <button className="cover-btn" onClick={() => coverInputRef.current.click()}>
             <span>📷</span> Edit cover
           </button>
+          <input
+            type="file"
+            ref={coverInputRef}
+            hidden
+            accept="image/*"
+            onChange={handleCoverChange}
+          />
         </div>
       </div>
 
@@ -253,12 +283,12 @@ export default function Profile() {
               <span className="stat-label">Connections</span>
             </div>
             <div className="stat-card">
-              <span className="stat-value">120+</span>
+              <span className="stat-value">{fmtCount(user?.profileViews || 0)}</span>
               <span className="stat-label">Profile Views</span>
             </div>
             <div className="stat-card">
-              <span className="stat-value">18</span>
-              <span className="stat-label">Profile Reach</span>
+              <span className="stat-value">{fmtCount(user?.followers?.length || 0)}</span>
+              <span className="stat-label">Followers</span>
             </div>
           </div>
 
