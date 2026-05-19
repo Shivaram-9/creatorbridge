@@ -175,7 +175,7 @@ export default function Home() {
       {/* Right Sidebar Column */}
       <div className="home-sidebar-col">
         {/* Profile Strength Card */}
-        <div className="sidebar-card">
+        <div className="sidebar-card" onClick={() => toast.success("Pending info complete")} style={{ cursor: "pointer" }}>
           <h2 className="card-title">Profile Strength ⚡</h2>
           <div className="strength-bar-container">
             <div className="strength-bar" style={{ width: '75%' }}></div>

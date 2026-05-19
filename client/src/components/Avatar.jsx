@@ -6,7 +6,7 @@ import { BASE_URL } from "../config/api.js";
  * @param {string} size - Size of the avatar (xs, sm, md, lg, xl).
  * @param {string} className - Additional CSS classes.
  */
-export default function Avatar({ user, size = "md", className = "", showOnline = false }) {
+export default function Avatar({ user, size = "md", className = "", showOnline = false, ...props }) {
   const getInitials = (name, email) => {
     if (name && name.trim()) {
       const parts = name.trim().split(/\s+/);
@@ -62,7 +62,11 @@ export default function Avatar({ user, size = "md", className = "", showOnline =
   };
 
   return (
-    <div className={`avatar-container ${selectedSizeClass} ${avatarUrl ? '' : 'avatar-initials'} ${className}`}>
+    <div 
+      className={`avatar-container ${selectedSizeClass} ${avatarUrl ? '' : 'avatar-initials'} ${className}`}
+      onClick={props.onClick}
+      style={{ cursor: props.onClick ? "pointer" : "default", ...props.style }}
+    >
       {renderContent()}
       {showOnline && user?.isOnline && <span className="online-dot" title="Online" />}
     </div>

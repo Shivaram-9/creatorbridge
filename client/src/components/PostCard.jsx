@@ -229,7 +229,7 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
             )}
           </p>
         )}
-        <div onClick={() => setShowLightbox(true)}>
+        <div onClick={() => setShowLightbox(true)} style={{ cursor: "pointer" }}>
           <MediaGallery media={mediaList} />
         </div>
       </div>
