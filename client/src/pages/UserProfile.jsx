@@ -381,7 +381,7 @@ export default function UserProfile() {
       <div className="collab-section">
         <div className="collab-header">
           <h3>Open to Collaborate On</h3>
-          <a href="#">View all opportunities →</a>
+          <a href="#" onClick={(e) => { e.preventDefault(); navigate('/collaborations'); }}>View all opportunities →</a>
         </div>
         <div className="collab-tags">
           <span className="collab-tag blue">🚀 Brand Campaigns</span>
