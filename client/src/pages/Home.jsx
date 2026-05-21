@@ -113,12 +113,19 @@ export default function Home() {
     return true;
   });
 
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good morning";
+    if (hour < 17) return "Good afternoon";
+    return "Good evening";
+  };
+
   return (
     <div className="home-grid">
       {/* Main Feed Column */}
       <div className="feed-col">
         <div className="home-header-greeting">
-          <h1>Good morning, {user?.name?.split(' ')[0] || user?.username || 'Creator'}! 👋</h1>
+          <h1>{getGreeting()}, {user?.name?.split(' ')[0] || user?.username || 'Creator'}! 👋</h1>
           <p>Explore, connect and grow your creator network.</p>
         </div>
 
