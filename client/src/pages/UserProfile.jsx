@@ -288,7 +288,17 @@ export default function UserProfile() {
       <Link to="/discover" className="up-back">← Discover</Link>
 
       <div className="up-hero">
-        <div className="up-hero__gradient" aria-hidden="true" />
+        <div 
+          className="up-hero__gradient" 
+          aria-hidden="true" 
+          style={profile?.cover ? { 
+            backgroundImage: `url(${profile.cover.startsWith("http") ? profile.cover : `${BASE_URL}${profile.cover}`})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            opacity: 1,
+            height: '200px'
+          } : {}}
+        />
         <div className="up-hero__content">
           <div className="up-avatar">
             <Avatar user={profile} size="xl" className="up-avatar-main" />
