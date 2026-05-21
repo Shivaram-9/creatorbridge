@@ -274,13 +274,13 @@ export default function EditProfile() {
           </div>
 
           <div className="ep-field">
-            <label className="ep-label">Social Media</label>
+            <label className="ep-label">LinkedIn</label>
             <input
               className="ep-input"
               name="socialMediaLink"
               value={form.socialMediaLink}
               onChange={handleChange}
-              placeholder="https://instagram.com/yourhandle"
+              placeholder="https://linkedin.com/in/yourhandle"
               type="text"
             />
           </div>

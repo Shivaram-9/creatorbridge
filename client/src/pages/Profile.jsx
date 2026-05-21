@@ -240,7 +240,7 @@ export default function Profile() {
               {user?.socialMediaLink && (
                 <div style={{ marginTop: '8px' }}>
                   <a href={user.socialMediaLink.startsWith('http') ? user.socialMediaLink : `https://${user.socialMediaLink}`} target="_blank" rel="noopener noreferrer" className="profile-link-item">
-                    📱 Social Media
+                    💼 LinkedIn
                   </a>
                 </div>
               )}
