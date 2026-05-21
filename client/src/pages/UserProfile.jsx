@@ -273,10 +273,9 @@ export default function UserProfile() {
           <div className="profile-info-section">
             <div className="profile-avatar-wrap">
               <Avatar user={profile} size="xl" style={{ width: '100%', height: '100%', border: 'none' }} />
-              {profile?.role && <span className={`role-badge-dot ${profile.role === 'brand' ? 'brand' : ''}`} title={profile.role} />}
             </div>
             
-            <div style={{ marginTop: '16px' }}>
+            <div className="profile-info-content">
               <h1 className="profile-display-name">
                 {displayName}
                 {(profile?.isVerified || profile?.isPremium) && (
