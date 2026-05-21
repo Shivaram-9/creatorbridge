@@ -102,7 +102,7 @@ usersRouter.post("/me/cover", coverUpload.single("cover"), async (req, res) => {
 
 usersRouter.patch("/me", async (req, res) => {
   try {
-    const { name, username, category, bio, location, role, avatar, website, instagram, youtube } = req.body;
+    const { name, username, category, bio, location, role, avatar, website, portfolioLink, socialMediaLink, instagram, youtube } = req.body;
     const updates = {};
     if (name !== undefined) updates.name = String(name).slice(0, 120);
     if (username !== undefined) updates.username = String(username).slice(0, 60);
@@ -110,6 +110,8 @@ usersRouter.patch("/me", async (req, res) => {
     if (bio !== undefined) updates.bio = String(bio).slice(0, 2000);
     if (location !== undefined) updates.location = String(location).slice(0, 120);
     if (website !== undefined) updates.website = String(website).slice(0, 200);
+    if (portfolioLink !== undefined) updates.portfolioLink = String(portfolioLink).slice(0, 200);
+    if (socialMediaLink !== undefined) updates.socialMediaLink = String(socialMediaLink).slice(0, 200);
     if (role !== undefined && ["influencer", "brand"].includes(role)) updates.role = role;
     if (avatar !== undefined) updates.avatar = String(avatar).slice(0, 1000); // Allow longer paths or base64 if needed
     if (instagram !== undefined) updates.instagram = String(instagram).slice(0, 200);
