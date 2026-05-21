@@ -17,6 +17,7 @@ export default function Layout() {
   
   const isAuthPage = ["/login", "/register", "/forgot-password", "/reset-password"].includes(location.pathname);
   const isMessagesPage = location.pathname.startsWith("/messages");
+  const isProfilePage = location.pathname.startsWith("/profile") || location.pathname.startsWith("/user/");
   const isChatActive = isMessagesPage && location.pathname.split("/").length > 2;
   const shouldBeCentered = [].includes(location.pathname);
   const isHomePage = location.pathname === "/home" || location.pathname === "/";
@@ -187,6 +188,8 @@ export default function Layout() {
                 ? "feed-layout-centered"
                 : isMessagesPage
                 ? "messages-layout-wrap"
+                : isProfilePage
+                ? "profile-layout-wrap"
                 : "content-container-pro"
             }
           >

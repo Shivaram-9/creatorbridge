@@ -438,3 +438,15 @@ button:disabled {
   border-radius: 50%;
 }
 
+
+.profile-layout-wrap {
+  width: 100%;
+  max-width: 100%;
+  padding: 0 40px;
+}
+@media (max-width: 767px) {
+  .profile-layout-wrap {
+    padding: 0;
+  }
+}
+
