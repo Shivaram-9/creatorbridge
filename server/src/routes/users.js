@@ -102,12 +102,13 @@ usersRouter.post("/me/cover", coverUpload.single("cover"), async (req, res) => {
 
 usersRouter.patch("/me", async (req, res) => {
   try {
-    const { name, username, category, bio, location, role, avatar, website, portfolioLink, socialMediaLink, instagram, youtube } = req.body;
+    const { name, username, category, bio, experience, location, role, avatar, website, portfolioLink, socialMediaLink, instagram, youtube } = req.body;
     const updates = {};
     if (name !== undefined) updates.name = String(name).slice(0, 120);
     if (username !== undefined) updates.username = String(username).slice(0, 60);
     if (category !== undefined) updates.category = String(category).slice(0, 80);
     if (bio !== undefined) updates.bio = String(bio).slice(0, 2000);
+    if (experience !== undefined) updates.experience = String(experience).slice(0, 2000);
     if (location !== undefined) updates.location = String(location).slice(0, 120);
     if (website !== undefined) updates.website = String(website).slice(0, 200);
     if (portfolioLink !== undefined) updates.portfolioLink = String(portfolioLink).slice(0, 200);

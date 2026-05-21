@@ -27,7 +27,7 @@ export default function Home() {
     const tasks = [
       { id: 'portfolio', label: 'Add portfolio', done: user.portfolio?.length > 0 || !!user.portfolioLink, bonus: 25 },
       { id: 'social', label: 'Add social links', done: !!(user.website || user.socialLinks?.length > 0 || user.socialMediaLink || user.instagram || user.youtube), bonus: 25 },
-      { id: 'experience', label: 'Add work experience', done: !!(user.bio || user.experience?.length > 0 || user.category), bonus: 25 },
+      { id: 'experience', label: 'Add work experience', done: !!(user.experience?.length > 0), bonus: 25 },
       { id: 'verify', label: 'Get verified', done: !!user.isVerified, bonus: 25 }
     ];
     tasks.forEach(t => { if (t.done) score += t.bonus; });

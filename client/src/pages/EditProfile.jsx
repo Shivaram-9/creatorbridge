@@ -21,6 +21,7 @@ export default function EditProfile() {
     name: "",
     username: "",
     bio: "",
+    experience: "",
     category: "",
     location: "",
     website: "",
@@ -34,6 +35,7 @@ export default function EditProfile() {
         name: user.name || "",
         username: user.username || "",
         bio: user.bio || "",
+        experience: user.experience || "",
         category: user.category || "",
         location: user.location || "",
         website: user.website || "",
@@ -219,6 +221,18 @@ export default function EditProfile() {
               value={form.bio}
               onChange={handleChange}
               placeholder="Write a short bio..."
+              rows={4}
+            />
+          </div>
+
+          <div className="ep-field">
+            <label className="ep-label">Work Experience</label>
+            <textarea
+              className="ep-input ep-textarea"
+              name="experience"
+              value={form.experience}
+              onChange={handleChange}
+              placeholder="Detail your past work experience..."
               rows={4}
             />
           </div>

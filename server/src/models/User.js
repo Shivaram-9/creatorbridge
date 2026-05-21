@@ -19,6 +19,7 @@ const userSchema = new mongoose.Schema(
     username: { type: String, default: "" },
     category: { type: String, default: "" },
     bio: { type: String, default: "" },
+    experience: { type: String, default: "" },
     location: { type: String, default: "" },
     avatar: { type: String, default: "" },
     cover: { type: String, default: "" },

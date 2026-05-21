@@ -223,6 +223,13 @@ export default function Profile() {
 
               <p className="profile-bio-text">{user?.bio || "No bio yet."}</p>
 
+              {user?.experience && (
+                <div style={{ marginTop: '16px' }}>
+                  <h4 style={{ fontSize: '14px', fontWeight: '600', marginBottom: '4px', color: 'var(--text-main)' }}>Experience</h4>
+                  <p className="profile-bio-text" style={{ whiteSpace: 'pre-line' }}>{user.experience}</p>
+                </div>
+              )}
+
               {user?.website && (
                 <div style={{ marginTop: '12px' }}>
                   <a href={user.website.startsWith('http') ? user.website : `https://${user.website}`} target="_blank" rel="noopener noreferrer" className="profile-link-item">
