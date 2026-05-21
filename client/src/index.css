@@ -87,6 +87,13 @@ button:disabled {
   padding: 20px;
 }
 
+.home-layout-wide {
+  width: 100%;
+  max-width: 1200px;
+  padding: 20px 40px;
+  margin: 0 auto;
+}
+
 /* Messages page fills full width so .messaging-v3-container can self-center */
 .messages-layout-wrap {
   width: 100%;

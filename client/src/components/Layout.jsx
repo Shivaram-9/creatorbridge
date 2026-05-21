@@ -18,7 +18,8 @@ export default function Layout() {
   const isAuthPage = ["/login", "/register", "/forgot-password", "/reset-password"].includes(location.pathname);
   const isMessagesPage = location.pathname.startsWith("/messages");
   const isChatActive = isMessagesPage && location.pathname.split("/").length > 2;
-  const shouldBeCentered = ["/home"].includes(location.pathname);
+  const shouldBeCentered = [].includes(location.pathname);
+  const isHomePage = location.pathname === "/home" || location.pathname === "/";
 
   useEffect(() => {
     if (user && !user.onboardingComplete && location.pathname !== "/onboarding" && !location.pathname.startsWith("/select-role")) {
@@ -180,7 +181,9 @@ export default function Layout() {
         <main className={`main-viewport ${isMessagesPage ? 'messages-view-active' : ''}`}>
           <div
             className={
-              shouldBeCentered
+              isHomePage
+                ? "home-layout-wide"
+                : shouldBeCentered
                 ? "feed-layout-centered"
                 : isMessagesPage
                 ? "messages-layout-wrap"

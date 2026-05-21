@@ -89,20 +89,36 @@ export default function Home() {
     <div className="home-grid">
       {/* Main Feed Column */}
       <div className="feed-col">
-        <StoriesBar />
+        <div className="home-header-greeting">
+          <h1>Good morning, {user?.name?.split(' ')[0] || user?.username || 'Creator'}! 👋</h1>
+          <p>Explore, connect and grow your creator network.</p>
+        </div>
 
         {/* People you may want to connect with (Carousel) */}
         <div className="carousel-container">
-          <h2 className="carousel-title">People you may want to connect with 👥</h2>
+          <div className="carousel-header-flex">
+            <h2 className="carousel-title">People you may want to connect with</h2>
+            <button className="carousel-view-all" onClick={() => navigate('/discover')}>View all</button>
+          </div>
           <div className="carousel-items">
             {suggestedUsers.length === 0 ? (
-              <div style={{ color: '#71839B', fontSize: '0.85rem' }}>No suggestions at the moment.</div>
+              <div style={{ color: '#71839B', fontSize: '0.85rem', padding: '20px 0' }}>No suggestions at the moment.</div>
             ) : (
               suggestedUsers.map(u => (
                 <div key={u._id} className="carousel-item" onClick={() => navigate(`/user/${u._id}`)}>
-                  <img src={u.avatar || "/placeholder_avatar.png"} alt={u.username} className="carousel-avatar" />
-                  <span className="carousel-name">{u.name || u.username}</span>
-                  <button className="carousel-btn" onClick={(e) => { e.stopPropagation(); navigate(`/user/${u._id}`); }}>View</button>
+                  <div className="carousel-avatar-wrap">
+                    <img src={u.avatar ? (u.avatar.startsWith('http') ? u.avatar : `${BASE_URL}${u.avatar}`) : "/placeholder_avatar.png"} alt={u.username} className="carousel-avatar" />
+                  </div>
+                  <div className="carousel-info">
+                    <span className="carousel-name">
+                      {u.name || u.username}
+                      {u.isVerified && <span className="verified-icon">💎</span>}
+                    </span>
+                    <span className="carousel-role">{u.role === 'brand' ? 'Brand' : u.category || 'Creator'}</span>
+                  </div>
+                  <button className="carousel-btn btn-outline-primary" onClick={(e) => { e.stopPropagation(); navigate(`/user/${u._id}`); }}>
+                    {u.role === 'brand' ? 'Follow' : 'Connect'}
+                  </button>
                 </div>
               ))
             )}
@@ -112,42 +128,30 @@ export default function Home() {
         {/* New Post Box */}
         <CreatePost onPost={handleAddPost} user={user} />
 
+        {/* Feed Tabs */}
+        <div className="feed-tabs-container">
+          <div className="feed-tabs">
+            <button className="feed-tab active">All Feed</button>
+            <button className="feed-tab">Following</button>
+            <button className="feed-tab">For You</button>
+            <button className="feed-tab">Projects</button>
+            <button className="feed-tab">Announcements</button>
+          </div>
+          <button className="feed-filter-btn" onClick={loadPosts} disabled={loading}>
+            <span className="icon">≡</span> Latest
+          </button>
+        </div>
+
         {/* Feed Posts */}
         {loading ? (
-          <div style={{ marginTop: '32px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          <div style={{ marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
             <PostSkeleton />
             <PostSkeleton />
             <PostSkeleton />
           </div>
         ) : (
           <>
-            <div className="home-feed-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', marginTop: '10px' }}>
-              <h2 style={{ fontSize: '1.25rem', fontWeight: '700', color: 'var(--text-main)', margin: 0 }}>Alliance Feed</h2>
-              <button 
-                onClick={loadPosts} 
-                disabled={loading}
-                style={{ 
-                  background: 'white', 
-                  border: '1px solid #e2e8f0', 
-                  padding: '6px 12px', 
-                  borderRadius: '20px', 
-                  fontSize: '12px', 
-                  fontWeight: '600', 
-                  color: '#64748b',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
-                  transition: 'all 0.2s'
-                }}
-              >
-                <svg style={{ width: '14px', height: '14px', transform: loading ? 'rotate(360deg)' : 'none', transition: 'transform 0.5s linear' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                </svg>
-                {loading ? "Refreshing..." : "Refresh Feed"}
-              </button>
-            </div>
+            <div className="home-feed-posts">
 
             {posts.length > 0 ? (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -175,32 +179,114 @@ export default function Home() {
       {/* Right Sidebar Column */}
       <div className="home-sidebar-col">
         {/* Profile Strength Card */}
-        <div className="sidebar-card" onClick={() => toast.success("Pending info complete")} style={{ cursor: "pointer" }}>
-          <h2 className="card-title">Profile Strength ⚡</h2>
-          <div className="strength-bar-container">
-            <div className="strength-bar" style={{ width: '75%' }}></div>
+        <div className="sidebar-card">
+          <div className="profile-strength-header">
+            <h2 className="card-title">Your Profile Strength</h2>
           </div>
-          <span className="strength-text">75% Complete</span>
+          <div className="strength-content">
+            <div className="strength-circle">
+              <svg viewBox="0 0 36 36" className="circular-chart blue">
+                <path className="circle-bg"
+                  d="M18 2.0845
+                    a 15.9155 15.9155 0 0 1 0 31.831
+                    a 15.9155 15.9155 0 0 1 0 -31.831"
+                />
+                <path className="circle"
+                  strokeDasharray="82, 100"
+                  d="M18 2.0845
+                    a 15.9155 15.9155 0 0 1 0 31.831
+                    a 15.9155 15.9155 0 0 1 0 -31.831"
+                />
+                <text x="18" y="20.35" className="percentage">82%</text>
+              </svg>
+            </div>
+            <div className="strength-text-block">
+              <p>Great job! Complete your profile to increase your visibility.</p>
+            </div>
+          </div>
+          <ul className="strength-checklist">
+            <li className="done"><span className="icon">✓</span> Add portfolio</li>
+            <li className="done"><span className="icon">✓</span> Add social links</li>
+            <li className="done"><span className="icon">✓</span> Add work experience</li>
+            <li className="pending"><span className="icon">○</span> Get verified <span className="icon-blue">💎</span></li>
+          </ul>
+          <a href="/profile/edit" className="complete-profile-link">Complete Profile →</a>
         </div>
 
         {/* Verified Creators Card */}
         <div className="sidebar-card">
-          <h2 className="card-title">Verified Creators 💎</h2>
+          <div className="card-header-flex">
+            <h2 className="card-title">Verified Creators</h2>
+            <a href="/discover" className="view-all-link">View all</a>
+          </div>
           <div className="creator-list">
             {verifiedCreators.length === 0 ? (
               <div style={{ color: '#71839B', fontSize: '0.85rem' }}>No verified creators found.</div>
             ) : (
               verifiedCreators.map(c => (
                 <div key={c._id} className="creator-item">
-                  <img src={c.avatar || "/placeholder_avatar.png"} alt={c.username} className="creator-avatar" />
+                  <img src={c.avatar ? (c.avatar.startsWith('http') ? c.avatar : `${BASE_URL}${c.avatar}`) : "/placeholder_avatar.png"} alt={c.username} className="creator-avatar" />
                   <div className="creator-info">
-                    <span className="creator-name">{c.name || c.username}</span>
+                    <span className="creator-name">{c.name || c.username} <span className="verified-icon">💎</span></span>
                     <span className="creator-category">{c.category || "Creator"}</span>
                   </div>
-                  <button className="creator-btn" onClick={() => navigate(`/user/${c._id}`)}>View</button>
+                  <button className="creator-btn btn-outline-primary" onClick={() => navigate(`/user/${c._id}`)}>Follow</button>
                 </div>
               ))
             )}
+          </div>
+        </div>
+
+        {/* Trending Categories Card */}
+        <div className="sidebar-card">
+          <div className="card-header-flex">
+            <h2 className="card-title">Trending Categories</h2>
+            <a href="/discover" className="view-all-link">View all</a>
+          </div>
+          <div className="trending-tags">
+            <span className="trending-tag tag-purple">#Fashion</span>
+            <span className="trending-tag tag-orange">#Gaming</span>
+            <span className="trending-tag tag-red">#Tech</span>
+            <span className="trending-tag tag-blue">#Lifestyle</span>
+            <span className="trending-tag tag-green">#Photography</span>
+            <span className="trending-tag tag-teal">#Travel</span>
+            <span className="trending-tag tag-indigo">#Fitness</span>
+            <span className="trending-tag tag-cyan">#Music</span>
+          </div>
+        </div>
+
+        {/* Suggested Brands Card */}
+        <div className="sidebar-card">
+          <div className="card-header-flex">
+            <h2 className="card-title">Suggested Brands</h2>
+            <a href="/brands" className="view-all-link">View all</a>
+          </div>
+          <div className="creator-list">
+            {/* Mock data for visual layout */}
+            <div className="creator-item">
+              <div className="creator-avatar brand-avatar" style={{ background: '#000' }}>N</div>
+              <div className="creator-info">
+                <span className="creator-name">Nike India <span className="verified-icon">💎</span></span>
+                <span className="creator-category">Sportswear Brand</span>
+              </div>
+              <button className="creator-btn btn-outline-primary">Follow</button>
+            </div>
+            <div className="creator-item">
+              <div className="creator-avatar brand-avatar" style={{ background: '#e11d48' }}>B</div>
+              <div className="creator-info">
+                <span className="creator-name">Boat Lifestyle <span className="verified-icon">💎</span></span>
+                <span className="creator-category">Audio Brand</span>
+              </div>
+              <button className="creator-btn btn-outline-primary">Follow</button>
+            </div>
+            <div className="creator-item">
+              <div className="creator-avatar brand-avatar" style={{ background: '#2563eb' }}>I</div>
+              <div className="creator-info">
+                <span className="creator-name">Intel India <span className="verified-icon">💎</span></span>
+                <span className="creator-category">Technology Brand</span>
+              </div>
+              <button className="creator-btn btn-outline-primary">Follow</button>
+            </div>
           </div>
         </div>
       </div>

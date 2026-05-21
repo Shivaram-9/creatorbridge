@@ -64,9 +64,9 @@ export default function CreatePost({ onPost, user }) {
   return (
     <div className="create-post-pro">
       <div className="cp-header">
-        <Avatar user={user} size="md" />
+        <Avatar user={user} size="sm" />
         <textarea
-          placeholder="Share your latest project or lifestyle update..."
+          placeholder="Share your latest work, project or creator update..."
           value={content}
           onChange={(e) => setContent(e.target.value)}
         />
@@ -84,45 +84,35 @@ export default function CreatePost({ onPost, user }) {
       )}
 
       <form onSubmit={handleSubmit} className="cp-form">
-        <div className="cp-options">
-          <select value={category} onChange={e => setCategory(e.target.value)}>
-            <option value="Lifestyle">Lifestyle</option>
-            <option value="Portfolio">Portfolio Project</option>
-            <option value="Collaboration">Collaboration</option>
-            <option value="Behind the Scenes">Behind the Scenes</option>
-          </select>
-          <input 
-            placeholder="Add location" 
-            value={location} 
-            onChange={e => setLocation(e.target.value)} 
-            className="cp-location-input"
-          />
-        </div>
-
         <div className="cp-footer">
-          <button 
-            type="button" 
-            className="btn-media" 
-            onClick={() => fileInputRef.current.click()}
-            style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
-          >
-            <MediaIcon />
-            <span>Add Media</span>
-          </button>
-          <input
-            type="file"
-            ref={fileInputRef}
-            hidden
-            multiple
-            accept="image/*,video/*"
-            onChange={handleMediaChange}
-          />
+          <div className="cp-actions">
+            <button type="button" className="cp-action-btn" onClick={() => fileInputRef.current.click()}>
+              <span className="icon">🖼️</span> Media
+            </button>
+            <button type="button" className="cp-action-btn" onClick={() => fileInputRef.current.click()}>
+              <span className="icon">📹</span> Video
+            </button>
+            <button type="button" className="cp-action-btn">
+              <span className="icon">💼</span> Project
+            </button>
+            <button type="button" className="cp-action-btn">
+              <span className="icon">📅</span> Event
+            </button>
+            <input
+              type="file"
+              ref={fileInputRef}
+              hidden
+              multiple
+              accept="image/*,video/*"
+              onChange={handleMediaChange}
+            />
+          </div>
           <button 
             type="submit" 
-            className="btn-submit" 
+            className="btn-submit cp-post-btn" 
             disabled={isPosting || (!content.trim() && mediaFiles.length === 0)}
           >
-            {isPosting ? "Posting..." : "Post to Profile"}
+            {isPosting ? "Posting..." : "Post"}
           </button>
         </div>
       </form>
