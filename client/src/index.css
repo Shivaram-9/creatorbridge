@@ -157,7 +157,12 @@ button:disabled {
   justify-content: space-between;
   width: 100%;
   max-width: var(--container-max);
-  padding: 0 20px;
+  padding: 0 16px;
+}
+@media (min-width: 768px) {
+  .navbar-inner {
+    padding: 0 20px;
+  }
 }
 
 .logo-main-text {
@@ -353,7 +358,9 @@ button:disabled {
 }
 
 @media (max-width: 767px) {
-  .search-input-container { display: none; }
+  .home-layout-wide {
+    padding: 16px;
+  }
 }
 
 /* ============================================
