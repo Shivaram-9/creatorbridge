@@ -19,6 +19,21 @@ export default function Home() {
   const [error, setError] = useState("");
   const [verifiedCreators, setVerifiedCreators] = useState([]);
   const [suggestedUsers, setSuggestedUsers] = useState([]);
+  const [activeTab, setActiveTab] = useState("All Feed");
+
+  const calculateProfileStrength = () => {
+    if (!user) return { score: 0, tasks: [] };
+    let score = 0;
+    const tasks = [
+      { id: 'portfolio', label: 'Add portfolio', done: user.portfolio?.length > 0, bonus: 25 },
+      { id: 'social', label: 'Add social links', done: !!(user.website || user.socialLinks?.length > 0), bonus: 25 },
+      { id: 'experience', label: 'Add work experience', done: !!(user.bio || user.experience?.length > 0 || user.category), bonus: 25 },
+      { id: 'verify', label: 'Get verified', done: !!user.isVerified, bonus: 25 }
+    ];
+    tasks.forEach(t => { if (t.done) score += t.bonus; });
+    return { score, tasks };
+  };
+  const { score: profileScore, tasks: profileTasks } = calculateProfileStrength();
 
   const loadSidebarData = useCallback(async () => {
     try {
@@ -85,6 +100,19 @@ export default function Home() {
     };
   };
 
+  const filteredPosts = posts.filter(post => {
+    if (activeTab === "All Feed") return true;
+    if (activeTab === "Following") {
+      // Assuming user object has following array with user ids
+      if (!user?.following) return true; // fallback
+      return user.following.includes(post.user?._id || post.user);
+    }
+    if (activeTab === "For You") return true; // maybe sort by likes? fallback to all
+    if (activeTab === "Projects") return post.content?.toLowerCase().includes("project");
+    if (activeTab === "Announcements") return post.content?.toLowerCase().includes("announce");
+    return true;
+  });
+
   return (
     <div className="home-grid">
       {/* Main Feed Column */}
@@ -131,11 +159,15 @@ export default function Home() {
         {/* Feed Tabs */}
         <div className="feed-tabs-container">
           <div className="feed-tabs">
-            <button className="feed-tab active">All Feed</button>
-            <button className="feed-tab">Following</button>
-            <button className="feed-tab">For You</button>
-            <button className="feed-tab">Projects</button>
-            <button className="feed-tab">Announcements</button>
+            {["All Feed", "Following", "For You", "Projects", "Announcements"].map(tab => (
+              <button 
+                key={tab}
+                className={`feed-tab ${activeTab === tab ? "active" : ""}`}
+                onClick={() => setActiveTab(tab)}
+              >
+                {tab}
+              </button>
+            ))}
           </div>
           <button className="feed-filter-btn" onClick={loadPosts} disabled={loading}>
             <span className="icon">≡</span> Latest
@@ -153,9 +185,9 @@ export default function Home() {
           <>
             <div className="home-feed-posts">
 
-            {posts.length > 0 ? (
+            {filteredPosts.length > 0 ? (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                {posts.map((post) => (
+                {filteredPosts.map((post) => (
                   <PostCard 
                     key={post._id} 
                     post={formatPost(post)} 
@@ -180,38 +212,43 @@ export default function Home() {
       {/* Right Sidebar Column */}
       <div className="home-sidebar-col">
         {/* Profile Strength Card */}
-        <div className="sidebar-card">
+        <div className="sidebar-card" style={{ cursor: 'pointer' }} onClick={() => navigate('/profile/edit')}>
           <div className="profile-strength-header">
             <h2 className="card-title">Your Profile Strength</h2>
           </div>
           <div className="strength-content">
             <div className="strength-circle">
-              <svg viewBox="0 0 36 36" className="circular-chart blue">
+              <svg viewBox="0 0 36 36" className={`circular-chart ${profileScore === 100 ? 'green' : 'blue'}`}>
                 <path className="circle-bg"
                   d="M18 2.0845
                     a 15.9155 15.9155 0 0 1 0 31.831
                     a 15.9155 15.9155 0 0 1 0 -31.831"
                 />
                 <path className="circle"
-                  strokeDasharray="82, 100"
+                  strokeDasharray={`${profileScore}, 100`}
                   d="M18 2.0845
                     a 15.9155 15.9155 0 0 1 0 31.831
                     a 15.9155 15.9155 0 0 1 0 -31.831"
                 />
-                <text x="18" y="20.35" className="percentage">82%</text>
+                <text x="18" y="20.35" className="percentage">{profileScore}%</text>
               </svg>
             </div>
             <div className="strength-text-block">
-              <p>Great job! Complete your profile to increase your visibility.</p>
+              <p>
+                {profileScore === 100 
+                  ? "Outstanding! Your profile is fully complete and stands out." 
+                  : "Great job! Complete your profile to increase your visibility."}
+              </p>
             </div>
           </div>
           <ul className="strength-checklist">
-            <li className="done"><span className="icon">✓</span> Add portfolio</li>
-            <li className="done"><span className="icon">✓</span> Add social links</li>
-            <li className="done"><span className="icon">✓</span> Add work experience</li>
-            <li className="pending"><span className="icon">○</span> Get verified <span className="icon-blue">💎</span></li>
+            {profileTasks.map(task => (
+              <li key={task.id} className={task.done ? "done" : "pending"}>
+                <span className="icon">{task.done ? "✓" : "○"}</span> {task.label} {task.id === 'verify' && <span className="icon-blue">💎</span>}
+              </li>
+            ))}
           </ul>
-          <a href="/profile/edit" className="complete-profile-link">Complete Profile →</a>
+          <a href="/profile/edit" className="complete-profile-link" onClick={(e) => { e.preventDefault(); navigate('/profile/edit'); }}>Complete Profile →</a>
         </div>
 
         {/* Verified Creators Card */}
