@@ -230,6 +230,20 @@ export default function Profile() {
                   </a>
                 </div>
               )}
+              {user?.portfolioLink && (
+                <div style={{ marginTop: '8px' }}>
+                  <a href={user.portfolioLink.startsWith('http') ? user.portfolioLink : `https://${user.portfolioLink}`} target="_blank" rel="noopener noreferrer" className="profile-link-item">
+                    🎨 Portfolio
+                  </a>
+                </div>
+              )}
+              {user?.socialMediaLink && (
+                <div style={{ marginTop: '8px' }}>
+                  <a href={user.socialMediaLink.startsWith('http') ? user.socialMediaLink : `https://${user.socialMediaLink}`} target="_blank" rel="noopener noreferrer" className="profile-link-item">
+                    📱 Social Media
+                  </a>
+                </div>
+              )}
 
               <div className="profile-actions-row">
                 <button className="action-btn secondary" onClick={handleShare}>

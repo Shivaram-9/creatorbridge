@@ -242,11 +242,20 @@ export default function Home() {
             </div>
           </div>
           <ul className="strength-checklist">
-            {profileTasks.map(task => (
-              <li key={task.id} className={task.done ? "done" : "pending"}>
-                <span className="icon">{task.done ? "✓" : "○"}</span> {task.label} {task.id === 'verify' && <span className="icon-blue">💎</span>}
-              </li>
-            ))}
+            {profileTasks.map(task => {
+              const linkTarget = task.id === 'verify' ? '/apply-verification' : '/profile/edit';
+              return (
+                <li key={task.id} className={task.done ? "done" : "pending"}>
+                  <a 
+                    href={linkTarget} 
+                    onClick={(e) => { e.preventDefault(); navigate(linkTarget); }}
+                    style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', color: 'inherit', width: '100%' }}
+                  >
+                    <span className="icon">{task.done ? "✓" : "○"}</span> {task.label} {task.id === 'verify' && <span className="icon-blue">💎</span>}
+                  </a>
+                </li>
+              );
+            })}
           </ul>
           <a href="/profile/edit" className="complete-profile-link" onClick={(e) => { e.preventDefault(); navigate('/profile/edit'); }}>Complete Profile →</a>
         </div>

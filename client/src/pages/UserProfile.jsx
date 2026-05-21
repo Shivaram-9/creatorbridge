@@ -307,6 +307,20 @@ export default function UserProfile() {
                   </a>
                 </div>
               )}
+              {profile?.portfolioLink && (
+                <div style={{ marginTop: '8px' }}>
+                  <a href={profile.portfolioLink.startsWith('http') ? profile.portfolioLink : `https://${profile.portfolioLink}`} target="_blank" rel="noopener noreferrer" className="profile-link-item">
+                    🎨 Portfolio
+                  </a>
+                </div>
+              )}
+              {profile?.socialMediaLink && (
+                <div style={{ marginTop: '8px' }}>
+                  <a href={profile.socialMediaLink.startsWith('http') ? profile.socialMediaLink : `https://${profile.socialMediaLink}`} target="_blank" rel="noopener noreferrer" className="profile-link-item">
+                    📱 Social Media
+                  </a>
+                </div>
+              )}
 
               <div className="profile-actions-row">
                 {isOwn ? (
