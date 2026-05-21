@@ -147,6 +147,12 @@ button:disabled {
   letter-spacing: -0.5px;
 }
 
+@media (min-width: 768px) {
+  .logo-main-text {
+    display: none !important;
+  }
+}
+
 /* Smart Search Bar */
 .search-input-container {
   position: relative;
