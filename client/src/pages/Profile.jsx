@@ -227,8 +227,6 @@ export default function Profile() {
         </div>
         
         <div className="profile-actions">
-          <button className="action-btn secondary">Connect</button>
-          <button className="action-btn secondary">Message</button>
           <button className="action-btn secondary" onClick={handleShare}>
             {copyStatus ? "Copied!" : "Share Profile"}
           </button>
