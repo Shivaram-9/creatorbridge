@@ -347,39 +347,6 @@ export default function Navbar({
           )}
         </div>
       </div>
-      
-      {/* Mobile Search Row */}
-      {user && isMobile && (
-        <div className="mobile-search-row">
-          <div className="search-input-container w-full" ref={searchRef}>
-            <form onSubmit={handleSearch} className="w-full">
-              <span className="search-icon">
-                <SearchIcon />
-              </span>
-              <input
-                type="text"
-                className="search-input w-full"
-                placeholder="Search creators, brands..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onFocus={() => setIsSearchOpen(true)}
-              />
-              {isSearchOpen && (
-                <SearchDropdown 
-                  results={searchResults} 
-                  loading={searchLoading} 
-                  onClose={() => setIsSearchOpen(false)}
-                  onItemClick={(item) => {
-                    if (!item) return;
-                    setIsSearchOpen(false);
-                    setSearchQuery("");
-                  }}
-                />
-              )}
-            </form>
-          </div>
-        </div>
-      )}
     </header>
   );
 }

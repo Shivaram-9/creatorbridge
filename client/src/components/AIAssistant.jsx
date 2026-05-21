@@ -39,9 +39,9 @@ export default function AIAssistant() {
   };
 
   return (
-    <div className={`ai-fab-container ${isOpen ? "open" : ""}`}>
+    <div className={`ai-assistant-wrapper ${isOpen ? "open" : ""}`}>
       {/* Floating Button */}
-      <button className="ai-fab-btn" onClick={() => setIsOpen(!isOpen)} aria-label="Toggle AI Assistant">
+      <button className="ai-fab" onClick={() => setIsOpen(!isOpen)} aria-label="Toggle AI Assistant">
         <span className="ai-icon">✨</span>
         {!isOpen && <span className="ai-label">Ask AI</span>}
       </button>
