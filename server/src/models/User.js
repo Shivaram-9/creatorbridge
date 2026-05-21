@@ -25,6 +25,8 @@ const userSchema = new mongoose.Schema(
     instagram: { type: String, default: "" },
     youtube: { type: String, default: "" },
     website: { type: String, default: "" },
+    portfolioLink: { type: String, default: "" },
+    socialMediaLink: { type: String, default: "" },
     profileViews: { type: Number, default: 0 },
     followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     following: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],

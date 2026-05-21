@@ -24,6 +24,8 @@ export default function EditProfile() {
     category: "",
     location: "",
     website: "",
+    portfolioLink: "",
+    socialMediaLink: "",
   });
 
   useEffect(() => {
@@ -35,6 +37,8 @@ export default function EditProfile() {
         category: user.category || "",
         location: user.location || "",
         website: user.website || "",
+        portfolioLink: user.portfolioLink || "",
+        socialMediaLink: user.socialMediaLink || "",
       });
     }
   }, [user]);
@@ -253,6 +257,30 @@ export default function EditProfile() {
               value={form.website}
               onChange={handleChange}
               placeholder="https://yourwebsite.com"
+              type="text"
+            />
+          </div>
+
+          <div className="ep-field">
+            <label className="ep-label">Portfolio</label>
+            <input
+              className="ep-input"
+              name="portfolioLink"
+              value={form.portfolioLink}
+              onChange={handleChange}
+              placeholder="https://yourportfolio.com"
+              type="text"
+            />
+          </div>
+
+          <div className="ep-field">
+            <label className="ep-label">Social Media</label>
+            <input
+              className="ep-input"
+              name="socialMediaLink"
+              value={form.socialMediaLink}
+              onChange={handleChange}
+              placeholder="https://instagram.com/yourhandle"
               type="text"
             />
           </div>
