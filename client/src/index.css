@@ -57,6 +57,7 @@ button:disabled {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 @media (min-width: 768px) {
@@ -83,15 +84,25 @@ button:disabled {
 
 .content-container-pro {
   width: 100%;
-  max-width: var(--container-max);
-  padding: 20px;
+  max-width: 100%;
+  padding: 0;
+}
+@media (min-width: 768px) {
+  .content-container-pro {
+    padding: 0 20px;
+  }
 }
 
 .home-layout-wide {
   width: 100%;
-  max-width: 1200px;
-  padding: 20px 40px;
+  max-width: 100%;
+  padding: 0;
   margin: 0 auto;
+}
+@media (min-width: 768px) {
+  .home-layout-wide {
+    padding: 0 20px;
+  }
 }
 
 /* Messages page fills full width so .messaging-v3-container can self-center */
@@ -136,9 +147,7 @@ button:disabled {
 
 @media (max-width: 767px) {
   .navbar-fixed {
-    flex-direction: column;
-    height: auto;
-    padding-bottom: 10px;
+    height: var(--header-height);
   }
   .desktop-search-container {
     display: none !important;
@@ -359,7 +368,7 @@ button:disabled {
 
 @media (max-width: 767px) {
   .home-layout-wide {
-    padding: 16px;
+    padding: 0;
   }
 }
 

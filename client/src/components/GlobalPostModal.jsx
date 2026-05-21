@@ -1,0 +1,63 @@
+import { useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import CreatePost from './CreatePost.jsx';
+import { api } from '../services/api.js';
+
+export default function GlobalPostModal({ user }) {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const searchParams = new URLSearchParams(location.search);
+  const isCreating = searchParams.get('create') === 'true';
+
+  useEffect(() => {
+    if (isCreating) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => { document.body.style.overflow = 'unset'; };
+  }, [isCreating]);
+
+  if (!isCreating) return null;
+
+  const close = () => {
+    const params = new URLSearchParams(location.search);
+    params.delete('create');
+    navigate(location.pathname + '?' + params.toString(), { replace: true });
+  };
+
+  const handlePost = async (formData) => {
+    try {
+      import('react-hot-toast').then(m => {
+        const toast = m.default;
+        toast.promise(api.posts.create(formData), {
+          loading: 'Creating post...',
+          success: () => {
+            close();
+            if (location.pathname === '/home') {
+              window.location.reload();
+            }
+            return 'Post created!';
+          },
+          error: 'Failed to create post'
+        });
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm" onClick={close}>
+      <div className="bg-white rounded-2xl w-full max-w-lg m-4 shadow-2xl relative" onClick={e => e.stopPropagation()}>
+        <button className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-xl font-bold" onClick={close}>
+          &times;
+        </button>
+        <div className="p-6">
+          <h2 className="text-xl font-bold text-gray-800 mb-4">Create Post</h2>
+          <CreatePost user={user} onPost={handlePost} />
+        </div>
+      </div>
+    </div>
+  );
+}

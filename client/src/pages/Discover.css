@@ -109,7 +109,7 @@
 
 /* ===== MARKETPLACE SECTION ===== */
 .discover-marketplace-section {
-  padding: 24px 16px;
+  padding: 24px 0;
   border-top: 1px solid #dbdbdb;
   margin-top: 8px;
 }
@@ -121,6 +121,7 @@
   margin-bottom: 20px;
   flex-wrap: wrap;
   gap: 12px;
+  padding: 0 16px;
 }
 
 .discover-marketplace-title {
