@@ -477,13 +477,13 @@
   color: #475569;
 }
 .strength-checklist li .icon {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: bold;
 }
 .strength-checklist li.done .icon {
@@ -491,8 +491,9 @@
   color: white;
 }
 .strength-checklist li.pending .icon {
-  border: 1.5px solid #cbd5e1;
+  border: 2px solid #cbd5e1;
   color: transparent;
+  background: transparent;
 }
 .complete-profile-link {
   display: block;

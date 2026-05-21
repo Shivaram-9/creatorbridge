@@ -103,43 +103,46 @@ export default function EditProfile() {
 
   return (
     <div className="edit-profile-page">
-      {/* Header */}
-      <div className="ep-header">
-        <button className="ep-back-btn" onClick={() => navigate("/profile")}>
-          <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
-        <h1 className="ep-title">Edit Profile</h1>
-        <button
-          className="ep-save-btn"
-          onClick={handleSubmit}
-          disabled={saving}
-        >
-          {saving ? "Saving..." : "Done"}
-        </button>
-      </div>
-
-      {/* Avatar Section */}
-      <div className="ep-avatar-section">
-        <div className="ep-avatar-wrap">
-          <Avatar user={user} size="xl" />
-          {avatarUploading && (
-            <div className="ep-avatar-loading">
-              <div className="ep-spinner" />
-            </div>
-          )}
+      <div className="ep-container">
+        {/* Header */}
+        <div className="ep-header">
+          <button className="ep-back-btn" onClick={() => navigate("/profile")}>
+            <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <h1 className="ep-title">Edit Profile</h1>
+          <button
+            className="ep-save-btn"
+            onClick={handleSubmit}
+            disabled={saving}
+          >
+            {saving ? "Saving..." : "Done"}
+          </button>
         </div>
-        <label className="ep-change-photo-btn">
-          <input
-            type="file"
-            hidden
-            accept="image/*"
-            onChange={onFileSelect}
-          />
-          Change profile photo
-        </label>
-      </div>
+
+        {/* Avatar Section */}
+        <div className="ep-avatar-section">
+          <div className="ep-avatar-wrap">
+            <Avatar user={user} size="xl" />
+            {avatarUploading && (
+              <div className="ep-avatar-loading">
+                <div className="ep-spinner" />
+              </div>
+            )}
+          </div>
+          <div className="ep-avatar-info">
+            <label className="ep-change-photo-btn">
+              <input
+                type="file"
+                hidden
+                accept="image/*"
+                onChange={onFileSelect}
+              />
+              Change profile photo
+            </label>
+          </div>
+        </div>
 
       {/* Adjustment Modal */}
       {showAdjuster && (
@@ -263,6 +266,7 @@ export default function EditProfile() {
           Provide your personal information, even if the account used for a business, a pet or something else. This won't be a part of your public profile.
         </p>
       </form>
+      </div>
     </div>
   );
 }
