@@ -227,39 +227,9 @@ export default function Navbar({
       <div className="navbar-inner">
         <div style={{ flex: '1 0 0' }}>
           <Link to="/home" className="logo-main-text" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '1.2em' }}>💎</span> Pactogram
+            <img src="/logo192.png" alt="Pactogram" style={{ width: 24, height: 24, objectFit: 'contain' }} /> Pactogram
           </Link>
         </div>
-
-        {user && (
-          <div className="search-input-container" ref={searchRef}>
-            <form onSubmit={handleSearch}>
-              <span className="search-icon">
-                <SearchIcon />
-              </span>
-              <input
-                type="text"
-                className="search-input"
-                placeholder="Search"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onFocus={() => setIsSearchOpen(true)}
-              />
-              {isSearchOpen && (
-                <SearchDropdown 
-                  results={searchResults} 
-                  loading={searchLoading} 
-                  onClose={() => setIsSearchOpen(false)}
-                  onItemClick={(item) => {
-                    if (!item) return;
-                    setIsSearchOpen(false);
-                    setSearchQuery("");
-                  }}
-                />
-              )}
-            </form>
-          </div>
-        )}
 
         <div style={{ flex: '1 0 0', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '16px' }}>
           {user && (
@@ -338,6 +308,35 @@ export default function Navbar({
                     </button>
                   </div>
                 )}
+              </div>
+
+              <div className="search-input-container" ref={searchRef}>
+                <form onSubmit={handleSearch}>
+                  <span className="search-icon">
+                    <SearchIcon />
+                  </span>
+                  <input
+                    type="text"
+                    className="search-input"
+                    placeholder="Search creators, brands, categories..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onFocus={() => setIsSearchOpen(true)}
+                  />
+                  <span className="search-shortcut">⌘K</span>
+                  {isSearchOpen && (
+                    <SearchDropdown 
+                      results={searchResults} 
+                      loading={searchLoading} 
+                      onClose={() => setIsSearchOpen(false)}
+                      onItemClick={(item) => {
+                        if (!item) return;
+                        setIsSearchOpen(false);
+                        setSearchQuery("");
+                      }}
+                    />
+                  )}
+                </form>
               </div>
             </>
           )}
