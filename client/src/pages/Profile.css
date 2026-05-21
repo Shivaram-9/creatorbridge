@@ -638,3 +638,132 @@
   cursor: pointer;
   z-index: 10;
 }
+
+@media (max-width: 768px) {
+  /* Cover and Avatar Positioning */
+  .cover-container {
+    height: 180px;
+    border-radius: 0;
+    margin-top: 0;
+  }
+  .cover-actions {
+    top: 16px;
+    right: 16px;
+  }
+  
+  .profile-header-base {
+    margin-top: 0;
+    border-radius: 32px 32px 0 0;
+    padding: 20px;
+    box-shadow: none;
+    background: #f8fafc; /* match gray background */
+  }
+
+  .profile-top-row {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 12px;
+  }
+
+  .profile-avatar-wrap {
+    width: 100px;
+    height: 100px;
+    margin-top: -60px; /* pull up over the cover */
+    border-width: 4px;
+    margin-bottom: 16px;
+  }
+
+  /* Quick Actions (Connect, Message, Share) to the right of avatar */
+  .profile-actions-row {
+    position: absolute;
+    top: -40px;
+    right: 20px;
+    display: flex;
+    gap: 16px;
+    margin: 0;
+  }
+  
+  .action-btn {
+    flex-direction: column;
+    background: #ffffff;
+    color: #475569;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    border-radius: 16px;
+    width: 60px;
+    height: 60px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 0;
+    gap: 4px;
+    justify-content: center;
+  }
+  .action-btn svg {
+    width: 20px;
+    height: 20px;
+    stroke: #475569;
+  }
+
+  /* Typography */
+  .profile-display-name {
+    font-size: 20px;
+    flex-wrap: wrap;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+  .profile-title-row {
+    flex-direction: column;
+    gap: 4px;
+    font-size: 13px;
+  }
+  .profile-title-separator {
+    display: none;
+  }
+  
+  /* Layout restructuring for boxes */
+  .profile-grid-container {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .profile-main-col {
+    order: 2;
+  }
+  .profile-sidebar-col {
+    order: 1; /* Move Identity Overview to top */
+    width: 100%;
+  }
+
+  /* Identity Overview */
+  .profile-card {
+    border-radius: 24px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+  }
+  
+  /* Tabs */
+  .profile-tabs {
+    margin-top: 16px;
+    border-radius: 16px;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding: 4px;
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+    -webkit-overflow-scrolling: touch;
+  }
+  .profile-tab-btn {
+    padding: 12px 16px;
+    font-size: 13px;
+    white-space: nowrap;
+    flex: 1;
+    text-align: center;
+    border-bottom: 2px solid transparent;
+  }
+  .profile-tab-btn.active {
+    background: transparent;
+    border-bottom-color: var(--primary);
+    color: var(--primary);
+    border-radius: 0;
+  }
+}
+

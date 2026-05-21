@@ -7,7 +7,7 @@ import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import Avatar from "../components/Avatar.jsx";
 import VerifiedBadge from "../components/VerifiedBadge.jsx";
 import PortfolioGrid from "../components/PortfolioGrid.jsx";
-import { HeartIcon, MessageCircleIcon, SendIcon, BookmarkIcon } from "../components/Icons.jsx";
+import { HeartIcon, MessageCircleIcon, SendIcon, BookmarkIcon, UsersIcon } from "../components/Icons.jsx";
 import toast from "react-hot-toast";
 import "./Profile.css";
 import UserListModal from "../components/UserListModal.jsx";
@@ -253,8 +253,11 @@ export default function Profile() {
               )}
 
               <div className="profile-actions-row">
+                <button className="action-btn secondary" onClick={() => navigate("/profile/edit")}>
+                  <UsersIcon /> Edit
+                </button>
                 <button className="action-btn secondary" onClick={handleShare}>
-                  <SendIcon /> {copyStatus ? "Copied!" : "Share Profile"}
+                  <SendIcon /> {copyStatus ? "Copied!" : "Share"}
                 </button>
                 <div style={{ position: 'relative' }}>
                   <button className="action-btn secondary icon-only" onClick={() => setShowMenu(!showMenu)}>•••</button>

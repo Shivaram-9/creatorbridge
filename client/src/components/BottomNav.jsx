@@ -1,7 +1,8 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { HomeIcon, UsersIcon, MessageIcon, ProfileIcon } from "./Icons.jsx";
 
 export default function BottomNav({ msgUnreadCount }) {
+  const navigate = useNavigate();
   return (
     <nav className="bottom-nav-fixed">
       <div className="bottom-nav-inner">
@@ -15,6 +16,15 @@ export default function BottomNav({ msgUnreadCount }) {
           <span className="text-[10px] font-medium mt-1">Discover</span>
         </NavLink>
         
+        <div className="nav-tab-pro" style={{ flex: '0 0 auto', padding: '0 10px' }}>
+          <button className="bottom-nav-create-btn" onClick={() => navigate('/home?create=true')}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </button>
+        </div>
+
         <NavLink to="/messages" className={({ isActive }) => `nav-tab-pro ${isActive ? "active" : "text-gray-500"}`}>
           <div className="relative">
             <MessageIcon />

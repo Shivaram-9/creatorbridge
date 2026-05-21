@@ -126,6 +126,28 @@ button:disabled {
 @media (min-width: 768px) {
   .navbar-fixed {
     left: 250px;
+    height: var(--header-height);
+  }
+}
+
+.mobile-search-row {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .navbar-fixed {
+    flex-direction: column;
+    height: auto;
+    padding-bottom: 10px;
+  }
+  .desktop-search-container {
+    display: none !important;
+  }
+  .mobile-search-row {
+    display: flex;
+    width: 100%;
+    padding: 0 16px;
+    margin-top: 5px;
   }
 }
 
@@ -229,16 +251,17 @@ button:disabled {
 /* Bottom Nav Fixed */
 .bottom-nav-fixed {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: var(--bottom-nav-height);
+  bottom: 16px;
+  left: 16px;
+  right: 16px;
+  height: 64px;
   background: #ffffff;
-  border-top: 1px solid var(--border-light);
+  border-radius: 32px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
   z-index: 9999;
   display: flex;
   justify-content: center;
-  padding-bottom: env(safe-area-inset-bottom);
+  padding: 0 8px;
 }
 
 @media (min-width: 768px) {
@@ -278,11 +301,33 @@ button:disabled {
   width: 24px;
   height: 24px;
   stroke-width: 1.5;
-  transition: all 0.2s ease;
+}
+
+.nav-tab-pro.active {
+  color: var(--primary);
 }
 
 .nav-tab-pro.active svg {
+  stroke: var(--primary);
   stroke-width: 2.5;
+}
+
+.bottom-nav-create-btn {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+  color: white;
+  margin-top: -8px; /* Slightly pull it up */
+}
+.bottom-nav-create-btn svg {
+  width: 24px;
+  height: 24px;
+  stroke: white;
 }
 
 /* Modern Post Cards */

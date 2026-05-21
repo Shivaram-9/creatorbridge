@@ -11,6 +11,20 @@ import { PostSkeleton } from "../components/Skeleton.jsx";
 import toast from "react-hot-toast";
 import "./Home.css";
 
+function VerificationBanner({ onClose, onVerify }) {
+  return (
+    <div className="verification-banner-mobile">
+      <div className="banner-icon">💎</div>
+      <div className="banner-text">
+        <h3>Get verified and unlock more opportunities</h3>
+        <p>Build trust and stand out to brands.</p>
+      </div>
+      <button className="banner-action-btn" onClick={onVerify}>Get Verified</button>
+      <button className="banner-close-btn" onClick={onClose}>✕</button>
+    </div>
+  );
+}
+
 export default function Home() {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -20,6 +34,7 @@ export default function Home() {
   const [verifiedCreators, setVerifiedCreators] = useState([]);
   const [suggestedUsers, setSuggestedUsers] = useState([]);
   const [activeTab, setActiveTab] = useState("All Feed");
+  const [showVerificationBanner, setShowVerificationBanner] = useState(true);
 
   const calculateProfileStrength = () => {
     if (!user) return { score: 0, tasks: [] };
@@ -159,6 +174,14 @@ export default function Home() {
             )}
           </div>
         </div>
+
+        {/* Verification Banner (Mobile only) */}
+        {!user?.isVerified && showVerificationBanner && (
+          <VerificationBanner 
+            onClose={() => setShowVerificationBanner(false)} 
+            onVerify={() => navigate('/apply-verification')} 
+          />
+        )}
 
         {/* New Post Box */}
         <CreatePost onPost={handleAddPost} user={user} />

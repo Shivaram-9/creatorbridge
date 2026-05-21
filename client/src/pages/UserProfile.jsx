@@ -6,7 +6,7 @@ import { getSocket } from "../services/socket.js";
 import { BASE_URL } from "../config/api.js";
 import ErrorBanner from "../components/ErrorBanner.jsx";
 import PortfolioGrid from "../components/PortfolioGrid.jsx";
-import { SendIcon, HeartIcon, MessageCircleIcon, BookmarkIcon } from "../components/Icons.jsx";
+import { SendIcon, HeartIcon, MessageCircleIcon, BookmarkIcon, UsersIcon } from "../components/Icons.jsx";
 import Avatar from "../components/Avatar.jsx";
 import VerifiedBadge from "../components/VerifiedBadge.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
@@ -331,7 +331,9 @@ export default function UserProfile() {
 
               <div className="profile-actions-row">
                 {isOwn ? (
-                  <button className="action-btn primary" onClick={() => navigate("/profile")}>Edit Profile</button>
+                  <button className="action-btn primary" onClick={() => navigate("/profile")}>
+                    <UsersIcon /> Edit
+                  </button>
                 ) : incomingRequest ? (
                   <>
                     <button className="action-btn primary" onClick={() => handleRespondRequest('accept')} disabled={actionBusy}>Accept</button>
@@ -344,7 +346,8 @@ export default function UserProfile() {
                       disabled={actionBusy || hasRequested}
                       onClick={handleFollowToggle}
                     >
-                      {actionBusy ? "..." : hasRequested ? "Request pending" : isFollowing ? "Connected" : "Connect"}
+                      <UsersIcon />
+                      {actionBusy ? "..." : hasRequested ? "Pending" : isFollowing ? "Connected" : "Connect"}
                     </button>
                     <button className="action-btn secondary" onClick={() => navigate(`/messages/${userId}`)}>
                       <MessageCircleIcon /> Message
@@ -353,7 +356,7 @@ export default function UserProfile() {
                 )}
                 
                 <button className="action-btn secondary" onClick={handleShareProfile}>
-                  <SendIcon /> {copyStatus ? "Copied!" : "Share Profile"}
+                  <SendIcon /> {copyStatus ? "Copied!" : "Share"}
                 </button>
                 <div style={{ position: 'relative' }}>
                   <button className="action-btn secondary icon-only" onClick={() => setShowAlignMenu(!showAlignMenu)}>•••</button>
