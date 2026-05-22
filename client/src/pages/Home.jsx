@@ -242,7 +242,10 @@ export default function Home() {
       {/* Right Sidebar Column */}
       <div className="home-sidebar-col">
         {/* Profile Strength Card */}
-        <div className="sidebar-card" style={{ cursor: 'pointer' }} onClick={() => navigate('/profile/edit')}>
+        <div className="sidebar-card" style={{ cursor: 'pointer' }} onClick={() => {
+          toast.success("Profile section opened");
+          navigate('/profile/edit');
+        }}>
           <div className="profile-strength-header">
             <h2 className="card-title">Your Profile Strength</h2>
           </div>
@@ -278,7 +281,11 @@ export default function Home() {
                 <li key={task.id} className={task.done ? "done" : "pending"}>
                   <a 
                     href={linkTarget} 
-                    onClick={(e) => { e.preventDefault(); navigate(linkTarget); }}
+                    onClick={(e) => { 
+                      e.preventDefault(); 
+                      if (!task.done) toast.success("Pending info complete");
+                      navigate(linkTarget); 
+                    }}
                     style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', color: 'inherit', width: '100%' }}
                   >
                     <span className="icon">{task.done ? "✓" : "○"}</span> {task.label} {task.id === 'verify' && <span className="icon-blue">💎</span>}
