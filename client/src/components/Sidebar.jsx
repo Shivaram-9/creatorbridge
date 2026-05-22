@@ -27,7 +27,7 @@ export default function Sidebar({ user, msgUnreadCount = 0, logout }) {
     <aside className="sidebar">
       <div className="sidebar-logo">
         <Link to="/home" className="logo-text">
-          <span className="logo-icon">🔷</span> Pactogram
+          <img src="/diamond.png" alt="Diamond Logo" style={{ width: '32px', height: '32px', objectFit: 'contain' }} className="logo-icon-img" /> Pactogram
         </Link>
       </div>
 
