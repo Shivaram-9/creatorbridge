@@ -87,7 +87,7 @@ export default function CreatePost({ onPost, user }) {
         <div className="cp-footer">
           <div className="cp-actions">
             <button type="button" className="cp-action-btn" onClick={() => fileInputRef.current.click()}>
-              <span className="icon">🖼️</span> Media
+              <span className="icon"><MediaIcon /></span> Media
             </button>
             <input
               type="file"

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { api } from "../services/api.js";
+import { GridIcon, BriefcaseIcon, TagIcon, ProfileIcon } from "../components/Icons.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
 import { getSocket } from "../services/socket.js";
 import { BASE_URL } from "../config/api.js";
@@ -453,16 +453,16 @@ export default function UserProfile() {
 
       <div className="profile-tabs-wide">
         <div className={`tab-item-wide ${activeTab === 'posts' ? 'active' : ''}`} onClick={() => setActiveTab('posts')}>
-          <span>📱</span> Posts
+          <span className="tab-icon"><GridIcon /></span> Posts
         </div>
         <div className={`tab-item-wide ${activeTab === 'portfolio' ? 'active' : ''}`} onClick={() => setActiveTab('portfolio')}>
-          <span>💼</span> Portfolio
+          <span className="tab-icon"><BriefcaseIcon /></span> Portfolio
         </div>
         <div className={`tab-item-wide ${activeTab === 'tagged' ? 'active' : ''}`} onClick={() => setActiveTab('tagged')}>
-          <span>🏷️</span> Tagged
+          <span className="tab-icon"><TagIcon /></span> Tagged
         </div>
         <div className={`tab-item-wide ${activeTab === 'about' ? 'active' : ''}`} onClick={() => setActiveTab('about')}>
-          <span>👤</span> About
+          <span className="tab-icon"><ProfileIcon /></span> About
         </div>
       </div>
 

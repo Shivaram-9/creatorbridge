@@ -6,7 +6,10 @@ import {
   BriefcaseIcon, 
   MessageIcon, 
   BookmarkIcon, 
-  ProfileIcon 
+  ProfileIcon,
+  SettingsIcon,
+  HelpCircleIcon,
+  LogOutIcon
 } from "./Icons.jsx";
 import "./Sidebar.css";
 
@@ -49,15 +52,15 @@ export default function Sidebar({ user, msgUnreadCount = 0, logout }) {
 
       <div className="sidebar-footer">
         <Link to="/settings" className={`sidebar-item ${location.pathname === '/settings' ? 'active' : ''}`}>
-          <span className="sidebar-icon">⚙️</span>
+          <span className="sidebar-icon"><SettingsIcon /></span>
           <span className="sidebar-label">Settings</span>
         </Link>
         <Link to="/settings" className="sidebar-item">
-          <span className="sidebar-icon">❓</span>
+          <span className="sidebar-icon"><HelpCircleIcon /></span>
           <span className="sidebar-label">Help Center</span>
         </Link>
         <button className="sidebar-item logout-btn" onClick={logout}>
-          <span className="sidebar-icon">🚪</span>
+          <span className="sidebar-icon"><LogOutIcon /></span>
           <span className="sidebar-label">Logout</span>
         </button>
       </div>
