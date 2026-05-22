@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { GridIcon, BriefcaseIcon, TagIcon, ProfileIcon } from "../components/Icons.jsx";
+import { api } from "../services/api.js";
 import { BASE_URL } from "../config/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";

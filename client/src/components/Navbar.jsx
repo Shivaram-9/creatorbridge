@@ -231,38 +231,7 @@ export default function Navbar({
           </Link>
         </div>
 
-        {user && (
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flex: '0 1 auto' }} className="desktop-search-container">
-            <div className="search-input-container" ref={searchRef}>
-              <form onSubmit={handleSearch}>
-                <span className="search-icon">
-                  <SearchIcon />
-                </span>
-                <input
-                  type="text"
-                  className="search-input"
-                  placeholder="Search creators, brands, categories..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onFocus={() => setIsSearchOpen(true)}
-                />
-                <span className="search-shortcut">⌘K</span>
-                {isSearchOpen && (
-                  <SearchDropdown 
-                    results={searchResults} 
-                    loading={searchLoading} 
-                    onClose={() => setIsSearchOpen(false)}
-                    onItemClick={(item) => {
-                      if (!item) return;
-                      setIsSearchOpen(false);
-                      setSearchQuery("");
-                    }}
-                  />
-                )}
-              </form>
-            </div>
-          </div>
-        )}
+
 
         <div style={{ flex: '1 0 0', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '16px' }}>
           {user && (

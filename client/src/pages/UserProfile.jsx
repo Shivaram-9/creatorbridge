@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { GridIcon, BriefcaseIcon, TagIcon, ProfileIcon } from "../components/Icons.jsx";
+import { api } from "../services/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import { getSocket } from "../services/socket.js";
 import { BASE_URL } from "../config/api.js";
