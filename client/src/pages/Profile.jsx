@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { GridIcon, BriefcaseIcon, TagIcon, ProfileIcon } from "../components/Icons.jsx";
+import { GridIcon, BriefcaseIcon, TagIcon, ProfileIcon, RocketIcon, ShoppingBagIcon, StarIcon, HandshakeIcon, InfinityIcon, TrendingDownIcon, EyeIcon, UsersIcon } from "../components/Icons.jsx";
 import { api } from "../services/api.js";
 import { BASE_URL } from "../config/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
@@ -316,17 +316,17 @@ export default function Profile() {
           <a href="#" onClick={(e) => { e.preventDefault(); navigate('/collaborations'); }}>View all opportunities →</a>
         </div>
         <div className="collab-tags">
-          <span className="collab-tag blue">🚀 Brand Campaigns</span>
-          <span className="collab-tag green">🛍️ Product Reviews</span>
-          <span className="collab-tag purple">⭐ Sponsored Content</span>
-          <span className="collab-tag orange">🤝 Brand Partnerships</span>
-          <span className="collab-tag blue">♾️ Long Term Collaborations</span>
+          <span className="collab-tag blue"><RocketIcon /> Brand Campaigns</span>
+          <span className="collab-tag green"><ShoppingBagIcon /> Product Reviews</span>
+          <span className="collab-tag purple"><StarIcon /> Sponsored Content</span>
+          <span className="collab-tag orange"><HandshakeIcon /> Brand Partnerships</span>
+          <span className="collab-tag blue"><InfinityIcon /> Long Term Collaborations</span>
         </div>
       </div>
 
       <div className="stats-cards-row">
         <div className="stat-card-wide clickable" onClick={() => navigate(`/user/${user._id}/alliances`)}>
-          <div className="stat-icon-wrap purple">👥</div>
+          <div className="stat-icon-wrap purple"><UsersIcon /></div>
           <div className="stat-info">
             <span className="stat-val">{fmtCount(new Set([...(user?.followers || []), ...(user?.following || [])]).size)}</span>
             <span className="stat-lbl">Connections</span>
@@ -334,7 +334,7 @@ export default function Profile() {
           </div>
         </div>
         <div className="stat-card-wide">
-          <div className="stat-icon-wrap green">💼</div>
+          <div className="stat-icon-wrap green"><BriefcaseIcon /></div>
           <div className="stat-info">
             <span className="stat-val">{fmtCount(user?.profileViews || 0)}+</span>
             <span className="stat-lbl">Profile Views</span>
@@ -342,7 +342,7 @@ export default function Profile() {
           </div>
         </div>
         <div className="stat-card-wide">
-          <div className="stat-icon-wrap orange">📉</div>
+          <div className="stat-icon-wrap orange"><TrendingDownIcon /></div>
           <div className="stat-info">
             <span className="stat-val">{fmtCount((user?.profileViews || 0) * 2)}</span>
             <span className="stat-lbl">Profile Reach</span>
@@ -350,7 +350,7 @@ export default function Profile() {
           </div>
         </div>
         <div className="stat-card-wide">
-          <div className="stat-icon-wrap blue">👁️</div>
+          <div className="stat-icon-wrap blue"><EyeIcon /></div>
           <div className="stat-info">
             <span className="stat-val">8</span>
             <span className="stat-lbl">Featured In</span>
