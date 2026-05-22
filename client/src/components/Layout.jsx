@@ -4,7 +4,7 @@ import { useAuth } from "../context/AuthContext.jsx";
 import Navbar from "./Navbar.jsx";
 import BottomNav from "./BottomNav.jsx";
 import Sidebar from "./Sidebar.jsx";
-import AIAssistant from "./AIAssistant.jsx";
+
 import GlobalPostModal from "./GlobalPostModal.jsx";
 import { api } from "../services/api.js";
 import { connectSocket } from "../services/socket.js";
@@ -199,7 +199,7 @@ export default function Layout() {
         </main>
 
         {(!isChatActive) && <BottomNav msgUnreadCount={msgUnreadTotal} />}
-        {!isMessagesPage && <AIAssistant />}
+
       </div>
       <GlobalPostModal user={user} />
     </div>

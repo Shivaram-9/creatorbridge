@@ -89,15 +89,6 @@ export default function CreatePost({ onPost, user }) {
             <button type="button" className="cp-action-btn" onClick={() => fileInputRef.current.click()}>
               <span className="icon">🖼️</span> Media
             </button>
-            <button type="button" className="cp-action-btn" onClick={() => fileInputRef.current.click()}>
-              <span className="icon">📹</span> Video
-            </button>
-            <button type="button" className="cp-action-btn">
-              <span className="icon">💼</span> Project
-            </button>
-            <button type="button" className="cp-action-btn">
-              <span className="icon">📅</span> Event
-            </button>
             <input
               type="file"
               ref={fileInputRef}

@@ -16,11 +16,7 @@ export default function Sidebar({ user, msgUnreadCount = 0, logout }) {
   const menuItems = [
     { name: "Home", path: "/home", icon: <HomeIcon /> },
     { name: "Discover", path: "/discover", icon: <SearchIcon /> },
-    { name: "Creators", path: "/discover?type=creator", icon: <UsersIcon /> },
-    { name: "Brands", path: "/discover?type=brand", icon: <UsersIcon /> },
-    { name: "Opportunities", path: "/collaborations", icon: <BriefcaseIcon /> },
     { name: "Messages", path: "/messages", icon: <MessageIcon />, badge: msgUnreadCount },
-    { name: "Bookmarks", path: "/saved", icon: <BookmarkIcon /> },
     { name: "Profile", path: user ? `/user/${user._id}` : "/profile", icon: <ProfileIcon /> },
   ];
 

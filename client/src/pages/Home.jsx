@@ -189,7 +189,7 @@ export default function Home() {
         {/* Feed Tabs */}
         <div className="feed-tabs-container">
           <div className="feed-tabs">
-            {["All Feed", "Following", "For You", "Projects", "Announcements"].map(tab => (
+            {["All Feed", "Following"].map(tab => (
               <button 
                 key={tab}
                 className={`feed-tab ${activeTab === tab ? "active" : ""}`}
@@ -321,58 +321,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Trending Categories Card */}
-        <div className="sidebar-card">
-          <div className="card-header-flex">
-            <h2 className="card-title">Trending Categories</h2>
-            <a href="/discover" className="view-all-link">View all</a>
-          </div>
-          <div className="trending-tags">
-            <span className="trending-tag tag-purple">#Fashion</span>
-            <span className="trending-tag tag-orange">#Gaming</span>
-            <span className="trending-tag tag-red">#Tech</span>
-            <span className="trending-tag tag-blue">#Lifestyle</span>
-            <span className="trending-tag tag-green">#Photography</span>
-            <span className="trending-tag tag-teal">#Travel</span>
-            <span className="trending-tag tag-indigo">#Fitness</span>
-            <span className="trending-tag tag-cyan">#Music</span>
-          </div>
-        </div>
 
-        {/* Suggested Brands Card */}
-        <div className="sidebar-card">
-          <div className="card-header-flex">
-            <h2 className="card-title">Suggested Brands</h2>
-            <a href="/brands" className="view-all-link">View all</a>
-          </div>
-          <div className="creator-list">
-            {/* Mock data for visual layout */}
-            <div className="creator-item">
-              <div className="creator-avatar brand-avatar" style={{ background: '#000' }}>N</div>
-              <div className="creator-info">
-                <span className="creator-name">Nike India <span className="verified-icon">💎</span></span>
-                <span className="creator-category">Sportswear Brand</span>
-              </div>
-              <button className="creator-btn btn-outline-primary">Follow</button>
-            </div>
-            <div className="creator-item">
-              <div className="creator-avatar brand-avatar" style={{ background: '#e11d48' }}>B</div>
-              <div className="creator-info">
-                <span className="creator-name">Boat Lifestyle <span className="verified-icon">💎</span></span>
-                <span className="creator-category">Audio Brand</span>
-              </div>
-              <button className="creator-btn btn-outline-primary">Follow</button>
-            </div>
-            <div className="creator-item">
-              <div className="creator-avatar brand-avatar" style={{ background: '#2563eb' }}>I</div>
-              <div className="creator-info">
-                <span className="creator-name">Intel India <span className="verified-icon">💎</span></span>
-                <span className="creator-category">Technology Brand</span>
-              </div>
-              <button className="creator-btn btn-outline-primary">Follow</button>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );
