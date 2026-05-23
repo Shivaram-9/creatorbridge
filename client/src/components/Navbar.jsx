@@ -226,8 +226,8 @@ export default function Navbar({
     <header className="navbar-fixed">
       <div className="navbar-inner">
         <div style={{ flex: '1 0 0' }}>
-          <Link to="/home" className="logo-main-text" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <img src="/diamond.png" alt="Diamond Logo" style={{ width: '28px', height: '28px', objectFit: 'contain' }} /> Pactogram
+          <Link to="/home" className="logo-main-text" style={{ display: 'flex', alignItems: 'center' }}>
+            <img src="/pactogram-logo.png" alt="Pactogram" style={{ height: '32px', objectFit: 'contain' }} />
           </Link>
         </div>
 
