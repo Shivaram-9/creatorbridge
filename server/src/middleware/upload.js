@@ -98,7 +98,7 @@ export const coverUpload = multer({
 export const postUpload = multer({
   storage: useCloudinary ? cloudinaryStorage("posts", "auto") : diskStorage("uploads/posts/"),
   fileFilter: mediaFilter,
-  limits: { fileSize: 20 * 1024 * 1024 }, // 20MB for posts
+  limits: { fileSize: 50 * 1024 * 1024 }, // 50MB for posts
 });
 
 // Story upload

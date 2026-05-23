@@ -16,13 +16,11 @@ export default function CreatePost({ onPost, user }) {
     if (files.length > 0) {
       setMediaFiles((prev) => [...prev, ...files].slice(0, 10));
       
-      files.forEach(file => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setPreviews((prev) => [...prev, reader.result].slice(0, 10));
-        };
-        reader.readAsDataURL(file);
-      });
+      const newPreviews = files.map(file => ({
+        url: URL.createObjectURL(file),
+        type: file.type
+      }));
+      setPreviews((prev) => [...prev, ...newPreviews].slice(0, 10));
     }
   };
 
@@ -76,7 +74,11 @@ export default function CreatePost({ onPost, user }) {
         <div className="cp-previews">
           {previews.map((url, i) => (
             <div key={i} className="cp-preview-item">
-              <img src={url} alt="" />
+              {typeof url === 'object' && url.type?.startsWith('video') ? (
+                <video src={url.url} controls style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              ) : (
+                <img src={typeof url === 'object' ? url.url : url} alt="" />
+              )}
               <button onClick={() => removeMedia(i)}>✕</button>
             </div>
           ))}
