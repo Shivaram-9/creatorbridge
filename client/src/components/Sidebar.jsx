@@ -27,7 +27,7 @@ export default function Sidebar({ user, msgUnreadCount = 0, logout }) {
     <aside className="sidebar">
       <div className="sidebar-logo">
         <Link to="/home" className="logo-text" style={{ display: 'flex', alignItems: 'center' }}>
-          <img src="/pactogram-logo.png" alt="Pactogram" style={{ height: '32px', objectFit: 'contain' }} className="logo-icon-img" />
+          <img src="/pactogram-logo.png" alt="Pactogram" style={{ height: '40px', width: 'auto', flexShrink: 0 }} />
         </Link>
       </div>
 
