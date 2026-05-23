@@ -227,7 +227,7 @@ export default function Navbar({
       <div className="navbar-inner">
         <div style={{ flex: '1 0 0' }}>
           <Link to="/home" className="logo-main-text" style={{ display: 'flex', alignItems: 'center' }}>
-            <img src="/pactogram-logo.png" alt="Pactogram" style={{ height: '40px', width: '180px', objectFit: 'cover', objectPosition: 'center', flexShrink: 0, borderRadius: '4px' }} />
+            <img src="/pactogram-logo.png" alt="Pactogram" style={{ height: '36px', width: 'auto', flexShrink: 0 }} />
           </Link>
         </div>
 
