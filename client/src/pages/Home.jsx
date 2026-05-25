@@ -139,41 +139,7 @@ export default function Home() {
     <div className="home-grid">
       {/* Main Feed Column */}
       <div className="feed-col">
-        <div className="home-header-greeting">
-          <h1>{getGreeting()}, {user?.name?.split(' ')[0] || user?.username || 'Creator'}! 👋</h1>
-          <p>Explore, connect and grow your creator network.</p>
-        </div>
 
-        {/* People you may want to connect with (Carousel) */}
-        <div className="carousel-container">
-          <div className="carousel-header-flex">
-            <h2 className="carousel-title">People you may want to connect with</h2>
-            <button className="carousel-view-all" onClick={() => navigate('/discover')}>View all</button>
-          </div>
-          <div className="carousel-items">
-            {suggestedUsers.length === 0 ? (
-              <div style={{ color: '#71839B', fontSize: '0.85rem', padding: '20px 0' }}>No suggestions at the moment.</div>
-            ) : (
-              suggestedUsers.map(u => (
-                <div key={u._id} className="carousel-item" onClick={() => navigate(`/user/${u._id}`)}>
-                  <div className="carousel-avatar-wrap">
-                    <img src={u.avatar ? (u.avatar.startsWith('http') ? u.avatar : `${BASE_URL}${u.avatar}`) : "/placeholder_avatar.png"} alt={u.username} className="carousel-avatar" />
-                  </div>
-                  <div className="carousel-info">
-                    <span className="carousel-name">
-                      {u.name || u.username}
-                      {u.isVerified && <span className="verified-icon">💎</span>}
-                    </span>
-                    <span className="carousel-role">{u.role === 'brand' ? 'Brand' : u.category || 'Creator'}</span>
-                  </div>
-                  <button className="carousel-btn btn-outline-primary" onClick={(e) => { e.stopPropagation(); navigate(`/user/${u._id}`); }}>
-                    {u.role === 'brand' ? 'Follow' : 'Connect'}
-                  </button>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
 
         {/* Verification Banner (Mobile only) */}
         {!user?.isVerified && showVerificationBanner && (
