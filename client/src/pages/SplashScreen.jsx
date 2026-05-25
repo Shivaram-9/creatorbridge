@@ -27,8 +27,8 @@ export default function SplashScreen() {
   return (
     <div className="splash-container">
       <picture className="splash-picture">
-        <source media="(min-width: 1024px)" srcSet="/splash_pc.jpg" />
-        <img src="/splash_mobile.jpg" alt="Pactogram" className="splash-full-image" />
+        <source media="(min-width: 1024px)" srcSet="/desktop_splash.jpeg" />
+        <img src="/mobile_splash.jpeg" alt="Pactogram" className="splash-full-image" />
       </picture>
     </div>
   );
