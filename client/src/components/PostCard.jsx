@@ -10,6 +10,7 @@ import MediaGallery from "./MediaGallery.jsx";
 import "./PostCard.css";
 import Lightbox from "./Lightbox.jsx";
 import CollectionModal from "./CollectionModal.jsx";
+import UserListModal from "./UserListModal.jsx";
 import toast from "react-hot-toast";
 
 const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
@@ -43,6 +44,7 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
   const [showCollectionModal, setShowCollectionModal] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
 
   if (!post) return null;
 
@@ -116,12 +118,23 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
     }
   };
 
-  const handleShare = () => {
-    const postUrl = `${window.location.origin}/post/${post._id}`;
-    navigator.clipboard.writeText(postUrl);
-    toast.success("Link copied to clipboard");
-    setShareStatus("Copied!");
-    setTimeout(() => setShareStatus("Share"), 2000);
+  const handleShare = () => setShowShareModal(true);
+
+  const handleShareToUser = async (targetUser) => {
+    try {
+      const postUrl = `${window.location.origin}/post/${post._id}`;
+      const res = await api.messages.send({
+        receiverId: targetUser._id,
+        content: `Check out this post: ${postUrl}`
+      });
+      if (res.error) toast.error(res.error);
+      else {
+        toast.success(`Shared with @${targetUser.username}!`);
+        setShowShareModal(false);
+      }
+    } catch (err) {
+      toast.error("Failed to share post");
+    }
   };
 
   const handleCommentSubmit = async (e) => {
@@ -290,6 +303,14 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
 
       {showReportModal && <ReportModal targetType="post" targetId={post._id} onClose={() => setShowReportModal(false)} />}
       {showCollectionModal && <CollectionModal postId={post._id} onClose={() => setShowCollectionModal(false)} />}
+      {showShareModal && (
+        <UserListModal 
+          userId={user._id} 
+          type="following" 
+          onClose={() => setShowShareModal(false)} 
+          onSelect={handleShareToUser}
+        />
+      )}
     </div>
   );
 });

@@ -33,6 +33,7 @@ export default function Profile() {
   const [lightboxPost, setLightboxPost] = useState(null);
   const [showShareModal, setShowShareModal] = useState(false);
   const [showExperienceModal, setShowExperienceModal] = useState(false);
+  const [postToShare, setPostToShare] = useState(null);
   const coverInputRef = useRef(null);
 
   const loadData = useCallback(async () => {
@@ -128,9 +129,25 @@ export default function Profile() {
 
   const handleSharePost = (e, post) => {
     e.stopPropagation();
-    const postUrl = `${window.location.origin}/post/${post._id}`;
-    navigator.clipboard.writeText(postUrl);
-    toast.success("Link copied to clipboard");
+    setPostToShare(post);
+  };
+
+  const handleSharePostToUser = async (targetUser) => {
+    try {
+      if (!postToShare) return;
+      const postUrl = `${window.location.origin}/post/${postToShare._id}`;
+      const res = await api.messages.send({
+        receiverId: targetUser._id,
+        content: `Check out this post: ${postUrl}`
+      });
+      if (res.error) toast.error(res.error);
+      else {
+        toast.success(`Shared with @${targetUser.username}!`);
+        setPostToShare(null);
+      }
+    } catch (err) {
+      toast.error("Failed to share post");
+    }
   };
 
   const handleShare = () => setShowShareModal(true);
@@ -450,6 +467,14 @@ export default function Profile() {
           type="following" 
           onClose={() => setShowShareModal(false)} 
           onSelect={handleShareToUser}
+        />
+      )}
+      {postToShare && (
+        <UserListModal 
+          userId={user._id} 
+          type="following" 
+          onClose={() => setPostToShare(null)} 
+          onSelect={handleSharePostToUser}
         />
       )}
 
