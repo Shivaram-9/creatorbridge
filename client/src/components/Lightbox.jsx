@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import "./Lightbox.css";
 
 export default function Lightbox({ media = [], startIndex = 0, onClose }) {
@@ -17,7 +18,7 @@ export default function Lightbox({ media = [], startIndex = 0, onClose }) {
   const next = () => setCurrentIndex((prev) => (prev + 1) % media.length);
   const prev = () => setCurrentIndex((prev) => (prev - 1 + media.length) % media.length);
 
-  return (
+  return createPortal(
     <div className="lightbox-overlay" onClick={onClose}>
       <button className="lb-close" onClick={onClose}>✕</button>
       
@@ -42,6 +43,7 @@ export default function Lightbox({ media = [], startIndex = 0, onClose }) {
       <div className="lb-footer">
         {currentIndex + 1} / {media.length}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

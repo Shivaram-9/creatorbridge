@@ -71,18 +71,20 @@ const renderMessageContent = (text, isMine) => {
       const isPostUrl = part.includes('/post/');
       return (
         <span key={index}>
-          <a 
-            href={part} 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            style={{ 
-              color: isMine ? 'white' : '#6366f1', 
-              textDecoration: 'underline',
-              wordBreak: 'break-all'
-            }}
-          >
-            {part}
-          </a>
+          {!isPostUrl && (
+            <a 
+              href={part} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              style={{ 
+                color: isMine ? 'white' : '#6366f1', 
+                textDecoration: 'underline',
+                wordBreak: 'break-all'
+              }}
+            >
+              {part}
+            </a>
+          )}
           {isPostUrl && <SharedPostPreview url={part} />}
         </span>
       );
