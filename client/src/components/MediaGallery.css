@@ -21,8 +21,15 @@
 
 .gallery-item img, .gallery-item video {
   width: 100%;
-  max-height: 800px;
-  object-fit: cover;
+  max-height: 480px; /* Reduced from 800px to prevent huge zoomed in images */
+  object-fit: contain; /* Prevents cropping and zooming so full images are visible */
+  background: #f8fafc;
+}
+
+@media (max-width: 768px) {
+  .gallery-item img, .gallery-item video {
+    max-height: 360px; /* Even more compact and appropriately scaled on mobile */
+  }
 }
 
 .gallery-btn {
