@@ -160,6 +160,11 @@ export default function Profile() {
     return null;
   };
 
+  const isVideo = (url) => {
+    if (!url) return false;
+    return !!url.toLowerCase().split('?')[0].match(/\.(mp4|mov|webm)$/);
+  };
+
   const handleCoverChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -374,7 +379,11 @@ export default function Profile() {
               posts.map(post => (
                 <div key={post._id} className="profile-ig-grid-item" onClick={() => setLightboxPost(post)}>
                   {getPostImage(post) ? (
-                    <img src={getPostImage(post)} alt="" className="profile-ig-grid-img" />
+                    isVideo(getPostImage(post)) ? (
+                      <video src={getPostImage(post)} className="profile-ig-grid-img" muted loop playsInline />
+                    ) : (
+                      <img src={getPostImage(post)} alt="" className="profile-ig-grid-img" />
+                    )
                   ) : (
                     <div className="profile-ig-grid-text">{post.content}</div>
                   )}
@@ -399,7 +408,11 @@ export default function Profile() {
             <button className="profile-ig-lightbox-close" onClick={() => setLightboxPost(null)}>✕</button>
             {getPostImage(lightboxPost) && (
               <div className="profile-ig-lightbox-media">
-                <img src={getPostImage(lightboxPost)} alt="" className="profile-ig-lightbox-img" />
+                {isVideo(getPostImage(lightboxPost)) ? (
+                  <video src={getPostImage(lightboxPost)} controls autoPlay playsInline className="profile-ig-lightbox-img" style={{ objectFit: 'contain' }} />
+                ) : (
+                  <img src={getPostImage(lightboxPost)} alt="" className="profile-ig-lightbox-img" style={{ objectFit: 'contain' }} />
+                )}
               </div>
             )}
             <div className="profile-ig-lightbox-body">
