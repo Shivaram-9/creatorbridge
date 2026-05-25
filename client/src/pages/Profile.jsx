@@ -187,16 +187,6 @@ export default function Profile() {
 
   return (
     <div className="profile-container fade-in">
-      <div className="cover-container">
-        <img src={user?.cover ? (user.cover.startsWith("http") ? user.cover : `${BASE_URL}${user.cover}`) : "https://via.placeholder.com/1200x300"} alt="Cover" className="cover-img" />
-        <div className="cover-actions">
-          <button className="cover-btn" onClick={() => coverInputRef.current.click()}>
-            <span>📷</span> Edit cover
-          </button>
-          <input type="file" ref={coverInputRef} hidden accept="image/*" onChange={handleCoverChange} />
-        </div>
-      </div>
-
       <div className="profile-header-base">
         <div className="profile-top-row">
           <div className="profile-info-section">
@@ -205,70 +195,12 @@ export default function Profile() {
             </div>
             
             <div className="profile-info-content">
-              <h1 className="profile-display-name">
-                {user?.name || user?.username}
-                {(user?.isVerified || user?.isPremium) && (
-                  <span className="verified-badge-pill">
-                    <VerifiedBadge size="sm" tier={user.premiumTier} /> 
-                    {user.role === 'brand' ? 'Verified Brand' : 'Verified Creator'}
-                  </span>
-                )}
-              </h1>
-              
-              <div className="profile-title-row" style={{ marginTop: '8px', marginBottom: '16px' }}>
-                <span>{user?.category || "Content Creator"}</span>
-                <span className="profile-title-separator">|</span>
-                <span>{user?.role === 'brand' ? 'Brand' : 'Creator'}</span>
-                {user?.location && (
-                  <>
-                    <span className="profile-title-separator">|</span>
-                    <span>📍 {user.location}</span>
-                  </>
-                )}
-              </div>
-
-              <p className="profile-bio-text">{user?.bio || "No bio yet."}</p>
-
-              {user?.experience && (
-                <div style={{ marginTop: '16px' }}>
-                  <h4 style={{ fontSize: '14px', fontWeight: '600', marginBottom: '4px', color: 'var(--text-main)' }}>Experience</h4>
-                  <p className="profile-bio-text" style={{ whiteSpace: 'pre-line' }}>{user.experience}</p>
-                </div>
-              )}
-
-              {user?.website && (
-                <div style={{ marginTop: '12px' }}>
-                  <a href={user.website.startsWith('http') ? user.website : `https://${user.website}`} target="_blank" rel="noopener noreferrer" className="profile-link-item">
-                    🔗 {user.website.replace(/^https?:\/\//, '')}
-                  </a>
-                </div>
-              )}
-              {user?.portfolioLink && (
-                <div style={{ marginTop: '8px' }}>
-                  <a href={user.portfolioLink.startsWith('http') ? user.portfolioLink : `https://${user.portfolioLink}`} target="_blank" rel="noopener noreferrer" className="profile-link-item">
-                    🎨 Portfolio
-                  </a>
-                </div>
-              )}
-              {user?.socialMediaLink && (
-                <div style={{ marginTop: '8px' }}>
-                  <a href={user.socialMediaLink.startsWith('http') ? user.socialMediaLink : `https://${user.socialMediaLink}`} target="_blank" rel="noopener noreferrer" className="profile-link-item">
-                    💼 LinkedIn
-                  </a>
-                </div>
-              )}
-
-              <div className="profile-actions-row">
-                <button className="action-btn secondary" onClick={() => navigate("/profile/edit")}>
-                  <UsersIcon /> Edit
-                </button>
-                <button className="action-btn secondary" onClick={handleShare}>
-                  <SendIcon /> {copyStatus ? "Copied!" : "Share"}
-                </button>
+              <div className="profile-username-row">
+                <h2 className="profile-username">{user?.username}</h2>
                 <div style={{ position: 'relative' }}>
-                  <button className="action-btn secondary icon-only" onClick={() => setShowMenu(!showMenu)}>•••</button>
+                  <button className="action-btn secondary icon-only" onClick={() => setShowMenu(!showMenu)} style={{ background: 'transparent', border: 'none', fontSize: '20px' }}>⚙️</button>
                   {showMenu && (
-                    <div className="dropdown-menu show slide-in" style={{ position: 'absolute', left: 0, top: '100%', marginTop: '8px', background: 'white', border: '1px solid #eee', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', zIndex: 100, minWidth: '150px' }}>
+                    <div className="dropdown-menu show slide-in" style={{ position: 'absolute', right: 0, top: '100%', marginTop: '8px', background: 'white', border: '1px solid #eee', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', zIndex: 100, minWidth: '150px' }}>
                       <button className="dropdown-item" onClick={() => navigate("/profile/edit")}>Edit Profile</button>
                       <button className="dropdown-item" onClick={() => navigate("/settings")}>Settings</button>
                       <button className="dropdown-item danger" onClick={() => { localStorage.clear(); window.location.href = "/login"; }}>Logout</button>
@@ -276,11 +208,78 @@ export default function Profile() {
                   )}
                 </div>
               </div>
+
+              <div className="profile-stats-row">
+                <span><strong>{fmtCount(posts.length)}</strong> posts</span>
+                <span className="clickable" onClick={() => navigate(`/user/${user._id}/alliances`)}><strong>{fmtCount(user?.followers?.length || 0)}</strong> followers</span>
+                <span className="clickable" onClick={() => navigate(`/user/${user._id}/alliances`)}><strong>{fmtCount(user?.following?.length || 0)}</strong> following</span>
+              </div>
+              
+              <div className="profile-bio-details">
+                <h1 className="profile-display-name">
+                  {user?.name || user?.username}
+                  {(user?.isVerified || user?.isPremium) && (
+                    <span className="verified-badge-pill">
+                      <VerifiedBadge size="sm" tier={user.premiumTier} /> 
+                    </span>
+                  )}
+                </h1>
+                
+                <div className="profile-title-row" style={{ marginTop: '4px', marginBottom: '8px' }}>
+                  <span>{user?.category || "Content Creator"}</span>
+                  <span className="profile-title-separator">|</span>
+                  <span>{user?.role === 'brand' ? 'Brand' : 'Creator'}</span>
+                  {user?.location && (
+                    <>
+                      <span className="profile-title-separator">|</span>
+                      <span>📍 {user.location}</span>
+                    </>
+                  )}
+                </div>
+
+                <p className="profile-bio-text">{user?.bio || "No bio yet."}</p>
+
+                {user?.experience && (
+                  <div style={{ marginTop: '8px' }}>
+                    <p className="profile-bio-text" style={{ whiteSpace: 'pre-line' }}>{user.experience}</p>
+                  </div>
+                )}
+
+                {user?.website && (
+                  <div style={{ marginTop: '8px' }}>
+                    <a href={user.website.startsWith('http') ? user.website : `https://${user.website}`} target="_blank" rel="noopener noreferrer" className="profile-link-item">
+                      🔗 {user.website.replace(/^https?:\/\//, '')}
+                    </a>
+                  </div>
+                )}
+                {user?.portfolioLink && (
+                  <div style={{ marginTop: '4px' }}>
+                    <a href={user.portfolioLink.startsWith('http') ? user.portfolioLink : `https://${user.portfolioLink}`} target="_blank" rel="noopener noreferrer" className="profile-link-item">
+                      🎨 Portfolio
+                    </a>
+                  </div>
+                )}
+                {user?.socialMediaLink && (
+                  <div style={{ marginTop: '4px' }}>
+                    <a href={user.socialMediaLink.startsWith('http') ? user.socialMediaLink : `https://${user.socialMediaLink}`} target="_blank" rel="noopener noreferrer" className="profile-link-item">
+                      💼 LinkedIn
+                    </a>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-
-
         </div>
+
+        <div className="profile-actions-full-width">
+          <button className="action-btn secondary full-width" onClick={() => navigate("/profile/edit")}>
+            Edit profile
+          </button>
+          <button className="action-btn secondary full-width" onClick={handleShare}>
+            {copyStatus ? "Copied!" : "Share profile"}
+          </button>
+        </div>
+      </div>  </div>
       </div>
 
 
