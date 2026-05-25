@@ -373,47 +373,6 @@ export default function UserProfile() {
             </div>
           </div>
 
-          <div className="identity-overview-card">
-            <h2 className="overview-title">Identity Overview ℹ️</h2>
-            <div className="overview-list">
-              <div className="overview-item">
-                <span className="overview-key">Professional Since</span>
-                <span className="overview-val">2020</span>
-              </div>
-              <div className="overview-item">
-                <span className="overview-key">Industry</span>
-                <span className="overview-val">{profile?.category || "Tech & Gaming"}</span>
-              </div>
-              <div className="overview-item">
-                <span className="overview-key">Creator Type</span>
-                <span className="overview-val">{profile?.role === 'brand' ? 'Brand' : 'Content Creator'}</span>
-              </div>
-              <div className="overview-item">
-                <span className="overview-key">Verified Identity</span>
-                <span className="overview-val" style={{ color: profile?.isVerified ? '#2563EB' : 'inherit' }}>
-                  {profile?.isVerified ? "Verified" : "Not Verified"}
-                </span>
-              </div>
-              <div className="overview-item">
-                <span className="overview-key">Network Reach</span>
-                <span className="overview-val">{fmtCount(profile?.profileViews || 12600)}+</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="collab-section">
-        <div className="collab-header">
-          <h3>Open to Collaborate On</h3>
-          <a href="#" onClick={(e) => { e.preventDefault(); navigate('/collaborations'); }}>View all opportunities →</a>
-        </div>
-        <div className="collab-tags">
-          <span className="collab-tag blue"><RocketIcon /> Brand Campaigns</span>
-          <span className="collab-tag green"><ShoppingBagIcon /> Product Reviews</span>
-          <span className="collab-tag purple"><StarIcon /> Sponsored Content</span>
-          <span className="collab-tag orange"><HandshakeIcon /> Brand Partnerships</span>
-          <span className="collab-tag blue"><InfinityIcon /> Long Term Collaborations</span>
         </div>
       </div>
 

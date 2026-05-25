@@ -12,6 +12,23 @@ class ErrorBoundary extends React.Component {
 
   componentDidCatch(error, errorInfo) {
     console.error("PLATFORM CRASH RECOVERED:", error, errorInfo);
+    
+    // Auto-recovery for Vite dynamic import chunk failures after deployments
+    const errorStr = error ? error.toString() : "";
+    if (
+      errorStr.includes("Failed to fetch dynamically imported module") ||
+      errorStr.includes("ChunkLoadError") ||
+      errorStr.includes("Loading chunk")
+    ) {
+      const lastReload = sessionStorage.getItem("last_chunk_reload");
+      const now = Date.now();
+      // Only auto-reload once every 10 seconds to avoid infinite loops if offline
+      if (!lastReload || now - parseInt(lastReload) > 10000) {
+        sessionStorage.setItem("last_chunk_reload", now.toString());
+        console.warn("Detected chunk load failure. Reloading app to get fresh version...");
+        window.location.reload();
+      }
+    }
   }
 
   render() {
