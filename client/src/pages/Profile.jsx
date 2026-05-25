@@ -279,9 +279,7 @@ export default function Profile() {
             {copyStatus ? "Copied!" : "Share profile"}
           </button>
         </div>
-      </div>  </div>
       </div>
-
 
 
       <div className="stats-cards-row">
