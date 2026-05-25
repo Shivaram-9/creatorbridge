@@ -32,6 +32,7 @@ export default function Profile() {
   const [showMenu, setShowMenu] = useState(false);
   const [lightboxPost, setLightboxPost] = useState(null);
   const [showShareModal, setShowShareModal] = useState(false);
+  const [showExperienceModal, setShowExperienceModal] = useState(false);
   const coverInputRef = useRef(null);
 
   const loadData = useCallback(async () => {
@@ -232,9 +233,9 @@ export default function Profile() {
 
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '40px', marginTop: '16px', alignItems: 'flex-start' }}>
                 {user?.experience && (
-                  <div>
-                    <h4 style={{ fontSize: '14px', fontWeight: '600', marginBottom: '4px', color: 'var(--text-main)' }}>Experience</h4>
-                    <p className="profile-bio-text" style={{ whiteSpace: 'pre-line', margin: 0 }}>{user.experience}</p>
+                  <div onClick={() => setShowExperienceModal(true)} style={{ cursor: 'pointer' }}>
+                    <h4 style={{ fontSize: '14px', fontWeight: '600', marginBottom: '4px', color: 'var(--text-main)', textDecoration: 'underline' }}>Experience</h4>
+                    <p className="profile-bio-text" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '200px', margin: 0 }}>{user.experience}</p>
                   </div>
                 )}
 
@@ -452,6 +453,21 @@ export default function Profile() {
           onClose={() => setShowShareModal(false)} 
           onSelect={handleShareToUser}
         />
+      )}
+
+      {/* Experience Modal */}
+      {showExperienceModal && (
+        <div className="modal-overlay slide-in" onClick={() => setShowExperienceModal(false)}>
+          <div className="modal-content fade-in" onClick={e => e.stopPropagation()} style={{ maxWidth: '500px', padding: '32px' }}>
+            <h3 style={{ marginBottom: '16px', fontSize: '20px', fontWeight: 'bold' }}>Work Experience</h3>
+            <div style={{ whiteSpace: 'pre-line', color: '#334155', fontSize: '15px', lineHeight: '1.6', maxHeight: '60vh', overflowY: 'auto' }}>
+              {user?.experience}
+            </div>
+            <button className="action-btn primary full-width" style={{ marginTop: '24px' }} onClick={() => setShowExperienceModal(false)}>
+              Close
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );
