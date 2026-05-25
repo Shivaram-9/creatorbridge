@@ -713,8 +713,13 @@
   }
   .profile-title-row {
     flex-direction: column;
+    align-items: flex-start;
     gap: 4px;
     font-size: 13px;
+  }
+  .profile-bio-text {
+    text-align: left;
+    width: 100%;
   }
   .profile-title-separator {
     display: none;
