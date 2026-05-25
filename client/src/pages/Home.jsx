@@ -141,13 +141,7 @@ export default function Home() {
       <div className="feed-col">
 
 
-        {/* Verification Banner (Mobile only) */}
-        {!user?.isVerified && showVerificationBanner && (
-          <VerificationBanner 
-            onClose={() => setShowVerificationBanner(false)} 
-            onVerify={() => navigate('/apply-verification')} 
-          />
-        )}
+
 
         {/* New Post Box */}
         <CreatePost onPost={handleAddPost} user={user} />
