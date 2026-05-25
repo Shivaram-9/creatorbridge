@@ -1,7 +1,7 @@
 .media-gallery {
   position: relative;
   width: 100%;
-  background: #000;
+  background: #f8fafc;
   overflow: hidden;
   border-radius: 12px;
 }
@@ -60,11 +60,10 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.5);
-  transition: background 0.2s;
+  background: rgba(0, 0, 0, 0.2);
 }
 
 .dot.active {
-  background: white;
+  background: rgba(0, 0, 0, 0.7);
   transform: scale(1.2);
 }

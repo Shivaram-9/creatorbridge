@@ -22,7 +22,7 @@ export default function MediaGallery({ media = [] }) {
         {media.map((url, i) => (
           <div key={i} className="gallery-item">
             {url.toLowerCase().split('?')[0].match(/\.(mp4|mov|webm)$/) ? (
-              <video src={url} controls muted loop playsInline />
+              <video src={`${url}#t=0.001`} preload="metadata" controls muted loop playsInline />
             ) : (
               <img 
                 src={url} 
