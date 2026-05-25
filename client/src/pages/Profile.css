@@ -78,18 +78,23 @@
 /* Layout for Avatar & Top Row */
 .profile-top-row {
   display: flex;
-  align-items: flex-start;
+  justify-content: space-between;
+  align-items: stretch;
+  margin-top: 0;
   margin-bottom: 20px;
 }
 
 .profile-avatar-wrap {
-  width: 150px;
-  height: 150px;
+  width: 170px;
+  height: 170px;
   border-radius: 50%;
+  border: 6px solid #ffffff;
   overflow: hidden;
-  background: transparent;
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
   position: relative;
   flex-shrink: 0;
+  margin-top: -95px;
 }
 
 .profile-avatar-wrap img {
@@ -183,9 +188,8 @@
 .profile-info-section {
   display: flex;
   flex-direction: row;
-  gap: 40px;
-  max-width: 800px;
-  width: 100%;
+  gap: 24px;
+  max-width: 700px;
 }
 
 .profile-info-content {
@@ -195,77 +199,40 @@
   padding-top: 0;
 }
 
-.profile-username-row {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 16px;
-}
-
-.profile-username {
-  font-size: 20px;
-  font-weight: 600;
+.profile-display-name {
+  font-size: 28px;
+  font-weight: 800;
   color: #0f172a;
   margin: 0;
-}
-
-.profile-stats-row {
-  display: flex;
-  gap: 24px;
-  margin-bottom: 20px;
-  font-size: 15px;
-}
-
-.profile-stats-row span {
-  color: #0f172a;
-}
-
-.profile-bio-details {
-  display: flex;
-  flex-direction: column;
-  font-size: 14px;
-}
-
-.profile-display-name {
-  font-size: 14px;
-  font-weight: 600;
-  color: #0f172a;
-  margin: 0 0 4px 0;
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
 .verified-badge-pill {
-  color: #3B82F6;
+  background: #EFF6FF;
+  color: #2563EB;
+  border: 1px solid #BFDBFE;
+  padding: 4px 8px;
+  border-radius: 12px;
   font-size: 12px;
+  font-weight: 600;
   display: flex;
   align-items: center;
+  gap: 4px;
 }
 
 .profile-title-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
   color: #64748B;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 500;
 }
 
 .profile-title-separator {
   color: #CBD5E1;
-}
-
-.profile-actions-full-width {
-  display: flex;
-  gap: 12px;
-  margin-top: 16px;
-  width: 100%;
-}
-
-.action-btn.full-width {
-  flex: 1;
-  justify-content: center;
 }
 
 .profile-bio-text {
@@ -708,6 +675,8 @@
   .profile-avatar-wrap {
     width: 100px;
     height: 100px;
+    margin-top: -60px; /* pull up over the cover */
+    border-width: 4px;
     margin-bottom: 16px;
   }
 
