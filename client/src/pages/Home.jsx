@@ -203,7 +203,9 @@ export default function Home() {
       <div className="home-sidebar-col">
         {/* Profile Strength Card */}
         <div className="sidebar-card" style={{ cursor: 'pointer' }} onClick={() => {
-          toast.success("Profile section opened");
+          if (profileScore < 100) {
+            toast.success("Pending info complete");
+          }
           navigate('/profile/edit');
         }}>
           <div className="profile-strength-header">
@@ -243,6 +245,7 @@ export default function Home() {
                     href={linkTarget} 
                     onClick={(e) => { 
                       e.preventDefault(); 
+                      e.stopPropagation();
                       if (!task.done) toast.success("Pending info complete");
                       navigate(linkTarget); 
                     }}
@@ -254,7 +257,7 @@ export default function Home() {
               );
             })}
           </ul>
-          <a href="/profile/edit" className="complete-profile-link" onClick={(e) => { e.preventDefault(); navigate('/profile/edit'); }}>Complete Profile →</a>
+          <a href="/profile/edit" className="complete-profile-link" onClick={(e) => { e.preventDefault(); e.stopPropagation(); navigate('/profile/edit'); }}>Complete Profile →</a>
         </div>
 
         {/* Verified Creators Card */}
