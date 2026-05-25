@@ -279,39 +279,7 @@ export default function Profile() {
             </div>
           </div>
 
-          <div className="identity-overview-card">
-            <h2 className="overview-title">Identity Overview ℹ️</h2>
-            <div className="overview-list">
-              <div className="overview-item">
-                <span className="overview-key">Professional Since</span>
-                <span className="overview-val">2020</span>
-              </div>
-              <div className="overview-item">
-                <span className="overview-key">Industry</span>
-                <span className="overview-val">{user?.category || "Tech & Gaming"}</span>
-              </div>
-              <div className="overview-item">
-                <span className="overview-key">Creator Type</span>
-                <span className="overview-val">{user?.role === 'brand' ? 'Brand' : 'Content Creator'}</span>
-              </div>
-              <div className="overview-item">
-                <span className="overview-key">Verified Identity</span>
-                <span className="overview-val" style={{ color: user?.isVerified ? '#2563EB' : 'inherit' }}>
-                  {user?.isVerified ? "Verified" : "Not Verified"}
-                </span>
-              </div>
-              <div className="overview-item">
-                <span className="overview-key">Network Reach</span>
-                <span className="overview-val">{fmtCount(user?.profileViews || 12600)}+</span>
-              </div>
-            </div>
-            {(!user?.isVerified && !user?.isPremium) && (
-              <div className="get-verified-card">
-                <p className="get-verified-text">Build trust with brands. Get verified to unlock more opportunities.</p>
-                <button className="get-verified-btn" onClick={() => navigate("/apply-verification")}>Get Verified</button>
-              </div>
-            )}
-          </div>
+
         </div>
       </div>
 

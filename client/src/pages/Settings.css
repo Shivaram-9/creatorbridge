@@ -334,6 +334,130 @@ input:checked + .slider:before {
   margin: 0;
 }
 
+/* Verification Section */
+.verification-section {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.verification-content-wrapper {
+  background: #f8fafc;
+  border-radius: 20px;
+  padding: 40px;
+  display: flex;
+  gap: 40px;
+  align-items: center;
+  max-width: 900px;
+  width: 100%;
+}
+
+.verification-info-col {
+  flex: 1;
+}
+
+.verification-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 8px;
+}
+
+.verification-subtitle {
+  font-size: 15px;
+  color: #475569;
+  margin-bottom: 24px;
+}
+
+.verification-benefits {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.verification-benefits li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 15px;
+  color: #334155;
+  font-weight: 500;
+}
+
+.verification-pricing-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 32px;
+  width: 280px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pricing-icon-wrapper {
+  background: #EFF6FF;
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.pricing-amount {
+  font-size: 32px;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 8px;
+}
+
+.pricing-badge {
+  font-size: 13px;
+  font-weight: 700;
+  color: #475569;
+  margin-bottom: 16px;
+}
+
+.pricing-future {
+  font-size: 12px;
+  color: #94a3b8;
+  margin-bottom: 24px;
+}
+
+.get-verified-action-btn {
+  background: #2563EB;
+  color: white;
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.get-verified-action-btn:hover {
+  background: #1D4ED8;
+}
+
+@media (max-width: 768px) {
+  .verification-content-wrapper {
+    flex-direction: column;
+    padding: 24px;
+    gap: 32px;
+  }
+  
+  .verification-pricing-card {
+    width: 100%;
+  }
+}
+
 @media (max-width: 900px) {
   .settings-page {
     padding: 0;
