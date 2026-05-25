@@ -27,8 +27,8 @@ export default function Lightbox({ media = [], startIndex = 0, onClose }) {
         )}
         
         <div className="lb-main">
-          {media[currentIndex]?.endsWith(".mp4") ? (
-            <video src={media[currentIndex]} controls autoPlay />
+          {media[currentIndex]?.toLowerCase().split('?')[0].match(/\.(mp4|mov|webm)$/) ? (
+            <video src={media[currentIndex]} controls autoPlay playsInline />
           ) : (
             <img src={media[currentIndex]} alt="" className="zoomable" />
           )}
