@@ -20,7 +20,23 @@ function SharedPostPreview({ url }) {
     }
   }, [url]);
 
-  if (!post) return null;
+  if (!post) {
+    return (
+      <div style={{ 
+        marginTop: '8px', 
+        marginBottom: '8px', 
+        padding: '12px 16px', 
+        background: '#fff', 
+        borderRadius: '12px', 
+        border: '1px solid rgba(0,0,0,0.1)', 
+        width: '240px', 
+        fontSize: '12px', 
+        color: '#64748b' 
+      }}>
+        Loading preview...
+      </div>
+    );
+  }
 
   const getMediaUrl = (url) => {
     if (!url) return null;
@@ -32,8 +48,6 @@ function SharedPostPreview({ url }) {
 
   const mediaList = post.media?.length ? post.media : (post.image ? [post.image] : []);
   const mediaUrl = mediaList[0] ? getMediaUrl(mediaList[0]) : null;
-
-  if (!mediaUrl) return null;
 
   return (
     <div 
@@ -52,12 +66,18 @@ function SharedPostPreview({ url }) {
     >
       <div style={{ padding: '8px 12px', display: 'flex', alignItems: 'center', gap: '8px', borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
         <Avatar user={post.user} size="sm" />
-        <span style={{ fontSize: '13px', fontWeight: '600', color: '#0f172a' }}>{post.user?.name || post.username || 'User'}</span>
+        <span style={{ fontSize: '13px', fontWeight: '600', color: '#0f172a' }}>{post.user?.name || post.user?.username || post.username || 'User'}</span>
       </div>
-      {mediaUrl.toLowerCase().split('?')[0].match(/\.(mp4|mov|webm)$/) ? (
-        <video src={`${mediaUrl}#t=0.001`} preload="metadata" style={{ width: '100%', height: '240px', objectFit: 'cover', display: 'block' }} />
+      {mediaUrl ? (
+        mediaUrl.toLowerCase().split('?')[0].match(/\.(mp4|mov|webm)$/) ? (
+          <video src={`${mediaUrl}#t=0.001`} preload="metadata" style={{ width: '100%', height: '200px', objectFit: 'cover', display: 'block' }} />
+        ) : (
+          <img src={mediaUrl} style={{ width: '100%', height: '200px', objectFit: 'cover', display: 'block' }} alt="Post preview" />
+        )
       ) : (
-        <img src={mediaUrl} style={{ width: '100%', height: '240px', objectFit: 'cover', display: 'block' }} alt="Post preview" />
+        <div style={{ padding: '12px 16px', fontSize: '13px', color: '#334155', background: '#f8fafc', minHeight: '60px', display: 'flex', alignItems: 'center', justifyContent: 'flex-start', wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}>
+          {post.content || "Shared a post"}
+        </div>
       )}
     </div>
   );
@@ -70,21 +90,19 @@ const renderMessageContent = (text, isMine) => {
     if (part.match(urlRegex)) {
       const isPostUrl = part.includes('/post/');
       return (
-        <span key={index}>
-          {!isPostUrl && (
-            <a 
-              href={part} 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              style={{ 
-                color: isMine ? 'white' : '#6366f1', 
-                textDecoration: 'underline',
-                wordBreak: 'break-all'
-              }}
-            >
-              {part}
-            </a>
-          )}
+        <span key={index} style={{ display: 'inline-block', maxWidth: '100%' }}>
+          <a 
+            href={part} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            style={{ 
+              color: isMine ? 'white' : '#6366f1', 
+              textDecoration: 'underline',
+              wordBreak: 'break-all'
+            }}
+          >
+            {part}
+          </a>
           {isPostUrl && <SharedPostPreview url={part} />}
         </span>
       );
