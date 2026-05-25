@@ -659,14 +659,14 @@
 
   .profile-top-row {
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     margin-bottom: 12px;
   }
 
   .profile-info-section {
     flex-direction: column;
-    align-items: center;
-    text-align: center;
+    align-items: flex-start;
+    text-align: left;
   }
 
   .profile-avatar-wrap {
@@ -764,6 +764,37 @@
     border-bottom-color: var(--primary);
     color: var(--primary);
     border-radius: 0;
+  }
+
+  /* Stats Cards Fix */
+  .stats-cards-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding: 0 16px;
+    box-sizing: border-box;
+  }
+  .stat-card-wide {
+    padding: 12px;
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+  }
+
+  /* Lightbox Fix */
+  .profile-ig-lightbox {
+    padding: 16px;
+  }
+  .profile-ig-lightbox-inner {
+    flex-direction: column;
+    height: 90vh;
+  }
+  .profile-ig-lightbox-media {
+    flex: 1;
+    min-height: 40vh;
+  }
+  .profile-ig-lightbox-body {
+    flex: 1;
+    min-height: 0;
   }
 }
 
