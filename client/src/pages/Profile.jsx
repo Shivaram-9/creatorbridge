@@ -197,7 +197,8 @@ export default function Profile() {
         </div>
       </div>
 
-      <div className="profile-header-base">
+      <div style={{ maxWidth: '900px', margin: '0 auto', width: '100%' }}>
+        <div className="profile-header-base">
         <div className="profile-top-row">
           <div className="profile-info-section">
             <div className="profile-avatar-wrap">
@@ -229,31 +230,37 @@ export default function Profile() {
 
               <p className="profile-bio-text">{user?.bio || "No bio yet."}</p>
 
-              {user?.experience && (
-                <div style={{ marginTop: '16px' }}>
-                  <h4 style={{ fontSize: '14px', fontWeight: '600', marginBottom: '4px', color: 'var(--text-main)' }}>Experience</h4>
-                  <p className="profile-bio-text" style={{ whiteSpace: 'pre-line' }}>{user.experience}</p>
-                </div>
-              )}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '40px', marginTop: '16px', alignItems: 'flex-start' }}>
+                {user?.experience && (
+                  <div>
+                    <h4 style={{ fontSize: '14px', fontWeight: '600', marginBottom: '4px', color: 'var(--text-main)' }}>Experience</h4>
+                    <p className="profile-bio-text" style={{ whiteSpace: 'pre-line', margin: 0 }}>{user.experience}</p>
+                  </div>
+                )}
+
+                {user?.portfolioLink && (
+                  <div>
+                    <h4 style={{ fontSize: '14px', fontWeight: '600', marginBottom: '4px', color: 'transparent', userSelect: 'none' }}>&nbsp;</h4>
+                    <a href={user.portfolioLink.startsWith('http') ? user.portfolioLink : `https://${user.portfolioLink}`} target="_blank" rel="noopener noreferrer" className="profile-link-item">
+                      🎨 Portfolio
+                    </a>
+                  </div>
+                )}
+
+                {user?.socialMediaLink && (
+                  <div>
+                    <h4 style={{ fontSize: '14px', fontWeight: '600', marginBottom: '4px', color: 'transparent', userSelect: 'none' }}>&nbsp;</h4>
+                    <a href={user.socialMediaLink.startsWith('http') ? user.socialMediaLink : `https://${user.socialMediaLink}`} target="_blank" rel="noopener noreferrer" className="profile-link-item">
+                      💼 LinkedIn
+                    </a>
+                  </div>
+                )}
+              </div>
 
               {user?.website && (
-                <div style={{ marginTop: '12px' }}>
+                <div style={{ marginTop: '16px' }}>
                   <a href={user.website.startsWith('http') ? user.website : `https://${user.website}`} target="_blank" rel="noopener noreferrer" className="profile-link-item">
                     🔗 {user.website.replace(/^https?:\/\//, '')}
-                  </a>
-                </div>
-              )}
-              {user?.portfolioLink && (
-                <div style={{ marginTop: '8px' }}>
-                  <a href={user.portfolioLink.startsWith('http') ? user.portfolioLink : `https://${user.portfolioLink}`} target="_blank" rel="noopener noreferrer" className="profile-link-item">
-                    🎨 Portfolio
-                  </a>
-                </div>
-              )}
-              {user?.socialMediaLink && (
-                <div style={{ marginTop: '8px' }}>
-                  <a href={user.socialMediaLink.startsWith('http') ? user.socialMediaLink : `https://${user.socialMediaLink}`} target="_blank" rel="noopener noreferrer" className="profile-link-item">
-                    💼 LinkedIn
                   </a>
                 </div>
               )}
@@ -367,6 +374,7 @@ export default function Profile() {
         {activeTab === "portfolio" && <PortfolioGrid userId={user._id} />}
         {activeTab === "tagged" && <div style={{ textAlign: 'center', padding: '40px', background: '#fff', borderRadius: '16px', color: '#64748B' }}>No tagged posts yet.</div>}
         {activeTab === "about" && <div style={{ textAlign: 'center', padding: '40px', background: '#fff', borderRadius: '16px', color: '#64748B' }}>{user?.bio || "No bio yet."}</div>}
+      </div>
       </div>
 
       {/* Post Lightbox */}
