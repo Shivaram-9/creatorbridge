@@ -35,6 +35,7 @@ export default function Home() {
   const [suggestedUsers, setSuggestedUsers] = useState([]);
   const [activeTab, setActiveTab] = useState("All Feed");
   const [showVerificationBanner, setShowVerificationBanner] = useState(true);
+  const [showFeedDropdown, setShowFeedDropdown] = useState(false);
 
   const calculateProfileStrength = () => {
     if (!user) return { score: 0, tasks: [] };
@@ -147,17 +148,38 @@ export default function Home() {
         <CreatePost onPost={handleAddPost} user={user} />
 
         {/* Feed Tabs */}
+        {/* Feed Tabs Dropdown */}
         <div className="feed-tabs-container">
-          <div className="feed-tabs">
-            {["All Feed", "Following"].map(tab => (
-              <button 
-                key={tab}
-                className={`feed-tab ${activeTab === tab ? "active" : ""}`}
-                onClick={() => setActiveTab(tab)}
-              >
-                {tab}
-              </button>
-            ))}
+          <div className="feed-dropdown-wrapper">
+            <button 
+              className="feed-dropdown-toggle"
+              onClick={() => setShowFeedDropdown(!showFeedDropdown)}
+            >
+              <span className="active-tab-label">{activeTab}</span>
+              <svg className="dropdown-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            
+            {showFeedDropdown && (
+              <>
+                <div className="dropdown-overlay" onClick={() => setShowFeedDropdown(false)} style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 10 }} />
+                <div className="feed-dropdown-menu">
+                  {["All Feed", "Following"].map(tab => (
+                    <button 
+                      key={tab}
+                      className={`feed-dropdown-item ${activeTab === tab ? "active" : ""}`}
+                      onClick={() => {
+                        setActiveTab(tab);
+                        setShowFeedDropdown(false);
+                      }}
+                    >
+                      {tab}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
           <button className="feed-filter-btn" onClick={loadPosts} disabled={loading}>
             <span className="icon">≡</span> Latest
