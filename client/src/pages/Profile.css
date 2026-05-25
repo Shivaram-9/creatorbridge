@@ -197,8 +197,8 @@
 }
 
 .profile-display-name {
-  font-size: 28px;
-  font-weight: 800;
+  font-size: 24px;
+  font-weight: 700;
   color: #0f172a;
   margin: 0;
   display: flex;
@@ -706,7 +706,8 @@
 
   /* Typography */
   .profile-display-name {
-    font-size: 20px;
+    font-size: 18px;
+    font-weight: 700;
     flex-wrap: wrap;
     line-height: 1.2;
     margin-bottom: 8px;
@@ -736,6 +737,24 @@
   .profile-sidebar-col {
     order: 1; /* Move Identity Overview to top */
     width: 100%;
+  }
+
+  /* Tabs */
+  .profile-tabs-wide {
+    padding: 0 16px;
+    gap: 16px;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Hide scrollbar for cleaner look */
+  }
+  .profile-tabs-wide::-webkit-scrollbar {
+    display: none;
+  }
+  .tab-item-wide {
+    font-size: 13px;
+    padding: 12px 0;
+    white-space: nowrap;
   }
 
   /* Identity Overview */
