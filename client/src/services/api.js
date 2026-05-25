@@ -255,6 +255,7 @@ export const api = {
       const query = sp.toString() ? `?${sp.toString()}` : "";
       return request(`/posts/feed-alliances${query}`);
     },
+    get: (postId) => request(`/posts/${postId}`),
     userPosts: (userId) => request(`/posts/user/${userId}`),
     create: (formData) => request("/posts", { 
       method: "POST", 

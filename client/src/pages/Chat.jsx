@@ -7,25 +7,84 @@ import Avatar from "../components/Avatar.jsx";
 import ErrorBanner from "../components/ErrorBanner.jsx";
 import { MediaIcon } from "../components/Icons.jsx";
 
+function SharedPostPreview({ url }) {
+  const [post, setPost] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const match = url.match(/\/post\/([a-zA-Z0-9_-]+)/);
+    if (match && match[1]) {
+      api.posts.get(match[1]).then(data => {
+        if (!data.error) setPost(data);
+      }).catch(() => {});
+    }
+  }, [url]);
+
+  if (!post) return null;
+
+  const getMediaUrl = (url) => {
+    if (!url) return null;
+    if (url.startsWith("http")) return url;
+    const cleanPath = url.startsWith("/") ? url.substring(1) : url;
+    const baseUrl = api.BASE_URL.endsWith("/") ? api.BASE_URL : `${api.BASE_URL}/`;
+    return `${baseUrl}${cleanPath}`;
+  };
+
+  const mediaList = post.media?.length ? post.media : (post.image ? [post.image] : []);
+  const mediaUrl = mediaList[0] ? getMediaUrl(mediaList[0]) : null;
+
+  if (!mediaUrl) return null;
+
+  return (
+    <div 
+      onClick={() => navigate(`/post/${post._id}`)}
+      style={{
+        marginTop: '8px',
+        marginBottom: '8px',
+        borderRadius: '12px',
+        overflow: 'hidden',
+        background: '#fff',
+        cursor: 'pointer',
+        border: '1px solid rgba(0,0,0,0.1)',
+        width: '240px',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+      }}
+    >
+      <div style={{ padding: '8px 12px', display: 'flex', alignItems: 'center', gap: '8px', borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
+        <Avatar user={post.user} size="sm" />
+        <span style={{ fontSize: '13px', fontWeight: '600', color: '#0f172a' }}>{post.user?.name || post.username || 'User'}</span>
+      </div>
+      {mediaUrl.toLowerCase().split('?')[0].match(/\.(mp4|mov|webm)$/) ? (
+        <video src={`${mediaUrl}#t=0.001`} preload="metadata" style={{ width: '100%', height: '240px', objectFit: 'cover', display: 'block' }} />
+      ) : (
+        <img src={mediaUrl} style={{ width: '100%', height: '240px', objectFit: 'cover', display: 'block' }} alt="Post preview" />
+      )}
+    </div>
+  );
+}
+
 const renderMessageContent = (text, isMine) => {
   const urlRegex = /(https?:\/\/[^\s]+)/g;
   const parts = text.split(urlRegex);
   return parts.map((part, index) => {
     if (part.match(urlRegex)) {
+      const isPostUrl = part.includes('/post/');
       return (
-        <a 
-          key={index} 
-          href={part} 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          style={{ 
-            color: isMine ? 'white' : '#6366f1', 
-            textDecoration: 'underline',
-            wordBreak: 'break-all'
-          }}
-        >
-          {part}
-        </a>
+        <span key={index}>
+          <a 
+            href={part} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            style={{ 
+              color: isMine ? 'white' : '#6366f1', 
+              textDecoration: 'underline',
+              wordBreak: 'break-all'
+            }}
+          >
+            {part}
+          </a>
+          {isPostUrl && <SharedPostPreview url={part} />}
+        </span>
       );
     }
     return part;

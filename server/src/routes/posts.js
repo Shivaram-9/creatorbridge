@@ -114,6 +114,18 @@ router.get("/user/:userId", async (req, res) => {
   }
 });
 
+// Get Single Post by ID
+router.get("/:id", async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id)
+      .populate("user", "name username avatar role isVerified isPremium");
+    if (!post) return res.status(404).json({ error: "Post not found" });
+    res.json(post);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Pin/Unpin Post
 router.patch("/pin/:id", authMiddleware, async (req, res) => {
   try {
