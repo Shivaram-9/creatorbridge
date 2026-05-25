@@ -310,19 +310,7 @@ export default function Profile() {
         </div>
       </div>
 
-      <div className="collab-section">
-        <div className="collab-header">
-          <h3>Open to Collaborate On</h3>
-          <a href="#" onClick={(e) => { e.preventDefault(); navigate('/collaborations'); }}>View all opportunities →</a>
-        </div>
-        <div className="collab-tags">
-          <span className="collab-tag blue"><RocketIcon /> Brand Campaigns</span>
-          <span className="collab-tag green"><ShoppingBagIcon /> Product Reviews</span>
-          <span className="collab-tag purple"><StarIcon /> Sponsored Content</span>
-          <span className="collab-tag orange"><HandshakeIcon /> Brand Partnerships</span>
-          <span className="collab-tag blue"><InfinityIcon /> Long Term Collaborations</span>
-        </div>
-      </div>
+
 
       <div className="stats-cards-row">
         <div className="stat-card-wide clickable" onClick={() => navigate(`/user/${user._id}/alliances`)}>
