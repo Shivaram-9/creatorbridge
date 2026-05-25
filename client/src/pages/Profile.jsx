@@ -202,7 +202,7 @@ export default function Profile() {
         <div className="profile-top-row">
           <div className="profile-info-section">
             <div className="profile-avatar-wrap">
-              <Avatar user={user} size="xl" style={{ width: '100%', height: '100%', border: 'none' }} />
+              <Avatar user={user} size="xl" style={{ width: '100%', height: '100%', border: 'none', minWidth: 'unset', minHeight: 'unset' }} />
             </div>
             
             <div className="profile-info-content">
@@ -355,7 +355,7 @@ export default function Profile() {
                 <div key={post._id} className="profile-ig-grid-item" onClick={() => setLightboxPost(post)}>
                   {getPostImage(post) ? (
                     isVideo(getPostImage(post)) ? (
-                      <video src={getPostImage(post)} className="profile-ig-grid-img" muted loop playsInline />
+                      <video src={`${getPostImage(post)}#t=0.001`} className="profile-ig-grid-img" preload="metadata" muted playsInline />
                     ) : (
                       <img src={getPostImage(post)} alt="" className="profile-ig-grid-img" />
                     )
@@ -384,7 +384,7 @@ export default function Profile() {
             {getPostImage(lightboxPost) && (
               <div className="profile-ig-lightbox-media">
                 {isVideo(getPostImage(lightboxPost)) ? (
-                  <video src={getPostImage(lightboxPost)} controls autoPlay playsInline className="profile-ig-lightbox-img" style={{ objectFit: 'contain' }} />
+                  <video src={`${getPostImage(lightboxPost)}#t=0.001`} controls autoPlay playsInline preload="metadata" className="profile-ig-lightbox-img" style={{ objectFit: 'contain' }} />
                 ) : (
                   <img src={getPostImage(lightboxPost)} alt="" className="profile-ig-lightbox-img" style={{ objectFit: 'contain' }} />
                 )}
