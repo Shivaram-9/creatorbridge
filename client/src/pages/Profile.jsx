@@ -198,8 +198,7 @@ export default function Profile() {
         </div>
       </div>
 
-      <div style={{ maxWidth: '900px', margin: '0 auto', width: '100%' }}>
-        <div className="profile-header-base">
+      <div className="profile-header-base">
         <div className="profile-top-row">
           <div className="profile-info-section">
             <div className="profile-avatar-wrap">
@@ -376,7 +375,6 @@ export default function Profile() {
         {activeTab === "tagged" && <div style={{ textAlign: 'center', padding: '40px', background: '#fff', borderRadius: '16px', color: '#64748B' }}>No tagged posts yet.</div>}
         {activeTab === "about" && <div style={{ textAlign: 'center', padding: '40px', background: '#fff', borderRadius: '16px', color: '#64748B' }}>{user?.bio || "No bio yet."}</div>}
       </div>
-      </div>
 
       {/* Post Lightbox */}
       {lightboxPost && (
@@ -463,9 +461,6 @@ export default function Profile() {
             <div style={{ whiteSpace: 'pre-line', color: '#334155', fontSize: '15px', lineHeight: '1.6', maxHeight: '60vh', overflowY: 'auto' }}>
               {user?.experience}
             </div>
-            <button className="action-btn primary full-width" style={{ marginTop: '24px' }} onClick={() => setShowExperienceModal(false)}>
-              Close
-            </button>
           </div>
         </div>
       )}
