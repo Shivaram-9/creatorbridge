@@ -200,13 +200,13 @@ export default function Navbar({
                   {n.type === 'align_request' && n.requestId && (
                     <div className="flex gap-2 mt-3" onClick={e => e.stopPropagation()}>
                       <button 
-                        onClick={() => handleRequestAction(n.requestId._id || n.requestId, 'accept', n._id)}
+                        onClick={() => handleRequestAction(n, 'accept')}
                         className="text-xs px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md transition-colors shadow-sm"
                       >
                         Accept
                       </button>
                       <button 
-                        onClick={() => handleRequestAction(n.requestId._id || n.requestId, 'decline', n._id)}
+                        onClick={() => handleRequestAction(n, 'decline')}
                         className="text-xs px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-md transition-colors"
                       >
                         Decline
