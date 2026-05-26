@@ -70,7 +70,7 @@ function SharedPostPreview({ url }) {
       </div>
       {mediaUrl ? (
         mediaUrl.toLowerCase().split('?')[0].match(/\.(mp4|mov|webm)$/) ? (
-          <video src={`${mediaUrl}#t=0.001`} preload="metadata" style={{ width: '100%', height: '200px', objectFit: 'cover', display: 'block' }} />
+          <video src={mediaUrl} autoPlay muted loop playsInline style={{ width: '100%', height: '200px', objectFit: 'cover', display: 'block' }} />
         ) : (
           <img src={mediaUrl} style={{ width: '100%', height: '200px', objectFit: 'cover', display: 'block' }} alt="Post preview" />
         )
@@ -89,6 +89,9 @@ const renderMessageContent = (text, isMine) => {
   return parts.map((part, index) => {
     if (part.match(urlRegex)) {
       const isPostUrl = part.includes('/post/');
+      if (isPostUrl) {
+        return <SharedPostPreview key={index} url={part} />;
+      }
       return (
         <span key={index} style={{ display: 'inline-block', maxWidth: '100%' }}>
           <a 
@@ -103,7 +106,6 @@ const renderMessageContent = (text, isMine) => {
           >
             {part}
           </a>
-          {isPostUrl && <SharedPostPreview url={part} />}
         </span>
       );
     }

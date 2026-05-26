@@ -1,5 +1,48 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import "./MediaGallery.css";
+
+function AutoplayVideo({ src }) {
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          video.play().catch((err) => {
+            console.log("Feed autoplay prevented:", err);
+          });
+        } else {
+          video.pause();
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    observer.observe(video);
+
+    return () => {
+      if (video) {
+        observer.unobserve(video);
+      }
+    };
+  }, []);
+
+  return (
+    <video
+      ref={videoRef}
+      src={src}
+      preload="auto"
+      controls
+      muted
+      loop
+      playsInline
+      style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+    />
+  );
+}
 
 export default function MediaGallery({ media = [] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -22,7 +65,7 @@ export default function MediaGallery({ media = [] }) {
         {media.map((url, i) => (
           <div key={i} className="gallery-item">
             {url.toLowerCase().split('?')[0].match(/\.(mp4|mov|webm)$/) ? (
-              <video src={`${url}#t=0.001`} preload="metadata" controls muted loop playsInline />
+              <AutoplayVideo src={url} />
             ) : (
               <img 
                 src={url} 
