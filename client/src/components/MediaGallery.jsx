@@ -41,7 +41,7 @@ function AutoplayVideo({ src }) {
   };
 
   return (
-    <div style={{ position: "relative", width: "100%", height: "100%" }}>
+    <div style={{ position: "relative", width: "100%" }}>
       <video
         ref={videoRef}
         src={src}
@@ -50,7 +50,7 @@ function AutoplayVideo({ src }) {
         loop
         playsInline
         onClick={handleVideoClick}
-        style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", cursor: "pointer" }}
+        style={{ width: "100%", objectFit: "contain", display: "block", cursor: "pointer" }}
       />
       
       {/* Translucent speaker volume overlay matching Instagram Reels/Posts */}
