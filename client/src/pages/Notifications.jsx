@@ -176,6 +176,7 @@ export default function Notifications() {
                             api.notifications.markRead(n._id).catch(() => {});
                             setItems(prev => prev.map(item => item._id === n._id ? { ...item, read: true } : item));
                             import("react-hot-toast").then(m => m.default.success("Connection accepted!"));
+                            loadData();
                           } else {
                             import("react-hot-toast").then(m => m.default.error("Request no longer valid"));
                           }
@@ -201,6 +202,7 @@ export default function Notifications() {
                             api.notifications.markRead(n._id).catch(() => {});
                             setItems(prev => prev.map(item => item._id === n._id ? { ...item, read: true } : item));
                             import("react-hot-toast").then(m => m.default.success("Request declined"));
+                            loadData();
                           }
                         } catch (err) {
                           console.error(err);

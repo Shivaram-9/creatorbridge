@@ -14,6 +14,7 @@ export default function Navbar({
   msgUnreadCount = 0, 
   notifications = [], 
   onMarkRead = () => {}, 
+  fetchNotifications,
   logout 
 }) {
   const [notifOpen, setNotifOpen] = useState(false);
@@ -144,6 +145,9 @@ export default function Navbar({
         toast.success(action === 'accept' ? 'Request Accepted' : 'Request Rejected');
         setPendingRequests(prev => prev.filter(r => r._id !== reqDoc._id));
         onMarkRead(n._id);
+        if (typeof fetchNotifications === "function") {
+          fetchNotifications();
+        }
       }
     } catch {
       toast.error("Action failed");
@@ -197,7 +201,7 @@ export default function Navbar({
                   </p>
                   <span className="text-xs text-gray-400 mt-1 block">{formatTime(n.createdAt)}</span>
                   
-                  {n.type === 'align_request' && n.requestId && (
+                  {n.type === 'align_request' && n.requestId && pendingRequests.some(r => (r.sender?._id || r.sender) === (n.sender?._id || n.sender)) && (
                     <div className="flex gap-2 mt-3" onClick={e => e.stopPropagation()}>
                       <button 
                         onClick={() => handleRequestAction(n, 'accept')}
@@ -212,6 +216,9 @@ export default function Navbar({
                         Decline
                       </button>
                     </div>
+                  )}
+                  {n.type === 'align_request' && (!n.requestId || !pendingRequests.some(r => (r.sender?._id || r.sender) === (n.sender?._id || n.sender))) && (
+                    <span className="text-xs text-green-600 font-semibold mt-2 block">✓ Connected</span>
                   )}
                 </div>
               </div>

@@ -2,6 +2,7 @@ import { Router } from "express";
 import mongoose from "mongoose";
 import { User } from "../models/User.js";
 import { AlignRequest } from "../models/AlignRequest.js";
+import { Notification } from "../models/Notification.js";
 import { authMiddleware } from "../middleware/auth.js";
 import { createRealTimeNotification } from "../utils/notifications.js";
 
@@ -69,6 +70,12 @@ privacyRouter.post("/requests/:requestId/:action", async (req, res) => {
         type: "follow",
         message: "has accepted your connection request",
       });
+
+      // Update B's (receiver's) notification to follow/connected
+      await Notification.updateMany(
+        { user: request.receiver, sender: request.sender, type: "align_request", requestId: request._id },
+        { $set: { type: "follow", message: "is now connected with you", read: true } }
+      );
     } else {
       request.status = "rejected";
       
@@ -79,6 +86,11 @@ privacyRouter.post("/requests/:requestId/:action", async (req, res) => {
         type: "align_request",
         message: "has declined your connection request",
       });
+
+      // Delete B's (receiver's) notification since they declined it
+      await Notification.deleteMany(
+        { user: request.receiver, sender: request.sender, type: "align_request", requestId: request._id }
+      );
     }
 
     await request.save();

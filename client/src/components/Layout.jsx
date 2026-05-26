@@ -93,6 +93,7 @@ export default function Layout() {
                     if (rId) {
                       await api.privacy.respondRequest(rId, 'accept');
                       toast.success(`You are now connected with ${senderName}!`);
+                      fetchNotifications();
                     }
                   } catch (err) {
                     toast.error("Failed to accept request");
@@ -115,6 +116,7 @@ export default function Layout() {
                     if (rId) {
                       await api.privacy.respondRequest(rId, 'decline');
                       toast.success(`Declined request from ${senderName}`);
+                      fetchNotifications();
                     }
                   } catch (err) {
                     toast.error("Failed to decline request");
@@ -177,6 +179,7 @@ export default function Layout() {
           msgUnreadCount={msgUnreadTotal}
           notifications={notifications}
           onMarkRead={handleMarkRead}
+          fetchNotifications={fetchNotifications}
           logout={logout}
         />
 
