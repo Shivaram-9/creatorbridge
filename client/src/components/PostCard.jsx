@@ -224,24 +224,6 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
       </div>
 
       <div className="post-content">
-        {isEditing ? (
-          <div className="edit-box">
-            <textarea value={editContent} onChange={(e) => setEditContent(e.target.value)} />
-            <div className="edit-btns">
-              <button onClick={() => setIsEditing(false)}>Cancel</button>
-              <button onClick={handleEdit}>Save</button>
-            </div>
-          </div>
-        ) : (
-          <p className="post-text">
-            {post.content}
-            {post.hashtags?.length > 0 && (
-              <div className="post-hashtags">
-                {post.hashtags.map(h => <span key={h} className="hashtag">#{h} </span>)}
-              </div>
-            )}
-          </p>
-        )}
         <div onClick={() => setShowLightbox(true)} style={{ cursor: "pointer" }}>
           <MediaGallery media={mediaList} />
         </div>
@@ -259,15 +241,12 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
         <div className="post-actions__left">
           <button className={`post-action-btn ${liked ? "liked" : ""}`} onClick={handleLike}>
             <HeartIcon filled={liked} />
-            <span>{likesCount}</span>
           </button>
           <button className="post-action-btn" onClick={() => setShowComments(!showComments)}>
             <MessageCircleIcon />
-            <span>{comments.length}</span>
           </button>
           <button className="post-action-btn" onClick={handleShare}>
             <SendIcon />
-            <span>{shareStatus}</span>
           </button>
         </div>
         <button className={`post-action-btn ${saved ? "saved" : ""}`} onClick={handleSave}>
@@ -276,10 +255,84 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
       </div>
 
       <div className="post-footer">
-        {likes.length > 0 && (
-          <div className="post-likes" onClick={() => navigate(`/post/${post._id}/likes`)}>
-            Liked by <strong>{likes[0].name || "User"}</strong> {likes.length > 1 && <>and {likes.length - 1} others</>}
+        {likes.length > 0 ? (
+          <div className="post-likes" onClick={() => navigate(`/post/${post._id}/likes`)} style={{ cursor: 'pointer', marginBottom: '6px' }}>
+            Liked by <strong>{likes[0].username || likes[0].name || "User"}</strong> {likes.length > 1 && <>and {likes.length - 1} others</>}
           </div>
+        ) : (
+          likesCount > 0 && (
+            <div className="post-likes" onClick={() => navigate(`/post/${post._id}/likes`)} style={{ cursor: 'pointer', marginBottom: '6px', fontWeight: '600' }}>
+              {likesCount} {likesCount === 1 ? 'like' : 'likes'}
+            </div>
+          )
+        )}
+
+        {isEditing ? (
+          <div className="edit-box" style={{ marginTop: '8px' }}>
+            <textarea 
+              value={editContent} 
+              onChange={(e) => setEditContent(e.target.value)} 
+              style={{
+                width: '100%',
+                minHeight: '80px',
+                borderRadius: '8px',
+                border: '1px solid var(--border-light)',
+                padding: '8px',
+                fontSize: '14px',
+                background: 'var(--bg-main)',
+                color: 'var(--text-main)',
+                resize: 'vertical'
+              }}
+            />
+            <div className="edit-btns" style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end', marginTop: '8px' }}>
+              <button 
+                onClick={() => setIsEditing(false)}
+                style={{
+                  padding: '6px 12px',
+                  borderRadius: '6px',
+                  border: '1px solid var(--border-light)',
+                  background: 'transparent',
+                  cursor: 'pointer',
+                  fontSize: '13px',
+                  color: 'var(--text-main)'
+                }}
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleEdit}
+                style={{
+                  padding: '6px 12px',
+                  borderRadius: '6px',
+                  border: 'none',
+                  background: 'var(--accent)',
+                  color: 'white',
+                  cursor: 'pointer',
+                  fontSize: '13px',
+                  fontWeight: '600'
+                }}
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        ) : (
+          post.content && (
+            <div className="post-caption" style={{ fontSize: '14px', color: 'var(--text-main)', lineHeight: '1.4', marginTop: '6px' }}>
+              <strong 
+                style={{ marginRight: '8px', cursor: 'pointer' }}
+                onClick={() => navigate(`/user/${post.user?._id || post.user}`)}
+              >
+                {post.user?.username || post.user?.name || post.username || 'User'}
+              </strong>
+              {post.content}
+              {post.hashtags && post.hashtags.length > 0 && (
+                <div className="post-hashtags" style={{ marginTop: '4px', display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+                  {post.hashtags.map(h => <span key={h} className="hashtag" style={{ color: '#00376b', cursor: 'pointer', fontSize: '14px' }}>#{h} </span>)}
+                </div>
+              )}
+            </div>
+          )
         )}
         
         {showComments && (
