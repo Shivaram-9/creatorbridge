@@ -150,12 +150,7 @@ export default function Settings() {
             <button className={activeTab === 'security' ? 'active' : ''} onClick={() => setActiveTab('security')}>
               Security & Sessions
             </button>
-            <button className={activeTab === 'verification' ? 'active' : ''} onClick={() => setActiveTab('verification')}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg>
-                Verification
-              </span>
-            </button>
+
             <button className={activeTab === 'notifications' ? 'active' : ''} onClick={() => setActiveTab('notifications')}>
               Notifications
             </button>
@@ -292,47 +287,7 @@ export default function Settings() {
             </div>
           )}
 
-          {activeTab === 'verification' && (
-            <div className="settings-section verification-section">
-              <div className="verification-content-wrapper">
-                <div className="verification-info-col">
-                  <h3 className="verification-title">Professional Verification</h3>
-                  <p className="verification-subtitle">Get verified and build trust with brands.</p>
-                  
-                  <ul className="verification-benefits">
-                    <li>
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                      Verified badge on your profile
-                    </li>
-                    <li>
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                      Appear more trustworthy to brands
-                    </li>
-                    <li>
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                      Higher visibility in search & discovery
-                    </li>
-                    <li>
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                      Access to premium opportunities
-                    </li>
-                  </ul>
-                </div>
-                
-                <div className="verification-pricing-card">
-                  <div className="pricing-icon-wrapper">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 9 6-9"></path><path d="m6 9 6-6 6 6"></path><path d="M6 9h12"></path><path d="m12 3-3 6"></path><path d="m12 3 3 6"></path></svg>
-                  </div>
-                  <div className="pricing-amount">₹299</div>
-                  <div className="pricing-badge">Lifetime Launch Access</div>
-                  <div className="pricing-future">Future pricing: ₹1299 / year</div>
-                  <button className="get-verified-action-btn" onClick={() => navigate('/apply-verification')}>
-                    Get Verified
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
+
 
           {activeTab === 'notifications' && (
             <div className="settings-section">
