@@ -68,10 +68,38 @@ export default function Analytics() {
 
       {/* Overview Cards */}
       <div className="stats-grid">
-        <StatCard title="Total Reach" value={profileData?.totalViews || 0} change="+12%" icon="👁️" />
-        <StatCard title="Engagement" value={`${profileData?.engagementRate || 0}%`} change="+2.4%" icon="📈" />
-        <StatCard title="Followers" value={profileData?.followers || 0} change="+54" icon="👥" />
-        <StatCard title="Profile Views" value={profileData?.profileViews || 0} change="+18%" icon="👤" />
+        <StatCard 
+          title="Total Reach" 
+          value={profileData?.totalViews || 0} 
+          change="+12%" 
+          icon={
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0z"/><circle cx="12" cy="12" r="3"/></svg>
+          } 
+        />
+        <StatCard 
+          title="Engagement" 
+          value={`${profileData?.engagementRate || 0}%`} 
+          change="+2.4%" 
+          icon={
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+          } 
+        />
+        <StatCard 
+          title="Followers" 
+          value={profileData?.followers || 0} 
+          change="+54" 
+          icon={
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          } 
+        />
+        <StatCard 
+          title="Profile Views" 
+          value={profileData?.profileViews || 0} 
+          change="+18%" 
+          icon={
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          } 
+        />
       </div>
 
       {/* AI Insight Cards (Prompt-7) */}
@@ -81,8 +109,14 @@ export default function Analytics() {
           {aiInsights.map((insight, idx) => (
             <div key={idx} className={`insight-card ${insight.type}`}>
               <div className="insight-header">
-                <span className="insight-icon">
-                  {insight.type === 'time' ? '⏰' : insight.type === 'category' ? '🏷️' : '🚀'}
+                <span className="insight-icon" style={{ display: 'flex', alignItems: 'center' }}>
+                  {insight.type === 'time' ? (
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  ) : insight.type === 'category' ? (
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                  ) : (
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 3.4-2 3.4s2.14-.5 3.4-2c1.26-1.5 2.1-3.2 2.1-3.2s-1.8-.84-3.5-2.1c0 0-1.5.9-2.1 2.1z"/><path d="M12 12c-2.3 2.3-3 5.7-3 5.7s3.4-.7 5.7-3c1.26-1.26 2-3 2-3s-1.8-.8-3.5-2c0 0-1.26.74-2 2z"/><path d="M21 3s-6.3 3-8.3 5c-1.8 1.8-2.7 3.6-2.7 3.6s2.7.9 4.5-.9c2-2 5-8.3 5-8.3z"/><path d="M16 8l3-3"/></svg>
+                  )}
                 </span>
                 <span className="insight-type-label">{insight.type.toUpperCase()}</span>
               </div>
@@ -158,7 +192,9 @@ export default function Analytics() {
                     {resolveMedia(post) ? (
                       <img src={resolveMedia(post)} alt="" onError={(e) => e.target.src = "https://via.placeholder.com/150?text=Post"} />
                     ) : (
-                      <div className="media-placeholder">📄</div>
+                      <div className="media-placeholder">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.5 }}><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><polyline points="14 2 14 8 20 8"/></svg>
+                      </div>
                     )}
                   </div>
                   <div className="post-rank-info">
@@ -168,8 +204,14 @@ export default function Analytics() {
                     </div>
                     <p className="post-rank-text">{post.content?.slice(0, 40) || "No caption"}...</p>
                     <div className="post-rank-footer">
-                      <span className="stat">👁️ {post.views || 0} views</span>
-                      <span className="stat">❤️ {post.likes?.length || 0} likes</span>
+                      <span className="stat" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', verticalAlign: 'middle' }}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0z"/><circle cx="12" cy="12" r="3"/></svg>
+                        {post.views || 0} views
+                      </span>
+                      <span className="stat" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', verticalAlign: 'middle', marginLeft: '8px' }}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ fill: '#ef4444' }}><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+                        {post.likes?.length || 0} likes
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -210,7 +252,10 @@ export default function Analytics() {
             </div>
           </div>
           <div className="market-tips">
-            <p>💡 Tip: Posting 3+ times a week increases engagement by 24%.</p>
+            <p style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#eab308" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A5 5 0 0 0 8 8c0 1 .3 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>
+              Tip: Posting 3+ times a week increases engagement by 24%.
+            </p>
           </div>
         </div>
       </div>
