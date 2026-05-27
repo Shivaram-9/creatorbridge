@@ -2,6 +2,7 @@ import { Router } from "express";
 import { User } from "../models/User.js";
 import { Notification } from "../models/Notification.js";
 import { AlignRequest } from "../models/AlignRequest.js";
+import { Collaboration } from "../models/Collaboration.js";
 import { authMiddleware } from "../middleware/auth.js";
 import { profileUpload, coverUpload } from "../middleware/upload.js";
 import { attachAlignmentStatus } from "../utils/alignment.js";
@@ -11,11 +12,65 @@ export const usersRouter = Router();
 
 usersRouter.use(authMiddleware);
 
+async function attachMetrics(user) {
+  if (!user) return user;
+  
+  const userObj = typeof user.toObject === "function" ? user.toObject() : user;
+  const userId = userObj._id;
+
+  try {
+    // 1. Connections Count
+    const followers = userObj.followers || [];
+    const following = userObj.following || [];
+    const connectionIds = new Set([
+      ...followers.map(id => id.toString()),
+      ...following.map(id => id.toString())
+    ]);
+    userObj.connectionsCount = connectionIds.size;
+
+    // 2. Profile Reach
+    userObj.profileReach = await User.countDocuments({ viewedProfiles: userId });
+
+    // 3. Featured In / Partnerships
+    if (userObj.role === "brand") {
+      const uniqueCreators = await Collaboration.distinct("influencer", {
+        brand: userId,
+        status: { $in: ["Accepted", "Completed"] }
+      });
+      userObj.featuredIn = uniqueCreators.length;
+    } else if (userObj.role === "influencer") {
+      const uniqueBrandsInCollabs = await Collaboration.distinct("brand", {
+        influencer: userId,
+        status: { $in: ["Accepted", "Completed"] }
+      });
+      const uniqueBrandsShortlisted = await User.distinct("_id", {
+        role: "brand",
+        shortlistedCreators: userId
+      });
+      const unionSet = new Set([
+        ...uniqueBrandsInCollabs.map(id => id.toString()),
+        ...uniqueBrandsShortlisted.map(id => id.toString())
+      ]);
+      userObj.featuredIn = unionSet.size;
+    } else {
+      userObj.featuredIn = 0;
+    }
+  } catch (err) {
+    console.error("Error calculating genuine metrics:", err);
+    userObj.connectionsCount = 0;
+    userObj.profileReach = 0;
+    userObj.featuredIn = 0;
+  }
+
+  return userObj;
+}
+
 usersRouter.get("/me", async (req, res) => {
   try {
     const user = await User.findById(req.userId);
     if (!user) return res.status(404).json({ error: "User not found" });
-    res.json(user);
+    const userWithMetrics = await attachMetrics(user);
+    res.json(userWithMetrics);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to load profile" });
@@ -80,7 +135,8 @@ usersRouter.post("/me/avatar", profileUpload.single("avatar"), async (req, res) 
     const avatarPath = req.file.path || `/uploads/avatars/${req.file.filename}`;
     const user = await User.findByIdAndUpdate(req.userId, { $set: { avatar: avatarPath } }, { new: true });
     if (!user) return res.status(404).json({ error: "User not found" });
-    res.json(user);
+    const userWithMetrics = await attachMetrics(user);
+    res.json(userWithMetrics);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to upload avatar" });
@@ -93,7 +149,8 @@ usersRouter.post("/me/cover", coverUpload.single("cover"), async (req, res) => {
     const coverPath = req.file.path || `/uploads/covers/${req.file.filename}`;
     const user = await User.findByIdAndUpdate(req.userId, { $set: { cover: coverPath } }, { new: true });
     if (!user) return res.status(404).json({ error: "User not found" });
-    res.json(user);
+    const userWithMetrics = await attachMetrics(user);
+    res.json(userWithMetrics);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to upload cover" });
@@ -120,7 +177,8 @@ usersRouter.patch("/me", async (req, res) => {
 
     const user = await User.findByIdAndUpdate(req.userId, { $set: updates }, { new: true });
     if (!user) return res.status(404).json({ error: "User not found" });
-    res.json(user);
+    const userWithMetrics = await attachMetrics(user);
+    res.json(userWithMetrics);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to update profile" });
@@ -217,7 +275,8 @@ usersRouter.post("/unfollow/:id", async (req, res) => {
     ]);
 
     const updatedMe = await User.findById(currentId).select("-password");
-    res.json(updatedMe);
+    const userWithMetrics = await attachMetrics(updatedMe);
+    res.json(userWithMetrics);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to unfollow user" });
@@ -437,9 +496,10 @@ usersRouter.get("/:id", async (req, res) => {
     if (req.params.id === req.userId) {
       const user = await User.findById(req.userId);
       if (!user) return res.status(404).json({ error: "User not found" });
-      return res.json(user);
+      const userWithMetrics = await attachMetrics(user);
+      return res.json(userWithMetrics);
     }
-    const user = await User.findById(req.params.id).select("-password").lean();
+    let user = await User.findById(req.params.id).select("-password").lean();
     if (!user) return res.status(404).json({ error: "User not found" });
 
     // Block Check (Prompt-6)
@@ -447,6 +507,7 @@ usersRouter.get("/:id", async (req, res) => {
       return res.status(403).json({ error: "This user has blocked you or you have blocked them." });
     }
 
+    user = await attachMetrics(user);
     res.json(await attachAlignmentStatus(req, user));
   } catch (err) {
     console.error(err);

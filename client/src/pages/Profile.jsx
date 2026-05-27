@@ -313,7 +313,9 @@ export default function Profile() {
         <div className="stat-card-wide clickable" onClick={() => navigate(`/user/${user._id}/alliances`)}>
           <div className="stat-icon-wrap purple"><UsersIcon /></div>
           <div className="stat-info">
-            <span className="stat-val">{fmtCount(new Set([...(user?.followers || []), ...(user?.following || [])]).size)}</span>
+            <span className="stat-val">
+              {fmtCount(user?.connectionsCount !== undefined ? user.connectionsCount : new Set([...(user?.followers || []), ...(user?.following || [])]).size)}
+            </span>
             <span className="stat-lbl">Connections</span>
             <span className="stat-sub">People in network</span>
           </div>
@@ -321,7 +323,7 @@ export default function Profile() {
         <div className="stat-card-wide">
           <div className="stat-icon-wrap green"><BriefcaseIcon /></div>
           <div className="stat-info">
-            <span className="stat-val">{fmtCount(user?.profileViews || 0)}+</span>
+            <span className="stat-val">{fmtCount(user?.profileViews || 0)}</span>
             <span className="stat-lbl">Profile Views</span>
             <span className="stat-sub">All time views</span>
           </div>
@@ -329,7 +331,7 @@ export default function Profile() {
         <div className="stat-card-wide">
           <div className="stat-icon-wrap orange"><TrendingDownIcon /></div>
           <div className="stat-info">
-            <span className="stat-val">{fmtCount((user?.profileViews || 0) * 2)}</span>
+            <span className="stat-val">{fmtCount(user?.profileReach || 0)}</span>
             <span className="stat-lbl">Profile Reach</span>
             <span className="stat-sub">Unique accounts</span>
           </div>
@@ -337,9 +339,9 @@ export default function Profile() {
         <div className="stat-card-wide">
           <div className="stat-icon-wrap blue"><EyeIcon /></div>
           <div className="stat-info">
-            <span className="stat-val">8</span>
-            <span className="stat-lbl">Featured In</span>
-            <span className="stat-sub">By brands</span>
+            <span className="stat-val">{fmtCount(user?.featuredIn || 0)}</span>
+            <span className="stat-lbl">{user?.role === "brand" ? "Partnerships" : "Featured In"}</span>
+            <span className="stat-sub">{user?.role === "brand" ? "With creators" : "By brands"}</span>
           </div>
         </div>
       </div>
