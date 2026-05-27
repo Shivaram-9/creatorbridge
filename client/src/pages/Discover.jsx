@@ -4,7 +4,7 @@ import { api } from "../services/api.js";
 import UserCard from "../components/UserCard.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import ErrorBanner from "../components/ErrorBanner.jsx";
-import { CATEGORIES } from "../constants/categories.js";
+import { INFLUENCER_CATEGORIES, BRAND_CATEGORIES, ALL_CATEGORIES } from "../constants/categories.js";
 import "./Discover.css";
 
 const EXPLORE_PHOTOS = [
@@ -103,6 +103,12 @@ export default function Discover() {
     return matchSearch && matchCategory && matchRole;
   });
 
+  const displayCategories = activeRole === "influencer" 
+    ? INFLUENCER_CATEGORIES 
+    : activeRole === "brand" 
+      ? BRAND_CATEGORIES 
+      : ALL_CATEGORIES;
+
   if (loading) return <LoadingSpinner centered />;
 
   const exploreGrid = discovery.trendingPosts.length > 0
@@ -163,12 +169,15 @@ export default function Discover() {
                   onChange={e => setActiveCategory(e.target.value)}
                 >
                   <option value="All">All Categories</option>
-                  {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                  {displayCategories.map(c => <option key={c} value={c}>{c}</option>)}
                 </select>
                 <select
                   className="discover-filter-select"
                   value={activeRole}
-                  onChange={e => setActiveRole(e.target.value)}
+                  onChange={e => {
+                    setActiveRole(e.target.value);
+                    setActiveCategory("All");
+                  }}
                 >
                   <option value="all">All Roles</option>
                   <option value="influencer">Influencers</option>
