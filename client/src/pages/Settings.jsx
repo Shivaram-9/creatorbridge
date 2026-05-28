@@ -23,6 +23,10 @@ export default function Settings() {
   const [showOtpForm, setShowOtpForm] = useState(false);
   const [otp, setOtp] = useState("");
   const [actionLoading, setActionLoading] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
+  const [passwordSuccess, setPasswordSuccess] = useState("");
+  const [otpError, setOtpError] = useState("");
+  const [otpSuccess, setOtpSuccess] = useState("");
 
   const [settings, setSettings] = useState({
     allowMessagesFrom: "everyone",
@@ -148,30 +152,30 @@ export default function Settings() {
   const handlePasswordChange = async (e) => {
     e.preventDefault();
     if (newPassword !== confirmNewPassword) {
-      setError("New passwords do not match");
+      setPasswordError("New passwords do not match");
       return;
     }
     if (newPassword.length < 6) {
-      setError("New password must be at least 6 characters");
+      setPasswordError("New password must be at least 6 characters");
       return;
     }
     setActionLoading(true);
-    setError("");
-    setSuccess("");
+    setPasswordError("");
+    setPasswordSuccess("");
     try {
       const res = await api.users.changePassword(currentPassword, newPassword);
       if (res.error) {
-        setError(res.error);
+        setPasswordError(res.error);
       } else {
-        setSuccess("Password updated successfully!");
+        setPasswordSuccess("Password updated successfully!");
         setShowPasswordForm(false);
         setCurrentPassword("");
         setNewPassword("");
         setConfirmNewPassword("");
-        setTimeout(() => setSuccess(""), 3000);
+        setTimeout(() => setPasswordSuccess(""), 4000);
       }
     } catch (err) {
-      setError("Failed to change password");
+      setPasswordError("Failed to change password");
     } finally {
       setActionLoading(false);
     }
@@ -180,19 +184,19 @@ export default function Settings() {
   const handleSendOtp = async () => {
     if (!user?.email) return;
     setActionLoading(true);
-    setError("");
-    setSuccess("");
+    setOtpError("");
+    setOtpSuccess("");
     try {
       const res = await api.auth.sendOtp(user.email);
       if (res.error) {
-        setError(res.error);
+        setOtpError(res.error);
       } else {
         setShowOtpForm(true);
-        setSuccess("Verification code sent to your email!");
-        setTimeout(() => setSuccess(""), 3000);
+        setOtpSuccess(res.message || "Verification code sent to your email!");
+        setTimeout(() => setOtpSuccess(""), res.code ? 15000 : 5000);
       }
     } catch (err) {
-      setError("Failed to send verification code");
+      setOtpError("Failed to send verification code");
     } finally {
       setActionLoading(false);
     }
@@ -202,21 +206,21 @@ export default function Settings() {
     e.preventDefault();
     if (!otp) return;
     setActionLoading(true);
-    setError("");
-    setSuccess("");
+    setOtpError("");
+    setOtpSuccess("");
     try {
       const res = await api.auth.verifyOtp(user.email, otp);
       if (res.error) {
-        setError(res.error);
+        setOtpError(res.error);
       } else {
-        setSuccess("Email verified successfully!");
+        setOtpSuccess("Email verified successfully!");
         setShowOtpForm(false);
         setOtp("");
         if (refreshUser) await refreshUser();
-        setTimeout(() => setSuccess(""), 3000);
+        setTimeout(() => setOtpSuccess(""), 5000);
       }
     } catch (err) {
-      setError("Failed to verify code");
+      setOtpError("Failed to verify code");
     } finally {
       setActionLoading(false);
     }
@@ -480,6 +484,9 @@ export default function Settings() {
                   </div>
                 </div>
 
+                {otpError && <div style={{ marginTop: '15px' }}><ErrorBanner message={otpError} onDismiss={() => setOtpError("")} /></div>}
+                {otpSuccess && <div className="success-banner" style={{ marginTop: '15px', marginBottom: '0' }}>{otpSuccess}</div>}
+
                 {!user?.isEmailVerified && !showOtpForm && (
                   <div className="security-card-body animate-fade-in">
                     <button 
@@ -540,6 +547,9 @@ export default function Settings() {
                     {showPasswordForm ? "Hide Form" : "Change Password"}
                   </button>
                 </div>
+
+                {passwordError && <div style={{ marginTop: '15px' }}><ErrorBanner message={passwordError} onDismiss={() => setPasswordError("")} /></div>}
+                {passwordSuccess && <div className="success-banner" style={{ marginTop: '15px', marginBottom: '0' }}>{passwordSuccess}</div>}
 
                 {showPasswordForm && (
                   <div className="security-card-body password-form-container slide-in">

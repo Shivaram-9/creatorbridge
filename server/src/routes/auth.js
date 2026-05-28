@@ -249,12 +249,22 @@ authRouter.post("/send-otp", async (req, res) => {
     user.verificationCode = otp;
     await user.save();
 
-    await EmailService.send(email, "Your Pactogram Verification Code", "Verify Identity", `
+    console.log("=========================================");
+    console.log(`VERIFICATION CODE FOR ${email}: ${otp}`);
+    console.log("=========================================");
+
+    const emailSent = await EmailService.send(email, "Your Pactogram Verification Code", "Verify Identity", `
       <p>Your verification code is: <strong style="font-size: 24px; color: #6366f1;">${otp}</strong></p>
       <p>This code will expire shortly. Do not share it with anyone.</p>
     `);
 
-    
+    if (!emailSent) {
+      return res.json({ 
+        message: `Verification code generated! (SMTP not configured, code: ${otp})`,
+        code: otp 
+      });
+    }
+
     res.json({ message: "Verification code sent to your email" });
   } catch (err) {
     console.error(err);
