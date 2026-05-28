@@ -37,20 +37,6 @@ export default function Home() {
   const [showVerificationBanner, setShowVerificationBanner] = useState(true);
   const [showFeedDropdown, setShowFeedDropdown] = useState(false);
 
-  const calculateProfileStrength = () => {
-    if (!user) return { score: 0, tasks: [] };
-    let score = 0;
-    const tasks = [
-      { id: 'portfolio', label: 'Add portfolio', done: user.portfolio?.length > 0 || !!user.portfolioLink, bonus: 25 },
-      { id: 'social', label: 'Add social links', done: !!(user.website || user.socialLinks?.length > 0 || user.socialMediaLink || user.instagram || user.youtube), bonus: 25 },
-      { id: 'experience', label: 'Add work experience', done: !!(user.experience?.length > 0), bonus: 25 },
-      { id: 'verify', label: 'Get verified', done: !!user.isVerified, bonus: 25 }
-    ];
-    tasks.forEach(t => { if (t.done) score += t.bonus; });
-    return { score, tasks };
-  };
-  const { score: profileScore, tasks: profileTasks } = calculateProfileStrength();
-
   const loadSidebarData = useCallback(async () => {
     try {
       const discoverRes = await api.search.discover();
@@ -223,64 +209,6 @@ export default function Home() {
 
       {/* Right Sidebar Column */}
       <div className="home-sidebar-col">
-        {/* Profile Strength Card */}
-        <div className="sidebar-card" style={{ cursor: 'pointer' }} onClick={() => {
-          if (profileScore < 100) {
-            toast.success("Pending info complete");
-          }
-          navigate('/profile/edit');
-        }}>
-          <div className="profile-strength-header">
-            <h2 className="card-title">Your Profile Strength</h2>
-          </div>
-          <div className="strength-content">
-            <div className="strength-circle">
-              <svg viewBox="0 0 36 36" className={`circular-chart ${profileScore === 100 ? 'green' : 'blue'}`}>
-                <path className="circle-bg"
-                  d="M18 2.0845
-                    a 15.9155 15.9155 0 0 1 0 31.831
-                    a 15.9155 15.9155 0 0 1 0 -31.831"
-                />
-                <path className="circle"
-                  strokeDasharray={`${profileScore}, 100`}
-                  d="M18 2.0845
-                    a 15.9155 15.9155 0 0 1 0 31.831
-                    a 15.9155 15.9155 0 0 1 0 -31.831"
-                />
-                <text x="18" y="20.35" className="percentage">{profileScore}%</text>
-              </svg>
-            </div>
-            <div className="strength-text-block">
-              <p>
-                {profileScore === 100 
-                  ? "Outstanding! Your profile is fully complete and stands out." 
-                  : "Great job! Complete your profile to increase your visibility."}
-              </p>
-            </div>
-          </div>
-          <ul className="strength-checklist">
-            {profileTasks.map(task => {
-              const linkTarget = task.id === 'verify' ? '/apply-verification' : '/profile/edit';
-              return (
-                <li key={task.id} className={task.done ? "done" : "pending"}>
-                  <a 
-                    href={linkTarget} 
-                    onClick={(e) => { 
-                      e.preventDefault(); 
-                      e.stopPropagation();
-                      if (!task.done) toast.success("Pending info complete");
-                      navigate(linkTarget); 
-                    }}
-                    style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', color: 'inherit', width: '100%' }}
-                  >
-                    <span className="icon">{task.done ? "✓" : "○"}</span> {task.label} {task.id === 'verify' && <span className="icon-blue">💎</span>}
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
-          <a href="/profile/edit" className="complete-profile-link" onClick={(e) => { e.preventDefault(); e.stopPropagation(); navigate('/profile/edit'); }}>Complete Profile →</a>
-        </div>
 
         {/* Verified Creators Card */}
         <div className="sidebar-card">
