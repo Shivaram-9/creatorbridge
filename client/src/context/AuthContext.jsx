@@ -126,6 +126,12 @@ export function AuthProvider({ children }) {
           error: "Google/Apple Sign-In is not enabled yet in your Firebase Console. Please enable Google and Apple under Authentication -> Sign-in Method in your Firebase Console (Pactogram-2e1ab)." 
         };
       }
+      if (err.code === "auth/unauthorized-domain") {
+        return { 
+          ok: false, 
+          error: "This domain is not authorized for OAuth redirects in your Firebase Console. Please add 'creatorbridge-myeo.onrender.com' under Authentication -> Settings -> Authorized Domains in your Firebase Console." 
+        };
+      }
       return { ok: false, error: err.message || "Social sign-in failed." };
     }
   }, []);
