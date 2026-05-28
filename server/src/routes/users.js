@@ -7,6 +7,9 @@ import { authMiddleware } from "../middleware/auth.js";
 import { profileUpload, coverUpload } from "../middleware/upload.js";
 import { attachAlignmentStatus } from "../utils/alignment.js";
 import { createRealTimeNotification } from "../utils/notifications.js";
+import bcrypt from "bcryptjs";
+import { SecurityAlert } from "../models/SecurityAlert.js";
+import { EmailService } from "../services/EmailService.js";
 
 export const usersRouter = Router();
 
@@ -591,5 +594,48 @@ usersRouter.delete("/collections/:colId/remove", async (req, res) => {
     res.json(user.collections);
   } catch (err) {
     res.status(500).json({ error: "Failed to remove from collection" });
+  }
+});
+
+// POST /api/users/change-password
+usersRouter.post("/change-password", async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ error: "Current password and new password are required" });
+    }
+    if (newPassword.length < 6) {
+      return res.status(400).json({ error: "New password must be at least 6 characters" });
+    }
+
+    const user = await User.findById(req.userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ error: "Incorrect current password" });
+    }
+
+    user.password = await bcrypt.hash(newPassword, 10);
+    await user.save();
+
+    // Create Security Alert
+    await SecurityAlert.create({
+      user: user._id,
+      type: "password_change",
+      message: "Your account password was changed from the settings page."
+    });
+
+    // Send security alert email
+    EmailService.sendSecurityAlert(user, "password_change").catch(err => 
+      console.error("Failed to send password change email:", err.message)
+    );
+
+    res.json({ message: "Password changed successfully" });
+  } catch (err) {
+    console.error("Change password route error:", err);
+    res.status(500).json({ error: "Failed to change password" });
   }
 });

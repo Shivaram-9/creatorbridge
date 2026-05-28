@@ -8,13 +8,22 @@ import { BASE_URL } from "../config/api.js";
 import "./Settings.css";
 
 export default function Settings() {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("privacy");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   
+  // Security options states
+  const [showPasswordForm, setShowPasswordForm] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
+  const [showOtpForm, setShowOtpForm] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [actionLoading, setActionLoading] = useState(false);
+
   const [settings, setSettings] = useState({
     allowMessagesFrom: "everyone",
     showActivityStatus: true,
@@ -133,6 +142,83 @@ export default function Settings() {
       setTimeout(() => setSuccess(""), 3000);
     } catch {
       setError("Failed to unblock user");
+    }
+  };
+
+  const handlePasswordChange = async (e) => {
+    e.preventDefault();
+    if (newPassword !== confirmNewPassword) {
+      setError("New passwords do not match");
+      return;
+    }
+    if (newPassword.length < 6) {
+      setError("New password must be at least 6 characters");
+      return;
+    }
+    setActionLoading(true);
+    setError("");
+    setSuccess("");
+    try {
+      const res = await api.users.changePassword(currentPassword, newPassword);
+      if (res.error) {
+        setError(res.error);
+      } else {
+        setSuccess("Password updated successfully!");
+        setShowPasswordForm(false);
+        setCurrentPassword("");
+        setNewPassword("");
+        setConfirmNewPassword("");
+        setTimeout(() => setSuccess(""), 3000);
+      }
+    } catch (err) {
+      setError("Failed to change password");
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleSendOtp = async () => {
+    if (!user?.email) return;
+    setActionLoading(true);
+    setError("");
+    setSuccess("");
+    try {
+      const res = await api.auth.sendOtp(user.email);
+      if (res.error) {
+        setError(res.error);
+      } else {
+        setShowOtpForm(true);
+        setSuccess("Verification code sent to your email!");
+        setTimeout(() => setSuccess(""), 3000);
+      }
+    } catch (err) {
+      setError("Failed to send verification code");
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async (e) => {
+    e.preventDefault();
+    if (!otp) return;
+    setActionLoading(true);
+    setError("");
+    setSuccess("");
+    try {
+      const res = await api.auth.verifyOtp(user.email, otp);
+      if (res.error) {
+        setError(res.error);
+      } else {
+        setSuccess("Email verified successfully!");
+        setShowOtpForm(false);
+        setOtp("");
+        if (refreshUser) await refreshUser();
+        setTimeout(() => setSuccess(""), 3000);
+      }
+    } catch (err) {
+      setError("Failed to verify code");
+    } finally {
+      setActionLoading(false);
     }
   };
 
@@ -352,26 +438,168 @@ export default function Settings() {
           )}
 
           {activeTab === 'account' && (
-            <div className="settings-section">
-              <h3>Account Details</h3>
-              <p className="subtitle">Manage your core account information.</p>
-              <div className="account-preview">
+            <div className="settings-section account-settings-wrapper">
+              <div className="settings-section-header">
+                <h3>Account Details</h3>
+                <p className="subtitle">Manage your core account information and security settings.</p>
+              </div>
+
+              <div className="account-preview-card">
                 <div className="account-row">
                   <span>Username</span>
-                  <strong>@{user?.username || "N/A"}</strong>
+                  <strong className="text-highlight">@{user?.username || "N/A"}</strong>
                 </div>
                 <div className="account-row">
                   <span>Email</span>
-                  <strong>{user?.email || "N/A"}</strong>
+                  <strong className="text-highlight">{user?.email || "N/A"}</strong>
                 </div>
                 <div className="account-row">
                   <span>Joined</span>
                   <strong>{user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : "Recently"}</strong>
                 </div>
               </div>
-              <button className="btn btn-outline" onClick={() => window.location.href = '/verify-email'}>
-                Change Password / Re-verify Email
-              </button>
+
+              {/* Email Verification Section */}
+              <div className="security-card-item">
+                <div className="security-card-header">
+                  <div className="security-card-title-group">
+                    <div className="security-icon-circle email-icon">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                    </div>
+                    <div>
+                      <h4>Email Verification</h4>
+                      <p>Ensure your email address is verified for account security.</p>
+                    </div>
+                  </div>
+                  <div className="security-badge-group">
+                    {user?.isEmailVerified ? (
+                      <span className="badge badge-success">✓ Verified</span>
+                    ) : (
+                      <span className="badge badge-warning">⚠️ Unverified</span>
+                    )}
+                  </div>
+                </div>
+
+                {!user?.isEmailVerified && !showOtpForm && (
+                  <div className="security-card-body animate-fade-in">
+                    <button 
+                      className="btn btn-primary" 
+                      onClick={handleSendOtp} 
+                      disabled={actionLoading}
+                    >
+                      {actionLoading ? "Sending OTP..." : "Verify Email"}
+                    </button>
+                  </div>
+                )}
+
+                {showOtpForm && (
+                  <div className="security-card-body otp-form-container slide-in">
+                    <form onSubmit={handleVerifyOtp}>
+                      <p className="form-tip">Please enter the 6-digit verification code sent to <strong>{user?.email}</strong></p>
+                      <div className="field">
+                        <input 
+                          type="text" 
+                          className="input otp-input-field" 
+                          placeholder="000000" 
+                          maxLength={6} 
+                          required 
+                          value={otp} 
+                          onChange={(e) => setOtp(e.target.value)} 
+                          disabled={actionLoading}
+                        />
+                      </div>
+                      <div className="btn-group">
+                        <button type="submit" className="btn btn-primary" disabled={actionLoading}>
+                          {actionLoading ? "Verifying..." : "Confirm Code"}
+                        </button>
+                        <button type="button" className="btn btn-outline" onClick={handleSendOtp} disabled={actionLoading}>
+                          Resend Code
+                        </button>
+                        <button type="button" className="btn btn-text danger" onClick={() => setShowOtpForm(false)} disabled={actionLoading}>
+                          Cancel
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                )}
+              </div>
+
+              {/* Password Change Section */}
+              <div className="security-card-item">
+                <div className="security-card-header" onClick={() => setShowPasswordForm(!showPasswordForm)} style={{ cursor: 'pointer' }}>
+                  <div className="security-card-title-group">
+                    <div className="security-icon-circle key-icon">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg>
+                    </div>
+                    <div>
+                      <h4>Password & Security</h4>
+                      <p>Update your password to keep your account safe.</p>
+                    </div>
+                  </div>
+                  <button className="btn btn-text toggle-form-btn">
+                    {showPasswordForm ? "Hide Form" : "Change Password"}
+                  </button>
+                </div>
+
+                {showPasswordForm && (
+                  <div className="security-card-body password-form-container slide-in">
+                    <form onSubmit={handlePasswordChange}>
+                      <div className="field">
+                        <label>Current Password</label>
+                        <input 
+                          type="password" 
+                          className="input" 
+                          required 
+                          value={currentPassword} 
+                          onChange={(e) => setCurrentPassword(e.target.value)}
+                          disabled={actionLoading}
+                        />
+                      </div>
+                      <div className="field">
+                        <label>New Password</label>
+                        <input 
+                          type="password" 
+                          className="input" 
+                          required 
+                          placeholder="At least 6 characters"
+                          value={newPassword} 
+                          onChange={(e) => setNewPassword(e.target.value)}
+                          disabled={actionLoading}
+                        />
+                      </div>
+                      <div className="field">
+                        <label>Confirm New Password</label>
+                        <input 
+                          type="password" 
+                          className="input" 
+                          required 
+                          value={confirmNewPassword} 
+                          onChange={(e) => setConfirmNewPassword(e.target.value)}
+                          disabled={actionLoading}
+                        />
+                      </div>
+                      <div className="btn-group">
+                        <button type="submit" className="btn btn-primary" disabled={actionLoading}>
+                          {actionLoading ? "Updating..." : "Update Password"}
+                        </button>
+                        <button 
+                          type="button" 
+                          className="btn btn-outline" 
+                          onClick={() => {
+                            setShowPasswordForm(false);
+                            setCurrentPassword("");
+                            setNewPassword("");
+                            setConfirmNewPassword("");
+                          }}
+                          disabled={actionLoading}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </main>
