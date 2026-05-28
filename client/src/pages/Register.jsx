@@ -15,8 +15,25 @@ export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const { register } = useAuth();
+  const { register, socialSignIn } = useAuth();
   const navigate = useNavigate();
+
+  const handleSocialSignIn = async (provider) => {
+    setLoading(true);
+    setError("");
+    try {
+      const result = await socialSignIn(provider);
+      if (result.ok) {
+        navigate("/home");
+      } else {
+        setError(result.error || "Social sign-up failed");
+      }
+    } catch (err) {
+      setError("An unexpected error occurred during social sign-up");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -167,11 +184,11 @@ export default function Register() {
         </div>
 
         <div className="auth-social-stack">
-          <button type="button" className="auth-social-btn">
+          <button type="button" className="auth-social-btn" onClick={() => handleSocialSignIn("google")} disabled={loading}>
             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/pjax/google.png" alt="Google" />
             Sign up with Google
           </button>
-          <button type="button" className="auth-social-btn">
+          <button type="button" className="auth-social-btn" onClick={() => handleSocialSignIn("apple")} disabled={loading}>
             <svg viewBox="0 0 384 512" fill="currentColor"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-31.4-57.3-114.6-1.7-123.1zM281.2 49.3c18.4-22.3 10.4-44.5 10.4-44.5s-23.4 1.5-41.8 23.9c-16.1 19.5-10.3 42-10.3 42s24.4 2 41.7-21.4z"/></svg>
             Sign up with Apple
           </button>

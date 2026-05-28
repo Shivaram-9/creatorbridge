@@ -78,7 +78,51 @@ export function AuthProvider({ children }) {
     return { ok: true, user: u };
   }, []);
 
+  const socialSignIn = useCallback(async (providerName) => {
+    try {
+      let provider;
+      if (providerName === "google") {
+        const { GoogleAuthProvider } = await import("firebase/auth");
+        provider = new GoogleAuthProvider();
+      } else if (providerName === "apple") {
+        const { OAuthProvider } = await import("firebase/auth");
+        provider = new OAuthProvider("apple.com");
+      } else {
+        return { ok: false, error: "Unsupported social provider" };
+      }
 
+      const { signInWithPopup } = await import("firebase/auth");
+      const result = await signInWithPopup(auth, provider);
+      const firebaseUser = result.user;
+
+      if (!firebaseUser.email) {
+        return { ok: false, error: "Email address not found in social account" };
+      }
+
+      const data = await api.auth.socialLogin({
+        email: firebaseUser.email,
+        name: firebaseUser.displayName || "",
+        uid: firebaseUser.uid,
+        provider: providerName
+      });
+
+      if (data?.error || !data?.token) {
+        return { ok: false, error: data?.error || "Failed to complete sign-in with server" };
+      }
+
+      const { token, user: u } = data;
+      setToken(token);
+      setUser(u);
+      connectSocket();
+      return { ok: true, user: u };
+    } catch (err) {
+      console.error("AuthContext Social Login Error:", err);
+      if (err.code === "auth/popup-closed-by-user") {
+        return { ok: false, error: "Sign-in popup closed before completion." };
+      }
+      return { ok: false, error: err.message || "Social sign-in failed." };
+    }
+  }, []);
 
   const value = useMemo(
     () => ({
@@ -86,11 +130,12 @@ export function AuthProvider({ children }) {
       loading,
       login,
       register,
+      socialSignIn,
       logout,
       refreshUser,
       setUser,
     }),
-    [user, loading, login, register, logout, refreshUser]
+    [user, loading, login, register, socialSignIn, logout, refreshUser]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

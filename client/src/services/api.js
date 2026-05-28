@@ -165,6 +165,7 @@ export const api = {
     verifyEmail: (token) => request(`/auth/verify-email/${token}`, { method: "POST" }),
     sendOtp: (email) => request("/auth/send-otp", { method: "POST", body: { email } }),
     verifyOtp: (email, otp) => request("/auth/verify-otp", { method: "POST", body: { email, otp } }),
+    socialLogin: (body) => request("/auth/social-login", { method: "POST", body }),
   },
   users: {
     me: () => request("/users/me"),

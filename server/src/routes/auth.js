@@ -297,3 +297,48 @@ authRouter.post("/verify-otp", async (req, res) => {
     res.status(500).json({ error: "OTP verification failed" });
   }
 });
+
+// POST /api/auth/social-login
+authRouter.post("/social-login", async (req, res) => {
+  try {
+    const { email, name, uid, provider } = req.body;
+    if (!email) {
+      return res.status(400).json({ error: "Email is required for social sign-in" });
+    }
+
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      // Create new user for social login
+      const randomPassword = crypto.randomBytes(16).toString("hex");
+      const hashed = await bcrypt.hash(randomPassword, 10);
+      
+      // Generate a clean username based on email prefix
+      const usernamePrefix = email.split("@")[0].replace(/[^a-zA-Z0-9]/g, "").slice(0, 20);
+      const uniqueSuffix = Math.floor(1000 + Math.random() * 9000).toString();
+      const username = `${usernamePrefix}_${uniqueSuffix}`;
+
+      user = await User.create({
+        name: name || email.split("@")[0],
+        username,
+        email: email.toLowerCase().trim(),
+        password: hashed,
+        role: "influencer", // default role, user can change later or select during onboarding
+        isEmailVerified: true, // Social accounts are pre-verified
+      });
+
+      // Send welcome email (non-blocking)
+      EmailService.sendWelcome(user).catch(err => 
+        console.error("Failed to send welcome email:", err.message)
+      );
+    }
+
+    const token = signToken(user._id.toString());
+    await createSession(user, token, req);
+
+    res.json({ token, user });
+  } catch (err) {
+    console.error("Social login route error:", err);
+    res.status(500).json({ error: "Failed to process social login" });
+  }
+});
