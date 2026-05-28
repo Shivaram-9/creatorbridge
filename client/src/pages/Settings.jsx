@@ -566,12 +566,11 @@ export default function Settings() {
                         />
                       </div>
                       <div className="field">
-                        <label>New Password</label>
+                        <label>New Password <span>(At least 6 characters)</span></label>
                         <input 
                           type="password" 
                           className="input" 
                           required 
-                          placeholder="At least 6 characters"
                           value={newPassword} 
                           onChange={(e) => setNewPassword(e.target.value)}
                           disabled={actionLoading}
