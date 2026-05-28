@@ -2,16 +2,17 @@
 /* Triggering Render Rebuild due to random build failure */
 
 .home-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 320px;
-  gap: 32px;
+  display: block;
   width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
 }
 
 .feed-col {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  width: 100%;
 }
 
 /* Carousel */

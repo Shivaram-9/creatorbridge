@@ -31,27 +31,9 @@ export default function Home() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [verifiedCreators, setVerifiedCreators] = useState([]);
-  const [suggestedUsers, setSuggestedUsers] = useState([]);
   const [activeTab, setActiveTab] = useState("All Feed");
   const [showVerificationBanner, setShowVerificationBanner] = useState(true);
   const [showFeedDropdown, setShowFeedDropdown] = useState(false);
-
-  const loadSidebarData = useCallback(async () => {
-    try {
-      const discoverRes = await api.search.discover();
-      if (!discoverRes.error) {
-        setSuggestedUsers(discoverRes.creators?.slice(0, 5) || []);
-        setVerifiedCreators(discoverRes.creators?.filter(u => u.isVerified).slice(0, 5) || []);
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  }, []);
-
-  useEffect(() => {
-    loadSidebarData();
-  }, [loadSidebarData]);
 
   const loadPosts = useCallback(async () => {
     setLoading(true);
@@ -205,36 +187,6 @@ export default function Home() {
             </div>
           </>
         )}
-      </div>
-
-      {/* Right Sidebar Column */}
-      <div className="home-sidebar-col">
-
-        {/* Verified Creators Card */}
-        <div className="sidebar-card">
-          <div className="card-header-flex">
-            <h2 className="card-title">Verified Creators</h2>
-            <a href="/discover" className="view-all-link">View all</a>
-          </div>
-          <div className="creator-list">
-            {verifiedCreators.length === 0 ? (
-              <div style={{ color: '#71839B', fontSize: '0.85rem' }}>No verified creators found.</div>
-            ) : (
-              verifiedCreators.map(c => (
-                <div key={c._id} className="creator-item">
-                  <img src={c.avatar ? (c.avatar.startsWith('http') ? c.avatar : `${BASE_URL}${c.avatar}`) : "/placeholder_avatar.png"} alt={c.username} className="creator-avatar" />
-                  <div className="creator-info">
-                    <span className="creator-name">{c.name || c.username} <span className="verified-icon">💎</span></span>
-                    <span className="creator-category">{c.category || "Creator"}</span>
-                  </div>
-                  <button className="creator-btn btn-outline-primary" onClick={() => navigate(`/user/${c._id}`)}>Follow</button>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-
-
       </div>
     </div>
   );
