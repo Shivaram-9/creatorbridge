@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 
+// Firebase project: creatorbridge-2e1ab (v2)
 const firebaseConfig = {
   apiKey: "AIzaSyCODp5oNL-rQIvTe-gTrLeOVBM3v-jV5_o",
   authDomain: "creatorbridge-2e1ab.firebaseapp.com",
