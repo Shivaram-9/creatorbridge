@@ -1,13 +1,16 @@
 import nodemailer from "nodemailer";
 
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: process.env.SMTP_PORT,
+  host: process.env.SMTP_HOST || "localhost",
+  port: process.env.SMTP_PORT || 587,
   secure: process.env.SMTP_PORT == 465,
   auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
+    user: process.env.SMTP_USER || "",
+    pass: process.env.SMTP_PASS || "",
   },
+  connectionTimeout: 5000, // 5s connection timeout to prevent hangs
+  greetingTimeout: 5000,
+  socketTimeout: 5000,
 });
 
 const APP_NAME = "Pactogram";
@@ -47,6 +50,11 @@ const getTemplate = (title, content) => `
 
 export const EmailService = {
   send: async (to, subject, title, htmlContent) => {
+    // Fast-fail check to prevent server from hanging on unconfigured SMTP
+    if (!process.env.SMTP_HOST || !process.env.SMTP_USER || process.env.SMTP_HOST.includes("example.com")) {
+      console.log("EmailService: SMTP not configured or is a placeholder. Skipping email send to:", to);
+      return false;
+    }
     try {
       await transporter.sendMail({
         from: `"${APP_NAME}" <${process.env.SMTP_USER}>`,
