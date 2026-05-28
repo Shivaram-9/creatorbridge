@@ -3,9 +3,9 @@ import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCODp5oNL-rQIvTe-gTrLeOVBM3v-jV5_o",
-  authDomain: "Pactogram-2e1ab.firebaseapp.com",
-  projectId: "Pactogram-2e1ab",
-  storageBucket: "Pactogram-2e1ab.firebasestorage.app",
+  authDomain: "creatorbridge-2e1ab.firebaseapp.com",
+  projectId: "creatorbridge-2e1ab",
+  storageBucket: "creatorbridge-2e1ab.firebasestorage.app",
   messagingSenderId: "418919266200",
   appId: "1:418919266200:web:6c764f53ce95864bf2dded"
 };
