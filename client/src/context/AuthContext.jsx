@@ -120,6 +120,12 @@ export function AuthProvider({ children }) {
       if (err.code === "auth/popup-closed-by-user") {
         return { ok: false, error: "Sign-in popup closed before completion." };
       }
+      if (err.code === "auth/configuration-not-found") {
+        return { 
+          ok: false, 
+          error: "Google/Apple Sign-In is not enabled yet in your Firebase Console. Please enable Google and Apple under Authentication -> Sign-in Method in your Firebase Console (Pactogram-2e1ab)." 
+        };
+      }
       return { ok: false, error: err.message || "Social sign-in failed." };
     }
   }, []);
