@@ -10,10 +10,11 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export const sendEmail = async ({ to, subject, html }) => {
+export const sendEmail = async ({ to, subject, html, replyTo }) => {
   const mailOptions = {
     from: `"Pactogram" <${process.env.SMTP_USER}>`,
     to,
+    replyTo,
     subject,
     html,
   };

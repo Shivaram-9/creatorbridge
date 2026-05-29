@@ -639,3 +639,46 @@ usersRouter.post("/change-password", async (req, res) => {
     res.status(500).json({ error: "Failed to change password" });
   }
 });
+
+// POST /api/users/support
+import { sendEmail } from "../utils/email.js";
+usersRouter.post("/support", async (req, res) => {
+  try {
+    const { subject, message } = req.body;
+    if (!subject || !message) {
+      return res.status(400).json({ error: "Subject and message are required" });
+    }
+
+    const user = await User.findById(req.userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const supportEmail = process.env.SMTP_USER;
+    if (!supportEmail) {
+      return res.status(500).json({ error: "Support email not configured" });
+    }
+
+    const htmlContent = `
+      <h3>New Help Center Request</h3>
+      <p><strong>From:</strong> ${user.name} (${user.email})</p>
+      <p><strong>User ID:</strong> ${user._id}</p>
+      <hr />
+      <p><strong>Subject:</strong> ${subject}</p>
+      <p><strong>Message:</strong></p>
+      <p>${message.replace(/\n/g, "<br>")}</p>
+    `;
+
+    await sendEmail({
+      to: supportEmail,
+      replyTo: user.email,
+      subject: `[Support Request] ${subject}`,
+      html: htmlContent
+    });
+
+    res.json({ message: "Support request sent successfully" });
+  } catch (err) {
+    console.error("Support route error:", err);
+    res.status(500).json({ error: "Failed to send support request" });
+  }
+});

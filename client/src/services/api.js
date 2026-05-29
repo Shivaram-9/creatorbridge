@@ -205,6 +205,7 @@ export const api = {
     getSuggested: () => request("/users/discover/suggested"),
     addPortfolioItem: (body) => request("/users/me/portfolio", { method: "POST", body }),
     removePortfolioItem: (itemId) => request(`/users/me/portfolio/${itemId}`, { method: "DELETE" }),
+    support: (body) => request("/users/support", { method: "POST", body }),
   },
   discovery: {
     getSuggested: () => request("/discovery/suggested"),

@@ -15,7 +15,8 @@ export default function Navbar({
   notifications = [], 
   onMarkRead = () => {}, 
   fetchNotifications,
-  logout 
+  logout,
+  openHelpCenter
 }) {
   const [notifOpen, setNotifOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -309,6 +310,12 @@ export default function Navbar({
                     <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-black transition-colors" onClick={() => setMenuOpen(false)}>Profile</Link>
                     <Link to="/saved" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-black transition-colors" onClick={() => setMenuOpen(false)}>Saved</Link>
                     <Link to="/settings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-black transition-colors" onClick={() => setMenuOpen(false)}>Settings</Link>
+                    <button 
+                      className="w-full text-left bg-transparent border-none px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-black transition-colors cursor-pointer"
+                      onClick={() => { setMenuOpen(false); if (openHelpCenter) openHelpCenter(); }}
+                    >
+                      Help Center
+                    </button>
                     <div className="h-px bg-gray-100 my-2"></div>
                     <button
                       className="w-full text-left bg-transparent border-none px-4 py-2 text-sm text-red-500 hover:bg-gray-50 transition-colors cursor-pointer"

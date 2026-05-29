@@ -13,7 +13,7 @@ import {
 } from "./Icons.jsx";
 import "./Sidebar.css";
 
-export default function Sidebar({ user, msgUnreadCount = 0, logout }) {
+export default function Sidebar({ user, msgUnreadCount = 0, logout, openHelpCenter }) {
   const location = useLocation();
 
   const menuItems = [
@@ -55,10 +55,10 @@ export default function Sidebar({ user, msgUnreadCount = 0, logout }) {
           <span className="sidebar-icon"><SettingsIcon /></span>
           <span className="sidebar-label">Settings</span>
         </Link>
-        <Link to="/settings" className="sidebar-item">
+        <button className="sidebar-item" onClick={openHelpCenter}>
           <span className="sidebar-icon"><HelpCircleIcon /></span>
           <span className="sidebar-label">Help Center</span>
-        </Link>
+        </button>
         <button className="sidebar-item logout-btn" onClick={logout}>
           <span className="sidebar-icon"><LogOutIcon /></span>
           <span className="sidebar-label">Logout</span>
