@@ -23,6 +23,8 @@ export default function Layout() {
   const shouldBeCentered = [].includes(location.pathname);
   const isHomePage = location.pathname === "/home" || location.pathname === "/";
 
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+
   useEffect(() => {
     if (user && !user.onboardingComplete && location.pathname !== "/onboarding" && !location.pathname.startsWith("/select-role")) {
       navigate("/onboarding");
@@ -45,6 +47,11 @@ export default function Layout() {
       if (Array.isArray(data)) setNotifications(data);
     } catch { /* silent */ }
   }, []);
+
+  const handleConfirmLogout = () => {
+    setShowLogoutConfirm(false);
+    logout();
+  };
 
   useEffect(() => {
     if (!user) return;
@@ -170,7 +177,7 @@ export default function Layout() {
 
   return (
     <div className="app-shell">
-      <Sidebar user={user} msgUnreadCount={msgUnreadTotal} logout={logout} />
+      <Sidebar user={user} msgUnreadCount={msgUnreadTotal} logout={() => setShowLogoutConfirm(true)} />
       
       <div className="main-content-wrapper" style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
         <Navbar 
@@ -180,7 +187,7 @@ export default function Layout() {
           notifications={notifications}
           onMarkRead={handleMarkRead}
           fetchNotifications={fetchNotifications}
-          logout={logout}
+          logout={() => setShowLogoutConfirm(true)}
         />
 
         <main className={`main-viewport ${isMessagesPage ? 'messages-view-active' : ''}`}>
@@ -205,6 +212,40 @@ export default function Layout() {
 
       </div>
       <GlobalPostModal user={user} />
+      
+      {/* Logout Confirmation Modal */}
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm" onClick={() => setShowLogoutConfirm(false)}>
+          <div className="bg-white rounded-2xl shadow-2xl w-[90%] max-w-sm overflow-hidden" onClick={e => e.stopPropagation()}>
+            <div className="p-6 text-center">
+              <div className="w-16 h-16 rounded-full bg-red-100 text-red-500 mx-auto flex items-center justify-center mb-4">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                  <polyline points="16 17 21 12 16 7"></polyline>
+                  <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 mb-2">Log out?</h3>
+              <p className="text-slate-500 text-sm mb-6">Are you sure you want to log out of your account?</p>
+              
+              <div className="flex flex-col gap-3">
+                <button 
+                  className="w-full py-3 bg-red-500 hover:bg-red-600 text-white font-bold rounded-xl transition-colors"
+                  onClick={handleConfirmLogout}
+                >
+                  Yes, Log out
+                </button>
+                <button 
+                  className="w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition-colors"
+                  onClick={() => setShowLogoutConfirm(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

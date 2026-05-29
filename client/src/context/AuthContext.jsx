@@ -33,9 +33,14 @@ export function AuthProvider({ children }) {
     setToken(token);
     const me = await api.users.me();
     if (me?.error) {
-      setToken(null);
-      setUser(null);
-      disconnectSocket();
+      if (me.error.includes("expired") || me.error.includes("unauthorized") || me.error.includes("401") || me.error === "Session expired — please sign in again") {
+        setToken(null);
+        setUser(null);
+        disconnectSocket();
+      } else {
+        // Just leave the user in the loading state or fallback, but don't clear the token
+        console.warn("Failed to refresh user, but keeping token:", me.error);
+      }
     } else {
       setUser(me);
       connectSocket();
