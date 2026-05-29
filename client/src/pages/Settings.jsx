@@ -6,6 +6,7 @@ import ErrorBanner from "../components/ErrorBanner.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import { BASE_URL } from "../config/api.js";
 import "./Settings.css";
+import { Shield, Lock, BadgeCheck, Bell, User } from "lucide-react";
 
 export default function Settings() {
   const { user, refreshUser } = useAuth();
@@ -249,19 +250,24 @@ export default function Settings() {
           <h2>Settings</h2>
           <nav>
             <button className={activeTab === 'privacy' ? 'active' : ''} onClick={() => setActiveTab('privacy')}>
-              Privacy
+              <Shield className="icon" size={18} />
+              <span>Privacy</span>
             </button>
             <button className={activeTab === 'security' ? 'active' : ''} onClick={() => setActiveTab('security')}>
-              Security & Sessions
+              <Lock className="icon" size={18} />
+              <span>Security & Sessions</span>
             </button>
             <button className={activeTab === 'verification' ? 'active' : ''} onClick={() => setActiveTab('verification')}>
-              Verification
+              <BadgeCheck className="icon" size={18} />
+              <span>Verification</span>
             </button>
             <button className={activeTab === 'notifications' ? 'active' : ''} onClick={() => setActiveTab('notifications')}>
-              Notifications
+              <Bell className="icon" size={18} />
+              <span>Notifications</span>
             </button>
             <button className={activeTab === 'account' ? 'active' : ''} onClick={() => setActiveTab('account')}>
-              Account Details
+              <User className="icon" size={18} />
+              <span>Account Details</span>
             </button>
           </nav>
         </aside>
