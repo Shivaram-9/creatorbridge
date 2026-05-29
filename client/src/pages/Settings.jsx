@@ -240,7 +240,11 @@ export default function Settings() {
           .setting-item.vertical { flex-direction: column !important; align-items: flex-start !important; }
           .setting-info { flex: 1 1 auto !important; min-width: 0 !important; padding-right: 8px !important; }
           .setting-info p, .setting-info h4 { word-wrap: break-word !important; white-space: normal !important; overflow-wrap: break-word !important; }
-          .settings-sidebar nav { width: 100% !important; box-sizing: border-box !important; }
+          .settings-sidebar { width: 100% !important; box-sizing: border-box !important; padding: 16px 0 !important; }
+          .settings-sidebar h2 { padding: 0 16px !important; }
+          .settings-sidebar nav { display: flex !important; flex-direction: row !important; overflow-x: auto !important; width: 100% !important; box-sizing: border-box !important; flex-wrap: nowrap !important; padding: 4px 16px 12px !important; gap: 8px !important; -webkit-overflow-scrolling: touch !important; }
+          .settings-sidebar nav::-webkit-scrollbar { display: none !important; }
+          .settings-sidebar nav button { flex-shrink: 0 !important; white-space: nowrap !important; display: block !important; width: auto !important; }
           .settings-section .input, .settings-select { width: 100% !important; max-width: 100% !important; box-sizing: border-box !important; }
           .toggle { flex-shrink: 0 !important; display: block !important; }
         }
@@ -250,24 +254,19 @@ export default function Settings() {
           <h2>Settings</h2>
           <nav>
             <button className={activeTab === 'privacy' ? 'active' : ''} onClick={() => setActiveTab('privacy')}>
-              <ShieldIcon className="icon" />
-              <span>Privacy</span>
+              Privacy
             </button>
             <button className={activeTab === 'security' ? 'active' : ''} onClick={() => setActiveTab('security')}>
-              <LockIcon className="icon" />
-              <span>Security & Sessions</span>
+              Security & Sessions
             </button>
             <button className={activeTab === 'verification' ? 'active' : ''} onClick={() => setActiveTab('verification')}>
-              <BadgeCheckIcon className="icon" />
-              <span>Verification</span>
+              Verification
             </button>
             <button className={activeTab === 'notifications' ? 'active' : ''} onClick={() => setActiveTab('notifications')}>
-              <BellIcon className="icon" />
-              <span>Notifications</span>
+              Notifications
             </button>
             <button className={activeTab === 'account' ? 'active' : ''} onClick={() => setActiveTab('account')}>
-              <ProfileIcon className="icon" />
-              <span>Account Details</span>
+              Account Details
             </button>
           </nav>
         </aside>
