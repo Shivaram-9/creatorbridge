@@ -242,8 +242,7 @@ export default function Settings() {
           .setting-info p, .setting-info h4 { word-wrap: break-word !important; white-space: normal !important; overflow-wrap: break-word !important; }
           .settings-sidebar { width: 100% !important; box-sizing: border-box !important; padding: 16px 0 !important; }
           .settings-sidebar h2 { padding: 0 16px !important; }
-          .settings-sidebar nav { display: flex !important; flex-direction: row !important; overflow-x: auto !important; width: 100% !important; box-sizing: border-box !important; flex-wrap: nowrap !important; padding: 4px 16px 12px !important; gap: 8px !important; -webkit-overflow-scrolling: touch !important; }
-          .settings-sidebar nav::-webkit-scrollbar { display: none !important; }
+          .settings-sidebar nav { display: flex !important; flex-direction: row !important; width: 100% !important; box-sizing: border-box !important; flex-wrap: wrap !important; padding: 4px 16px 12px !important; gap: 8px !important; }
           .settings-sidebar nav button { flex-shrink: 0 !important; white-space: nowrap !important; display: block !important; width: auto !important; }
           .settings-section .input, .settings-select { width: 100% !important; max-width: 100% !important; box-sizing: border-box !important; }
           .toggle { flex-shrink: 0 !important; display: block !important; }
