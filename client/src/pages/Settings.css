@@ -81,12 +81,18 @@
   align-items: center;
   padding-bottom: 24px;
   border-bottom: 1px solid #f1f5f9;
+  gap: 16px;
 }
 
 .setting-item.vertical {
   flex-direction: column;
   align-items: flex-start;
   gap: 16px;
+}
+
+.setting-info {
+  flex: 1;
+  min-width: 0;
 }
 
 .setting-info h4 {
