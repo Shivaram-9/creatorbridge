@@ -230,6 +230,20 @@ export default function Settings() {
 
   return (
     <div className="settings-page container slide-in">
+      <style>{`
+        @media (max-width: 900px) {
+          .settings-page { width: 100% !important; max-width: 100vw !important; overflow-x: hidden !important; box-sizing: border-box !important; padding: 0 !important; }
+          .settings-layout { width: 100% !important; max-width: 100vw !important; box-sizing: border-box !important; }
+          .settings-content { width: 100% !important; max-width: 100vw !important; padding: 20px 16px !important; box-sizing: border-box !important; overflow-x: hidden !important; margin: 0 !important; }
+          .setting-item { display: flex !important; width: 100% !important; gap: 16px !important; box-sizing: border-box !important; justify-content: space-between !important; }
+          .setting-item.vertical { flex-direction: column !important; align-items: flex-start !important; }
+          .setting-info { flex: 1 1 auto !important; min-width: 0 !important; padding-right: 8px !important; }
+          .setting-info p, .setting-info h4 { word-wrap: break-word !important; white-space: normal !important; overflow-wrap: break-word !important; }
+          .settings-sidebar nav { width: 100% !important; box-sizing: border-box !important; }
+          .settings-section .input, .settings-select { width: 100% !important; max-width: 100% !important; box-sizing: border-box !important; }
+          .toggle { flex-shrink: 0 !important; display: block !important; }
+        }
+      `}</style>
       <div className="settings-layout">
         <aside className="settings-sidebar">
           <h2>Settings</h2>
