@@ -399,10 +399,40 @@
 @media (max-width: 768px) {
   .profile-header-base {
     padding: 0 20px 20px;
+    border-radius: 0;
   }
   .profile-top-row {
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
+  }
+  .profile-info-section {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    gap: 16px;
+  }
+  .profile-avatar-wrap {
+    width: 120px;
+    height: 120px;
+    margin-top: -60px;
+    margin-bottom: 8px;
+  }
+  .profile-display-name {
+    font-size: 20px;
+    flex-wrap: wrap;
+  }
+  .profile-title-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  .profile-title-separator {
+    display: none;
+  }
+  .profile-actions-row {
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
   }
   .identity-overview-card {
     margin-top: 20px;
