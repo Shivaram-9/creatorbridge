@@ -312,7 +312,7 @@ export default function Profile() {
 
       <div className="stats-cards-row">
         <div className="stat-card-wide clickable" onClick={() => navigate(`/user/${user._id}/alliances`)}>
-          <div className="stat-icon-wrap purple"><UsersIcon /></div>
+          <div className="stat-icon-wrap"><UsersIcon /></div>
           <div className="stat-info">
             <span className="stat-val">
               {fmtCount(user?.connectionsCount !== undefined ? user.connectionsCount : new Set([...(user?.followers || []), ...(user?.following || [])]).size)}
@@ -322,7 +322,7 @@ export default function Profile() {
           </div>
         </div>
         <div className="stat-card-wide clickable" onClick={() => navigate("/analytics")}>
-          <div className="stat-icon-wrap green"><BriefcaseIcon /></div>
+          <div className="stat-icon-wrap"><BriefcaseIcon /></div>
           <div className="stat-info">
             <span className="stat-val">{fmtCount(user?.profileViews || 0)}</span>
             <span className="stat-lbl">Profile Views</span>
@@ -330,7 +330,7 @@ export default function Profile() {
           </div>
         </div>
         <div className="stat-card-wide clickable" onClick={() => navigate("/analytics")}>
-          <div className="stat-icon-wrap orange"><TrendingDownIcon /></div>
+          <div className="stat-icon-wrap"><TrendingDownIcon /></div>
           <div className="stat-info">
             <span className="stat-val">{fmtCount(user?.profileReach || 0)}</span>
             <span className="stat-lbl">Profile Reach</span>
@@ -338,11 +338,11 @@ export default function Profile() {
           </div>
         </div>
         <div className="stat-card-wide clickable" onClick={() => navigate("/collaborations")}>
-          <div className="stat-icon-wrap blue"><EyeIcon /></div>
+          <div className="stat-icon-wrap"><EyeIcon /></div>
           <div className="stat-info">
             <span className="stat-val">{fmtCount(user?.featuredIn || 0)}</span>
-            <span className="stat-lbl">{user?.role === "brand" ? "Partnerships" : "Featured In"}</span>
-            <span className="stat-sub">{user?.role === "brand" ? "With creators" : "By brands"}</span>
+            <span className="stat-lbl">Featured In</span>
+            <span className="stat-sub">By brands</span>
           </div>
         </div>
       </div>

@@ -379,7 +379,7 @@ export default function UserProfile() {
 
       <div className="stats-cards-row">
         <div className="stat-card-wide clickable" onClick={() => !isPrivateAndHidden && navigate(`/user/${userId}/alliances`)}>
-          <div className="stat-icon-wrap purple"><UsersIcon /></div>
+          <div className="stat-icon-wrap"><UsersIcon /></div>
           <div className="stat-info">
             <span className="stat-val">
               {fmtCount(profile?.connectionsCount !== undefined ? profile.connectionsCount : new Set([...(profile?.followers || []), ...(profile?.following || [])]).size)}
@@ -389,7 +389,7 @@ export default function UserProfile() {
           </div>
         </div>
         <div className="stat-card-wide">
-          <div className="stat-icon-wrap green"><BriefcaseIcon /></div>
+          <div className="stat-icon-wrap"><BriefcaseIcon /></div>
           <div className="stat-info">
             <span className="stat-val">{fmtCount(profile?.profileViews || 0)}</span>
             <span className="stat-lbl">Profile Views</span>
@@ -397,7 +397,7 @@ export default function UserProfile() {
           </div>
         </div>
         <div className="stat-card-wide">
-          <div className="stat-icon-wrap orange"><TrendingDownIcon /></div>
+          <div className="stat-icon-wrap"><TrendingDownIcon /></div>
           <div className="stat-info">
             <span className="stat-val">{fmtCount(profile?.profileReach || 0)}</span>
             <span className="stat-lbl">Profile Reach</span>
@@ -405,11 +405,11 @@ export default function UserProfile() {
           </div>
         </div>
         <div className="stat-card-wide">
-          <div className="stat-icon-wrap blue"><EyeIcon /></div>
+          <div className="stat-icon-wrap"><EyeIcon /></div>
           <div className="stat-info">
             <span className="stat-val">{fmtCount(profile?.featuredIn || 0)}</span>
-            <span className="stat-lbl">{profile?.role === "brand" ? "Partnerships" : "Featured In"}</span>
-            <span className="stat-sub">{profile?.role === "brand" ? "With creators" : "By brands"}</span>
+            <span className="stat-lbl">Featured In</span>
+            <span className="stat-sub">By brands</span>
           </div>
         </div>
       </div>

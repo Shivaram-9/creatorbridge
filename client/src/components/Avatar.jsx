@@ -70,12 +70,30 @@ export default function Avatar({ user, size = "md", className = "", showOnline =
       {renderContent()}
       {showOnline && user?.isOnline && <span className="online-dot" title="Online" />}
       {(user?.isVerified || user?.isPremium) && (
-        <img 
-          src="/diamond.png" 
-          alt="Verified" 
-          className="verified-avatar-badge"
+        <div
           title={user.role === 'brand' ? 'Verified Brand' : 'Verified Creator'}
-        />
+          style={{
+            position: 'absolute',
+            bottom: '0px',
+            right: '0px',
+            width: '28%',
+            height: '28%',
+            minWidth: '16px',
+            minHeight: '16px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: 'white',
+            borderRadius: '50%',
+            padding: '2px',
+            zIndex: 10,
+            boxShadow: '0 2px 4px rgba(0,0,0,0.15)'
+          }}
+        >
+          <svg viewBox="0 0 24 24" fill="#0284c7" style={{ width: '100%', height: '100%' }}>
+            <path d="M2.5 8.5L12 21.5 21.5 8.5 17 3H7L2.5 8.5z" />
+          </svg>
+        </div>
       )}
     </div>
   );
