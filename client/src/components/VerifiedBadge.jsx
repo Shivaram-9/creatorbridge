@@ -41,7 +41,7 @@ export default function VerifiedBadge({ size = 'md', showTooltip = true, tier = 
       }}
     >
       <img 
-        src="/diamond image.png" 
+        src="/diamond.png" 
         alt="Verified" 
         style={{ width: badgeSize, height: badgeSize, objectFit: 'contain', verticalAlign: 'middle' }}
       />
