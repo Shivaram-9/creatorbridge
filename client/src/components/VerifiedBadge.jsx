@@ -45,15 +45,9 @@ export default function VerifiedBadge({ size = 'md', showTooltip = true, tier = 
         height={badgeSize} 
         viewBox="0 0 24 24" 
         fill="currentColor" 
-        stroke="currentColor" 
-        strokeWidth="1" 
-        strokeLinecap="round" 
-        strokeLinejoin="round"
         aria-hidden="true"
       >
-        <path d="M6 3h12l4 6-10 13L2 9Z" />
-        <path d="M11 3 8 9l4 13 4-13-3-6" />
-        <path d="M2 9h20" />
+        <path d="M2.5 8.5L12 21.5 21.5 8.5 17 3H7L2.5 8.5z" />
       </svg>
     </span>
   );
