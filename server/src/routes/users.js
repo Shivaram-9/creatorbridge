@@ -654,7 +654,7 @@ usersRouter.post("/support", async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
-    const supportEmail = process.env.SMTP_USER;
+    const supportEmail = process.env.SUPPORT_EMAIL || process.env.SMTP_USER;
     if (!supportEmail) {
       return res.status(500).json({ error: "Support email not configured" });
     }
