@@ -40,15 +40,11 @@ export default function VerifiedBadge({ size = 'md', showTooltip = true, tier = 
         verticalAlign: 'middle'
       }}
     >
-      <svg 
-        width={badgeSize} 
-        height={badgeSize} 
-        viewBox="0 0 24 24" 
-        fill="currentColor" 
-        aria-hidden="true"
-      >
-        <path d="M2.5 8.5L12 21.5 21.5 8.5 17 3H7L2.5 8.5z" />
-      </svg>
+      <img 
+        src="/diamond image.png" 
+        alt="Verified" 
+        style={{ width: badgeSize, height: badgeSize, objectFit: 'contain', verticalAlign: 'middle' }}
+      />
     </span>
   );
 }
