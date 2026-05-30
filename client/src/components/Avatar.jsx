@@ -90,9 +90,11 @@ export default function Avatar({ user, size = "md", className = "", showOnline =
             boxShadow: '0 2px 4px rgba(0,0,0,0.15)'
           }}
         >
-          <svg viewBox="0 0 24 24" fill="#0284c7" style={{ width: '100%', height: '100%' }}>
-            <path d="M2.5 8.5L12 21.5 21.5 8.5 17 3H7L2.5 8.5z" />
-          </svg>
+          <img 
+            src="/diamond-removebg-preview.png" 
+            alt="Verified" 
+            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+          />
         </div>
       )}
     </div>
