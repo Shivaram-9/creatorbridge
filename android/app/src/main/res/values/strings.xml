@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">CreatorBridge</string>
-    <string name="title_activity_main">CreatorBridge</string>
+    <string name="app_name">Pactogram</string>
+    <string name="title_activity_main">Pactogram</string>
     <string name="package_name">com.creatorbridge.app</string>
     <string name="custom_url_scheme">com.creatorbridge.app</string>
 </resources>
