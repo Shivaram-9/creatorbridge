@@ -346,6 +346,8 @@ export const api = {
     addEarnings: (amount, description) => request("/premium/add-earnings", { method: "POST", body: { amount, description } }),
     createOrder: (tier) => request("/premium/create-order", { method: "POST", body: { tier } }),
     verifyPayment: (body) => request("/premium/verify-payment", { method: "POST", body }),
+    createVerificationOrder: () => request("/premium/create-verification-order", { method: "POST" }),
+    confirmVerificationPayment: (body) => request("/premium/confirm-verification", { method: "POST", body }),
     withdraw: (body) => request("/premium/withdraw", { method: "POST", body }),
   },
   ai: {

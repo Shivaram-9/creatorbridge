@@ -28,6 +28,7 @@ export default function Settings() {
   const [passwordSuccess, setPasswordSuccess] = useState("");
   const [otpError, setOtpError] = useState("");
   const [otpSuccess, setOtpSuccess] = useState("");
+  const [paying, setPaying] = useState(false);
 
   const [settings, setSettings] = useState({
     allowMessagesFrom: "everyone",
@@ -224,6 +225,73 @@ export default function Settings() {
       setOtpError("Failed to verify code");
     } finally {
       setActionLoading(false);
+    }
+  };
+
+  const loadRazorpay = () => {
+    return new Promise((resolve) => {
+      if (window.Razorpay) return resolve(true);
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
+
+  const handleVerifyPayment = async () => {
+    setPaying(true);
+    try {
+      const res = await loadRazorpay();
+      if (!res) {
+        import("react-hot-toast").then((m) => m.default.error("Failed to load Razorpay. Please check your connection."));
+        return;
+      }
+
+      const order = await api.premium.createVerificationOrder();
+      if (order.error) throw new Error(order.error);
+
+      const options = {
+        key: "rzp_test_SvWRKt5w7Fs2zM", // Test Key ID
+        amount: order.amount,
+        currency: order.currency,
+        name: "Pactogram",
+        description: "Professional Verification (Lifetime Launch Access)",
+        order_id: order.id,
+        handler: async function (response) {
+          try {
+            const verifyRes = await api.premium.confirmVerificationPayment({
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_signature: response.razorpay_signature
+            });
+            if (verifyRes.error) {
+              import("react-hot-toast").then((m) => m.default.error(verifyRes.error));
+            } else {
+              import("react-hot-toast").then((m) => m.default.success("Verification successful! Lifetime Access activated."));
+              if (refreshUser) await refreshUser();
+            }
+          } catch (err) {
+            import("react-hot-toast").then((m) => m.default.error("Payment confirmation failed."));
+          }
+        },
+        prefill: {
+          name: user?.name,
+          email: user?.email,
+          contact: user?.phone || "9999999999"
+        },
+        theme: { color: "#2563EB" },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.on("payment.failed", function (response) {
+        import("react-hot-toast").then((m) => m.default.error(response.error.description));
+      });
+      rzp.open();
+    } catch (err) {
+      import("react-hot-toast").then((m) => m.default.error("Failed to initiate verification payment."));
+    } finally {
+      setPaying(false);
     }
   };
 
@@ -431,8 +499,13 @@ export default function Settings() {
                   <div className="pricing-amount">₹299</div>
                   <div className="pricing-badge">Lifetime Launch Access</div>
                   <div className="pricing-future">Future pricing: ₹1299 / year</div>
-                  <button className="get-verified-action-btn" onClick={() => navigate('/apply-verification')}>
-                    Get Verified
+                  <button 
+                    className="get-verified-action-btn" 
+                    onClick={user?.isVerified ? null : handleVerifyPayment}
+                    disabled={paying || user?.isVerified}
+                    style={user?.isVerified ? { backgroundColor: '#10B981', cursor: 'default' } : {}}
+                  >
+                    {user?.isVerified ? "You are Verified!" : paying ? "Loading..." : "Get Verified"}
                   </button>
                 </div>
               </div>
