@@ -69,6 +69,14 @@ export default function Avatar({ user, size = "md", className = "", showOnline =
     >
       {renderContent()}
       {showOnline && user?.isOnline && <span className="online-dot" title="Online" />}
+      {(user?.isVerified || user?.isPremium) && (
+        <img 
+          src="/diamond.png" 
+          alt="Verified" 
+          className="verified-avatar-badge"
+          title={user.role === 'brand' ? 'Verified Brand' : 'Verified Creator'}
+        />
+      )}
     </div>
   );
 }
