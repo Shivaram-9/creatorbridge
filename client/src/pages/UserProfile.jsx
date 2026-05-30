@@ -279,13 +279,15 @@ export default function UserProfile() {
             <div className="profile-info-content">
               <h1 className="profile-display-name">
                 {displayName}
-                {(profile?.isVerified || profile?.isPremium) && (
-                  <span className="verified-badge-pill">
-                    <VerifiedBadge size="sm" tier={profile.premiumTier} /> 
-                    {profile.role === 'brand' ? 'Verified Brand' : 'Verified Creator'}
-                  </span>
-                )}
               </h1>
+              {(profile?.isVerified || profile?.isPremium) && (
+                <div style={{ marginTop: '4px', marginBottom: '8px' }}>
+                  <span className="verified-badge-pill" style={{ display: 'inline-flex', alignItems: 'center', background: '#f0f9ff', color: '#0284c7', padding: '4px 12px', borderRadius: '100px', fontSize: '13px', fontWeight: '600' }}>
+                    <VerifiedBadge size="sm" tier={profile.premiumTier} /> 
+                    <span style={{ marginLeft: '4px' }}>{profile.role === 'brand' ? 'Verified Brand' : 'Verified Creator'}</span>
+                  </span>
+                </div>
+              )}
               
               <div className="profile-title-row" style={{ marginTop: '8px', marginBottom: '16px' }}>
                 <span>{profile?.category || "Content Creator"}</span>
