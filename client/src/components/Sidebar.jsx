@@ -55,10 +55,7 @@ export default function Sidebar({ user, msgUnreadCount = 0, logout, openHelpCent
           <span className="sidebar-icon"><SettingsIcon /></span>
           <span className="sidebar-label">Settings</span>
         </Link>
-        <button className="sidebar-item" onClick={openHelpCenter}>
-          <span className="sidebar-icon"><HelpCircleIcon /></span>
-          <span className="sidebar-label">Help Center</span>
-        </button>
+
         <button className="sidebar-item logout-btn" onClick={logout}>
           <span className="sidebar-icon"><LogOutIcon /></span>
           <span className="sidebar-label">Logout</span>

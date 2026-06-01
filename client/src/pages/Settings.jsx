@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 import { api, getToken } from "../services/api.js";
 import ErrorBanner from "../components/ErrorBanner.jsx";
@@ -11,6 +11,8 @@ import { ShieldIcon, LockIcon, BadgeCheckIcon, BellIcon, ProfileIcon } from "../
 export default function Settings() {
   const { user, refreshUser } = useAuth();
   const navigate = useNavigate();
+  const outletContext = useOutletContext();
+  const openHelpCenter = outletContext?.openHelpCenter || (() => {});
   const [activeTab, setActiveTab] = useState("privacy");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -335,6 +337,9 @@ export default function Settings() {
             </button>
             <button className={activeTab === 'account' ? 'active' : ''} onClick={() => setActiveTab('account')}>
               Account Details
+            </button>
+            <button className="help-center-btn" onClick={openHelpCenter} style={{ marginTop: 'auto', color: '#6366f1' }}>
+              Help Center
             </button>
           </nav>
         </aside>

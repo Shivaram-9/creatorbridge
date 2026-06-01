@@ -233,7 +233,7 @@ export default function Layout() {
                 : "content-container-pro"
             }
           >
-            <Outlet />
+            <Outlet context={{ openHelpCenter: () => setShowHelpCenter(true) }} />
           </div>
         </main>
 
