@@ -74,12 +74,12 @@ export default function Avatar({ user, size = "md", className = "", showOnline =
           title={user.role === 'brand' ? 'Verified Brand' : 'Verified Creator'}
           style={{
             position: 'absolute',
-            bottom: '0px',
-            right: '-4px',
-            width: '28%',
-            height: '28%',
-            minWidth: '16px',
-            minHeight: '16px',
+            bottom: '-2px',
+            right: '-2px',
+            width: '40%',
+            height: '40%',
+            minWidth: '24px',
+            minHeight: '24px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -87,7 +87,7 @@ export default function Avatar({ user, size = "md", className = "", showOnline =
           }}
         >
           <img 
-            src="/diamond-removebg-preview.png" 
+            src="/diamond.png"  
             alt="Verified" 
             style={{ width: '100%', height: '100%', objectFit: 'contain', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }}
           />

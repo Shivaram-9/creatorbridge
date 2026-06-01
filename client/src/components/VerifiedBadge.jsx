@@ -26,25 +26,5 @@ export default function VerifiedBadge({ size = 'md', showTooltip = true, tier = 
   const tierKey = (tier || 'none').toLowerCase();
   const badgeColor = colors[tierKey] || colors.none;
 
-  return (
-    <span 
-      className={`verified-badge verified-badge--${tier}`} 
-      title={showTooltip ? (tier !== 'none' ? `${tier.charAt(0).toUpperCase() + tier.slice(1)} Premium` : "Verified Creator") : ""}
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginLeft: '4px',
-        color: badgeColor,
-        flexShrink: 0,
-        verticalAlign: 'middle'
-      }}
-    >
-      <img 
-        src="/diamond.png" 
-        alt="Verified" 
-        style={{ width: badgeSize, height: badgeSize, objectFit: 'contain', verticalAlign: 'middle' }}
-      />
-    </span>
-  );
+  return null;
 }
