@@ -289,7 +289,8 @@ export default function Settings() {
       });
       rzp.open();
     } catch (err) {
-      import("react-hot-toast").then((m) => m.default.error("Failed to initiate verification payment."));
+      console.error("Razorpay error detailed:", err);
+      import("react-hot-toast").then((m) => m.default.error(err.message || "Failed to initiate verification payment."));
     } finally {
       setPaying(false);
     }
