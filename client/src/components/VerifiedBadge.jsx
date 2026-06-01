@@ -47,3 +47,4 @@ export default function VerifiedBadge({ size = 'md', showTooltip = true, tier = 
       />
     </span>
   );
+}
