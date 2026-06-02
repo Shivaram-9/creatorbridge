@@ -254,7 +254,7 @@ export default function Settings() {
       if (order.error) throw new Error(order.error);
 
       const options = {
-        key: "rzp_test_SvWRKt5w7Fs2zM", // Test Key ID
+        key: "rzp_test_SwLjK4rk9vU0iQ", // Updated Test Key ID
         amount: order.amount,
         currency: order.currency,
         name: "Pactogram",

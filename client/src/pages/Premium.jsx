@@ -55,7 +55,7 @@ export default function Premium() {
       }
 
       const options = {
-        key: "rzp_test_placeholder", // This should ideally come from backend or config
+        key: "rzp_test_SwLjK4rk9vU0iQ", // Updated Test Key ID
         amount: order.amount,
         currency: order.currency,
         name: "Pactogram",
