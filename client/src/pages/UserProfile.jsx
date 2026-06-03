@@ -421,9 +421,7 @@ export default function UserProfile() {
         <div className={`tab-item-wide ${activeTab === 'portfolio' ? 'active' : ''}`} onClick={() => setActiveTab('portfolio')}>
           <span className="tab-icon"><BriefcaseIcon /></span> Portfolio
         </div>
-        <div className={`tab-item-wide ${activeTab === 'tagged' ? 'active' : ''}`} onClick={() => setActiveTab('tagged')}>
-          <span className="tab-icon"><TagIcon /></span> Tagged
-        </div>
+
         <div className={`tab-item-wide ${activeTab === 'about' ? 'active' : ''}`} onClick={() => setActiveTab('about')}>
           <span className="tab-icon"><ProfileIcon /></span> About
         </div>
@@ -465,7 +463,7 @@ export default function UserProfile() {
               </div>
             )}
             {activeTab === "portfolio" && <PortfolioGrid userId={profile._id} />}
-            {activeTab === "tagged" && <div style={{ textAlign: 'center', padding: '40px', background: '#fff', borderRadius: '16px', color: '#64748B' }}>No tagged posts yet.</div>}
+
             {activeTab === "about" && <div style={{ textAlign: 'center', padding: '40px', background: '#fff', borderRadius: '16px', color: '#64748B' }}>{profile?.bio || "No bio yet."}</div>}
           </>
         )}
