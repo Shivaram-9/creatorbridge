@@ -603,13 +603,13 @@ input:checked + .slider:before {
 }
 
 .security-icon-circle.email-icon {
-  background: #eff6ff;
-  color: #2563eb;
+  background: transparent;
+  color: #475569;
 }
 
 .security-icon-circle.key-icon {
-  background: #fdf2f8;
-  color: #db2777;
+  background: transparent;
+  color: #475569;
 }
 
 .security-card-title-group h4 {
