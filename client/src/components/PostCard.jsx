@@ -189,9 +189,6 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
           <div>
             <h3 className="font-bold text-slate-900 cursor-pointer hover:text-blue-600 transition-colors flex items-center gap-1" onClick={() => navigate(`/user/${post.user?._id}`)}>
               {post.user?.name || post.username}
-              {(post.user?.isVerified || post.user?.isPremium) && (
-                <VerifiedBadge size="xs" tier={post.user?.premiumTier} />
-              )}
             </h3>
             <p className="text-sm text-slate-500">{post.user?.role || "Creator / Builder"} • {new Date(post.createdAt).toLocaleDateString()}</p>
           </div>

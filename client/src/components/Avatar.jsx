@@ -74,10 +74,10 @@ export default function Avatar({ user, size = "md", className = "", showOnline =
           title={user.role === 'brand' ? 'Verified Brand' : 'Verified Creator'}
           style={{
             position: 'absolute',
-            bottom: '-4%',
-            right: '-4%',
-            width: '28%',
-            height: '28%',
+            bottom: '-2px',
+            right: '-2px',
+            width: 'clamp(14px, 35%, 36px)',
+            height: 'clamp(14px, 35%, 36px)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
