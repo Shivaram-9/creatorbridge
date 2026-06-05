@@ -254,17 +254,9 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
       </div>
 
       {/* Media Thumbnail */}
-      {mediaList.length > 0 && mediaList[0] && (
-        <div 
-          className="w-full bg-slate-50 rounded-xl overflow-hidden mb-5 cursor-pointer max-h-[500px] border border-slate-200 relative group flex justify-center items-center"
-          onClick={() => setShowLightbox(true)}
-        >
-          <img src={mediaList[0]} alt="Post media" className="w-full h-auto object-cover max-h-[500px]" />
-          {mediaList.length > 1 && (
-            <div className="absolute top-3 right-3 bg-black/60 text-white text-xs font-bold px-2 py-1 rounded-md backdrop-blur-sm">
-              +{mediaList.length - 1} Images
-            </div>
-          )}
+      {mediaList.length > 0 && (
+        <div className="mb-4 -mx-6 sm:mx-0 sm:rounded-xl overflow-hidden border-y sm:border border-slate-200 bg-black cursor-pointer" onClick={() => setShowLightbox(true)}>
+          <MediaGallery media={mediaList} />
         </div>
       )}
 
