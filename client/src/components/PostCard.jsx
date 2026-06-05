@@ -181,41 +181,39 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
   }, [post.media, post.image]);
 
   return (
-    <div className={`post-card slide-in ${post.isPinned ? "pinned" : ""}`}>
-      <div className="post-header">
-        <Avatar user={post.user} size="md" onClick={() => navigate(`/user/${post.user?._id}`)} />
-        <div className="post-info">
-          <h3 className="post-username" onClick={() => navigate(`/user/${post.user?._id}`)}>
-            {post.user?.name || post.username}
-            {(post.user?.isVerified || post.user?.isPremium) && (
-              <VerifiedBadge size="sm" tier={post.user?.premiumTier} />
-            )}
-          </h3>
-          <div className="post-meta">
-            <span className="post-time">{new Date(post.createdAt).toLocaleDateString()}</span>
-            {post.location && <span className="post-location">• {post.location}</span>}
+    <div className={`bg-white border border-slate-200 rounded-xl p-6 transition-all hover:shadow-md hover:border-slate-300 ${post.isPinned ? "ring-2 ring-blue-100" : ""} animate-fade-in`}>
+      {/* Header */}
+      <div className="flex items-start justify-between mb-4">
+        <div className="flex gap-4">
+          <Avatar user={post.user} size="md" onClick={() => navigate(`/user/${post.user?._id}`)} className="cursor-pointer" />
+          <div>
+            <h3 className="font-bold text-slate-900 cursor-pointer hover:text-blue-600 transition-colors flex items-center gap-1" onClick={() => navigate(`/user/${post.user?._id}`)}>
+              {post.user?.name || post.username}
+              {(post.user?.isVerified || post.user?.isPremium) && (
+                <VerifiedBadge size="xs" tier={post.user?.premiumTier} />
+              )}
+            </h3>
+            <p className="text-sm text-slate-500">{post.user?.role || "Creator / Builder"} • {new Date(post.createdAt).toLocaleDateString()}</p>
           </div>
         </div>
 
-        <div className="post-menu-container">
-          {post.isPinned && <span className="pin-indicator">📌 Pinned</span>}
-          <button className="btn-menu" onClick={() => setShowMenu(!showMenu)}>
+        <div className="relative">
+          <button className="p-2 text-slate-400 hover:bg-slate-50 rounded-full transition-colors" onClick={() => setShowMenu(!showMenu)}>
             <MoreHorizontalIcon />
           </button>
           {showMenu && (
-            <div className="dropdown-menu">
+            <div className="absolute right-0 mt-2 w-48 bg-white border border-slate-200 rounded-xl shadow-lg z-20 py-1">
               {isOwner ? (
                 <>
-                  <button onClick={() => { setIsEditing(true); setShowMenu(false); }}>Edit Post</button>
-                  <button onClick={handlePin}>{post.isPinned ? "Unpin" : "Pin to Profile"}</button>
-                  <button onClick={handleArchive}>Archive</button>
-                  <button onClick={() => { setShowCollectionModal(true); setShowMenu(false); }} style={{ color: 'var(--accent)' }}>Save to Collection</button>
-                  <button onClick={handleDelete} className="text-danger" disabled={isDeleting}>Delete</button>
+                  <button className="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50" onClick={() => { setIsEditing(true); setShowMenu(false); }}>Edit Project</button>
+                  <button className="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50" onClick={handlePin}>{post.isPinned ? "Unpin" : "Pin to Profile"}</button>
+                  <button className="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50" onClick={handleArchive}>Archive</button>
+                  <button className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-bold" onClick={handleDelete} disabled={isDeleting}>Delete</button>
                 </>
               ) : (
                 <>
-                  <button onClick={() => { setShowCollectionModal(true); setShowMenu(false); }} style={{ color: 'var(--accent)' }}>Save to Collection</button>
-                  <button onClick={() => { setShowReportModal(true); setShowMenu(false); }}>Report</button>
+                  <button className="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50" onClick={() => { setShowCollectionModal(true); setShowMenu(false); }}>Save to Collection</button>
+                  <button className="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50" onClick={() => { setShowReportModal(true); setShowMenu(false); }}>Report</button>
                 </>
               )}
             </div>
@@ -223,11 +221,110 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
         </div>
       </div>
 
-      <div className="post-content">
-        <div onClick={() => setShowLightbox(true)} style={{ cursor: "pointer" }}>
-          <MediaGallery media={mediaList} />
+      {/* Content */}
+      <div className="mb-4">
+        {isEditing ? (
+          <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
+            <textarea
+              className="w-full bg-white border border-slate-300 rounded-lg p-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none"
+              rows="3"
+              value={editContent}
+              onChange={(e) => setEditContent(e.target.value)}
+            />
+            <div className="flex justify-end gap-2 mt-3">
+              <button className="px-4 py-1.5 text-sm font-bold text-slate-600 hover:bg-slate-100 rounded-lg" onClick={() => setIsEditing(false)}>Cancel</button>
+              <button className="px-4 py-1.5 text-sm font-bold bg-blue-600 text-white hover:bg-blue-700 rounded-lg" onClick={handleEdit}>Save</button>
+            </div>
+          </div>
+        ) : (
+          <div>
+            <h4 className="text-lg font-bold text-slate-900 mb-1">{post.title || "Project Title"}</h4>
+            <p className="text-sm text-slate-600 line-clamp-3 mb-3 leading-relaxed whitespace-pre-wrap">{post.content}</p>
+            
+            {/* Mock Tech Tags - Extracting from content hashtags if available */}
+            <div className="flex gap-2 flex-wrap mb-4">
+              {(post.content.match(/#[\w]+/g) || ['#React', '#Design', '#Web']).slice(0, 4).map((tag, i) => (
+                <span key={i} className="px-2.5 py-1 bg-slate-100 text-slate-600 text-xs font-bold rounded-md">
+                  {tag.replace('#', '')}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Media Thumbnail */}
+      {mediaList.length > 0 && (
+        <div 
+          className="w-full aspect-[16/9] bg-slate-100 rounded-xl overflow-hidden mb-5 cursor-pointer max-h-[300px] border border-slate-200 relative group"
+          onClick={() => setShowLightbox(true)}
+        >
+          <img src={mediaList[0]} alt="Project thumbnail" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+          {mediaList.length > 1 && (
+            <div className="absolute top-3 right-3 bg-black/60 text-white text-xs font-bold px-2 py-1 rounded-md backdrop-blur-sm">
+              +{mediaList.length - 1} Images
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Primary Actions */}
+      <div className="flex gap-3 mb-5">
+        <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold py-2.5 rounded-lg transition-colors">
+          View Project
+        </button>
+        <button className="flex-1 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 text-sm font-bold py-2.5 rounded-lg transition-colors">
+          Live Demo
+        </button>
+      </div>
+
+      {/* Stats / Footer Actions */}
+      <div className="flex items-center justify-between pt-4 border-t border-slate-100">
+        <div className="flex items-center gap-6">
+          <button className={`flex items-center gap-1.5 text-sm font-bold transition-colors ${liked ? "text-red-500" : "text-slate-500 hover:text-slate-700"}`} onClick={handleLike}>
+            <HeartIcon filled={liked} /> <span>{likesCount}</span>
+          </button>
+          <button className="flex items-center gap-1.5 text-sm font-bold text-slate-500 hover:text-slate-700 transition-colors" onClick={() => setShowComments(!showComments)}>
+            <MessageCircleIcon /> <span>{post.comments?.length || 0}</span>
+          </button>
+          <button className="flex items-center gap-1.5 text-sm font-bold text-slate-500 hover:text-slate-700 transition-colors">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            <span>{Math.floor(Math.random() * 500) + 120}</span> {/* Mock views */}
+          </button>
+        </div>
+        
+        <div className="flex items-center gap-2">
+          <button className={`p-2 rounded-lg transition-colors ${saved ? "text-blue-600 bg-blue-50" : "text-slate-400 hover:bg-slate-50"}`} onClick={handleSave}>
+            <BookmarkIcon filled={saved} />
+          </button>
+          <button className="p-2 text-slate-400 hover:bg-slate-50 rounded-lg transition-colors" onClick={handleShare}>
+            <SendIcon />
+          </button>
         </div>
       </div>
+
+      {/* Comments Dropdown */}
+      {showComments && (
+        <div className="mt-4 pt-4 border-t border-slate-100 animate-fade-in">
+          {comments.map((c, i) => (
+            <div key={i} className="flex gap-2 text-sm mb-2">
+              <span className="font-bold text-slate-900 cursor-pointer hover:text-blue-600" onClick={() => navigate(`/user/${c.user?._id || c.user}`)}>
+                {c.username || c.user?.name || "User"}:
+              </span>
+              <span className="text-slate-600">{c.text}</span>
+            </div>
+          ))}
+          <form onSubmit={handleCommentSubmit} className="flex gap-2 mt-3">
+            <input 
+              className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+              placeholder="Add a comment..." 
+              value={commentText} 
+              onChange={(e) => setCommentText(e.target.value)} 
+            />
+            <button type="submit" className="text-sm font-bold text-blue-600 hover:text-blue-700 disabled:opacity-50" disabled={!commentText.trim()}>Post</button>
+          </form>
+        </div>
+      )}
 
       {showLightbox && (
         <Lightbox 
@@ -237,131 +334,28 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
         />
       )}
 
-      <div className="post-actions">
-        <div className="post-actions__left">
-          <button className={`post-action-btn ${liked ? "liked" : ""}`} onClick={handleLike}>
-            <HeartIcon filled={liked} />
-          </button>
-          <button className="post-action-btn" onClick={() => setShowComments(!showComments)}>
-            <MessageCircleIcon />
-          </button>
-          <button className="post-action-btn" onClick={handleShare}>
-            <SendIcon />
-          </button>
-        </div>
-        <button className={`post-action-btn ${saved ? "saved" : ""}`} onClick={handleSave}>
-          <BookmarkIcon filled={saved} />
-        </button>
-      </div>
+      {showReportModal && (
+        <ReportModal 
+          targetType="post"
+          targetId={post._id} 
+          onClose={() => setShowReportModal(false)} 
+        />
+      )}
 
-      <div className="post-footer">
-        {likes.length > 0 ? (
-          <div className="post-likes" onClick={() => navigate(`/post/${post._id}/likes`)} style={{ cursor: 'pointer', marginBottom: '6px' }}>
-            Liked by <strong>{likes[0].username || likes[0].name || "User"}</strong> {likes.length > 1 && <>and {likes.length - 1} others</>}
-          </div>
-        ) : (
-          likesCount > 0 && (
-            <div className="post-likes" onClick={() => navigate(`/post/${post._id}/likes`)} style={{ cursor: 'pointer', marginBottom: '6px', fontWeight: '600' }}>
-              {likesCount} {likesCount === 1 ? 'like' : 'likes'}
-            </div>
-          )
-        )}
+      {showCollectionModal && (
+        <CollectionModal
+          postId={post._id}
+          onClose={() => setShowCollectionModal(false)}
+        />
+      )}
 
-        {isEditing ? (
-          <div className="edit-box" style={{ marginTop: '8px' }}>
-            <textarea 
-              value={editContent} 
-              onChange={(e) => setEditContent(e.target.value)} 
-              style={{
-                width: '100%',
-                minHeight: '80px',
-                borderRadius: '8px',
-                border: '1px solid var(--border-light)',
-                padding: '8px',
-                fontSize: '14px',
-                background: 'var(--bg-main)',
-                color: 'var(--text-main)',
-                resize: 'vertical'
-              }}
-            />
-            <div className="edit-btns" style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end', marginTop: '8px' }}>
-              <button 
-                onClick={() => setIsEditing(false)}
-                style={{
-                  padding: '6px 12px',
-                  borderRadius: '6px',
-                  border: '1px solid var(--border-light)',
-                  background: 'transparent',
-                  cursor: 'pointer',
-                  fontSize: '13px',
-                  color: 'var(--text-main)'
-                }}
-              >
-                Cancel
-              </button>
-              <button 
-                onClick={handleEdit}
-                style={{
-                  padding: '6px 12px',
-                  borderRadius: '6px',
-                  border: 'none',
-                  background: 'var(--accent)',
-                  color: 'white',
-                  cursor: 'pointer',
-                  fontSize: '13px',
-                  fontWeight: '600'
-                }}
-              >
-                Save
-              </button>
-            </div>
-          </div>
-        ) : (
-          post.content && (
-            <div className="post-caption" style={{ fontSize: '14px', color: 'var(--text-main)', lineHeight: '1.4', marginTop: '6px' }}>
-              <strong 
-                style={{ marginRight: '8px', cursor: 'pointer' }}
-                onClick={() => navigate(`/user/${post.user?._id || post.user}`)}
-              >
-                {post.user?.username || post.user?.name || post.username || 'User'}
-              </strong>
-              {post.content}
-              {post.hashtags && post.hashtags.length > 0 && (
-                <div className="post-hashtags" style={{ marginTop: '4px', display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
-                  {post.hashtags.map(h => <span key={h} className="hashtag" style={{ color: '#00376b', cursor: 'pointer', fontSize: '14px' }}>#{h} </span>)}
-                </div>
-              )}
-            </div>
-          )
-        )}
-        
-        {showComments && (
-          <div className="post-comments">
-            {comments.map((c, i) => (
-              <div key={i} className="comment-item">
-                <strong>{c.user?.name}:</strong> {c.text}
-              </div>
-            ))}
-            <form onSubmit={handleCommentSubmit} className="comment-form">
-              <input 
-                placeholder="Add a comment..." 
-                value={commentText} 
-                onChange={(e) => setCommentText(e.target.value)} 
-              />
-              <button disabled={!commentText.trim()}>Post</button>
-            </form>
-          </div>
-        )}
-      </div>
-
-      {showReportModal && <ReportModal targetType="post" targetId={post._id} onClose={() => setShowReportModal(false)} />}
-      {showCollectionModal && <CollectionModal postId={post._id} onClose={() => setShowCollectionModal(false)} />}
       {showShareModal && (
-        <UserListModal 
-          userId={user._id} 
-          type="following" 
-          onClose={() => setShowShareModal(false)} 
-          onSelect={handleShareToUser}
+        <UserListModal
+          title="Share Post"
+          users={user?.following || []}
+          onClose={() => setShowShareModal(false)}
+          onSelectUser={handleShareToUser}
+          actionLabel={shareStatus}
         />
       )}
     </div>

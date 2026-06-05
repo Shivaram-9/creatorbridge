@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext.jsx";
 import Navbar from "./Navbar.jsx";
 import BottomNav from "./BottomNav.jsx";
 import Sidebar from "./Sidebar.jsx";
+import RightPanel from "./RightPanel.jsx";
 
 import GlobalPostModal from "./GlobalPostModal.jsx";
 import { api } from "../services/api.js";
@@ -22,6 +23,7 @@ export default function Layout() {
   const isChatActive = isMessagesPage && location.pathname.split("/").length > 2;
   const shouldBeCentered = [].includes(location.pathname);
   const isHomePage = location.pathname === "/home" || location.pathname === "/";
+  const showRightPanel = isHomePage;
 
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [showHelpCenter, setShowHelpCenter] = useState(false);
@@ -219,23 +221,26 @@ export default function Layout() {
           openHelpCenter={() => setShowHelpCenter(true)}
         />
 
-        <main className={`main-viewport ${isMessagesPage ? 'messages-view-active' : ''}`}>
-          <div
-            className={
-              isHomePage
-                ? "home-layout-wide"
-                : shouldBeCentered
-                ? "feed-layout-centered"
-                : isMessagesPage
-                ? "messages-layout-wrap"
-                : isProfilePage
-                ? "profile-layout-wrap"
-                : "content-container-pro"
-            }
-          >
-            <Outlet context={{ openHelpCenter: () => setShowHelpCenter(true) }} />
-          </div>
-        </main>
+        <div className="flex flex-col lg:flex-row flex-1 w-full relative">
+          <main className={`main-viewport ${isMessagesPage ? 'messages-view-active' : ''}`}>
+            <div
+              className={
+                isHomePage
+                  ? "home-layout-wide"
+                  : shouldBeCentered
+                  ? "feed-layout-centered"
+                  : isMessagesPage
+                  ? "messages-layout-wrap"
+                  : isProfilePage
+                  ? "profile-layout-wrap"
+                  : "content-container-pro"
+              }
+            >
+              <Outlet context={{ openHelpCenter: () => setShowHelpCenter(true) }} />
+            </div>
+          </main>
+          {showRightPanel && <RightPanel />}
+        </div>
 
         {(!isChatActive) && <BottomNav msgUnreadCount={msgUnreadTotal} />}
 

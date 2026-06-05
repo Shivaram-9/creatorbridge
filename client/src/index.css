@@ -2,32 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
-/* PREMIUM INSTAGRAM-LIKE UI - GLOBAL STYLES */
+/* ENTERPRISE SAAS UI - GLOBAL STYLES */
 :root {
-  /* PACTOGRAM COLOR SYSTEM */
-  --bg-main: #F6FAFD;           /* Frost Cloud White */
-  --primary: #5DBBFF;           /* Atmospheric Sky Blue */
-  --bg-secondary: #DDF2FF;      /* So Ocean Mist */
-  --primary-action: #1F6BFF;    /* Horizon Blue */
-  --text-main: #1D2A3A;          /* Graphite Navy */
-  --text-muted: #71839B;         /* Slate Mist */
-  --verified: #70D2FF;          /* Frost Glow Blue */
-  --bg-chat: #EEF7FC;           /* Ice Sky */
-  --bubble-mine: #5DBBFF;       /* Sky Connect Blue */
-  --bubble-other: #FFFFFF;      /* Pure Frost White */
-  --bg-card: rgba(255,255,255,0.72); /* Frosted Glass White */
-  --shadow-premium: 0 8px 30px rgba(0,0,0,0.08); /* So Atmospheric Shadow */
+  /* PACTOGRAM COLOR SYSTEM - SAAS Redesign */
+  --bg-main: #F8FAFC;           /* Background */
+  --primary: #2563EB;           /* Primary Blue */
+  --bg-secondary: #EFF6FF;      /* Secondary Light Blue */
+  --primary-action: #1D4ED8;    /* Primary Action Hover */
+  --text-main: #0F172A;         /* Text Primary */
+  --text-muted: #64748B;        /* Text Secondary */
+  --verified: #2563EB;          /* Verified Badge */
+  --bg-chat: #F1F5F9;           
+  --bubble-mine: #2563EB;       
+  --bubble-other: #FFFFFF;      
+  --bg-card: #FFFFFF;           /* Cards */
+  --shadow-premium: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* Modern Shadow */
   
   /* Legacy/Fallback variables mapped to new system or kept for structure */
-  --primary-hover: #4ca3e6;
-  --primary-gradient: linear-gradient(135deg, #5DBBFF 0%, #1F6BFF 100%);
-  --border-light: #e1e8f0;
-  --divider: #eef2f6;
+  --primary-hover: #1D4ED8;
+  --primary-gradient: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+  --border-light: #E2E8F0;      /* Borders */
+  --divider: #F1F5F9;
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05);
-  --header-height: 60px;
-  --bottom-nav-height: 50px;
-  --container-max: 975px;
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --header-height: 64px;
+  --bottom-nav-height: 60px;
+  --container-max: 1200px;
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 12px;
@@ -37,11 +37,11 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   background-color: var(--bg-main);
   color: var(--text-main);
-  font-size: 14px; /* Reduced global font-size for compact, modern premium aesthetics */
-  line-height: 1.4;
+  font-size: 14px; 
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
 
