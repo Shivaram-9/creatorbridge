@@ -99,7 +99,7 @@ const renderMessageContent = (text, isMine) => {
             target="_blank" 
             rel="noopener noreferrer" 
             style={{ 
-              color: isMine ? 'white' : '#6366f1', 
+              color: isMine ? 'white' : '#0f172a', 
               textDecoration: 'underline',
               wordBreak: 'break-all'
             }}
@@ -294,7 +294,7 @@ export default function Chat({ standalone = true }) {
   );
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: 'var(--bg-chat, #EEF7FC)' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: 'var(--bg-chat, #f8fafc)' }}>
       <header style={{ padding: '16px 24px', borderBottom: '1px solid #f1f5f9', display: 'flex', alignItems: 'center', position: 'sticky', top: 0, background: 'var(--bg-card, rgba(255,255,255,0.72))', backdropFilter: 'blur(10px)', zIndex: 10 }}>
         <button onClick={() => navigate("/messages")} style={{ border: 'none', background: 'none', cursor: 'pointer', marginRight: '16px', color: '#64748b' }}>
           <svg style={{ width: '24px', height: '24px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" /></svg>
@@ -361,8 +361,8 @@ export default function Chat({ standalone = true }) {
                 borderRadius: '16px', 
                 borderBottomLeftRadius: isMine ? '16px' : '0', 
                 borderBottomRightRadius: isMine ? '0' : '16px', 
-                background: isMine ? 'var(--bubble-mine, #5DBBFF)' : 'var(--bubble-other, #FFFFFF)', 
-                color: 'var(--text-main, #1D2A3A)',
+                background: isMine ? 'var(--bubble-mine, #1e293b)' : 'var(--bubble-other, #f1f5f9)', 
+                color: isMine ? '#ffffff' : 'var(--text-main, #0f172a)',
                 boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
               }}>
                 {mediaUrl && (
@@ -436,7 +436,7 @@ export default function Chat({ standalone = true }) {
           />
           <button 
             type="submit" 
-            style={{ padding: '8px 24px', borderRadius: '20px', border: 'none', background: '#6366f1', color: 'white', fontWeight: '700', cursor: 'pointer', opacity: (!input.trim() && !selectedFile) ? 0.5 : 1 }}
+            style={{ padding: '8px 24px', borderRadius: '20px', border: 'none', background: '#0f172a', color: 'white', fontWeight: '700', cursor: 'pointer', opacity: (!input.trim() && !selectedFile) ? 0.5 : 1 }}
             disabled={!input.trim() && !selectedFile}
           >
             Send

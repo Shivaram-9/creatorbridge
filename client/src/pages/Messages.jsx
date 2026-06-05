@@ -166,7 +166,7 @@ export default function Messages() {
                 <div style={{ position: 'relative' }}>
                   <Avatar user={conv.partner} size="md" />
                   {conv.unreadCount > 0 && (
-                    <span style={{ position: 'absolute', top: '-2px', right: '-2px', width: '12px', height: '12px', background: '#6366f1', border: '2px solid white', borderRadius: '50%' }}></span>
+                    <span style={{ position: 'absolute', top: '-2px', right: '-2px', width: '12px', height: '12px', background: '#0f172a', border: '2px solid white', borderRadius: '50%' }}></span>
                   )}
                 </div>
                 <div className="chat-item-info">
