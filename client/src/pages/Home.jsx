@@ -14,22 +14,18 @@ import "./Home.css";
 function HeroBanner({ user }) {
   const navigate = useNavigate();
   return (
-    <div className="bg-blue-600 rounded-2xl p-8 mb-8 text-white shadow-lg relative overflow-hidden">
-      <div className="relative z-10 max-w-2xl">
-        <h1 className="text-3xl font-extrabold mb-3 tracking-tight">Discover Top Creators & Brands</h1>
-        <p className="text-blue-100 text-lg mb-6 leading-relaxed">
+    <div className="mb-8 pt-4 px-2 md:px-0">
+      <div className="max-w-2xl">
+        <h1 className="text-2xl md:text-3xl font-extrabold mb-3 text-slate-900 tracking-tight">Discover Top Creators & Brands</h1>
+        <p className="text-slate-600 text-base md:text-lg mb-6 leading-relaxed">
           The premium network for builders, designers, and innovators. Showcase your portfolio and connect with verified professionals.
         </p>
         <div className="flex gap-4">
-          <button className="bg-white text-blue-600 px-6 py-2.5 rounded-lg font-bold shadow hover:bg-blue-50 transition-colors">
-            Post a Project
-          </button>
-          <button onClick={() => navigate('/discover')} className="bg-blue-700 text-white px-6 py-2.5 rounded-lg font-bold border border-blue-500 hover:bg-blue-800 transition-colors">
+          <button onClick={() => navigate('/discover')} className="bg-blue-600 text-white px-6 py-2.5 rounded-lg font-bold shadow hover:bg-blue-700 transition-colors w-full md:w-auto flex justify-center items-center">
             Build Your Pact
           </button>
         </div>
       </div>
-      <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-gradient-to-l from-blue-500 to-transparent opacity-50 hidden md:block"></div>
     </div>
   );
 }
