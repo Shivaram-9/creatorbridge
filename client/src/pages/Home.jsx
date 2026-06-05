@@ -54,6 +54,17 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState("All Feed");
   const [showVerificationBanner, setShowVerificationBanner] = useState(true);
   const [showFeedDropdown, setShowFeedDropdown] = useState(false);
+  const [suggestedVerifiedUsers, setSuggestedVerifiedUsers] = useState([]);
+
+  const loadVerifiedUsers = useCallback(async () => {
+    try {
+      const data = await api.users.getVerified();
+      if (!data?.error && Array.isArray(data)) {
+        const others = data.filter(u => u._id !== user?._id).slice(0, 3);
+        setSuggestedVerifiedUsers(others);
+      }
+    } catch { /* silent */ }
+  }, [user]);
 
   const loadPosts = useCallback(async () => {
     setLoading(true);
@@ -75,9 +86,10 @@ export default function Home() {
 
   useEffect(() => {
     loadPosts();
+    loadVerifiedUsers();
     const interval = setInterval(loadPosts, 120000);
     return () => clearInterval(interval);
-  }, [loadPosts]);
+  }, [loadPosts, loadVerifiedUsers]);
 
   const handleAddPost = async (formData) => {
     try {
@@ -239,27 +251,27 @@ export default function Home() {
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
           <h3 className="font-bold text-slate-900 mb-4">Suggested Connections</h3>
           <div className="flex flex-col gap-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 font-bold">AS</div>
-                <div>
-                  <h4 className="text-sm font-bold text-slate-900">Alex Smith</h4>
-                  <p className="text-xs text-slate-500">Creator</p>
+            {suggestedVerifiedUsers.length > 0 ? suggestedVerifiedUsers.map(u => (
+              <div key={u._id} className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div onClick={() => navigate(`/user/${u._id}`)} className="cursor-pointer">
+                    <Avatar user={u} size="sm" />
+                  </div>
+                  <div className="cursor-pointer" onClick={() => navigate(`/user/${u._id}`)}>
+                    <h4 className="text-sm font-bold text-slate-900">{u.name || u.username}</h4>
+                    <p className="text-xs text-slate-500 capitalize">{u.role || 'Creator'}</p>
+                  </div>
                 </div>
+                <button 
+                  onClick={() => navigate(`/user/${u._id}`)}
+                  className="text-xs font-bold border border-slate-300 text-slate-700 px-3 py-1.5 rounded-full hover:bg-slate-50 transition-colors"
+                >
+                  View
+                </button>
               </div>
-              <button className="text-xs font-bold border border-slate-300 text-slate-700 px-3 py-1.5 rounded-full hover:bg-slate-50 transition-colors">Connect</button>
-            </div>
-            
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 font-bold">JD</div>
-                <div>
-                  <h4 className="text-sm font-bold text-slate-900">Jane Doe</h4>
-                  <p className="text-xs text-slate-500">Brand</p>
-                </div>
-              </div>
-              <button className="text-xs font-bold border border-slate-300 text-slate-700 px-3 py-1.5 rounded-full hover:bg-slate-50 transition-colors">Connect</button>
-            </div>
+            )) : (
+              <div className="text-sm text-slate-500 text-center py-2">No verified users found.</div>
+            )}
           </div>
           <button onClick={() => navigate('/discover')} className="mt-4 w-full text-center text-sm font-semibold text-slate-700 hover:text-slate-900 transition-colors">
             View all recommendations
