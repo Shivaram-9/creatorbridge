@@ -238,28 +238,28 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
           </div>
         ) : (
           <div>
-            <h4 className="text-lg font-bold text-slate-900 mb-1">{post.title || "Project Title"}</h4>
-            <p className="text-sm text-slate-600 line-clamp-3 mb-3 leading-relaxed whitespace-pre-wrap">{post.content}</p>
+            <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap mb-4">{post.content}</p>
             
-            {/* Mock Tech Tags - Extracting from content hashtags if available */}
-            <div className="flex gap-2 flex-wrap mb-4">
-              {(post.content.match(/#[\w]+/g) || ['#React', '#Design', '#Web']).slice(0, 4).map((tag, i) => (
-                <span key={i} className="px-2.5 py-1 bg-slate-100 text-slate-600 text-xs font-bold rounded-md">
-                  {tag.replace('#', '')}
-                </span>
-              ))}
-            </div>
+            {post.hashtags && post.hashtags.length > 0 && (
+              <div className="flex gap-2 flex-wrap mb-4">
+                {post.hashtags.map((tag, i) => (
+                  <span key={i} className="px-2.5 py-1 bg-slate-100 text-slate-600 text-xs font-bold rounded-md">
+                    {tag.startsWith('#') ? tag : `#${tag}`}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>
 
       {/* Media Thumbnail */}
-      {mediaList.length > 0 && (
+      {mediaList.length > 0 && mediaList[0] && (
         <div 
-          className="w-full aspect-[16/9] bg-slate-100 rounded-xl overflow-hidden mb-5 cursor-pointer max-h-[300px] border border-slate-200 relative group"
+          className="w-full bg-slate-50 rounded-xl overflow-hidden mb-5 cursor-pointer max-h-[500px] border border-slate-200 relative group flex justify-center items-center"
           onClick={() => setShowLightbox(true)}
         >
-          <img src={mediaList[0]} alt="Project thumbnail" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+          <img src={mediaList[0]} alt="Post media" className="w-full h-auto object-cover max-h-[500px]" />
           {mediaList.length > 1 && (
             <div className="absolute top-3 right-3 bg-black/60 text-white text-xs font-bold px-2 py-1 rounded-md backdrop-blur-sm">
               +{mediaList.length - 1} Images
@@ -267,16 +267,6 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
           )}
         </div>
       )}
-
-      {/* Primary Actions */}
-      <div className="flex gap-3 mb-5">
-        <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold py-2.5 rounded-lg transition-colors">
-          View Project
-        </button>
-        <button className="flex-1 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 text-sm font-bold py-2.5 rounded-lg transition-colors">
-          Live Demo
-        </button>
-      </div>
 
       {/* Stats / Footer Actions */}
       <div className="flex items-center justify-between pt-4 border-t border-slate-100">
