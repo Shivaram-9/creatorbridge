@@ -248,6 +248,12 @@ export default function UserProfile() {
     return null;
   };
 
+  const isVideo = (url) => {
+    if (!url) return false;
+    const lowerUrl = url.toLowerCase().split('?')[0];
+    return !!lowerUrl.match(/\.(mp4|mov|webm)$/) || lowerUrl.includes('/video/');
+  };
+
   if (loading) return <LoadingSpinner centered />;
   if (error && !profile) return (
     <div className="up-container" style={{ paddingTop: '80px', textAlign: 'center' }}>
@@ -449,7 +455,11 @@ export default function UserProfile() {
                   userPosts.map(post => (
                     <div key={post._id} className="profile-ig-grid-item" onClick={() => setLightboxPost(post)}>
                       {getPostImage(post) ? (
-                        <img src={getPostImage(post)} alt="" className="profile-ig-grid-img" />
+                        isVideo(getPostImage(post)) ? (
+                          <video src={`${getPostImage(post)}#t=0.001`} className="profile-ig-grid-img" preload="metadata" muted playsInline />
+                        ) : (
+                          <img src={getPostImage(post)} alt="" className="profile-ig-grid-img" />
+                        )
                       ) : (
                         <div className="profile-ig-grid-text">{post.content}</div>
                       )}
@@ -475,7 +485,11 @@ export default function UserProfile() {
             <button className="profile-ig-lightbox-close" onClick={() => setLightboxPost(null)}>✕</button>
             {getPostImage(lightboxPost) && (
               <div className="profile-ig-lightbox-media">
-                <img src={getPostImage(lightboxPost)} alt="" className="profile-ig-lightbox-img" />
+                {isVideo(getPostImage(lightboxPost)) ? (
+                  <video src={`${getPostImage(lightboxPost)}#t=0.001`} controls autoPlay playsInline preload="metadata" className="profile-ig-lightbox-img" style={{ objectFit: 'contain', width: '100%', height: '100%' }} />
+                ) : (
+                  <img src={getPostImage(lightboxPost)} alt="" className="profile-ig-lightbox-img" />
+                )}
               </div>
             )}
             <div className="profile-ig-lightbox-body">
