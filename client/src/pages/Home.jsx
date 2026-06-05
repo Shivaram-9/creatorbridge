@@ -20,6 +20,11 @@ function HeroBanner({ user }) {
         <p className="text-slate-600 text-base md:text-lg mb-6 leading-relaxed">
           The premium network for builders, designers, and innovators. Showcase your portfolio and connect with verified professionals.
         </p>
+        <div className="flex gap-4">
+          <button onClick={() => navigate('/discover')} className="border border-slate-300 text-slate-700 bg-white px-6 py-2.5 rounded-lg font-bold shadow-sm hover:bg-slate-50 transition-colors w-full md:w-auto flex justify-center items-center">
+            Build Your Pact
+          </button>
+        </div>
       </div>
     </div>
   );
