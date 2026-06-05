@@ -7,6 +7,7 @@ import PostCard from "../components/PostCard.jsx";
 import CreatePost from "../components/CreatePost.jsx";
 import StoriesBar from "../components/StoriesBar.jsx";
 import EmptyState from "../components/EmptyState.jsx";
+import Avatar from "../components/Avatar.jsx";
 import { PostSkeleton } from "../components/Skeleton.jsx";
 import toast from "react-hot-toast";
 import "./Home.css";
@@ -209,7 +210,71 @@ export default function Home() {
           </>
         )}
       </div>
+
+      {/* Right Sidebar Column */}
+      <div className="home-sidebar-col">
+        {/* Profile Stats Widget */}
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+          <div className="flex items-center gap-3 mb-4">
+            <Avatar user={user} size="sm" />
+            <div>
+              <h3 className="font-bold text-slate-900 text-sm leading-tight">{user?.name || user?.username}</h3>
+              <p className="text-slate-500 text-xs">{user?.role === 'brand' ? 'Brand' : 'Creator'}</p>
+            </div>
+          </div>
+          <div className="flex justify-between text-sm py-3 border-t border-slate-100">
+            <span className="text-slate-500">Profile Views</span>
+            <span className="font-bold text-slate-900">42</span>
+          </div>
+          <div className="flex justify-between text-sm py-3 border-t border-slate-100">
+            <span className="text-slate-500">Post Impressions</span>
+            <span className="font-bold text-slate-900">128</span>
+          </div>
+          <button onClick={() => navigate(`/user/${user?._id}`)} className="mt-2 w-full text-center text-sm font-semibold text-slate-700 bg-slate-50 hover:bg-slate-100 py-2 rounded-lg transition-colors">
+            View My Profile
+          </button>
+        </div>
+
+        {/* Suggested Connections Widget */}
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+          <h3 className="font-bold text-slate-900 mb-4">Suggested Connections</h3>
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 font-bold">AS</div>
+                <div>
+                  <h4 className="text-sm font-bold text-slate-900">Alex Smith</h4>
+                  <p className="text-xs text-slate-500">Creator</p>
+                </div>
+              </div>
+              <button className="text-xs font-bold border border-slate-300 text-slate-700 px-3 py-1.5 rounded-full hover:bg-slate-50 transition-colors">Connect</button>
+            </div>
+            
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 font-bold">JD</div>
+                <div>
+                  <h4 className="text-sm font-bold text-slate-900">Jane Doe</h4>
+                  <p className="text-xs text-slate-500">Brand</p>
+                </div>
+              </div>
+              <button className="text-xs font-bold border border-slate-300 text-slate-700 px-3 py-1.5 rounded-full hover:bg-slate-50 transition-colors">Connect</button>
+            </div>
+          </div>
+          <button onClick={() => navigate('/discover')} className="mt-4 w-full text-center text-sm font-semibold text-slate-700 hover:text-slate-900 transition-colors">
+            View all recommendations
+          </button>
+        </div>
+
+        {/* Footer Links */}
+        <div className="text-xs text-slate-400 flex flex-wrap gap-x-3 gap-y-2 mt-2 px-2">
+          <a href="#" className="hover:text-slate-600 transition-colors">About</a>
+          <a href="#" className="hover:text-slate-600 transition-colors">Accessibility</a>
+          <a href="#" className="hover:text-slate-600 transition-colors">Help Center</a>
+          <a href="#" className="hover:text-slate-600 transition-colors">Privacy & Terms</a>
+          <span>Pactogram © 2026</span>
+        </div>
+      </div>
     </div>
   );
 }
-
