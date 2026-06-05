@@ -156,12 +156,81 @@ export default function Discover() {
         </div>
       ) : (
         <>
-          {/* Global Marketplace Section */}
+          {/* Featured Sections */}
+          <div className="discover-featured-sections">
+            {/* Trending Creators Carousel */}
+            {discovery.suggestedCreators.length > 0 && (
+              <div className="discover-featured-row">
+                <div className="discover-featured-header">
+                  <h3>Featured Creators</h3>
+                  <button onClick={() => { setActiveRole("influencer"); window.scrollTo(0, 500); }}>See All</button>
+                </div>
+                <div className="discover-featured-scroll">
+                  {discovery.suggestedCreators.map(u => (
+                    <div className="discover-featured-item" key={u._id}>
+                      <UserCard user={u} minimal={true} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Trending Brands Carousel */}
+            {discovery.suggestedBrands.length > 0 && (
+              <div className="discover-featured-row">
+                <div className="discover-featured-header">
+                  <h3>Featured Brands</h3>
+                  <button onClick={() => { setActiveRole("brand"); window.scrollTo(0, 500); }}>See All</button>
+                </div>
+                <div className="discover-featured-scroll">
+                  {discovery.suggestedBrands.map(u => (
+                    <div className="discover-featured-item" key={u._id}>
+                      <UserCard user={u} minimal={true} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Explore Grid (Trending Posts) */}
+          {exploreGrid && exploreGrid.length > 0 && (
+            <div className="discover-section">
+              <h2 className="discover-section-title">Trending Now</h2>
+              <div className="discover-explore-grid">
+                {exploreGrid.slice(0, 9).map((post, i) => {
+                  const media = post.media && post.media.length > 0 ? post.media[0] : post.image;
+                  const src = media?.startsWith("http") ? media : `${api.getResolvedApiOrigin()}${media}`;
+                  
+                  // if no media, fallback to placeholder
+                  const bgImage = src || "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=400";
+                  const isVideoUrl = !!bgImage.toLowerCase().split('?')[0].match(/\.(mp4|mov|webm)$/) || bgImage.toLowerCase().includes('/video/');
+
+                  return (
+                    <div 
+                      key={post._id} 
+                      className={`discover-grid-item ${i % 5 === 0 ? 'large' : ''}`}
+                      onClick={() => navigate(`/post/${post._id}`)}
+                    >
+                      {isVideoUrl ? (
+                        <video src={`${bgImage}#t=0.001`} className="discover-grid-img" preload="metadata" muted playsInline />
+                      ) : (
+                        <img src={bgImage} className="discover-grid-img" alt="Trending" />
+                      )}
+                      <div className="discover-grid-overlay">
+                        <span>❤️ {post.likes?.length || 0}</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           {/* Global Marketplace Section */}
           <div className="discover-marketplace-section">
             <div className="discover-marketplace-header">
-              <h2 className="discover-marketplace-title">Global Marketplace</h2>
+              <h2 className="discover-marketplace-title">Global Directory</h2>
               <div className="discover-filters">
                 <select
                   className="discover-filter-select"
@@ -180,7 +249,7 @@ export default function Discover() {
                   }}
                 >
                   <option value="all">All Roles</option>
-                  <option value="influencer">Influencers</option>
+                  <option value="influencer">Creators</option>
                   <option value="brand">Brands</option>
                 </select>
               </div>
@@ -188,7 +257,7 @@ export default function Discover() {
 
             {filteredUsers.length === 0 ? (
               <div className="discover-empty">
-                <p>No creators found for this filter.</p>
+                <p>No users found for this filter.</p>
               </div>
             ) : (
               <div className="discover-user-grid">
