@@ -223,8 +223,11 @@ export default function Profile() {
             </div>
             
             <div className="profile-info-content">
-              <h1 className="profile-display-name">
+              <h1 className="profile-display-name" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 {user?.name || user?.username}
+                {(user?.isVerified || user?.isPremium) && (
+                  <VerifiedBadge size="lg" tier={user?.premiumTier} />
+                )}
               </h1>
               {(user?.isVerified || user?.isPremium) && (
                 <div style={{ marginTop: '4px', marginBottom: '8px' }}>
