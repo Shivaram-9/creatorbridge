@@ -107,19 +107,23 @@ export default function MediaGallery({ media = [] }) {
       <div className="gallery-container" style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
         {media.map((url, i) => (
           <div key={i} className="gallery-item">
-            {url.toLowerCase().split('?')[0].match(/\.(mp4|mov|webm)$/) ? (
-              <AutoplayVideo src={url} />
-            ) : (
-              <img 
-                src={url} 
-                alt={`Media ${i}`} 
-                loading="lazy" 
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=800";
-                }}
-              />
-            )}
+            {(() => {
+              const lowerUrl = url.toLowerCase().split('?')[0];
+              const isVideoUrl = !!lowerUrl.match(/\.(mp4|mov|webm)$/) || lowerUrl.includes('/video/');
+              return isVideoUrl ? (
+                <AutoplayVideo src={url} />
+              ) : (
+                <img 
+                  src={url} 
+                  alt={`Media ${i}`} 
+                  loading="lazy" 
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=800";
+                  }}
+                />
+              );
+            })()}
           </div>
         ))}
       </div>

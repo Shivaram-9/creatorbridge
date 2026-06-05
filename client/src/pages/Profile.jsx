@@ -180,7 +180,8 @@ export default function Profile() {
 
   const isVideo = (url) => {
     if (!url) return false;
-    return !!url.toLowerCase().split('?')[0].match(/\.(mp4|mov|webm)$/);
+    const lowerUrl = url.toLowerCase().split('?')[0];
+    return !!lowerUrl.match(/\.(mp4|mov|webm)$/) || lowerUrl.includes('/video/');
   };
 
   const handleCoverChange = async (e) => {
