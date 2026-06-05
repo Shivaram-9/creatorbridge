@@ -1,4 +1,4 @@
-import { memo, useState, useMemo, useEffect } from "react";
+import { memo, useState, useMemo, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { HeartIcon, MessageCircleIcon, SendIcon, BookmarkIcon, MoreHorizontalIcon } from "./Icons.jsx";
 import { api } from "../services/api.js";
@@ -45,6 +45,26 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
   const [showReportModal, setShowReportModal] = useState(false);
   const [showCollectionModal, setShowCollectionModal] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
+
+  const cardRef = useRef(null);
+  const [hasTrackedView, setHasTrackedView] = useState(false);
+  const [localViews, setLocalViews] = useState(post?.views || 0);
+
+  useEffect(() => {
+    if (!post || hasTrackedView || !cardRef.current) return;
+
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setHasTrackedView(true);
+        api.posts.trackView(post._id).catch(() => {});
+        setLocalViews(prev => prev + 1);
+        observer.disconnect();
+      }
+    }, { threshold: 0.5 });
+
+    observer.observe(cardRef.current);
+    return () => observer.disconnect();
+  }, [hasTrackedView, post]);
 
   if (!post) return null;
 
@@ -181,7 +201,7 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
   }, [post.media, post.image]);
 
   return (
-    <div className={`bg-white border border-slate-200 rounded-xl p-6 transition-all hover:shadow-md hover:border-slate-300 ${post.isPinned ? "ring-2 ring-blue-100" : ""} animate-fade-in`}>
+    <div ref={cardRef} className={`bg-white border border-slate-200 rounded-xl p-6 transition-all hover:shadow-md hover:border-slate-300 ${post.isPinned ? "ring-2 ring-blue-100" : ""} animate-fade-in`}>
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex gap-4">
@@ -268,7 +288,7 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
           </button>
           <button className="flex items-center gap-1.5 text-sm font-bold text-slate-500 hover:text-slate-700 transition-colors">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-            <span>{post.views || 0}</span>
+            <span>{localViews}</span>
           </button>
         </div>
         

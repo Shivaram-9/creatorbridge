@@ -276,6 +276,7 @@ export const api = {
     archive: (postId) => request(`/posts/archive/${postId}`, { method: "PATCH" }),
     update: (postId, body) => request(`/posts/${postId}`, { method: "PATCH", body }),
     getLikes: (postId) => request(`/posts/${postId}/likes`),
+    trackView: (postId) => request(`/analytics/view/post/${postId}`, { method: "POST" }),
   },
   search: {
     users: (q, options = {}) => request(`/search/users?q=${encodeURIComponent(q || "")}`, options),
