@@ -120,7 +120,7 @@ const UserCard = memo(({ user }) => {
       }}
       onClick={() => navigate(`/user/${user._id}`)}
     >
-      <div style={{ marginBottom: '1rem', position: 'relative' }}>
+      <div style={{ marginBottom: '1rem', position: 'relative', display: 'inline-block' }}>
         <Avatar user={user} size="xl" />
         {(user.isVerified || user.isPremium) && (
           <div style={{ 
@@ -157,8 +157,9 @@ const UserCard = memo(({ user }) => {
             textTransform: 'uppercase', 
             padding: '4px 10px', 
             borderRadius: '6px',
-            backgroundColor: user.role === 'brand' ? '#eff6ff' : '#f0fdf4',
-            color: user.role === 'brand' ? '#2563eb' : '#16a34a'
+            backgroundColor: '#f1f5f9',
+            color: '#0f172a',
+            border: '1px solid #e2e8f0'
           }}>
             {user.role}
           </span>
