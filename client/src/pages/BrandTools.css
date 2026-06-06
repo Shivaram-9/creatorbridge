@@ -22,8 +22,8 @@
 }
 
 .tool-tabs button.active {
-  color: var(--primary);
-  border-bottom-color: var(--primary);
+  color: #0f172a;
+  border-bottom-color: #0f172a;
   font-weight: 600;
 }
 
@@ -60,7 +60,7 @@
 }
 
 .creator-tool-card .handle {
-  color: var(--primary);
+  color: #475569;
   font-size: 0.9rem;
   margin-bottom: 0.5rem;
 }
@@ -117,7 +117,7 @@
 
 .total-est strong {
   font-size: 1.5rem;
-  color: var(--primary);
+  color: #0f172a;
 }
 
 .performance-summary {
