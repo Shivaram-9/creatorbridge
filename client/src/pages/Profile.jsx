@@ -181,7 +181,7 @@ export default function Profile() {
   const isVideo = (url) => {
     if (!url) return false;
     const lowerUrl = url.toLowerCase().split('?')[0];
-    return !!lowerUrl.match(/\.(mp4|mov|webm)$/) || lowerUrl.includes('/video/');
+    return !!lowerUrl.match(/\.(mp4|mov|webm|ogg|mkv|avi|m4v|3gp)$/) || lowerUrl.includes('/video/') || lowerUrl.includes('video/upload');
   };
 
   const handleCoverChange = async (e) => {

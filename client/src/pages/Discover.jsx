@@ -204,7 +204,7 @@ export default function Discover() {
                   
                   // if no media, fallback to placeholder
                   const bgImage = src || "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=400";
-                  const isVideoUrl = !!bgImage.toLowerCase().split('?')[0].match(/\.(mp4|mov|webm)$/) || bgImage.toLowerCase().includes('/video/');
+                  const isVideoUrl = !!bgImage.toLowerCase().split('?')[0].match(/\.(mp4|mov|webm|ogg|mkv|avi|m4v|3gp)$/) || bgImage.toLowerCase().includes('/video/') || bgImage.toLowerCase().includes('video/upload');
 
                   return (
                     <div 

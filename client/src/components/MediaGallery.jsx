@@ -109,7 +109,7 @@ export default function MediaGallery({ media = [] }) {
           <div key={i} className="gallery-item">
             {(() => {
               const lowerUrl = url.toLowerCase().split('?')[0];
-              const isVideoUrl = !!lowerUrl.match(/\.(mp4|mov|webm)$/) || lowerUrl.includes('/video/');
+              const isVideoUrl = !!lowerUrl.match(/\.(mp4|mov|webm|ogg|mkv|avi|m4v|3gp)$/) || lowerUrl.includes('/video/') || lowerUrl.includes('video/upload');
               return isVideoUrl ? (
                 <AutoplayVideo src={url} />
               ) : (

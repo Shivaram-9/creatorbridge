@@ -251,7 +251,7 @@ export default function UserProfile() {
   const isVideo = (url) => {
     if (!url) return false;
     const lowerUrl = url.toLowerCase().split('?')[0];
-    return !!lowerUrl.match(/\.(mp4|mov|webm)$/) || lowerUrl.includes('/video/');
+    return !!lowerUrl.match(/\.(mp4|mov|webm|ogg|mkv|avi|m4v|3gp)$/) || lowerUrl.includes('/video/') || lowerUrl.includes('video/upload');
   };
 
   if (loading) return <LoadingSpinner centered />;
@@ -288,7 +288,7 @@ export default function UserProfile() {
               </h1>
               {(profile?.isVerified || profile?.isPremium) && (
                 <div style={{ marginTop: '4px', marginBottom: '8px' }}>
-                  <span className="verified-badge-pill" style={{ display: 'inline-flex', alignItems: 'center', background: '#ffffff', color: '#0284c7', padding: '4px 12px', borderRadius: '100px', fontSize: '13px', fontWeight: '600', border: '1px solid #bae6fd' }}>
+                  <span className="verified-badge-pill" style={{ display: 'inline-flex', alignItems: 'center', background: '#f8fafc', color: '#0f172a', padding: '4px 12px', borderRadius: '100px', fontSize: '13px', fontWeight: '600', border: '1px solid #e2e8f0' }}>
                     <span>{profile.role === 'brand' ? 'Verified Brand' : 'Verified Creator'}</span>
                   </span>
                 </div>
