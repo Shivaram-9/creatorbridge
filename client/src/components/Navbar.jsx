@@ -162,7 +162,7 @@ export default function Navbar({
                     <Link to="/settings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-black transition-colors" onClick={() => setMenuOpen(false)}>Settings</Link>
                     <div className="h-px bg-gray-100 my-2"></div>
                     <button
-                      className="w-full text-left bg-transparent border-none px-4 py-2 text-sm text-red-500 hover:bg-gray-50 transition-colors cursor-pointer"
+                      className="w-full text-left bg-transparent border-none px-4 py-2 text-sm text-black hover:bg-gray-50 transition-colors cursor-pointer"
                       onClick={() => { setMenuOpen(false); logout(); }}
                     >
                       Log out

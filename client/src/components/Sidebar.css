@@ -49,13 +49,13 @@
 }
 
 .sidebar-item:hover {
-  background-color: var(--bg-secondary, #DDF2FF);
-  color: var(--primary, #5DBBFF);
+  background-color: #f1f5f9;
+  color: #0f172a;
 }
 
 .sidebar-item.active {
-  background-color: var(--bg-secondary, #DDF2FF);
-  color: var(--primary, #5DBBFF);
+  background-color: #f1f5f9;
+  color: #0f172a;
   font-weight: 600;
 }
 
@@ -72,7 +72,7 @@
 
 .sidebar-badge {
   margin-left: auto;
-  background-color: var(--primary-action, #1F6BFF);
+  background-color: #1a1a1a;
   color: white;
   font-size: 0.75rem;
   padding: 2px 6px;
