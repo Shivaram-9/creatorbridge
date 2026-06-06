@@ -24,7 +24,7 @@
 .btn-text {
   background: none;
   border: none;
-  color: var(--accent);
+  color: #0f172a;
   font-weight: 700;
   font-size: 14px;
   cursor: pointer;
@@ -34,7 +34,7 @@
 }
 
 .btn-text:hover {
-  background: rgba(var(--accent-rgb), 0.1);
+  background: #f1f5f9;
 }
 
 .notif-filters {
@@ -64,7 +64,7 @@
 }
 
 .notif-filters button.active {
-  background: var(--text);
+  background: #0f172a;
   color: white;
 }
 
@@ -136,7 +136,7 @@
 .unread-dot {
   width: 8px;
   height: 8px;
-  background: var(--accent);
+  background: #0f172a;
   border-radius: 50%;
   flex-shrink: 0;
 }
@@ -232,12 +232,12 @@
 }
 
 .btn-accept {
-  background: var(--accent);
+  background: #0f172a;
   color: white;
 }
 
 .btn-accept:hover {
-  background: var(--accent-dark, #4f46e5);
+  background: #1e293b;
   transform: translateY(-1px);
 }
 

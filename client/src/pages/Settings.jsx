@@ -282,7 +282,7 @@ export default function Settings() {
           email: user?.email,
           contact: user?.phone || "9999999999"
         },
-        theme: { color: "#2563EB" },
+        theme: { color: "#0f172a" },
       };
 
       const rzp = new window.Razorpay(options);
@@ -338,7 +338,7 @@ export default function Settings() {
             <button className={activeTab === 'account' ? 'active' : ''} onClick={() => setActiveTab('account')}>
               Account Details
             </button>
-            <button className="help-center-btn" onClick={openHelpCenter} style={{ marginTop: 'auto', color: '#6366f1' }}>
+            <button className="help-center-btn" onClick={openHelpCenter} style={{ marginTop: 'auto', color: '#64748b' }}>
               Help Center
             </button>
           </nav>
@@ -500,7 +500,7 @@ export default function Settings() {
                 
                 <div className="verification-pricing-card">
                   <div className="pricing-icon-wrapper">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 9 6-9"></path><path d="m6 9 6-6 6 6"></path><path d="M6 9h12"></path><path d="m12 3-3 6"></path><path d="m12 3 3 6"></path></svg>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0f172a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 9 6-9"></path><path d="m6 9 6-6 6 6"></path><path d="M6 9h12"></path><path d="m12 3-3 6"></path><path d="m12 3 3 6"></path></svg>
                   </div>
                   <div className="pricing-amount">₹299</div>
                   <div className="pricing-badge">Lifetime Launch Access</div>

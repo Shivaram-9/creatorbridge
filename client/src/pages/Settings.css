@@ -50,8 +50,8 @@
 }
 
 .settings-sidebar nav button.active {
-  background: #eff6ff;
-  color: #3b82f6;
+  background: #f1f5f9;
+  color: #0f172a;
 }
 
 .settings-sidebar .icon {
@@ -159,7 +159,7 @@
 }
 
 input:checked + .slider {
-  background-color: #3b82f6;
+  background-color: #0f172a;
 }
 
 input:checked + .slider:before {
@@ -235,7 +235,7 @@ input:checked + .slider:before {
 }
 
 .alert-item.unread {
-  border-left: 4px solid #3b82f6;
+  border-left: 4px solid #0f172a;
 }
 
 .alert-msg {
@@ -405,7 +405,7 @@ input:checked + .slider:before {
 }
 
 .pricing-icon-wrapper {
-  background: #EFF6FF;
+  background: #f1f5f9;
   width: 56px;
   height: 56px;
   border-radius: 16px;
@@ -436,7 +436,7 @@ input:checked + .slider:before {
 }
 
 .get-verified-action-btn {
-  background: #2563EB;
+  background: #0f172a;
   color: white;
   width: 100%;
   padding: 14px;
@@ -449,7 +449,7 @@ input:checked + .slider:before {
 }
 
 .get-verified-action-btn:hover {
-  background: #1D4ED8;
+  background: #1e293b;
 }
 
 @media (max-width: 768px) {
@@ -524,9 +524,9 @@ input:checked + .slider:before {
     font-size: 15px;
   }
   .settings-sidebar nav button.active {
-    background: #0095f6;
+    background: #0f172a;
     color: #fff;
-    border-color: #0095f6;
+    border-color: #0f172a;
   }
   .settings-content {
     padding: 20px 16px;
@@ -695,9 +695,9 @@ input:checked + .slider:before {
 
 .settings-section .input:focus {
   outline: none;
-  border-color: #2563eb;
+  border-color: #0f172a;
   background: #ffffff;
-  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+  box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.1);
 }
 
 .otp-form-container, .password-form-container {
@@ -755,14 +755,14 @@ input:checked + .slider:before {
 }
 
 .btn-group .btn-primary {
-  background: #2563eb;
+  background: #0f172a;
   color: #ffffff;
-  border: 1px solid #2563eb;
+  border: 1px solid #0f172a;
 }
 
 .btn-group .btn-primary:hover {
-  background: #1d4ed8;
-  border-color: #1d4ed8;
+  background: #1e293b;
+  border-color: #1e293b;
 }
 
 .btn-group .btn-outline {
@@ -790,7 +790,7 @@ input:checked + .slider:before {
 
 .toggle-form-btn {
   font-weight: 700 !important;
-  color: #2563eb !important;
+  color: #0f172a !important;
   font-size: 14px !important;
 }
 
