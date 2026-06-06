@@ -13,8 +13,8 @@
 .header-badge {
   display: inline-block;
   padding: 4px 12px;
-  background: #eff6ff;
-  color: #3b82f6;
+  background: #f1f5f9;
+  color: #0f172a;
   font-size: 11px;
   font-weight: 800;
   border-radius: 20px;
@@ -120,9 +120,9 @@
 }
 
 /* Color variations */
-.insight-card.time { border-left: 6px solid #3b82f6; }
-.insight-card.category { border-left: 6px solid #10b981; }
-.insight-card.prediction { border-left: 6px solid #f59e0b; }
+.insight-card.time { border-left: 6px solid #475569; }
+.insight-card.category { border-left: 6px solid #0f172a; }
+.insight-card.prediction { border-left: 6px solid #cbd5e1; }
 
 
 .stat-card {
@@ -181,8 +181,8 @@
 }
 
 .stat-change.positive {
-  color: #10b981;
-  background: #f0fdf4;
+  color: #0f172a;
+  background: #f1f5f9;
 }
 
 .charts-section {
