@@ -51,9 +51,9 @@
   margin-bottom: 1.5rem;
 }
 
-.status-badge-large.pending { background: #fef3c7; color: #92400e; }
-.status-badge-large.approved { background: #dcfce7; color: #166534; }
-.status-badge-large.rejected { background: #fee2e2; color: #991b1b; }
+.status-badge-large.pending { background: #f8fafc; color: #475569; }
+.status-badge-large.approved { background: #f1f5f9; color: #0f172a; }
+.status-badge-large.rejected { background: #1e293b; color: #ffffff; }
 
 .status-text {
   font-size: 1.1rem;

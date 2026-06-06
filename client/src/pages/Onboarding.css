@@ -27,7 +27,7 @@
 
 .progress-fill {
   height: 100%;
-  background: #3b82f6;
+  background: #0f172a;
   transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -47,8 +47,8 @@
 .step-badge {
   display: inline-block;
   padding: 4px 12px;
-  background: #eff6ff;
-  color: #3b82f6;
+  background: #f1f5f9;
+  color: #0f172a;
   font-size: 11px;
   font-weight: 800;
   border-radius: 100px;
@@ -80,8 +80,8 @@
 }
 
 .role-option.active {
-  background: #f0f9ff;
-  border-color: #3b82f6;
+  background: #f1f5f9;
+  border-color: #0f172a;
 }
 
 .role-option .icon {
@@ -125,9 +125,9 @@
 }
 
 .cat-tag.active {
-  background: #3b82f6;
+  background: #0f172a;
   color: white;
-  border-color: #3b82f6;
+  border-color: #0f172a;
 }
 
 .onboarding-textarea {
