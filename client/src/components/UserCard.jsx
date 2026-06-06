@@ -122,18 +122,6 @@ const UserCard = memo(({ user }) => {
     >
       <div style={{ marginBottom: '1rem', position: 'relative', display: 'inline-block' }}>
         <Avatar user={user} size="xl" />
-        {(user.isVerified || user.isPremium) && (
-          <div style={{ 
-            position: 'absolute', 
-            bottom: '4px', 
-            right: '4px', 
-            backgroundColor: 'white', 
-            borderRadius: '50%', 
-            padding: '2px' 
-          }}>
-            <VerifiedBadge size="sm" tier={user.premiumTier} />
-          </div>
-        )}
       </div>
 
       <div style={{ width: '100%' }}>
@@ -144,9 +132,16 @@ const UserCard = memo(({ user }) => {
           marginBottom: '4px',
           whiteSpace: 'nowrap',
           overflow: 'hidden',
-          textOverflow: 'ellipsis'
+          textOverflow: 'ellipsis',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '4px'
         }}>
           {user.name || user.username}
+          {(user.isVerified || user.isPremium) && (
+            <VerifiedBadge size="sm" tier={user.premiumTier} style={{ marginLeft: 0 }} />
+          )}
         </h3>
         <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '12px' }}>@{user.username}</p>
         
