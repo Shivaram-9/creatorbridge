@@ -43,7 +43,7 @@
 }
 
 .ep-save-btn {
-  background: #2563EB;
+  background: #0f172a;
   border: none;
   cursor: pointer;
   font-size: 14px;
@@ -55,7 +55,7 @@
 }
 
 .ep-save-btn:hover:not(:disabled) {
-  background: #1D4ED8;
+  background: #1e293b;
 }
 
 .ep-save-btn:disabled {
@@ -114,16 +114,16 @@
 .ep-change-photo-btn {
   font-size: 14px;
   font-weight: 600;
-  color: #2563EB;
+  color: #0f172a;
   cursor: pointer;
   padding: 8px 16px;
-  background: #EFF6FF;
+  background: #f1f5f9;
   border-radius: 20px;
   transition: all 0.2s;
 }
 
 .ep-change-photo-btn:hover {
-  background: #DBEAFE;
+  background: #e2e8f0;
 }
 
 /* Form Container */
@@ -172,9 +172,9 @@
 }
 
 .ep-input:focus {
-  border-color: #2563EB;
+  border-color: #0f172a;
   background: #fff;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1);
 }
 
 .ep-textarea {
@@ -292,7 +292,7 @@
 
 .ep-adjust-controls input[type="range"] {
   flex: 1;
-  accent-color: #2563EB;
+  accent-color: #0f172a;
 }
 
 .ep-adjust-actions {
@@ -321,10 +321,10 @@
 }
 
 .ep-btn-save {
-  background: #2563EB;
+  background: #0f172a;
   color: #fff;
 }
 
 .ep-btn-save:hover {
-  background: #1D4ED8;
+  background: #1e293b;
 }
