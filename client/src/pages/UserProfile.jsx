@@ -475,7 +475,7 @@ export default function UserProfile() {
                 )}
               </div>
             )}
-            {activeTab === "portfolio" && <PortfolioGrid userId={profile._id} />}
+            {activeTab === "portfolio" && <PortfolioGrid items={profile?.portfolio || []} />}
 
             {activeTab === "about" && <div style={{ textAlign: 'center', padding: '40px', background: '#fff', borderRadius: '16px', color: '#64748B' }}>{profile?.bio || "No bio yet."}</div>}
           </>

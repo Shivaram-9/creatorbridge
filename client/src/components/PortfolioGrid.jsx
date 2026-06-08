@@ -7,7 +7,14 @@ import { BASE_URL } from "../config/api.js";
 export default function PortfolioGrid({ items = [], onDelete }) {
   const [viewIdx, setViewIdx] = useState(null);
 
-  if (items.length === 0) return null;
+  if (items.length === 0) {
+    return (
+      <div style={{ textAlign: 'center', padding: '40px', background: '#fff', borderRadius: '16px', color: '#64748B' }}>
+        <span style={{ fontSize: '40px' }}>📁</span>
+        <h3 style={{ marginTop: '16px', color: '#0f172a' }}>No Portfolio Items Yet</h3>
+      </div>
+    );
+  }
 
   const current = viewIdx !== null ? items[viewIdx] : null;
 
