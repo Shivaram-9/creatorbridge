@@ -294,14 +294,14 @@ export default function Chat({ standalone = true }) {
   );
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: 'var(--bg-chat, #f8fafc)' }}>
-      <header style={{ padding: '16px 24px', borderBottom: '1px solid #f1f5f9', display: 'flex', alignItems: 'center', position: 'sticky', top: 0, background: 'var(--bg-card, rgba(255,255,255,0.72))', backdropFilter: 'blur(10px)', zIndex: 10 }}>
-        <button onClick={() => navigate("/messages")} style={{ border: 'none', background: 'none', cursor: 'pointer', marginRight: '16px', color: '#64748b' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: '#09090b' }}>
+      <header style={{ padding: '16px 24px', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', position: 'sticky', top: 0, background: 'rgba(9,9,11,0.85)', backdropFilter: 'blur(10px)', zIndex: 10 }}>
+        <button onClick={() => navigate("/messages")} style={{ border: 'none', background: 'none', cursor: 'pointer', marginRight: '16px', color: '#a1a1aa' }}>
           <svg style={{ width: '24px', height: '24px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" /></svg>
         </button>
         <Avatar user={partner} size="sm" />
         <div style={{ marginLeft: '12px', flex: 1 }}>
-          <h2 style={{ fontSize: '1rem', fontWeight: '700', color: '#0f172a', margin: 0 }}>{partner?.name || partner?.username}</h2>
+          <h2 style={{ fontSize: '1rem', fontWeight: '700', color: '#f8fafc', margin: 0 }}>{partner?.name || partner?.username}</h2>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: socketOnline ? '#10b981' : '#cbd5e1' }}></span>
             <p style={{ fontSize: '10px', color: '#64748b', fontWeight: '700', textTransform: 'uppercase', margin: 0 }}>
@@ -354,19 +354,22 @@ export default function Chat({ standalone = true }) {
           const mediaUrl = getMediaUrl(media);
 
           return (
-            <div key={m._id || idx} style={{ display: 'flex', justifyContent: isMine ? 'flex-end' : 'flex-start', marginBottom: '16px' }}>
+            <div key={m._id || idx} style={{ display: 'flex', justifyContent: isMine ? 'flex-end' : 'flex-start', marginBottom: '12px', padding: '0 16px' }}>
               <div style={{ 
                 maxWidth: '75%', 
-                padding: '12px 16px', 
-                borderRadius: '16px', 
-                borderBottomLeftRadius: isMine ? '16px' : '0', 
-                borderBottomRightRadius: isMine ? '0' : '16px', 
-                background: isMine ? 'var(--bubble-mine, #1e293b)' : 'var(--bubble-other, #f1f5f9)', 
-                color: isMine ? '#ffffff' : 'var(--text-main, #0f172a)',
-                boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
+                padding: '8px 12px 6px 12px', 
+                borderRadius: '12px', 
+                borderTopRightRadius: isMine ? '0' : '12px', 
+                borderTopLeftRadius: isMine ? '12px' : '0', 
+                background: isMine ? '#27272a' : '#f1f5f9', 
+                color: isMine ? '#ffffff' : '#0f172a',
+                boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
+                display: 'flex',
+                flexDirection: 'column',
+                position: 'relative'
               }}>
                 {mediaUrl && (
-                  <div style={{ marginBottom: m.content ? '8px' : '0', minWidth: '200px', borderRadius: '12px', overflow: 'hidden', background: '#e2e8f0' }}>
+                  <div style={{ marginBottom: m.content ? '4px' : '0', minWidth: '200px', borderRadius: '8px', overflow: 'hidden', background: isMine ? '#3f3f46' : '#e2e8f0' }}>
                     {m.mediaType === "video" ? (
                       <video src={mediaUrl} controls style={{ width: '100%', maxHeight: '300px', display: 'block' }} />
                     ) : (
@@ -378,7 +381,6 @@ export default function Chat({ standalone = true }) {
                         onError={(e) => {
                           console.error('Chat media failed to load:', mediaUrl);
                           e.target.style.display = 'none';
-                          // Show a standard fallback text
                           const parent = e.target.parentElement;
                           if (parent && !parent.querySelector('.media-fallback')) {
                             const span = document.createElement('span');
@@ -387,7 +389,7 @@ export default function Chat({ standalone = true }) {
                             span.style.padding = '20px';
                             span.style.display = 'block';
                             span.style.fontSize = '12px';
-                            span.style.color = '#64748b';
+                            span.style.color = isMine ? '#a1a1aa' : '#64748b';
                             span.style.textAlign = 'center';
                             parent.appendChild(span);
                           }
@@ -396,8 +398,22 @@ export default function Chat({ standalone = true }) {
                     )}
                   </div>
                 )}
-                {m.content && <p style={{ fontSize: '15px', margin: 0, wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}>{renderMessageContent(m.content, isMine)}</p>}
-                <span style={{ fontSize: '10px', marginTop: '6px', display: 'block', opacity: 0.7, textAlign: isMine ? 'right' : 'left', fontWeight: '500' }}>{time}</span>
+                
+                <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-end', justifyContent: 'flex-end', gap: '8px' }}>
+                  {m.content && (
+                    <p style={{ fontSize: '15px', margin: 0, wordBreak: 'break-word', whiteSpace: 'pre-wrap', flex: '1 1 auto', alignSelf: 'flex-start', paddingBottom: '2px', lineHeight: '1.4' }}>
+                      {renderMessageContent(m.content, isMine)}
+                    </p>
+                  )}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px', opacity: isMine ? 0.7 : 0.6, flexShrink: 0, marginTop: m.content ? '0' : '4px' }}>
+                    <span style={{ fontSize: '11px', fontWeight: '500' }}>{time}</span>
+                    {isMine && (
+                      <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor">
+                        <path d="M11.66 4.22a.75.75 0 0 1 1.06 1.06l-6.5 6.5a.75.75 0 0 1-1.06 0l-3-3a.75.75 0 0 1 1.06-1.06l2.47 2.47 5.97-5.97z"/>
+                      </svg>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           );
@@ -405,13 +421,13 @@ export default function Chat({ standalone = true }) {
         <div ref={bottomRef} />
       </div>
 
-      <form style={{ padding: '16px', background: 'white', borderTop: '1px solid #f1f5f9' }} onSubmit={handleSubmit}>
+      <form style={{ padding: '16px', background: '#09090b', borderTop: '1px solid rgba(255,255,255,0.05)' }} onSubmit={handleSubmit}>
         {previewUrl && (
           <div style={{ marginBottom: '12px', position: 'relative', display: 'inline-block' }}>
             {selectedFile?.type.startsWith("video") ? (
-              <video src={previewUrl} style={{ height: '100px', borderRadius: '8px', border: '1px solid #e2e8f0' }} />
+              <video src={previewUrl} style={{ height: '100px', borderRadius: '8px', border: '1px solid #3f3f46' }} />
             ) : (
-              <img src={previewUrl} alt="Preview" style={{ height: '100px', borderRadius: '8px', border: '1px solid #e2e8f0' }} />
+              <img src={previewUrl} alt="Preview" style={{ height: '100px', borderRadius: '8px', border: '1px solid #3f3f46' }} />
             )}
             <button 
               type="button"
@@ -422,13 +438,13 @@ export default function Chat({ standalone = true }) {
             </button>
           </div>
         )}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', background: '#f8fafc', padding: '8px', borderRadius: '24px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', background: '#18181b', padding: '8px', borderRadius: '24px' }}>
           <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*,video/*" style={{ display: 'none' }} />
-          <button type="button" onClick={() => fileInputRef.current?.click()} style={{ border: 'none', background: 'none', cursor: 'pointer', padding: '8px', color: '#94a3b8', display: 'flex', alignItems: 'center' }}>
+          <button type="button" onClick={() => fileInputRef.current?.click()} style={{ border: 'none', background: 'none', cursor: 'pointer', padding: '8px', color: '#a1a1aa', display: 'flex', alignItems: 'center' }}>
             <MediaIcon />
           </button>
           <input
-            style={{ flex: 1, background: 'transparent', border: 'none', outline: 'none', padding: '8px', fontSize: '14px' }}
+            style={{ flex: 1, background: 'transparent', border: 'none', outline: 'none', padding: '8px', fontSize: '14px', color: '#f8fafc' }}
             placeholder="Write a message..."
             value={input}
             onChange={handleInputChange}
