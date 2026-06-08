@@ -34,6 +34,12 @@ export default function Profile() {
   const [showShareModal, setShowShareModal] = useState(false);
   const [showExperienceModal, setShowExperienceModal] = useState(false);
   const [postToShare, setPostToShare] = useState(null);
+  
+  const [showPortfolioModal, setShowPortfolioModal] = useState(false);
+  const [portfolioUrl, setPortfolioUrl] = useState("");
+  const [portfolioCaption, setPortfolioCaption] = useState("");
+  const [portfolioUploading, setPortfolioUploading] = useState(false);
+  
   const coverInputRef = useRef(null);
 
   const loadData = useCallback(async () => {
@@ -98,7 +104,45 @@ export default function Profile() {
         setUser({ ...user, savedPosts: updatedSavedPosts });
       }
     } catch (err) {
-      toast.error("Failed to save post");
+      toast.error("Failed to share post");
+    }
+  };
+
+  const handleAddPortfolio = async () => {
+    if (!portfolioUrl) return toast.error("Media URL is required");
+    try {
+      setPortfolioUploading(true);
+      const res = await api.users.addPortfolioItem({
+        url: portfolioUrl,
+        caption: portfolioCaption,
+        mediaType: isVideo(portfolioUrl) ? "video" : "image"
+      });
+      if (res.error) {
+        toast.error(res.error);
+      } else {
+        setUser(res);
+        setShowPortfolioModal(false);
+        setPortfolioUrl("");
+        setPortfolioCaption("");
+        toast.success("Portfolio item added");
+      }
+    } catch (err) {
+      toast.error("Failed to add portfolio item");
+    } finally {
+      setPortfolioUploading(false);
+    }
+  };
+
+  const handleRemovePortfolio = async (itemId) => {
+    try {
+      const res = await api.users.removePortfolioItem(itemId);
+      if (res.error) toast.error(res.error);
+      else {
+        setUser(res);
+        toast.success("Portfolio item removed");
+      }
+    } catch (err) {
+      toast.error("Failed to remove portfolio item");
     }
   };
 
@@ -393,7 +437,27 @@ export default function Profile() {
             )}
           </div>
         )}
-        {activeTab === "portfolio" && <PortfolioGrid items={user?.portfolio || []} />}
+        {activeTab === "portfolio" && (
+          <div style={{ padding: '0 16px' }}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
+              <button 
+                onClick={() => setShowPortfolioModal(true)}
+                style={{
+                  background: '#3b82f6',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '20px',
+                  padding: '8px 16px',
+                  fontWeight: '600',
+                  cursor: 'pointer'
+                }}
+              >
+                + Add Item
+              </button>
+            </div>
+            <PortfolioGrid items={user?.portfolio || []} onDelete={handleRemovePortfolio} />
+          </div>
+        )}
 
         {activeTab === "about" && <div style={{ textAlign: 'center', padding: '40px', background: '#fff', borderRadius: '16px', color: '#64748B' }}>{user?.bio || "No bio yet."}</div>}
       </div>
@@ -481,6 +545,52 @@ export default function Profile() {
           onClose={() => setPostToShare(null)} 
           onSelect={handleSharePostToUser}
         />
+      )}
+
+      {showPortfolioModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-xl" onClick={e => e.stopPropagation()}>
+            <h2 className="text-xl font-bold mb-4 text-slate-900">Add Portfolio Item</h2>
+            <div className="flex flex-col gap-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Media URL (Image or Video)</label>
+                <input 
+                  type="url" 
+                  placeholder="https://..." 
+                  className="w-full border border-slate-300 rounded-lg p-2 outline-none focus:border-blue-500"
+                  value={portfolioUrl} 
+                  onChange={e => setPortfolioUrl(e.target.value)} 
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Caption (Optional)</label>
+                <textarea 
+                  placeholder="Project details..." 
+                  className="w-full border border-slate-300 rounded-lg p-2 outline-none focus:border-blue-500 resize-none"
+                  rows="3"
+                  value={portfolioCaption} 
+                  onChange={e => setPortfolioCaption(e.target.value)} 
+                />
+              </div>
+              <div className="flex justify-end gap-2 mt-4">
+                <button 
+                  onClick={() => setShowPortfolioModal(false)}
+                  className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors font-medium"
+                  disabled={portfolioUploading}
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={handleAddPortfolio}
+                  disabled={portfolioUploading || !portfolioUrl}
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium disabled:opacity-50"
+                >
+                  {portfolioUploading ? 'Adding...' : 'Add Item'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Experience Modal */}
