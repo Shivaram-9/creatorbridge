@@ -132,9 +132,14 @@ const UserCard = memo(({ user }) => {
           marginBottom: '4px',
           whiteSpace: 'nowrap',
           overflow: 'hidden',
-          textOverflow: 'ellipsis'
+          textOverflow: 'ellipsis',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '4px'
         }}>
           {user.name || user.username}
+          {user.isVerified && <VerifiedBadge size="sm" tier={user.premiumTier} />}
         </h3>
         <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '12px' }}>@{user.username}</p>
         

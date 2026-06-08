@@ -69,28 +69,6 @@ export default function Avatar({ user, size = "md", className = "", showOnline =
     >
       {renderContent()}
       {showOnline && user?.isOnline && <span className="online-dot" title="Online" />}
-      {(user?.isVerified || user?.isPremium) && (
-        <div
-          title={user.role === 'brand' ? 'Verified Brand' : 'Verified Creator'}
-          style={{
-            position: 'absolute',
-            bottom: '-2px',
-            right: '-2px',
-            width: 'clamp(16px, 35%, 56px)',
-            height: 'clamp(16px, 35%, 56px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 10
-          }}
-        >
-          <img 
-            src="/diamond-removebg-preview.png" 
-            alt="Verified" 
-            style={{ width: '100%', height: '100%', objectFit: 'contain', filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))' }}
-          />
-        </div>
-      )}
     </div>
   );
 }

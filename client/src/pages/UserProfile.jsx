@@ -283,9 +283,12 @@ export default function UserProfile() {
             </div>
             
             <div className="profile-info-content">
-              <h1 className="profile-display-name">
-                {displayName}
-              </h1>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                <h1 className="profile-display-name" style={{ margin: 0 }}>
+                  {displayName}
+                </h1>
+                {(profile?.isVerified || profile?.isPremium) && <VerifiedBadge size="lg" tier={profile.premiumTier} />}
+              </div>
               {(profile?.isVerified || profile?.isPremium) && (
                 <div style={{ marginTop: '4px', marginBottom: '8px' }}>
                   <span className="verified-badge-pill" style={{ display: 'inline-flex', alignItems: 'center', background: '#f8fafc', color: '#0f172a', padding: '4px 12px', borderRadius: '100px', fontSize: '13px', fontWeight: '600', border: '1px solid #e2e8f0' }}>
