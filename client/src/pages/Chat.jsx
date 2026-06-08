@@ -439,6 +439,31 @@ export default function Chat({ standalone = true }) {
             </button>
           </div>
         )}
+        <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', marginBottom: '12px' }} className="hide-scrollbar">
+          <button 
+            type="button" 
+            onClick={() => setInput("Interested to Collaborate")}
+            style={{ 
+              whiteSpace: 'nowrap', 
+              padding: '6px 14px', 
+              background: '#f1f5f9', 
+              border: '1px solid #e2e8f0', 
+              borderRadius: '20px', 
+              fontSize: '13px', 
+              fontWeight: '600', 
+              color: '#0f172a', 
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
+            }}
+            onMouseOver={(e) => { e.currentTarget.style.background = '#e2e8f0'; e.currentTarget.style.borderColor = '#cbd5e1'; }}
+            onMouseOut={(e) => { e.currentTarget.style.background = '#f1f5f9'; e.currentTarget.style.borderColor = '#e2e8f0'; }}
+          >
+            <span>👉</span> Interested to Collaborate
+          </button>
+        </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', background: '#f8fafc', padding: '8px', borderRadius: '24px', border: '1px solid #e2e8f0' }}>
           <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*,video/*" style={{ display: 'none' }} />
           <button type="button" onClick={() => fileInputRef.current?.click()} style={{ border: 'none', background: 'none', cursor: 'pointer', padding: '8px', color: '#64748b', display: 'flex', alignItems: 'center' }}>
