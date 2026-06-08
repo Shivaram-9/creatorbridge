@@ -294,14 +294,14 @@ export default function Chat({ standalone = true }) {
   );
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: '#09090b' }}>
-      <header style={{ padding: '16px 24px', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', position: 'sticky', top: 0, background: 'rgba(9,9,11,0.85)', backdropFilter: 'blur(10px)', zIndex: 10 }}>
-        <button onClick={() => navigate("/messages")} style={{ border: 'none', background: 'none', cursor: 'pointer', marginRight: '16px', color: '#a1a1aa' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: 'var(--bg-chat, #f8fafc)' }}>
+      <header style={{ padding: '16px 24px', borderBottom: '1px solid #f1f5f9', display: 'flex', alignItems: 'center', position: 'sticky', top: 0, background: 'var(--bg-card, rgba(255,255,255,0.72))', backdropFilter: 'blur(10px)', zIndex: 10 }}>
+        <button onClick={() => navigate("/messages")} style={{ border: 'none', background: 'none', cursor: 'pointer', marginRight: '16px', color: '#64748b' }}>
           <svg style={{ width: '24px', height: '24px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" /></svg>
         </button>
         <Avatar user={partner} size="sm" />
         <div style={{ marginLeft: '12px', flex: 1 }}>
-          <h2 style={{ fontSize: '1rem', fontWeight: '700', color: '#f8fafc', margin: 0 }}>{partner?.name || partner?.username}</h2>
+          <h2 style={{ fontSize: '1rem', fontWeight: '700', color: '#0f172a', margin: 0 }}>{partner?.name || partner?.username}</h2>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: socketOnline ? '#10b981' : '#cbd5e1' }}></span>
             <p style={{ fontSize: '10px', color: '#64748b', fontWeight: '700', textTransform: 'uppercase', margin: 0 }}>
@@ -361,15 +361,16 @@ export default function Chat({ standalone = true }) {
                 borderRadius: '12px', 
                 borderTopRightRadius: isMine ? '0' : '12px', 
                 borderTopLeftRadius: isMine ? '12px' : '0', 
-                background: isMine ? '#27272a' : '#f1f5f9', 
+                background: isMine ? '#0f172a' : '#ffffff', 
                 color: isMine ? '#ffffff' : '#0f172a',
-                boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
+                border: isMine ? 'none' : '1px solid #e2e8f0',
+                boxShadow: isMine ? '0 1px 2px rgba(0,0,0,0.1)' : '0 1px 2px rgba(0,0,0,0.02)',
                 display: 'flex',
                 flexDirection: 'column',
                 position: 'relative'
               }}>
                 {mediaUrl && (
-                  <div style={{ marginBottom: m.content ? '4px' : '0', minWidth: '200px', borderRadius: '8px', overflow: 'hidden', background: isMine ? '#3f3f46' : '#e2e8f0' }}>
+                  <div style={{ marginBottom: m.content ? '4px' : '0', minWidth: '200px', borderRadius: '8px', overflow: 'hidden', background: isMine ? '#334155' : '#e2e8f0' }}>
                     {m.mediaType === "video" ? (
                       <video src={mediaUrl} controls style={{ width: '100%', maxHeight: '300px', display: 'block' }} />
                     ) : (
@@ -421,13 +422,13 @@ export default function Chat({ standalone = true }) {
         <div ref={bottomRef} />
       </div>
 
-      <form style={{ padding: '16px', background: '#09090b', borderTop: '1px solid rgba(255,255,255,0.05)' }} onSubmit={handleSubmit}>
+      <form style={{ padding: '16px', background: 'white', borderTop: '1px solid #f1f5f9' }} onSubmit={handleSubmit}>
         {previewUrl && (
           <div style={{ marginBottom: '12px', position: 'relative', display: 'inline-block' }}>
             {selectedFile?.type.startsWith("video") ? (
-              <video src={previewUrl} style={{ height: '100px', borderRadius: '8px', border: '1px solid #3f3f46' }} />
+              <video src={previewUrl} style={{ height: '100px', borderRadius: '8px', border: '1px solid #e2e8f0' }} />
             ) : (
-              <img src={previewUrl} alt="Preview" style={{ height: '100px', borderRadius: '8px', border: '1px solid #3f3f46' }} />
+              <img src={previewUrl} alt="Preview" style={{ height: '100px', borderRadius: '8px', border: '1px solid #e2e8f0' }} />
             )}
             <button 
               type="button"
@@ -438,13 +439,13 @@ export default function Chat({ standalone = true }) {
             </button>
           </div>
         )}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', background: '#18181b', padding: '8px', borderRadius: '24px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', background: '#f8fafc', padding: '8px', borderRadius: '24px', border: '1px solid #e2e8f0' }}>
           <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*,video/*" style={{ display: 'none' }} />
-          <button type="button" onClick={() => fileInputRef.current?.click()} style={{ border: 'none', background: 'none', cursor: 'pointer', padding: '8px', color: '#a1a1aa', display: 'flex', alignItems: 'center' }}>
+          <button type="button" onClick={() => fileInputRef.current?.click()} style={{ border: 'none', background: 'none', cursor: 'pointer', padding: '8px', color: '#64748b', display: 'flex', alignItems: 'center' }}>
             <MediaIcon />
           </button>
           <input
-            style={{ flex: 1, background: 'transparent', border: 'none', outline: 'none', padding: '8px', fontSize: '14px', color: '#f8fafc' }}
+            style={{ flex: 1, background: 'transparent', border: 'none', outline: 'none', padding: '8px', fontSize: '14px', color: '#0f172a' }}
             placeholder="Write a message..."
             value={input}
             onChange={handleInputChange}
