@@ -446,7 +446,7 @@ export default function Chat({ standalone = true }) {
         <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', marginBottom: '12px' }} className="hide-scrollbar">
           <button 
             type="button" 
-            onClick={() => setInput("Interested to Collaborate")}
+            onClick={() => setInput("Interested in Collaborating")}
             style={{ 
               whiteSpace: 'nowrap', 
               padding: '6px 14px', 
@@ -465,7 +465,7 @@ export default function Chat({ standalone = true }) {
             onMouseOver={(e) => { e.currentTarget.style.background = '#e2e8f0'; e.currentTarget.style.borderColor = '#cbd5e1'; }}
             onMouseOut={(e) => { e.currentTarget.style.background = '#f1f5f9'; e.currentTarget.style.borderColor = '#e2e8f0'; }}
           >
-            <span>👉</span> Interested to Collaborate
+            <span>👉</span> Interested in Collaborating
           </button>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', background: '#f8fafc', padding: '8px', borderRadius: '24px', border: '1px solid #e2e8f0' }}>
