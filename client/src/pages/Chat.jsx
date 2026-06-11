@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useOutletContext } from "react-router-dom";
 import { api } from "../services/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import { connectSocket, getSocket } from "../services/socket.js";
@@ -88,6 +88,8 @@ export default function Chat({ standalone = true }) {
   const { userId: partnerId } = useParams();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const context = useOutletContext();
+  const refreshUnreadMessages = context?.refreshUnreadMessages;
 
   const [partner, setPartner] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -199,8 +201,12 @@ export default function Chat({ standalone = true }) {
 
   useEffect(() => {
     fetchConversation();
-    if (partnerId) api.messages.markAsRead(partnerId).catch(() => {});
-  }, [fetchConversation, partnerId]);
+    if (partnerId) {
+      api.messages.markAsRead(partnerId).then(() => {
+        if (refreshUnreadMessages) refreshUnreadMessages();
+      }).catch(() => {});
+    }
+  }, [fetchConversation, partnerId, refreshUnreadMessages]);
 
   useEffect(() => {
     const socket = connectSocket();
@@ -224,7 +230,11 @@ export default function Chat({ standalone = true }) {
           return [...prev, msg];
         });
         setIsPartnerTyping(false);
-        if (rid === user?._id) api.messages.markAsRead(partnerId).catch(() => {});
+        if (rid === user?._id) {
+          api.messages.markAsRead(partnerId).then(() => {
+            if (refreshUnreadMessages) refreshUnreadMessages();
+          }).catch(() => {});
+        }
       }
     };
     socket.on("message", onMessage);

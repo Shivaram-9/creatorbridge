@@ -234,7 +234,7 @@ export default function Layout() {
                   : "content-container-pro"
               }
             >
-              <Outlet context={{ openHelpCenter: () => setShowHelpCenter(true) }} />
+              <Outlet context={{ openHelpCenter: () => setShowHelpCenter(true), refreshUnreadMessages: fetchUnreadMessages }} />
             </div>
           </main>
         </div>
