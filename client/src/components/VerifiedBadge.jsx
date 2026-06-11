@@ -6,13 +6,13 @@ import React from 'react';
  * @param {boolean} showTooltip - Whether to show the tooltip
  * @param {string} tier - silver, gold, platinum, or none
  */
-export default function VerifiedBadge({ size = 'md', showTooltip = true, tier = 'none' }) {
+export default function VerifiedBadge({ size = 'md', showTooltip = true, tier = 'none', style = {}, className = '' }) {
   const sizes = {
-    xs: '16px',
-    sm: '18px',
-    md: '22px',
-    lg: '26px',
-    xl: '30px'
+    xs: '18px',
+    sm: '22px',
+    md: '26px',
+    lg: '32px',
+    xl: '36px'
   };
 
   const colors = {
@@ -28,7 +28,7 @@ export default function VerifiedBadge({ size = 'md', showTooltip = true, tier = 
 
   return (
     <span 
-      className={`verified-badge verified-badge--${tier}`} 
+      className={`verified-badge verified-badge--${tier} ${className}`.trim()} 
       title={showTooltip ? (tier !== 'none' ? `${tier.charAt(0).toUpperCase() + tier.slice(1)} Premium` : "Verified Creator") : ""}
       style={{
         display: 'inline-flex',
@@ -37,7 +37,8 @@ export default function VerifiedBadge({ size = 'md', showTooltip = true, tier = 
         marginLeft: '4px',
         color: badgeColor,
         flexShrink: 0,
-        verticalAlign: 'middle'
+        verticalAlign: 'middle',
+        ...style
       }}
     >
       <img 
