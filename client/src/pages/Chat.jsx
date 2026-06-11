@@ -125,21 +125,29 @@ export default function Chat({ standalone = true }) {
   };
 
   const renderMessageContent = (text, isMine) => {
-    if (text.includes("Interested in Collaborating") || text.includes("Interested to Collaborate")) {
+    if (text === "Would you be interested in discussing a potential collaboration?" || text.includes("Interested in Collaborating") || text.includes("Interested to Collaborate")) {
       return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
-          <span>👉 {text.replace("👉 ", "")}</span>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%', minWidth: '240px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', borderBottom: '1px solid ' + (isMine ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)'), paddingBottom: '8px', marginBottom: '2px' }}>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            <span style={{ fontWeight: '700', fontSize: '13px', letterSpacing: '0.5px', textTransform: 'uppercase' }}>Collaboration Request</span>
+          </div>
+          <span style={{ fontSize: '14px', lineHeight: '1.5' }}>{text.replace("👉 ", "")}</span>
           {!isMine && (
             <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
               <button 
-                onClick={() => handleAutoReply("✅ Collaboration Accepted! Let's discuss details.")}
-                style={{ flex: 1, padding: '6px 12px', background: '#10b981', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', fontWeight: '600' }}
+                onClick={() => handleAutoReply("Thank you for accepting the request. I look forward to discussing the details with you.")}
+                style={{ flex: 1, padding: '8px 12px', background: '#0f172a', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', fontWeight: '600', transition: 'opacity 0.2s' }}
+                onMouseOver={(e) => e.currentTarget.style.opacity = '0.9'}
+                onMouseOut={(e) => e.currentTarget.style.opacity = '1'}
               >
                 Accept
               </button>
               <button 
-                onClick={() => handleAutoReply("❌ Collaboration Declined. Maybe next time!")}
-                style={{ flex: 1, padding: '6px 12px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', fontWeight: '600' }}
+                onClick={() => handleAutoReply("Thank you for your time. I am unable to accept the request at this moment, but I hope we can connect in the future.")}
+                style={{ flex: 1, padding: '8px 12px', background: '#f8fafc', color: '#0f172a', border: '1px solid #e2e8f0', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', fontWeight: '600', transition: 'background 0.2s' }}
+                onMouseOver={(e) => e.currentTarget.style.background = '#f1f5f9'}
+                onMouseOut={(e) => e.currentTarget.style.background = '#f8fafc'}
               >
                 Decline
               </button>
@@ -498,7 +506,7 @@ export default function Chat({ standalone = true }) {
         <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', marginBottom: '12px' }} className="hide-scrollbar">
           <button 
             type="button" 
-            onClick={() => setInput("Interested in Collaborating")}
+            onClick={() => handleAutoReply("Would you be interested in discussing a potential collaboration?")}
             style={{ 
               whiteSpace: 'nowrap', 
               padding: '6px 14px', 
@@ -517,7 +525,8 @@ export default function Chat({ standalone = true }) {
             onMouseOver={(e) => { e.currentTarget.style.background = '#e2e8f0'; e.currentTarget.style.borderColor = '#cbd5e1'; }}
             onMouseOut={(e) => { e.currentTarget.style.background = '#f1f5f9'; e.currentTarget.style.borderColor = '#e2e8f0'; }}
           >
-            <span>👉</span> Interested in Collaborating
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            Request Collaboration
           </button>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', background: '#f8fafc', padding: '8px', borderRadius: '24px', border: '1px solid #e2e8f0' }}>
