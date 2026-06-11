@@ -84,36 +84,6 @@ function SharedPostPreview({ url }) {
   );
 }
 
-const renderMessageContent = (text, isMine) => {
-  const urlRegex = /(https?:\/\/[^\s]+)/g;
-  const parts = text.split(urlRegex);
-  return parts.map((part, index) => {
-    if (part.match(urlRegex)) {
-      const isPostUrl = part.includes('/post/');
-      if (isPostUrl) {
-        return <SharedPostPreview key={index} url={part} />;
-      }
-      return (
-        <span key={index} style={{ display: 'inline-block', maxWidth: '100%' }}>
-          <a 
-            href={part} 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            style={{ 
-              color: isMine ? 'white' : '#0f172a', 
-              textDecoration: 'underline',
-              wordBreak: 'break-all'
-            }}
-          >
-            {part}
-          </a>
-        </span>
-      );
-    }
-    return part;
-  });
-};
-
 export default function Chat({ standalone = true }) {
   const { userId: partnerId } = useParams();
   const { user } = useAuth();
@@ -133,6 +103,78 @@ export default function Chat({ standalone = true }) {
   const fileInputRef = useRef(null);
   const bottomRef = useRef(null);
   const typingTimeoutRef = useRef(null);
+
+  const handleAutoReply = async (replyText) => {
+    try {
+      const msg = await api.messages.send({
+        receiverId: partnerId,
+        content: replyText
+      });
+      if (msg && msg._id) {
+        setMessages(prev => {
+          if (prev.some(m => m._id === msg._id)) return prev;
+          return [...prev, msg];
+        });
+        scrollToBottom("smooth");
+      }
+    } catch (err) {
+      setError("Failed to send reply");
+    }
+  };
+
+  const renderMessageContent = (text, isMine) => {
+    if (text.includes("Interested in Collaborating") || text.includes("Interested to Collaborate")) {
+      return (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
+          <span>👉 {text.replace("👉 ", "")}</span>
+          {!isMine && (
+            <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
+              <button 
+                onClick={() => handleAutoReply("✅ Collaboration Accepted! Let's discuss details.")}
+                style={{ flex: 1, padding: '6px 12px', background: '#10b981', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', fontWeight: '600' }}
+              >
+                Accept
+              </button>
+              <button 
+                onClick={() => handleAutoReply("❌ Collaboration Declined. Maybe next time!")}
+                style={{ flex: 1, padding: '6px 12px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', fontWeight: '600' }}
+              >
+                Decline
+              </button>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const parts = text.split(urlRegex);
+    return parts.map((part, index) => {
+      if (part.match(urlRegex)) {
+        const isPostUrl = part.includes('/post/');
+        if (isPostUrl) {
+          return <SharedPostPreview key={index} url={part} />;
+        }
+        return (
+          <span key={index} style={{ display: 'inline-block', maxWidth: '100%' }}>
+            <a 
+              href={part} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              style={{ 
+                color: isMine ? 'white' : '#0f172a', 
+                textDecoration: 'underline',
+                wordBreak: 'break-all'
+              }}
+            >
+              {part}
+            </a>
+          </span>
+        );
+      }
+      return part;
+    });
+  };
 
   const scrollToBottom = (behavior = "smooth") => {
     bottomRef.current?.scrollIntoView({ behavior });
