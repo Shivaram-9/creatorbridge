@@ -118,7 +118,8 @@ authRouter.post(
     console.log("LOGIN ATTEMPT:", req.body.email);
     try {
       const { email, password } = req.body;
-      const user = await User.findOne({ email });
+      const processedEmail = email ? email.toLowerCase().trim() : "";
+      const user = await User.findOne({ email: processedEmail });
       if (!user) {
         return res.status(401).json({ error: "Invalid credentials" });
       }
