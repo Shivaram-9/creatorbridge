@@ -150,7 +150,7 @@ export default function Discover() {
             </div>
           ) : (
             <div className="discover-user-grid">
-              {filteredUsers.map(u => <UserCard key={u._id} user={u} />)}
+              {filteredUsers.map(u => <UserCard key={u._id} user={u} layout="list" />)}
             </div>
           )}
         </div>
@@ -261,7 +261,7 @@ export default function Discover() {
               </div>
             ) : (
               <div className="discover-user-grid">
-                {filteredUsers.map(u => <UserCard key={u._id} user={u} />)}
+                {filteredUsers.map(u => <UserCard key={u._id} user={u} layout="list" />)}
               </div>
             )}
           </div>

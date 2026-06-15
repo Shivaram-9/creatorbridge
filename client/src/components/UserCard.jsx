@@ -6,7 +6,7 @@ import { useAuth } from "../context/AuthContext.jsx";
 import { api } from "../services/api.js";
 import { getSocket } from "../services/socket.js";
 
-const UserCard = memo(({ user }) => {
+const UserCard = memo(({ user, minimal, layout = "card" }) => {
   if (!user) return null;
 
   const navigate = useNavigate();
@@ -88,6 +88,72 @@ const UserCard = memo(({ user }) => {
     }
   };
 
+  if (layout === "list") {
+    return (
+      <div 
+        className="user-list-item"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          padding: '12px 16px',
+          backgroundColor: 'transparent',
+          borderBottom: '1px solid #e2e8f0',
+          cursor: 'pointer',
+          width: '100%',
+          transition: 'background-color 0.2s',
+          gap: '12px'
+        }}
+        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f8fafc'}
+        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+        onClick={() => navigate(`/user/${user._id}`)}
+      >
+        <div style={{ flexShrink: 0 }}>
+          <Avatar user={user} size="lg" />
+        </div>
+        
+        <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+          <div style={{ 
+            fontSize: '14px', 
+            fontWeight: 700, 
+            color: '#1a1a1a', 
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '4px'
+          }}>
+            {user.name || user.username}
+            {user.isVerified && <VerifiedBadge size="sm" tier={user.premiumTier} />}
+          </div>
+          <div style={{ fontSize: '13px', color: '#64748b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            @{user.username}
+          </div>
+        </div>
+
+        <div style={{ flexShrink: 0 }}>
+          <button 
+            onClick={handleAlign}
+            disabled={actionBusy || hasRequested}
+            style={{
+              padding: '6px 16px',
+              borderRadius: '8px',
+              backgroundColor: hasRequested ? '#f1f5f9' : isFollowing ? '#f1f5f9' : '#0f172a',
+              color: hasRequested ? '#64748b' : isFollowing ? '#0f172a' : 'white',
+              border: 'none',
+              fontSize: '13px',
+              fontWeight: 600,
+              cursor: (actionBusy || hasRequested) ? 'not-allowed' : 'pointer',
+              transition: 'all 0.2s'
+            }}
+          >
+            {actionBusy ? "..." : isOwn ? "Edit" : hasRequested ? "Requested" : isFollowing ? "Connected" : "Connect"}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div 
       className="user-card-premium slide-in"
@@ -143,51 +209,55 @@ const UserCard = memo(({ user }) => {
         </h3>
         <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '12px' }}>@{user.username}</p>
         
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginBottom: '1.25rem' }}>
-          <span style={{ 
-            fontSize: '10px', 
-            fontWeight: 800, 
-            textTransform: 'uppercase', 
-            padding: '4px 10px', 
-            borderRadius: '6px',
-            backgroundColor: '#f1f5f9',
-            color: '#0f172a',
-            border: '1px solid #e2e8f0'
-          }}>
-            {user.role}
-          </span>
-          {user.category && (
+        {!minimal && (
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginBottom: '1.25rem' }}>
             <span style={{ 
               fontSize: '10px', 
-              fontWeight: 700, 
+              fontWeight: 800, 
+              textTransform: 'uppercase', 
               padding: '4px 10px', 
               borderRadius: '6px',
-              backgroundColor: '#f8fafc',
-              color: '#475569',
-              border: '1px solid #f1f5f9'
+              backgroundColor: '#f1f5f9',
+              color: '#0f172a',
+              border: '1px solid #e2e8f0'
             }}>
-              {user.category}
+              {user.role}
             </span>
-          )}
-        </div>
+            {user.category && (
+              <span style={{ 
+                fontSize: '10px', 
+                fontWeight: 700, 
+                padding: '4px 10px', 
+                borderRadius: '6px',
+                backgroundColor: '#f8fafc',
+                color: '#475569',
+                border: '1px solid #f1f5f9'
+              }}>
+                {user.category}
+              </span>
+            )}
+          </div>
+        )}
 
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: '1fr 1fr', 
-          gap: '8px',
-          padding: '12px 0',
-          borderTop: '1px solid #f8fafc',
-          marginBottom: '1rem'
-        }}>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: '14px', fontWeight: 800, color: '#1a1a1a' }}>{user.followers?.length || 0}</div>
-            <div style={{ fontSize: '10px', color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase' }}>Alliances</div>
+        {!minimal && (
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: '1fr 1fr', 
+            gap: '8px',
+            padding: '12px 0',
+            borderTop: '1px solid #f8fafc',
+            marginBottom: '1rem'
+          }}>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: '14px', fontWeight: 800, color: '#1a1a1a' }}>{user.followers?.length || 0}</div>
+              <div style={{ fontSize: '10px', color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase' }}>Alliances</div>
+            </div>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: '14px', fontWeight: 800, color: '#1a1a1a' }}>{user.profileViews || 0}</div>
+              <div style={{ fontSize: '10px', color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase' }}>Reach</div>
+            </div>
           </div>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: '14px', fontWeight: 800, color: '#1a1a1a' }}>{user.profileViews || 0}</div>
-            <div style={{ fontSize: '10px', color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase' }}>Reach</div>
-          </div>
-        </div>
+        )}
 
         <button 
           onClick={handleAlign}
