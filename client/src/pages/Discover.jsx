@@ -165,11 +165,9 @@ export default function Discover() {
                   <h3>Featured Creators</h3>
                   <button onClick={() => { setActiveRole("influencer"); window.scrollTo(0, 500); }}>See All</button>
                 </div>
-                <div className="discover-featured-scroll">
+                <div className="discover-user-grid">
                   {discovery.suggestedCreators.map(u => (
-                    <div className="discover-featured-item" key={u._id}>
-                      <UserCard user={u} minimal={true} />
-                    </div>
+                    <UserCard key={u._id} user={u} layout="list" />
                   ))}
                 </div>
               </div>
@@ -182,11 +180,9 @@ export default function Discover() {
                   <h3>Featured Brands</h3>
                   <button onClick={() => { setActiveRole("brand"); window.scrollTo(0, 500); }}>See All</button>
                 </div>
-                <div className="discover-featured-scroll">
+                <div className="discover-user-grid">
                   {discovery.suggestedBrands.map(u => (
-                    <div className="discover-featured-item" key={u._id}>
-                      <UserCard user={u} minimal={true} />
-                    </div>
+                    <UserCard key={u._id} user={u} layout="list" />
                   ))}
                 </div>
               </div>
