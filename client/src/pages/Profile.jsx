@@ -272,7 +272,7 @@ export default function Profile() {
                 <h1 className="profile-display-name" style={{ margin: 0 }}>
                   {user?.name || user?.username}
                 </h1>
-                {(user?.isVerified || user?.isPremium) && <VerifiedBadge size="lg" tier={user.premiumTier} />}
+                {(user?.isVerified || user?.isPremium) && <VerifiedBadge size="lg" tier={user.premiumTier} role={user.role} />}
               </div>
               {(user?.isVerified || user?.isPremium) && (
                 <div style={{ marginTop: '4px', marginBottom: '8px' }}>

@@ -6,7 +6,7 @@ import React from 'react';
  * @param {boolean} showTooltip - Whether to show the tooltip
  * @param {string} tier - silver, gold, platinum, or none
  */
-export default function VerifiedBadge({ size = 'md', showTooltip = true, tier = 'none', style = {}, className = '' }) {
+export default function VerifiedBadge({ size = 'md', showTooltip = true, tier = 'none', role = 'influencer', style = {}, className = '' }) {
   const sizes = {
     xs: '42px',
     sm: '48px',
@@ -42,7 +42,7 @@ export default function VerifiedBadge({ size = 'md', showTooltip = true, tier = 
       }}
     >
       <img 
-        src="/brand_badge.svg" 
+        src={role?.toLowerCase() === 'brand' ? "/brand_badge.svg" : "/influencer_badge.svg"} 
         alt="Verified" 
         style={{ width: badgeSize, height: badgeSize, objectFit: 'contain', verticalAlign: 'middle' }}
       />

@@ -124,7 +124,7 @@ const UserCard = memo(({ user, minimal, layout = "card" }) => {
             gap: '4px'
           }}>
             {user.name || user.username}
-            {user.isVerified && <VerifiedBadge size="sm" tier={user.premiumTier} />}
+            {user.isVerified && <VerifiedBadge size="sm" tier={user.premiumTier} role={user.role} />}
           </div>
           <div style={{ fontSize: '13px', color: '#64748b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
             @{user.username}
@@ -205,7 +205,7 @@ const UserCard = memo(({ user, minimal, layout = "card" }) => {
           gap: '4px'
         }}>
           {user.name || user.username}
-          {user.isVerified && <VerifiedBadge size="sm" tier={user.premiumTier} />}
+          {user.isVerified && <VerifiedBadge size="sm" tier={user.premiumTier} role={user.role} />}
         </h3>
         <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '12px' }}>@{user.username}</p>
         

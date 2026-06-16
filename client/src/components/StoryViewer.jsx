@@ -92,7 +92,7 @@ export default function StoryViewer({ groups, initialGroupIndex, onClose }) {
           <div className="story-viewer-user-info">
             <Avatar user={currentGroup.user} size="sm" />
             <span>{currentGroup.user?.username || "User"}</span>
-            {currentGroup.user?.isVerified && <VerifiedBadge size="xs" />}
+            {currentGroup.user?.isVerified && <VerifiedBadge size="xs" role={currentGroup.user?.role} />}
           </div>
         </div>
 

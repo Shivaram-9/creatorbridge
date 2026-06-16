@@ -54,7 +54,7 @@ export default function SearchDropdown({ results, loading, onClose, onItemClick 
                     <div className="search-item-info">
                       <div className="name-row">
                         <span className="name">{u.name || u.username}</span>
-                        {(u.isVerified || u.isPremium) && <VerifiedBadge size="xs" tier={u.premiumTier} />}
+                        {(u.isVerified || u.isPremium) && <VerifiedBadge size="xs" tier={u.premiumTier} role={u.role} />}
                         <span className={`role-badge ${u.role}`}>{u.role}</span>
                       </div>
                       <span className="handle">@{u.username} • {u.category || 'Creator'}</span>
@@ -93,7 +93,7 @@ export default function SearchDropdown({ results, loading, onClose, onItemClick 
                   <div className="search-item-info">
                     <div className="name-row">
                       <span className="name">{u.username}</span>
-                      {(u.isVerified || u.isPremium) && <VerifiedBadge size="xs" tier={u.premiumTier} />}
+                      {(u.isVerified || u.isPremium) && <VerifiedBadge size="xs" tier={u.premiumTier} role={u.role} />}
                     </div>
                     <span className="handle">{u.category}</span>
                   </div>
@@ -111,7 +111,7 @@ export default function SearchDropdown({ results, loading, onClose, onItemClick 
                   <div className="search-item-info">
                     <div className="name-row">
                       <span className="name">{u.username}</span>
-                      {(u.isVerified || u.isPremium) && <VerifiedBadge size="xs" tier={u.premiumTier} />}
+                      {(u.isVerified || u.isPremium) && <VerifiedBadge size="xs" tier={u.premiumTier} role={u.role} />}
                     </div>
                   </div>
                 </Link>

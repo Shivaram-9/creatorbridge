@@ -93,7 +93,7 @@ export default function BrandTools() {
                     <div key={c._id} className="creator-tool-card card">
                       <Avatar user={c} size="lg" />
                       <div className="card-info">
-                        <h4>{c.name} {c.isVerified && <VerifiedBadge size="xs" />}</h4>
+                        <h4>{c.name} {c.isVerified && <VerifiedBadge size="xs" role={c.role} />}</h4>
                         <p className="handle">@{c.username}</p>
                         <p className="category-tag">{c.category}</p>
                         <div className="card-stats">

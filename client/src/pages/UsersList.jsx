@@ -144,7 +144,7 @@ function UserRow({ user, onUpdate }) {
       <div style={{ marginLeft: '1rem', flex: 1 }}>
         <div style={{ fontWeight: 700, fontSize: '0.95rem', display: 'flex', alignItems: 'center' }}>
           {user.username || user.name}
-          {(user.isVerified || user.isPremium) && <VerifiedBadge size="xs" tier={user.premiumTier} />}
+          {(user.isVerified || user.isPremium) && <VerifiedBadge size="xs" tier={user.premiumTier} role={user.role} />}
         </div>
         <div className="muted" style={{ fontSize: '0.8rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '200px' }}>
           {user.bio || user.category || user.role}

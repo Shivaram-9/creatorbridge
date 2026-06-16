@@ -364,7 +364,7 @@ export default function Chat({ standalone = true }) {
         <div style={{ marginLeft: '12px', flex: 1 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
             <h2 style={{ fontSize: '1rem', fontWeight: '700', color: '#0f172a', margin: 0 }}>{partner?.name || partner?.username}</h2>
-            {(partner?.isVerified || partner?.isPremium) && <VerifiedBadge size="sm" tier={partner.premiumTier} />}
+            {(partner?.isVerified || partner?.isPremium) && <VerifiedBadge size="sm" tier={partner.premiumTier} role={partner.role} />}
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: socketOnline ? '#10b981' : '#cbd5e1' }}></span>
