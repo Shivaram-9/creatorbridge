@@ -8,11 +8,11 @@ import React from 'react';
  */
 export default function VerifiedBadge({ size = 'md', showTooltip = true, tier = 'none', role = 'influencer', style = {}, className = '' }) {
   const sizes = {
-    xs: '42px',
-    sm: '48px',
-    md: '54px',
-    lg: '62px',
-    xl: '72px'
+    xs: '18px',
+    sm: '22px',
+    md: '28px',
+    lg: '34px',
+    xl: '42px'
   };
 
   const colors = {
