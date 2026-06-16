@@ -42,7 +42,7 @@ export default function VerifiedBadge({ size = 'md', showTooltip = true, tier = 
       }}
     >
       <img 
-        src="/diamond-removebg-preview.png" 
+        src="/brand_badge.svg" 
         alt="Verified" 
         style={{ width: badgeSize, height: badgeSize, objectFit: 'contain', verticalAlign: 'middle' }}
       />
