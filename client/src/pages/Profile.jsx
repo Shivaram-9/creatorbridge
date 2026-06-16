@@ -8,7 +8,7 @@ import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import Avatar from "../components/Avatar.jsx";
 import VerifiedBadge from "../components/VerifiedBadge.jsx";
 import PortfolioGrid from "../components/PortfolioGrid.jsx";
-import { HeartIcon, MessageCircleIcon, SendIcon, BookmarkIcon } from "../components/Icons.jsx";
+import { HeartIcon, MessageCircleIcon, SendIcon, BookmarkIcon, ShieldIcon } from "../components/Icons.jsx";
 import toast from "react-hot-toast";
 import "./Profile.css";
 import UserListModal from "../components/UserListModal.jsx";
@@ -408,7 +408,7 @@ export default function Profile() {
           <span className="tab-icon"><ProfileIcon /></span> About
         </div>
         <div className={`tab-item-wide ${activeTab === 'trust' ? 'active' : ''}`} onClick={() => setActiveTab('trust')}>
-          <span className="tab-icon">🛡️</span> Trust Report
+          <span className="tab-icon"><ShieldIcon /></span> Trust Report
         </div>
       </div>
 

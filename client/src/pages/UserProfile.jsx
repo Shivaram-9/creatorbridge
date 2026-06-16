@@ -7,7 +7,7 @@ import { getSocket } from "../services/socket.js";
 import { BASE_URL } from "../config/api.js";
 import ErrorBanner from "../components/ErrorBanner.jsx";
 import PortfolioGrid from "../components/PortfolioGrid.jsx";
-import { SendIcon, HeartIcon, MessageCircleIcon, BookmarkIcon } from "../components/Icons.jsx";
+import { SendIcon, HeartIcon, MessageCircleIcon, BookmarkIcon, ShieldIcon } from "../components/Icons.jsx";
 import Avatar from "../components/Avatar.jsx";
 import VerifiedBadge from "../components/VerifiedBadge.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
@@ -436,7 +436,7 @@ export default function UserProfile() {
           <span className="tab-icon"><ProfileIcon /></span> About
         </div>
         <div className={`tab-item-wide ${activeTab === 'trust' ? 'active' : ''}`} onClick={() => setActiveTab('trust')}>
-          <span className="tab-icon">🛡️</span> Trust Report
+          <span className="tab-icon"><ShieldIcon /></span> Trust Report
         </div>
       </div>
 

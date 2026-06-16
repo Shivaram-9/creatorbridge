@@ -1,56 +1,31 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import './TrustScore.css';
 import VerifiedBadge from './VerifiedBadge.jsx';
+import { ShieldIcon, ProfileIcon, StarIcon } from './Icons.jsx';
 
-// Simple deterministic hash to generate consistent mock data for a user
-function stringToHash(str) {
-  let hash = 0;
-  if (!str) return hash;
-  for (let i = 0; i < str.length; i++) {
-    const char = str.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
-    hash = hash & hash;
-  }
-  return Math.abs(hash);
-}
+const TargetIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+);
+
+const LightningIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+);
+
+const ClockIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+);
 
 export default function TrustScore({ user }) {
   if (!user) return null;
 
-  // Generate deterministic metrics based on user ID or username
-  const seed = stringToHash(user._id || user.username || 'default');
-  
-  // Calculate base score logic based on actual profile data + seed
-  const isVerified = user.isVerified || user.isPremium;
-  const hasAvatar = !!user.profilePicture;
-  const hasBio = !!user.bio;
-  const hasPortfolio = user.portfolio && user.portfolio.length > 0;
-  
-  let profileCompleteness = 40;
-  if (hasAvatar) profileCompleteness += 20;
-  if (hasBio) profileCompleteness += 20;
-  if (hasPortfolio) profileCompleteness += 20;
-
-  // Generate mocked advanced metrics (between 80-100 for verified, 60-90 for unverified)
-  const baseRate = isVerified ? 85 : 60;
-  const completionRate = Math.min(100, baseRate + (seed % 15) + (profileCompleteness / 20));
-  const responseRate = Math.min(100, baseRate + ((seed + 1) % 15));
-  const onTimeDelivery = Math.min(100, baseRate + ((seed + 2) % 15));
-  const collabsCount = (seed % 42) + (isVerified ? 10 : 0);
-  
-  const ratingBase = isVerified ? 4.5 : 3.8;
-  const averageRating = Math.min(5.0, ratingBase + ((seed % 10) / 10)).toFixed(1);
-
-  // Final Trust Score Calculation
-  const trustScoreRaw = (
-    (profileCompleteness * 0.15) +
-    (completionRate * 0.25) +
-    (responseRate * 0.20) +
-    (onTimeDelivery * 0.20) +
-    ((averageRating / 5) * 100 * 0.20)
-  );
-  
-  const finalScore = Math.round(trustScoreRaw);
+  // Exact mock values requested
+  const isVerified = true;
+  const finalScore = 94;
+  const completedCampaigns = 28;
+  const responseRate = 98;
+  const onTimeDelivery = 96;
+  const averageRating = "4.9";
+  const profileCompleteness = 100;
 
   // Determine Level
   let levelName = '';
@@ -120,19 +95,19 @@ export default function TrustScore({ user }) {
           <div className="metric-card">
             <div className="metric-header">
               <span className="metric-title">Identity Verification</span>
-              <span className="metric-icon">🛡️</span>
+              <span className="metric-icon"><ShieldIcon /></span>
             </div>
             <div className="metric-value">
-              {isVerified ? 'Verified' : 'Unverified'}
-              {isVerified && <VerifiedBadge size="sm" tier={user.premiumTier} role={user.role} />}
+              Verified
+              <VerifiedBadge size="sm" tier={user.premiumTier} role={user.role} />
             </div>
-            <div className="metric-sub">{isVerified ? 'Identity confirmed' : 'Basic account'}</div>
+            <div className="metric-sub">Identity confirmed</div>
           </div>
 
           <div className="metric-card">
             <div className="metric-header">
               <span className="metric-title">Profile Completeness</span>
-              <span className="metric-icon">👤</span>
+              <span className="metric-icon"><ProfileIcon /></span>
             </div>
             <div className="metric-value">{profileCompleteness}%</div>
             <div className="progress-bar-bg">
@@ -142,80 +117,42 @@ export default function TrustScore({ user }) {
 
           <div className="metric-card">
             <div className="metric-header">
-              <span className="metric-title">Campaign Completion</span>
-              <span className="metric-icon">🎯</span>
+              <span className="metric-title">Completed Campaigns</span>
+              <span className="metric-icon"><TargetIcon /></span>
             </div>
-            <div className="metric-value">{Math.round(completionRate)}%</div>
-            <div className="metric-sub">{collabsCount} total campaigns</div>
+            <div className="metric-value">{completedCampaigns}</div>
+            <div className="metric-sub">Total collaborations</div>
           </div>
 
           <div className="metric-card">
             <div className="metric-header">
               <span className="metric-title">Avg. Response Rate</span>
-              <span className="metric-icon">⚡</span>
+              <span className="metric-icon"><LightningIcon /></span>
             </div>
-            <div className="metric-value">{Math.round(responseRate)}%</div>
+            <div className="metric-value">{responseRate}%</div>
             <div className="metric-sub">Usually replies in &lt; 24h</div>
           </div>
 
           <div className="metric-card">
             <div className="metric-header">
               <span className="metric-title">On-Time Delivery</span>
-              <span className="metric-icon">⏱️</span>
+              <span className="metric-icon"><ClockIcon /></span>
             </div>
-            <div className="metric-value">{Math.round(onTimeDelivery)}%</div>
+            <div className="metric-value">{onTimeDelivery}%</div>
             <div className="metric-sub">Asset submission track record</div>
           </div>
 
           <div className="metric-card">
             <div className="metric-header">
               <span className="metric-title">Partner Rating</span>
-              <span className="metric-icon">⭐</span>
+              <span className="metric-icon"><StarIcon /></span>
             </div>
             <div className="metric-value">{averageRating}</div>
-            <div className="metric-sub">Based on {collabsCount > 0 ? Math.max(1, Math.floor(collabsCount * 0.7)) : 0} reviews</div>
+            <div className="metric-sub">Verified reviews</div>
           </div>
 
         </div>
       </div>
-
-      {/* Suggestions Section (Visible only if score is below 90) */}
-      {finalScore < 90 && (
-        <div className="suggestions-section">
-          <div className="suggestions-title">
-            <span>📈</span> How to improve your score
-          </div>
-          
-          {!isVerified && (
-            <div className="suggestion-item">
-              <div className="suggestion-icon">1</div>
-              <div className="suggestion-content">
-                <h4>Verify your identity</h4>
-                <p>Getting verified significantly boosts your trust score and shows partners you are authentic.</p>
-              </div>
-            </div>
-          )}
-          
-          {profileCompleteness < 100 && (
-            <div className="suggestion-item">
-              <div className="suggestion-icon">{!isVerified ? '2' : '1'}</div>
-              <div className="suggestion-content">
-                <h4>Complete your profile</h4>
-                <p>Add a bio, profile picture, and portfolio items to reach 100% profile completeness.</p>
-              </div>
-            </div>
-          )}
-
-          <div className="suggestion-item">
-            <div className="suggestion-icon">{(!isVerified && profileCompleteness < 100) ? '3' : (!isVerified || profileCompleteness < 100) ? '2' : '1'}</div>
-            <div className="suggestion-content">
-              <h4>Maintain fast response times</h4>
-              <p>Replying to messages and collaboration requests within 24 hours will gradually increase your response rate metric.</p>
-            </div>
-          </div>
-
-        </div>
-      )}
     </div>
   );
 }
