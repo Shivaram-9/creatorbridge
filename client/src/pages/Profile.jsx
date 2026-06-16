@@ -12,6 +12,7 @@ import { HeartIcon, MessageCircleIcon, SendIcon, BookmarkIcon } from "../compone
 import toast from "react-hot-toast";
 import "./Profile.css";
 import UserListModal from "../components/UserListModal.jsx";
+import TrustScore from "../components/TrustScore.jsx";
 
 function fmtCount(n) {
   if (!n || n <= 0) return "0";
@@ -406,6 +407,9 @@ export default function Profile() {
         <div className={`tab-item-wide ${activeTab === 'about' ? 'active' : ''}`} onClick={() => setActiveTab('about')}>
           <span className="tab-icon"><ProfileIcon /></span> About
         </div>
+        <div className={`tab-item-wide ${activeTab === 'trust' ? 'active' : ''}`} onClick={() => setActiveTab('trust')}>
+          <span className="tab-icon">🛡️</span> Trust Report
+        </div>
       </div>
 
       <div style={{ marginBottom: '40px' }}>
@@ -460,6 +464,12 @@ export default function Profile() {
         )}
 
         {activeTab === "about" && <div style={{ textAlign: 'center', padding: '40px', background: '#fff', borderRadius: '16px', color: '#64748B' }}>{user?.bio || "No bio yet."}</div>}
+
+        {activeTab === "trust" && (
+          <div style={{ marginTop: '24px' }}>
+            <TrustScore user={user} />
+          </div>
+        )}
       </div>
 
       {/* Post Lightbox */}
