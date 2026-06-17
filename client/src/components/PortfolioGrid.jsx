@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { BASE_URL } from "../config/api.js";
-import "./PortfolioGrid.css";
 
 /**
  * Instagram-style portfolio grid with lightbox.
@@ -36,24 +35,76 @@ export default function PortfolioGrid({ items = [], onDelete }) {
     setViewIdx((i) => (i < items.length - 1 ? i + 1 : 0));
   }
 
+  const isExternalLink = (url) => {
+    if (!url) return false;
+    if (!url.startsWith('http')) return false;
+    if (url.match(/\.(jpeg|jpg|gif|png|webp|svg|heic|heif|mp4|mov|webm)$/i)) return false;
+    if (url.includes('res.cloudinary.com')) return false;
+    if (url.includes('unsplash.com')) return false;
+    return true;
+  };
+
+  const extractDomain = (url) => {
+    try {
+      return new URL(url).hostname;
+    } catch {
+      return url;
+    }
+  };
+
   return (
     <>
       <div className="portfolio-grid" role="list" aria-label="Posts">
-        {items.filter(item => !!item).map((item, idx) => (
+        {items.filter(item => !!item).map((item, idx) => {
+          const url = getMediaUrl(item);
+          const isLink = isExternalLink(url);
+          
+          return (
           <button
             key={item?._id || item?.id || idx}
             type="button"
-            className="portfolio-cell"
-            onClick={() => setViewIdx(idx)}
+            className={`portfolio-cell ${isLink ? 'portfolio-cell-link' : ''}`}
+            onClick={(e) => {
+              if (isLink) {
+                e.stopPropagation();
+                window.open(url, '_blank');
+              } else {
+                setViewIdx(idx);
+              }
+            }}
             aria-label={item?.caption || item?.content || `Post ${idx + 1}`}
           >
-            {item?.mediaType === "video" ? (
+            {isLink ? (
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', width: '100%', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '16px' }}>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="2" style={{ marginBottom: '12px' }}>
+                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                </svg>
+                <span style={{ fontSize: '14px', fontWeight: '600', color: '#0f172a', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', width: '100%', textAlign: 'center' }}>
+                  {item.caption || extractDomain(url)}
+                </span>
+                <span style={{ fontSize: '12px', color: '#38bdf8', marginTop: '4px' }}>Visit Link ↗</span>
+                {onDelete && (
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (window.confirm("Delete this link?")) {
+                        onDelete(item._id || item.id);
+                      }
+                    }}
+                    style={{ position: 'absolute', top: '8px', right: '8px', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: 'none', borderRadius: '6px', padding: '4px 8px', fontSize: '12px', cursor: 'pointer' }}
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+            ) : item?.mediaType === "video" ? (
               <div className="portfolio-cell__video-thumb">
                 <span className="portfolio-cell__play" aria-hidden="true">▶</span>
               </div>
             ) : (
               <img 
-                src={getMediaUrl(item)} 
+                src={url} 
                 alt={item?.caption || item?.content || ""} 
                 className="portfolio-cell__img" 
                 loading="lazy" 
@@ -69,7 +120,7 @@ export default function PortfolioGrid({ items = [], onDelete }) {
               />
             )}
           </button>
-        ))}
+        )})}
       </div>
 
       {/* Lightbox */}
