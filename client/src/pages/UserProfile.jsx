@@ -485,7 +485,7 @@ export default function UserProfile() {
 
             {activeTab === "trust" && (
               <div style={{ marginTop: '24px' }}>
-                <TrustScore user={profile} />
+                <TrustScore user={profile} isOwnProfile={isOwn} onUpdate={(updated) => setProfile(updated)} />
               </div>
             )}
           </>
