@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { BASE_URL } from "../config/api.js";
+import "./PortfolioGrid.css";
 
 /**
  * Instagram-style portfolio grid with lightbox.
