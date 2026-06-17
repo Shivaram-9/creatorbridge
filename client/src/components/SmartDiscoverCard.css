@@ -1,0 +1,179 @@
+.smart-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-card, #ffffff);
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border-color, #f1f5f9);
+  padding: 20px;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.smart-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+  border-color: #cbd5e1;
+}
+
+.smart-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.smart-card-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e2e8f0;
+}
+
+.smart-card-avatar.brand {
+  border-radius: 12px;
+}
+
+.smart-card-info {
+  flex: 1;
+}
+
+.smart-card-name-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.smart-card-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 140px;
+}
+
+.smart-card-role {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0;
+  text-transform: capitalize;
+}
+
+.smart-card-match-badge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: #f0fdf4;
+  color: #16a34a;
+  border: 1px solid #bbf7d0;
+  padding: 4px 8px;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.smart-card-match-badge.high {
+  background: #eff6ff;
+  color: #2563eb;
+  border-color: #bfdbfe;
+}
+
+.smart-card-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+  background: #f8fafc;
+  padding: 12px;
+  border-radius: 12px;
+}
+
+.smart-metric {
+  display: flex;
+  flex-direction: column;
+}
+
+.smart-metric-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #94a3b8;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-bottom: 2px;
+}
+
+.smart-metric-val {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.smart-card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.smart-btn {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: 0.2s;
+  text-align: center;
+}
+
+.smart-btn-primary {
+  background: #0f172a;
+  color: #fff;
+}
+
+.smart-btn-primary:hover {
+  background: #334155;
+}
+
+.smart-btn-secondary {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.smart-btn-secondary:hover {
+  background: #e2e8f0;
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .smart-card {
+    background: var(--bg-card, #1e293b);
+    border-color: var(--border-color, #334155);
+  }
+  .smart-card-name {
+    color: #f8fafc;
+  }
+  .smart-card-metrics {
+    background: #0f172a;
+  }
+  .smart-metric-val {
+    color: #f8fafc;
+  }
+  .smart-btn-primary {
+    background: #38bdf8;
+    color: #0f172a;
+  }
+  .smart-btn-primary:hover {
+    background: #7dd3fc;
+  }
+}

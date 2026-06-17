@@ -4,6 +4,45 @@ import { Post } from "../models/Post.js";
 import { authMiddleware } from "../middleware/auth.js";
 import { attachAlignmentStatus } from "../utils/alignment.js";
 
+// Heuristic Match Score Algorithm
+function calculateMatchScore(viewer, target) {
+  if (!viewer || !target) return 0;
+  let score = 0;
+  
+  // 1. Category/Niche Match (30%)
+  if (viewer.category === target.category) score += 30;
+  else if (viewer.interests?.includes(target.category)) score += 15;
+  
+  // 2. Budget Overlap (20%) - Simplistic heuristic: Brands have money, Influencers want money
+  // We'll give 20% by default for now unless we have real budget fields
+  score += 20; 
+
+  // 3. Activity/Followers Metric (20%)
+  if (target.followers > 10000) score += 20;
+  else if (target.followers > 1000) score += 10;
+  else score += 5;
+
+  // 4. Verification & Trust (15%)
+  if (target.isVerified || target.isPremium) score += 15;
+
+  // 5. General Profile Completeness (15%)
+  if (target.bio && target.avatar) score += 15;
+  else if (target.avatar) score += 5;
+
+  // Add some slight deterministic randomness so scores aren't all exactly the same
+  const hash = String(target._id).charCodeAt(0) % 5;
+  score -= hash;
+
+  return Math.min(100, Math.max(50, score)); // Floor at 50% so no one looks terrible
+}
+
+function attachMatchScore(viewer, targets) {
+  return targets.map(t => ({
+    ...t,
+    matchScore: calculateMatchScore(viewer, t)
+  })).sort((a, b) => b.matchScore - a.matchScore);
+}
+
 export const discoveryRouter = Router();
 
 discoveryRouter.use(authMiddleware);
@@ -55,8 +94,11 @@ discoveryRouter.get("/suggested", async (req, res) => {
     .limit(10)
     .lean();
 
-    const resultCreators = await attachAlignmentStatus(req, suggestedCreators);
-    const resultBrands = await attachAlignmentStatus(req, suggestedBrands);
+    let resultCreators = await attachAlignmentStatus(req, suggestedCreators);
+    let resultBrands = await attachAlignmentStatus(req, suggestedBrands);
+
+    resultCreators = attachMatchScore(me, resultCreators);
+    resultBrands = attachMatchScore(me, resultBrands);
 
     res.json({ suggestedCreators: resultCreators, suggestedBrands: resultBrands });
   } catch (err) {
@@ -112,8 +154,17 @@ discoveryRouter.get("/trending", async (req, res) => {
     .limit(10)
     .lean();
 
-    const resultCreators = await attachAlignmentStatus(req, trendingCreators);
-    const resultBrands = await attachAlignmentStatus(req, trendingBrands);
+    let resultCreators = await attachAlignmentStatus(req, trendingCreators);
+    let resultBrands = await attachAlignmentStatus(req, trendingBrands);
+
+    // We don't have 'me' here unless we fetch user, but we have req.userId.
+    // For trending, we can skip strict match scores or mock them if we don't query user.
+    // Let's just fetch 'me' to be safe.
+    const me = await User.findById(req.userId).lean();
+    if (me) {
+      resultCreators = attachMatchScore(me, resultCreators);
+      resultBrands = attachMatchScore(me, resultBrands);
+    }
 
     const responseData = { trendingPosts, trendingCreators: resultCreators, trendingBrands: resultBrands };
     trendingCache = responseData;
@@ -164,7 +215,13 @@ discoveryRouter.get("/search", async (req, res) => {
       .limit(50)
       .lean();
 
-    res.json(await attachAlignmentStatus(req, results));
+    const me = await User.findById(req.userId).lean();
+    let finalResults = await attachAlignmentStatus(req, results);
+    if (me) {
+      finalResults = attachMatchScore(me, finalResults);
+    }
+
+    res.json({ results: finalResults });
   } catch (err) {
     res.status(500).json({ error: "Smart search failed" });
   }
