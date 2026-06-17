@@ -162,7 +162,7 @@ usersRouter.post("/me/cover", coverUpload.single("cover"), async (req, res) => {
 
 usersRouter.patch("/me", async (req, res) => {
   try {
-    const { name, username, category, bio, experience, location, role, avatar, website, portfolioLink, socialMediaLink, instagram, youtube } = req.body;
+    const { name, username, category, bio, experience, location, role, avatar, website, portfolioLink, socialMediaLink, instagram, youtube, trustScore, completedCampaigns, responseRate, onTimeDelivery, averageRating } = req.body;
     const updates = {};
     if (name !== undefined) updates.name = String(name).slice(0, 120);
     if (username !== undefined) updates.username = String(username).slice(0, 60);
@@ -177,6 +177,13 @@ usersRouter.patch("/me", async (req, res) => {
     if (avatar !== undefined) updates.avatar = String(avatar).slice(0, 1000); // Allow longer paths or base64 if needed
     if (instagram !== undefined) updates.instagram = String(instagram).slice(0, 200);
     if (youtube !== undefined) updates.youtube = String(youtube).slice(0, 200);
+    
+    // Trust Score Metrics (for testing / admin)
+    if (trustScore !== undefined) updates.trustScore = Number(trustScore);
+    if (completedCampaigns !== undefined) updates.completedCampaigns = Number(completedCampaigns);
+    if (responseRate !== undefined) updates.responseRate = Number(responseRate);
+    if (onTimeDelivery !== undefined) updates.onTimeDelivery = Number(onTimeDelivery);
+    if (averageRating !== undefined) updates.averageRating = Number(averageRating);
 
     const user = await User.findByIdAndUpdate(req.userId, { $set: updates }, { new: true });
     if (!user) return res.status(404).json({ error: "User not found" });
