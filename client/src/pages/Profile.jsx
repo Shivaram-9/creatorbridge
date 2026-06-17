@@ -47,10 +47,12 @@ export default function Profile() {
     if (!user?._id) return;
     setLoadingData(true);
     try {
-      const [postsRes, collabsRes] = await Promise.all([
+      const [meRes, postsRes, collabsRes] = await Promise.all([
+        api.users.me(),
         api.posts.userPosts(user._id),
         api.collaborations.list()
       ]);
+      if (!meRes.error) setUser(meRes);
       if (!postsRes.error) setPosts(Array.isArray(postsRes) ? postsRes : []);
       if (!collabsRes.error) setCollabs(Array.isArray(collabsRes) ? collabsRes : []);
     } catch (err) {
@@ -58,7 +60,7 @@ export default function Profile() {
     } finally {
       setLoadingData(false);
     }
-  }, [user?._id]);
+  }, [user?._id, setUser]);
 
   useEffect(() => {
     loadData();
