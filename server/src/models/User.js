@@ -64,6 +64,13 @@ const userSchema = new mongoose.Schema(
     blockedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     blockedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     
+    // Trust Score & Collaboration Metrics
+    trustScore: { type: Number, default: 0 },
+    completedCampaigns: { type: Number, default: 0 },
+    responseRate: { type: Number, default: 0 },
+    onTimeDelivery: { type: Number, default: 0 },
+    averageRating: { type: Number, default: 0 },
+    
     // Onboarding (Prompt-6)
     onboardingComplete: { type: Boolean, default: false },
     onboardingStep: { type: Number, default: 1 },

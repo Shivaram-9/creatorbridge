@@ -16,26 +16,13 @@ const ClockIcon = () => (
 );
 
 export default function TrustScore({ user }) {
-  if (!user) return null;
-
-  // Deterministic mock generator for missing fields
-  const generateSeededValue = (id, min, max, seed) => {
-    let sum = 0;
-    for (let i = 0; i < id.length; i++) sum += id.charCodeAt(i) * seed;
-    return Math.floor(min + (sum % (max - min + 1)));
-  };
-
-  const idStr = user._id ? user._id.toString() : user.id || "default";
-
-  // Real or deterministic dynamic values
+  // Strict backend data binding
   const isVerified = user.premiumTier && user.premiumTier !== 'free';
-  const finalScore = user.trustScore || generateSeededValue(idStr, 70, 99, 1);
-  const completedCampaigns = user.completedCampaigns || generateSeededValue(idStr, 5, 45, 2);
-  const responseRate = user.responseRate || generateSeededValue(idStr, 80, 100, 3);
-  const onTimeDelivery = user.onTimeDelivery || generateSeededValue(idStr, 85, 100, 4);
-  
-  const averageRatingRaw = user.averageRating || (generateSeededValue(idStr, 40, 50, 5) / 10);
-  const averageRating = averageRatingRaw.toFixed(1);
+  const finalScore = user.trustScore || 0;
+  const completedCampaigns = user.completedCampaigns || 0;
+  const responseRate = user.responseRate || 0;
+  const onTimeDelivery = user.onTimeDelivery || 0;
+  const averageRating = (user.averageRating || 0).toFixed(1);
   
   // Real profile completeness calculation
   let completeness = 30; // base score for signing up
