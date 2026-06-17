@@ -131,7 +131,21 @@ const UserCard = memo(({ user, minimal, layout = "card" }) => {
           </div>
         </div>
 
-        <div style={{ flexShrink: 0 }}>
+        <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', gap: '12px' }}>
+          {user.matchScore && (
+            <div style={{
+              background: user.matchScore >= 90 ? '#eff6ff' : '#f0fdf4',
+              color: user.matchScore >= 90 ? '#2563eb' : '#16a34a',
+              border: `1px solid ${user.matchScore >= 90 ? '#bfdbfe' : '#bbf7d0'}`,
+              padding: '4px 8px',
+              borderRadius: '100px',
+              fontSize: '11px',
+              fontWeight: 800,
+              whiteSpace: 'nowrap'
+            }}>
+              ✨ {user.matchScore}% Match
+            </div>
+          )}
           <button 
             onClick={handleAlign}
             disabled={actionBusy || hasRequested}
@@ -188,6 +202,24 @@ const UserCard = memo(({ user, minimal, layout = "card" }) => {
     >
       <div style={{ marginBottom: '1rem', position: 'relative', display: 'inline-block' }}>
         <Avatar user={user} size="xl" />
+        {user.matchScore && (
+          <div style={{
+            position: 'absolute',
+            top: '-5px',
+            right: '-15px',
+            background: user.matchScore >= 90 ? '#eff6ff' : '#f0fdf4',
+            color: user.matchScore >= 90 ? '#2563eb' : '#16a34a',
+            border: `1px solid ${user.matchScore >= 90 ? '#bfdbfe' : '#bbf7d0'}`,
+            padding: '4px 8px',
+            borderRadius: '100px',
+            fontSize: '10px',
+            fontWeight: 800,
+            zIndex: 10,
+            whiteSpace: 'nowrap'
+          }}>
+            ✨ {user.matchScore}%
+          </div>
+        )}
       </div>
 
       <div style={{ width: '100%' }}>
