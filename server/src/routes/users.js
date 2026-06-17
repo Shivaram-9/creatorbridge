@@ -65,22 +65,9 @@ async function attachMetrics(user) {
     userObj.featuredIn = 0;
   }
 
-  // 4. Auto-fill Demo Trust Score Metrics if missing (for development/testing)
-  if (!userObj.trustScore) {
-    const generateSeededValue = (id, min, max, seed) => {
-      let sum = 0;
-      const idStr = String(id);
-      for (let i = 0; i < idStr.length; i++) sum += idStr.charCodeAt(i) * seed;
-      return Math.floor(min + (sum % (max - min + 1)));
-    };
-    const idStr = userObj._id || "default";
-    userObj.trustScore = generateSeededValue(idStr, 70, 99, 1);
-    userObj.completedCampaigns = generateSeededValue(idStr, 5, 45, 2);
-    userObj.responseRate = generateSeededValue(idStr, 80, 100, 3);
-    userObj.onTimeDelivery = generateSeededValue(idStr, 85, 100, 4);
-    userObj.averageRating = Number((generateSeededValue(idStr, 40, 50, 5) / 10).toFixed(1));
-  }
-
+  // Metrics calculation removed for real scenario.
+  // The system will now use actual values from the database.
+  
   return userObj;
 }
 

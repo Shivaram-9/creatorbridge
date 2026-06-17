@@ -18,22 +18,14 @@ const ClockIcon = () => (
 
 export default function TrustScore({ user, isOwnProfile }) {
   if (!user) return null;
-  const generateSeededValue = (id, min, max, seed) => {
-    let sum = 0;
-    const idStr = String(id || "default");
-    for (let i = 0; i < idStr.length; i++) sum += idStr.charCodeAt(i) * seed;
-    return Math.floor(min + (sum % (max - min + 1)));
-  };
-
   const idStr = user._id || "default";
   const isVerified = user.premiumTier && user.premiumTier !== 'free';
   
-  // Use backend data if present and > 0, otherwise fallback to deterministic generation
-  const finalScore = user.trustScore > 0 ? user.trustScore : generateSeededValue(idStr, 70, 99, 1);
-  const completedCampaigns = user.completedCampaigns > 0 ? user.completedCampaigns : generateSeededValue(idStr, 5, 45, 2);
-  const responseRate = user.responseRate > 0 ? user.responseRate : generateSeededValue(idStr, 80, 100, 3);
-  const onTimeDelivery = user.onTimeDelivery > 0 ? user.onTimeDelivery : generateSeededValue(idStr, 85, 100, 4);
-  const averageRating = user.averageRating > 0 ? user.averageRating.toFixed(1) : (generateSeededValue(idStr, 40, 50, 5) / 10).toFixed(1);
+  const finalScore = user.trustScore || 0;
+  const completedCampaigns = user.completedCampaigns || 0;
+  const responseRate = user.responseRate || 0;
+  const onTimeDelivery = user.onTimeDelivery || 0;
+  const averageRating = (user.averageRating || 0).toFixed(1);
   
   // Real profile completeness calculation
   let completeness = 30; // base score for signing up
