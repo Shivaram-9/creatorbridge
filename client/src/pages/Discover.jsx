@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { api } from "../services/api.js";
 import SmartDiscoverCard from "../components/SmartDiscoverCard.jsx";
 import ErrorBanner from "../components/ErrorBanner.jsx";
-import { AuthContext } from "../context/AuthContext.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
 import { INFLUENCER_CATEGORIES, BRAND_CATEGORIES, ALL_CATEGORIES } from "../constants/categories.js";
 import "./Discover.css";
 
@@ -28,7 +28,7 @@ const SkeletonCard = () => (
 export default function Discover() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { user: currentUser } = useContext(AuthContext);
+  const { user: currentUser } = useAuth();
   
   const [discovery, setDiscovery] = useState({
     suggestedCreators: [],
