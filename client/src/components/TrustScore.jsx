@@ -131,14 +131,6 @@ export default function TrustScore({ user, isOwnProfile }) {
             </div>
           </div>
 
-          <div className="metric-card">
-            <div className="metric-header">
-              <span className="metric-title">Completed Campaigns</span>
-              <span className="metric-icon"><TargetIcon /></span>
-            </div>
-            <div className="metric-value">{completedCampaigns}</div>
-            <div className="metric-sub">Total collaborations</div>
-          </div>
 
           <div className="metric-card">
             <div className="metric-header">
@@ -160,7 +152,7 @@ export default function TrustScore({ user, isOwnProfile }) {
 
           <div className="metric-card">
             <div className="metric-header">
-              <span className="metric-title">Partner Rating</span>
+              <span className="metric-title">Profile Rating</span>
               <span className="metric-icon"><StarIcon /></span>
             </div>
             <div className="metric-value">{averageRating}</div>
