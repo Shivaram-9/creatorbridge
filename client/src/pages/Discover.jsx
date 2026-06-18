@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useAuth } from "../context/AuthContext.jsx";
 import { api } from "../services/api.js";
 import UserCard from "../components/UserCard.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
@@ -24,7 +25,9 @@ const EXPLORE_PHOTOS = [
 
 export default function Discover() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [searchParams] = useSearchParams();
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [discovery, setDiscovery] = useState({
     suggestedCreators: [],
     suggestedBrands: [],
@@ -131,28 +134,67 @@ export default function Discover() {
             className="discover-search-input"
             placeholder="Search creators, brands..."
             value={searchQuery}
+            onFocus={() => setIsSearchFocused(true)}
             onChange={e => setSearchQuery(e.target.value)}
           />
           {searchQuery && (
             <button className="discover-search-clear" onClick={() => setSearchQuery("")}>✕</button>
           )}
         </div>
+        {isSearchFocused && (
+          <button className="discover-search-cancel" onClick={() => { setIsSearchFocused(false); setSearchQuery(""); }}>Cancel</button>
+        )}
       </div>
 
-      {/* If user is searching, show search results */}
-      {searchQuery ? (
-        <div className="discover-section">
-          <h2 className="discover-section-title">Results for "{searchQuery}"</h2>
-          {filteredUsers.length === 0 ? (
-            <div className="discover-empty">
-              <span>🔍</span>
-              <p>No creators found. Try a different search.</p>
-            </div>
-          ) : (
-            <div className="discover-user-grid">
-              {filteredUsers.map(u => <UserCard key={u._id} user={u} layout="list" />)}
-            </div>
-          )}
+      {/* Search Overlay View */}
+      {isSearchFocused ? (
+        <div className="discover-search-overlay-view">
+          {(() => {
+            const targetRole = user?.role === "influencer" ? "brand" : "influencer";
+            const targetText = targetRole === "brand" ? "brands" : "influencers";
+            const userCategory = user?.category || user?.industry || "";
+            
+            const searchResults = allUsers.filter(u => {
+              if (!u || u._id === user?._id) return false;
+              if (u.role !== targetRole) return false;
+
+              if (!searchQuery) {
+                // If no query, suggest based on the current user's category
+                if (!userCategory) return true; // fallback
+                return (u.category || u.industry || "") === userCategory;
+              }
+
+              const q = searchQuery.toLowerCase();
+              const name = (u.name || "").toLowerCase();
+              const username = (u.username || "").toLowerCase();
+              const bio = (u.bio || "").toLowerCase();
+              const cat = (u.category || u.industry || "").toLowerCase();
+              
+              return name.includes(q) || username.includes(q) || bio.includes(q) || cat.includes(q);
+            });
+
+            return (
+              <div className="discover-section">
+                <div className="discover-search-announcement">
+                  {searchQuery ? (
+                    <p>Showing {targetText} matching "{searchQuery}"</p>
+                  ) : (
+                    <p>The suggested {targetText} according to your category or categories</p>
+                  )}
+                </div>
+                {searchResults.length === 0 ? (
+                  <div className="discover-empty">
+                    <span>🔍</span>
+                    <p>No {targetText} found.</p>
+                  </div>
+                ) : (
+                  <div className="discover-user-grid">
+                    {searchResults.map(u => <UserCard key={u._id} user={u} layout="list" />)}
+                  </div>
+                )}
+              </div>
+            );
+          })()}
         </div>
       ) : (
         <>
