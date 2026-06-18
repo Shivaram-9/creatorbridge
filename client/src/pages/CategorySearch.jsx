@@ -13,8 +13,8 @@ export default function CategorySearch() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   
-  const [searchQuery, setSearchQuery] = useState(searchParams.get("q") || "");
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get("category") || "");
+  const [selectedCity, setSelectedCity] = useState(searchParams.get("city") || "");
   
   const [allUsers, setAllUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -34,19 +34,24 @@ export default function CategorySearch() {
     fetchUsers();
   }, []);
 
-  // Update URL when search or category changes
+  // Update URL when filters change
   useEffect(() => {
     const params = new URLSearchParams();
-    if (searchQuery) params.set("q", searchQuery);
     if (selectedCategory) params.set("category", selectedCategory);
+    if (selectedCity) params.set("city", selectedCity);
     setSearchParams(params, { replace: true });
-  }, [searchQuery, selectedCategory, setSearchParams]);
+  }, [selectedCategory, selectedCity, setSearchParams]);
 
   if (loading) return <LoadingSpinner centered />;
 
-  // The client requested: "getting the same category brands to brands and influencers to influencers"
-  const targetRole = user?.role || "influencer"; // fallback if no user
+  // Cross-role discovery: Influencers find Brands, Brands find Influencers
+  const targetRole = user?.role === "brand" ? "influencer" : "brand";
   const targetText = targetRole === "brand" ? "brands" : "influencers";
+  
+  // Dynamically extract unique cities from users of the target role
+  const availableCities = Array.from(new Set(
+    allUsers.filter(u => u.role === targetRole && u.location && u.location.trim() !== "").map(u => u.location.trim())
+  )).sort();
 
   // Available categories to select based on user role
   const categoriesToSelect = targetRole === "brand" ? BRAND_CATEGORIES : INFLUENCER_CATEGORIES;
@@ -60,18 +65,10 @@ export default function CategorySearch() {
     // Exact match on role (brand looking for brand, influencer looking for influencer)
     if (u.role !== targetRole) return false;
 
-    // Filter by text query if exists
-    if (searchQuery) {
-      const q = searchQuery.toLowerCase();
-      const name = (u.name || "").toLowerCase();
-      const username = (u.username || "").toLowerCase();
-      const bio = (u.bio || "").toLowerCase();
-      const cat = (u.category || u.industry || "").toLowerCase();
-      
-      return name.includes(q) || username.includes(q) || bio.includes(q) || cat.includes(q);
-    }
+    // Filter by city if selected
+    if (selectedCity && u.location?.trim() !== selectedCity) return false;
 
-    // Otherwise, filter by category
+    // Filter by category
     if (!activeCategory) return true; // Show all if no category selected and user has no category
     return (u.category || u.industry || "") === activeCategory;
   });
@@ -85,29 +82,13 @@ export default function CategorySearch() {
         >
           ← Back
         </button>
-        <h1 style={{ fontSize: '24px', fontWeight: 'bold', margin: 0 }}>Category Search</h1>
+        <h1 style={{ fontSize: '24px', fontWeight: 'bold', margin: 0 }}>Find Your Collab</h1>
       </div>
 
       <ErrorBanner message={error} onDismiss={() => setError("")} />
 
       <div style={{ position: 'sticky', top: '70px', background: 'var(--bg-main)', zIndex: 10, paddingBottom: '16px', borderBottom: '1px solid var(--border-light)', marginBottom: '24px' }}>
-        <div className="discover-search-wrap" style={{ marginBottom: '16px' }}>
-          <svg className="discover-search-icon" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }}>
-            <circle cx="11" cy="11" r="8" />
-            <line x1="21" y1="21" x2="16.65" y2="16.65" />
-          </svg>
-          <input
-            type="text"
-            className="discover-search-input"
-            placeholder={`Search ${targetText}...`}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            style={{ paddingLeft: '40px', fontFamily: 'inherit' }}
-            autoFocus
-          />
-        </div>
-
-        <div className="discover-filters" style={{ padding: '8px 0', display: 'flex', alignItems: 'center' }}>
+        <div className="discover-filters" style={{ padding: '8px 0', display: 'flex', alignItems: 'center', gap: '16px' }}>
           <select 
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
@@ -126,9 +107,33 @@ export default function CategorySearch() {
               appearance: 'auto'
             }}
           >
-            <option value="">My Category {user?.category ? `(${user.category})` : ''}</option>
+            <option value="">All Categories {user?.category ? `(${user.category})` : ''}</option>
             {categoriesToSelect.map(cat => (
               <option key={cat} value={cat}>{cat}</option>
+            ))}
+          </select>
+
+          <select 
+            value={selectedCity}
+            onChange={(e) => setSelectedCity(e.target.value)}
+            style={{
+              padding: '12px 16px',
+              borderRadius: '8px',
+              border: '1px solid var(--border-light)',
+              background: 'var(--bg-secondary)',
+              color: 'var(--text-main)',
+              fontSize: '15px',
+              fontFamily: 'inherit',
+              cursor: 'pointer',
+              width: '100%',
+              maxWidth: '200px',
+              outline: 'none',
+              appearance: 'auto'
+            }}
+          >
+            <option value="">All Cities</option>
+            {availableCities.map(city => (
+              <option key={city} value={city}>{city}</option>
             ))}
           </select>
         </div>
@@ -136,11 +141,7 @@ export default function CategorySearch() {
 
       <div className="discover-section">
         <div className="discover-search-announcement" style={{ marginBottom: '24px', padding: '16px', background: 'var(--bg-secondary)', borderRadius: '12px', color: 'var(--text-main)', fontWeight: '500' }}>
-          {searchQuery ? (
-            <p>Showing {targetText} matching "{searchQuery}"</p>
-          ) : (
-            <p>The suggested {targetText} according to your category or categories</p>
-          )}
+          <p>The suggested {targetText} according to your category and city</p>
         </div>
 
         {searchResults.length === 0 ? (
