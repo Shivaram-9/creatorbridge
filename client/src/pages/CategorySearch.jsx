@@ -92,7 +92,10 @@ export default function CategorySearch() {
 
       <div style={{ position: 'sticky', top: '70px', background: 'var(--bg-main)', zIndex: 10, paddingBottom: '16px', borderBottom: '1px solid var(--border-light)', marginBottom: '24px' }}>
         <div className="discover-search-wrap" style={{ marginBottom: '16px' }}>
-          <span className="search-icon">🔍</span>
+          <svg className="discover-search-icon" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }}>
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
           <input
             type="text"
             className="discover-search-input"
@@ -103,10 +106,20 @@ export default function CategorySearch() {
           />
         </div>
 
-        <div className="discover-filters" style={{ padding: 0 }}>
+        <div className="discover-filters" style={{ padding: '8px 0', display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
           <button 
             className={`filter-pill ${!selectedCategory ? 'active' : ''}`}
             onClick={() => setSelectedCategory("")}
+            style={{ 
+              padding: '8px 16px', 
+              borderRadius: '20px', 
+              border: !selectedCategory ? 'none' : '1px solid var(--border-light)', 
+              background: !selectedCategory ? 'var(--primary)' : 'var(--bg-secondary)', 
+              color: !selectedCategory ? 'white' : 'var(--text-main)', 
+              cursor: 'pointer', 
+              fontSize: '14px',
+              whiteSpace: 'nowrap'
+            }}
           >
             My Category {user?.category ? `(${user.category})` : ''}
           </button>
@@ -115,6 +128,16 @@ export default function CategorySearch() {
               key={cat}
               className={`filter-pill ${selectedCategory === cat ? 'active' : ''}`}
               onClick={() => setSelectedCategory(cat)}
+              style={{ 
+                padding: '8px 16px', 
+                borderRadius: '20px', 
+                border: selectedCategory === cat ? 'none' : '1px solid var(--border-light)', 
+                background: selectedCategory === cat ? 'var(--primary)' : 'var(--bg-secondary)', 
+                color: selectedCategory === cat ? 'white' : 'var(--text-main)', 
+                cursor: 'pointer', 
+                fontSize: '14px',
+                whiteSpace: 'nowrap'
+              }}
             >
               {cat}
             </button>
