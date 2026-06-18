@@ -102,46 +102,34 @@ export default function CategorySearch() {
             placeholder={`Search ${targetText}...`}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            style={{ paddingLeft: '40px' }}
             autoFocus
           />
         </div>
 
-        <div className="discover-filters" style={{ padding: '8px 0', display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-          <button 
-            className={`filter-pill ${!selectedCategory ? 'active' : ''}`}
-            onClick={() => setSelectedCategory("")}
-            style={{ 
-              padding: '8px 16px', 
-              borderRadius: '20px', 
-              border: !selectedCategory ? 'none' : '1px solid var(--border-light)', 
-              background: !selectedCategory ? 'var(--primary)' : 'var(--bg-secondary)', 
-              color: !selectedCategory ? 'white' : 'var(--text-main)', 
-              cursor: 'pointer', 
-              fontSize: '14px',
-              whiteSpace: 'nowrap'
+        <div className="discover-filters" style={{ padding: '8px 0', display: 'flex', alignItems: 'center' }}>
+          <select 
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            style={{
+              padding: '12px 16px',
+              borderRadius: '8px',
+              border: '1px solid var(--border-light)',
+              background: 'var(--bg-secondary)',
+              color: 'var(--text-main)',
+              fontSize: '15px',
+              cursor: 'pointer',
+              width: '100%',
+              maxWidth: '300px',
+              outline: 'none',
+              appearance: 'auto'
             }}
           >
-            My Category {user?.category ? `(${user.category})` : ''}
-          </button>
-          {categoriesToSelect.map(cat => (
-            <button
-              key={cat}
-              className={`filter-pill ${selectedCategory === cat ? 'active' : ''}`}
-              onClick={() => setSelectedCategory(cat)}
-              style={{ 
-                padding: '8px 16px', 
-                borderRadius: '20px', 
-                border: selectedCategory === cat ? 'none' : '1px solid var(--border-light)', 
-                background: selectedCategory === cat ? 'var(--primary)' : 'var(--bg-secondary)', 
-                color: selectedCategory === cat ? 'white' : 'var(--text-main)', 
-                cursor: 'pointer', 
-                fontSize: '14px',
-                whiteSpace: 'nowrap'
-              }}
-            >
-              {cat}
-            </button>
-          ))}
+            <option value="">My Category {user?.category ? `(${user.category})` : ''}</option>
+            {categoriesToSelect.map(cat => (
+              <option key={cat} value={cat}>{cat}</option>
+            ))}
+          </select>
         </div>
       </div>
 
