@@ -464,7 +464,7 @@ button:disabled {
 .profile-layout-wrap {
   width: 100%;
   max-width: 100%;
-  padding: 0 40px;
+  padding: 0;
 }
 @media (max-width: 767px) {
   .profile-layout-wrap {
