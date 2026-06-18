@@ -102,7 +102,7 @@ export default function CategorySearch() {
             placeholder={`Search ${targetText}...`}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            style={{ paddingLeft: '40px' }}
+            style={{ paddingLeft: '40px', fontFamily: 'inherit' }}
             autoFocus
           />
         </div>
@@ -118,6 +118,7 @@ export default function CategorySearch() {
               background: 'var(--bg-secondary)',
               color: 'var(--text-main)',
               fontSize: '15px',
+              fontFamily: 'inherit',
               cursor: 'pointer',
               width: '100%',
               maxWidth: '300px',
