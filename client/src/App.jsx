@@ -13,6 +13,7 @@ const RoleSelect = lazy(() => import("./pages/RoleSelect.jsx"));
 const Profile = lazy(() => import("./pages/Profile.jsx"));
 const UserProfile = lazy(() => import("./pages/UserProfile.jsx"));
 const Discover = lazy(() => import("./pages/Discover.jsx"));
+const CategorySearch = lazy(() => import("./pages/CategorySearch.jsx"));
 const Messages = lazy(() => import("./pages/Messages.jsx"));
 const Notifications = lazy(() => import("./pages/Notifications.jsx"));
 const Settings = lazy(() => import("./pages/Settings.jsx"));
@@ -77,6 +78,7 @@ export default function App() {
           <Route path="/profile/edit" element={<EditProfile />} />
           <Route path="/user/:userId" element={<UserProfile />} />
           <Route path="/discover" element={<Discover />} />
+          <Route path="/search" element={<CategorySearch />} />
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/messages" element={<Messages />} />
