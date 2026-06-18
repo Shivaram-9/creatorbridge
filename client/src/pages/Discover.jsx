@@ -27,6 +27,7 @@ export default function Discover() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [searchParams] = useSearchParams();
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [discovery, setDiscovery] = useState({
     suggestedCreators: [],
     suggestedBrands: [],
@@ -121,9 +122,9 @@ export default function Discover() {
     <div className="discover-v2 slide-fade-in">
       <ErrorBanner message={error} onDismiss={() => setError("")} />
 
-      {/* Search Bar redirecting to CategorySearch */}
-      <div className="discover-search-wrap" onClick={() => navigate('/search')} style={{ cursor: 'pointer' }}>
-        <div className="discover-search-inner" style={{ pointerEvents: 'none' }}>
+      {/* Search Bar */}
+      <div className="discover-search-wrap">
+        <div className="discover-search-inner">
           <svg className="discover-search-icon" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
             <circle cx="11" cy="11" r="8" />
             <line x1="21" y1="21" x2="16.65" y2="16.65" />
@@ -131,13 +132,72 @@ export default function Discover() {
           <input
             type="text"
             className="discover-search-input"
-            placeholder="Search categories, brands, creators..."
-            readOnly
+            placeholder="Search creators, brands..."
+            value={searchQuery}
+            onFocus={() => setIsSearchFocused(true)}
+            onChange={e => setSearchQuery(e.target.value)}
           />
+          {searchQuery && (
+            <button className="discover-search-clear" onClick={() => setSearchQuery("")}>✕</button>
+          )}
         </div>
+        {isSearchFocused && (
+          <button className="discover-search-cancel" onClick={() => { setIsSearchFocused(false); setSearchQuery(""); }}>Cancel</button>
+        )}
       </div>
 
-      <>
+      {/* Search Overlay View */}
+      {isSearchFocused ? (
+        <div className="discover-search-overlay-view">
+          {(() => {
+            const targetRole = user?.role === "influencer" ? "brand" : "influencer";
+            const targetText = targetRole === "brand" ? "brands" : "influencers";
+            const userCategory = user?.category || user?.industry || "";
+            
+            const searchResults = allUsers.filter(u => {
+              if (!u || u._id === user?._id) return false;
+              if (u.role !== targetRole) return false;
+
+              if (!searchQuery) {
+                // If no query, suggest based on the current user's category
+                if (!userCategory) return true; // fallback
+                return (u.category || u.industry || "") === userCategory;
+              }
+
+              const q = searchQuery.toLowerCase();
+              const name = (u.name || "").toLowerCase();
+              const username = (u.username || "").toLowerCase();
+              const bio = (u.bio || "").toLowerCase();
+              const cat = (u.category || u.industry || "").toLowerCase();
+              
+              return name.includes(q) || username.includes(q) || bio.includes(q) || cat.includes(q);
+            });
+
+            return (
+              <div className="discover-section">
+                <div className="discover-search-announcement">
+                  {searchQuery ? (
+                    <p>Showing {targetText} matching "{searchQuery}"</p>
+                  ) : (
+                    <p>The suggested {targetText} according to your category or categories</p>
+                  )}
+                </div>
+                {searchResults.length === 0 ? (
+                  <div className="discover-empty">
+                    <span>🔍</span>
+                    <p>No {targetText} found.</p>
+                  </div>
+                ) : (
+                  <div className="discover-user-grid">
+                    {searchResults.map(u => <UserCard key={u._id} user={u} layout="list" />)}
+                  </div>
+                )}
+              </div>
+            );
+          })()}
+        </div>
+      ) : (
+        <>
           {/* Featured Sections */}
           <div className="discover-featured-sections">
             {/* Trending Creators Carousel */}
