@@ -43,6 +43,8 @@ export default function UserProfile() {
   const [lightboxPost, setLightboxPost] = useState(null);
   const [incomingRequest, setIncomingRequest] = useState(null);
   const [showAlignMenu, setShowAlignMenu] = useState(false);
+  const [ratingHover, setRatingHover] = useState(0);
+  const [isRatingSubmit, setIsRatingSubmit] = useState(false);
 
   const isOwn = me?._id === userId;
   const navigate = useNavigate();
@@ -139,15 +141,36 @@ export default function UserProfile() {
         setHasRequested(false);
       }
     };
+    const onRatingUpdated = (data) => {
+      if (data.userId === userId) {
+        setProfile(prev => prev ? { ...prev, averageRating: data.averageRating } : prev);
+      }
+    };
 
     socket.on("align_request_accepted", onAccepted);
     socket.on("align_request_declined", onDeclined);
+    socket.on("profile_rating_updated", onRatingUpdated);
 
     return () => {
       socket.off("align_request_accepted", onAccepted);
       socket.off("align_request_declined", onDeclined);
+      socket.off("profile_rating_updated", onRatingUpdated);
     };
   }, [userId, load]);
+
+  const handleRateProfile = async (ratingValue) => {
+    if (isOwn) return;
+    setIsRatingSubmit(true);
+    try {
+      const res = await api.users.rate(userId, ratingValue);
+      if (res.error) toast.error(res.error);
+      else toast.success("Rating submitted successfully!");
+    } catch {
+      toast.error("Failed to submit rating");
+    } finally {
+      setIsRatingSubmit(false);
+    }
+  };
 
   const handleEndAlign = async () => {
     setActionBusy(true);
@@ -338,6 +361,40 @@ export default function UserProfile() {
                   <a href={profile.socialMediaLink.startsWith('http') ? profile.socialMediaLink : `https://${profile.socialMediaLink}`} target="_blank" rel="noopener noreferrer" className="profile-link-item">
                     💼 LinkedIn
                   </a>
+                </div>
+              )}
+
+              {!isOwn && (
+                <div style={{ marginTop: '16px', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ fontSize: '14px', fontWeight: '600', color: 'var(--text-main)' }}>Rate Profile:</span>
+                  <div style={{ display: 'flex', gap: '4px' }}>
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        key={star}
+                        disabled={isRatingSubmit}
+                        onClick={() => handleRateProfile(star)}
+                        onMouseEnter={() => setRatingHover(star)}
+                        onMouseLeave={() => setRatingHover(0)}
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          cursor: isRatingSubmit ? 'not-allowed' : 'pointer',
+                          color: star <= (ratingHover || profile?.averageRating || 0) ? '#f59e0b' : '#e2e8f0',
+                          fontSize: '24px',
+                          padding: 0,
+                          transition: 'color 0.2s ease',
+                          opacity: isRatingSubmit ? 0.5 : 1
+                        }}
+                      >
+                        ★
+                      </button>
+                    ))}
+                  </div>
+                  {profile?.averageRating > 0 && (
+                    <span style={{ fontSize: '13px', color: '#64748b', marginLeft: '4px' }}>
+                      ({profile.averageRating.toFixed(1)})
+                    </span>
+                  )}
                 </div>
               )}
 

@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { User } from "../models/User.js";
+import { Review } from "../models/Review.js";
 import { Notification } from "../models/Notification.js";
 import { AlignRequest } from "../models/AlignRequest.js";
 import { Collaboration } from "../models/Collaboration.js";
@@ -690,5 +691,58 @@ usersRouter.post("/support", async (req, res) => {
   } catch (err) {
     console.error("Support route error:", err);
     res.status(500).json({ error: "Failed to send support request" });
+  }
+});
+
+// Profile Rating endpoint
+usersRouter.post("/:id/rate", async (req, res) => {
+  try {
+    const targetUserId = req.params.id;
+    const authorId = req.userId;
+    const { rating, comment } = req.body;
+
+    if (targetUserId === authorId) {
+      return res.status(400).json({ error: "You cannot rate yourself" });
+    }
+
+    if (!rating || rating < 1 || rating > 5) {
+      return res.status(400).json({ error: "Invalid rating" });
+    }
+
+    const targetUser = await User.findById(targetUserId);
+    if (!targetUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Upsert the review
+    await Review.findOneAndUpdate(
+      { targetUser: targetUserId, author: authorId },
+      { rating, comment },
+      { upsert: true, new: true }
+    );
+
+    // Calculate new average
+    const allReviews = await Review.find({ targetUser: targetUserId });
+    const totalScore = allReviews.reduce((sum, rev) => sum + rev.rating, 0);
+    const averageRating = totalScore / allReviews.length;
+
+    // Update user
+    targetUser.averageRating = Number(averageRating.toFixed(1));
+    await targetUser.save();
+
+    // Emit real-time update
+    const io = req.app.get("io");
+    if (io) {
+      io.emit("profile_rating_updated", {
+        userId: targetUserId,
+        averageRating: targetUser.averageRating,
+        totalReviews: allReviews.length
+      });
+    }
+
+    res.json({ message: "Rating submitted successfully", averageRating: targetUser.averageRating });
+  } catch (err) {
+    console.error("Profile rating error:", err);
+    res.status(500).json({ error: "Failed to submit rating" });
   }
 });

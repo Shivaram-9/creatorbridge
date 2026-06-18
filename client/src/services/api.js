@@ -206,6 +206,7 @@ export const api = {
     addPortfolioItem: (body) => request("/users/me/portfolio", { method: "POST", body }),
     removePortfolioItem: (itemId) => request(`/users/me/portfolio/${itemId}`, { method: "DELETE" }),
     support: (body) => request("/users/support", { method: "POST", body }),
+    rate: (id, rating) => request(`/users/${id}/rate`, { method: "POST", body: { rating } }),
   },
   discovery: {
     getSuggested: () => request("/discovery/suggested"),
