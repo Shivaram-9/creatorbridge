@@ -728,6 +728,13 @@ usersRouter.post("/:id/rate", async (req, res) => {
 
     // Update user
     targetUser.averageRating = Number(averageRating.toFixed(1));
+    // Calculate Trust Score based on Real Metrics
+    let newTrustScore = 20; // Base score
+    newTrustScore += Math.min(30, (targetUser.completedCampaigns || 0) * 2); // Up to 30 pts for campaigns
+    newTrustScore += Math.min(20, ((targetUser.responseRate || 0) / 100) * 20); // Up to 20 pts for response rate
+    newTrustScore += Math.min(30, (averageRating / 5) * 30); // Up to 30 pts for average rating
+    
+    targetUser.trustScore = Math.floor(newTrustScore);
     await targetUser.save();
 
     // Emit real-time update
@@ -736,11 +743,12 @@ usersRouter.post("/:id/rate", async (req, res) => {
       io.emit("profile_rating_updated", {
         userId: targetUserId,
         averageRating: targetUser.averageRating,
-        totalReviews: allReviews.length
+        totalReviews: allReviews.length,
+        trustScore: targetUser.trustScore
       });
     }
 
-    res.json({ message: "Rating submitted successfully", averageRating: targetUser.averageRating });
+    res.json({ message: "Rating submitted successfully", averageRating: targetUser.averageRating, trustScore: targetUser.trustScore });
   } catch (err) {
     console.error("Profile rating error:", err);
     res.status(500).json({ error: "Failed to submit rating" });

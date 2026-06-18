@@ -143,7 +143,7 @@ export default function UserProfile() {
     };
     const onRatingUpdated = (data) => {
       if (data.userId === userId) {
-        setProfile(prev => prev ? { ...prev, averageRating: data.averageRating } : prev);
+        setProfile(prev => prev ? { ...prev, averageRating: data.averageRating, trustScore: data.trustScore } : prev);
       }
     };
 
