@@ -481,6 +481,7 @@ export default function UserProfile() {
         </div>
       </div>
 
+      <div className="profile-bottom-wrapper">
       <div className="profile-tabs-wide">
         <div className={`tab-item-wide ${activeTab === 'posts' ? 'active' : ''}`} onClick={() => setActiveTab('posts')}>
           <span className="tab-icon"><GridIcon /></span> Posts
@@ -547,6 +548,7 @@ export default function UserProfile() {
             )}
           </>
         )}
+      </div>
       </div>
 
       {lightboxPost && (

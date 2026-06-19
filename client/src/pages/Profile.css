@@ -402,6 +402,21 @@
   margin-top: 2px;
 }
 
+/* Bottom Wrapper */
+.profile-bottom-wrapper {
+  background-color: #ffffff;
+  margin: 0 -24px;
+  padding: 0 24px 60px 24px;
+  min-height: 50vh;
+}
+@media (min-width: 768px) {
+  .profile-bottom-wrapper {
+    margin: 0;
+    padding: 0 0 60px 0;
+    border-radius: 24px 24px 0 0;
+  }
+}
+
 /* Tabs */
 .profile-tabs-wide {
   display: flex;
