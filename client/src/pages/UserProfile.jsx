@@ -292,7 +292,7 @@ export default function UserProfile() {
   const isPrivateAndHidden = profile.isPrivate && !isOwn && !isFollowing;
 
   return (
-    <div className="up-container profile-dark-theme fade-in">
+    <div className="up-container fade-in">
       <ErrorBanner message={error} onDismiss={() => setError("")} />
       
       <div className="cover-container">

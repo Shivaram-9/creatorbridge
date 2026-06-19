@@ -7,7 +7,7 @@
   margin: 0 auto;
   padding: 0;
   box-sizing: border-box;
-  background-color: #000000;
+  background-color: var(--bg-main, #f8fafc);
 }
 
 /* Cover Image */
