@@ -206,17 +206,19 @@
 }
 
 .verified-badge-pill {
-  background: #F4F7FB;
-  color: #003B73;
-  border: 1px solid #E2E8F0;
-  padding: 6px 14px;
+  background: linear-gradient(135deg, #F0F7FF 0%, #E0EFFF 100%);
+  color: #0052CC; /* Professional Trust Blue */
+  border: 1px solid #B3D4FF;
+  padding: 6px 16px;
   border-radius: 100px;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 13.5px;
+  font-weight: 700;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  letter-spacing: 0.2px;
+  letter-spacing: 0.3px;
+  box-shadow: 0 2px 8px rgba(0, 82, 204, 0.08); /* Soft blue glow */
+  text-transform: capitalize;
 }
 
 .profile-title-row {
