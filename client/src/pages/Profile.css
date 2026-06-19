@@ -836,3 +836,43 @@
   }
 }
 
+/* Dark Theme Overrides for Top Section */
+.profile-dark-theme .profile-header-base {
+  background: #000000;
+  box-shadow: none;
+  border-bottom: 1px solid #1e293b;
+  border-radius: 0;
+}
+@media (min-width: 768px) {
+  .profile-dark-theme .profile-header-base {
+    border-radius: 24px;
+    border: 1px solid #1e293b;
+  }
+}
+.profile-dark-theme .stat-card-wide {
+  background: #000000;
+  border-color: #1e293b;
+}
+.profile-dark-theme .profile-display-name { color: #ffffff; }
+.profile-dark-theme .profile-bio-text { color: #cbd5e1; }
+.profile-dark-theme .profile-link-item { color: #f8fafc; }
+.profile-dark-theme .profile-title-row { color: #94a3b8; }
+.profile-dark-theme .identity-overview-card { background: #0f172a; border-color: #1e293b; }
+.profile-dark-theme .overview-title { color: #ffffff; }
+.profile-dark-theme .overview-val { color: #ffffff; }
+.profile-dark-theme .stat-val { color: #ffffff; }
+.profile-dark-theme .stat-lbl { color: #cbd5e1; }
+.profile-dark-theme .stat-sub { color: #64748b; }
+.profile-dark-theme .stat-icon-wrap { background: #0f172a; color: #ffffff; border: 1px solid #1e293b; }
+.profile-dark-theme .stat-icon-wrap.purple, 
+.profile-dark-theme .stat-icon-wrap.green, 
+.profile-dark-theme .stat-icon-wrap.orange, 
+.profile-dark-theme .stat-icon-wrap.blue, 
+.profile-dark-theme .stat-icon-wrap.red { 
+  background: #0f172a; 
+  color: #ffffff; 
+}
+.profile-dark-theme .verified-badge-pill { background: #0f172a; color: #ffffff; border-color: #1e293b; }
+.profile-dark-theme .role-badge-dot { border-color: #000000; }
+.profile-dark-theme .action-btn.secondary { background: #0f172a; color: #ffffff; border-color: #1e293b; }
+.profile-dark-theme .action-btn.secondary:hover { background: #1e293b; }

@@ -252,7 +252,7 @@ export default function Profile() {
   if (loadingData) return <LoadingSpinner centered />;
 
   return (
-    <div className="profile-container fade-in">
+    <div className="profile-container profile-dark-theme fade-in">
       <div className="cover-container">
         <img src={user?.cover ? (user.cover.startsWith("http") ? user.cover : `${BASE_URL}${user.cover}`) : "https://via.placeholder.com/1200x300"} alt="Cover" className="cover-img" />
         <div className="cover-actions">
