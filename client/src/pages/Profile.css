@@ -206,16 +206,17 @@
 }
 
 .verified-badge-pill {
-  background: #f1f5f9;
-  color: #0f172a;
-  border: 1px solid #e2e8f0;
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 12px;
+  background: #F4F7FB;
+  color: #003B73;
+  border: 1px solid #E2E8F0;
+  padding: 6px 14px;
+  border-radius: 100px;
+  font-size: 13px;
   font-weight: 600;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
+  letter-spacing: 0.2px;
 }
 
 .profile-title-row {
