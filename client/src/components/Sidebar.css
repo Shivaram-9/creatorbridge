@@ -4,7 +4,7 @@
   position: fixed;
   top: 0;
   left: 0;
-  background-color: var(--bg-main, #F8FAFC);
+  background-color: var(--bg-secondary, #EFF6FF);
   border-right: 1px solid var(--border-light, #f1f5f9);
   display: flex;
   flex-direction: column;
