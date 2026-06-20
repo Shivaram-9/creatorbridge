@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { api } from "../services/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import { useNavigate } from "react-router-dom";
+import { CheckCircleIcon, XCircleIcon, HourglassIcon, BadgeCheckIcon, RocketIcon, BriefcaseIcon } from "../components/Icons.jsx";
 import ErrorBanner from "../components/ErrorBanner.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import toast from "react-hot-toast";
@@ -83,10 +84,10 @@ export default function ApplyVerification() {
         <div className="verification-form-container card">
           {request && request.status !== "none" ? (
             <div className="status-display">
-              <div className={`status-badge-large ${request.status}`}>
-                {request.status === "pending" && "⏳ Pending Review"}
-                {request.status === "approved" && "✅ Verified"}
-                {request.status === "rejected" && "❌ Rejected"}
+              <div className={`status-badge-large ${request.status}`} style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
+                {request.status === "pending" && <><HourglassIcon /> Pending Review</>}
+                {request.status === "approved" && <><CheckCircleIcon /> Verified</>}
+                {request.status === "rejected" && <><XCircleIcon /> Rejected</>}
               </div>
               <p className="status-text">
                 {request.status === "pending" && "Our admin team is reviewing your application. This usually takes 2-3 business days."}
@@ -153,21 +154,21 @@ export default function ApplyVerification() {
           <h3>Why get verified?</h3>
           <ul className="v-benefits">
             <li>
-              <span className="v-icon">🔹</span>
+              <span className="v-icon" style={{ display: 'flex' }}><BadgeCheckIcon /></span>
               <div>
                 <strong>Blue Badge</strong>
                 <p>Gain instant credibility with brands and followers.</p>
               </div>
             </li>
             <li>
-              <span className="v-icon">🚀</span>
+              <span className="v-icon" style={{ display: 'flex' }}><RocketIcon /></span>
               <div>
                 <strong>Priority in Discovery</strong>
                 <p>Verified creators appear higher in brand searches.</p>
               </div>
             </li>
             <li>
-              <span className="v-icon">💼</span>
+              <span className="v-icon" style={{ display: 'flex' }}><BriefcaseIcon /></span>
               <div>
                 <strong>Premium Opportunities</strong>
                 <p>Access high-end campaigns limited to verified creators.</p>

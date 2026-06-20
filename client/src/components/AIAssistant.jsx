@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { api } from "../services/api.js";
-import Avatar from "./Avatar.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
+import { SparklesIcon, BotIcon } from "./Icons.jsx";
 import "./AIAssistant.css";
 
 export default function AIAssistant() {
@@ -42,7 +43,7 @@ export default function AIAssistant() {
     <div className={`ai-assistant-wrapper ${isOpen ? "open" : ""}`}>
       {/* Floating Button */}
       <button className="ai-fab" onClick={() => setIsOpen(!isOpen)} aria-label="Toggle AI Assistant">
-        <span className="ai-icon">✨</span>
+        <span className="ai-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><SparklesIcon /></span>
         {!isOpen && <span className="ai-label">Ask AI</span>}
       </button>
 
@@ -52,7 +53,7 @@ export default function AIAssistant() {
         <div className="ai-chat-modal slide-up">
           <header className="ai-chat-header">
             <div className="ai-title">
-              <span className="sparkle">✨</span>
+              <span className="sparkle" style={{ display: 'flex', alignItems: 'center' }}><SparklesIcon /></span>
               <h3>Creator Assistant</h3>
             </div>
             <button className="close-btn" onClick={() => setIsOpen(false)} aria-label="Close">×</button>
@@ -61,7 +62,7 @@ export default function AIAssistant() {
           <div className="ai-chat-body">
             {(messages || []).map((msg, i) => (
               <div key={i} className={`ai-message ${msg?.role || 'assistant'}`}>
-                {msg?.role === "assistant" && <div className="ai-avatar-mini">🤖</div>}
+                {msg?.role === "assistant" && <div className="ai-avatar-mini" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><BotIcon /></div>}
                 <div className="ai-bubble">
                   {msg?.content || "..."}
                 </div>

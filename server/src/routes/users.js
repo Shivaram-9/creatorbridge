@@ -5,7 +5,7 @@ import { Notification } from "../models/Notification.js";
 import { AlignRequest } from "../models/AlignRequest.js";
 import { Collaboration } from "../models/Collaboration.js";
 import { authMiddleware } from "../middleware/auth.js";
-import { profileUpload, coverUpload } from "../middleware/upload.js";
+import { profileUpload, coverUpload, postUpload } from "../middleware/upload.js";
 import { attachAlignmentStatus } from "../utils/alignment.js";
 import { createRealTimeNotification } from "../utils/notifications.js";
 import bcrypt from "bcryptjs";
@@ -294,6 +294,38 @@ usersRouter.post("/unfollow/:id", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to unfollow user" });
+  }
+});
+
+/* ── Portfolio endpoints ── */
+
+/** POST /users/me/portfolio/upload — upload portfolio media */
+usersRouter.post("/me/portfolio/upload", postUpload.single("media"), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: "No media file provided" });
+    }
+    
+    let url = "";
+    if (req.file.path && req.file.path.startsWith("http")) {
+      url = req.file.path;
+    } else if (req.file.filename) {
+      url = `/uploads/posts/${req.file.filename}`;
+    }
+
+    if (!url) {
+      return res.status(500).json({ error: "Upload failed to return a valid path" });
+    }
+
+    // Convert Cloudinary URL to secure
+    if (url.includes("res.cloudinary.com") && url.startsWith("http:")) {
+      url = url.replace("http:", "https:");
+    }
+
+    res.json({ url });
+  } catch (error) {
+    console.error("Portfolio upload error:", error);
+    res.status(500).json({ error: "Failed to upload portfolio media" });
   }
 });
 

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { api } from "../services/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
+import { RocketIcon } from "../components/Icons.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import toast from "react-hot-toast";
 import "./Earnings.css";
@@ -46,7 +47,7 @@ export default function Earnings() {
         payoutDetails
       });
       if (res.error) throw new Error(res.error);
-      toast.success("Withdrawal request submitted! 🚀");
+      toast.success("Withdrawal request submitted!", { icon: <RocketIcon /> });
       setShowWithdraw(false);
       loadFinances();
     } catch (err) {

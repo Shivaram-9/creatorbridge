@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { api } from "../services/api.js";
+import { CheckCircleIcon } from "./Icons.jsx";
 import "./ReportModal.css";
 
 export default function ReportModal({ targetType, targetId, onClose }) {
@@ -49,9 +50,9 @@ export default function ReportModal({ targetType, targetId, onClose }) {
         </header>
 
         {success ? (
-          <div className="report-success">
-            <span className="icon">✅</span>
-            <h3>Thank you for reporting</h3>
+          <div className="success-state">
+            <span className="icon" style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px' }}><CheckCircleIcon /></span>
+            <h3>Report Submitted</h3>
             <p>We use these reports to keep Pactogram safe. Our moderation team will review this shortly.</p>
             <button className="btn btn-primary" onClick={onClose}>Close</button>
           </div>

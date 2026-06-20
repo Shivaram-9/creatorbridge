@@ -9,6 +9,7 @@ import StoriesBar from "../components/StoriesBar.jsx";
 import EmptyState from "../components/EmptyState.jsx";
 import Avatar from "../components/Avatar.jsx";
 import { PostSkeleton } from "../components/Skeleton.jsx";
+import { HandshakeIcon } from "../components/Icons.jsx";
 import toast from "react-hot-toast";
 import "./Home.css";
 
@@ -215,7 +216,7 @@ export default function Home() {
                 message="Connect with creators and brands to see their latest posts here!"
                 actionText="Discover Creators"
                 onAction={() => navigate("/discover")}
-                icon="🤝"
+                icon={<HandshakeIcon />}
               />
             )}
             </div>

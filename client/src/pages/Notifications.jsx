@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "../services/api.js";
+import { SparklesIcon, BellIcon, ShieldIcon, MessageIcon, LockIcon, HeartIcon, ProfileIcon, TagIcon } from "../components/Icons.jsx";
 import ErrorBanner from "../components/ErrorBanner.jsx";
 import Avatar from "../components/Avatar.jsx";
 import "./Notifications.css";
@@ -84,16 +85,16 @@ export default function Notifications() {
 
   const getIcon = (type) => {
     switch(type) {
-      case 'like': return '❤️';
-      case 'comment': return '💬';
-      case 'follow': return '👤';
-      case 'align_request': return '🔒';
+      case 'like': return <HeartIcon style={{ width: '1em', height: '1em' }} />;
+      case 'comment': return <MessageIcon style={{ width: '1em', height: '1em' }} />;
+      case 'follow': return <ProfileIcon style={{ width: '1em', height: '1em' }} />;
+      case 'align_request': return <LockIcon style={{ width: '1em', height: '1em' }} />;
       case 'campaign_invite':
-      case 'campaign_apply': return '📋';
-      case 'premium_upgrade': return '✨';
-      case 'chat': return '✉️';
-      case 'security_alert': return '🛡️';
-      default: return '🔔';
+      case 'campaign_apply': return <TagIcon style={{ width: '1em', height: '1em' }} />;
+      case 'premium_upgrade': return <SparklesIcon style={{ width: '1em', height: '1em' }} />;
+      case 'chat': return <MessageIcon style={{ width: '1em', height: '1em' }} />;
+      case 'security_alert': return <ShieldIcon style={{ width: '1em', height: '1em' }} />;
+      default: return <BellIcon style={{ width: '1em', height: '1em' }} />;
     }
   };
 

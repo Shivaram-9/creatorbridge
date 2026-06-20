@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { GridIcon, BriefcaseIcon, TagIcon, ProfileIcon, RocketIcon, ShoppingBagIcon, StarIcon, HandshakeIcon, InfinityIcon, TrendingDownIcon, EyeIcon, UsersIcon } from "../components/Icons.jsx";
+import { GridIcon, BriefcaseIcon, TagIcon, ProfileIcon, RocketIcon, ShoppingBagIcon, StarIcon, HandshakeIcon, InfinityIcon, TrendingDownIcon, EyeIcon, UsersIcon, MapPinIcon, PaletteIcon, LinkIcon } from "../components/Icons.jsx";
 import { api } from "../services/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import { getSocket } from "../services/socket.js";
@@ -328,7 +328,9 @@ export default function UserProfile() {
                 {profile?.location && (
                   <>
                     <span className="profile-title-separator">|</span>
-                    <span>📍 {profile.location}</span>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                      <MapPinIcon /> {profile.location}
+                    </span>
                   </>
                 )}
               </div>
@@ -344,22 +346,22 @@ export default function UserProfile() {
 
               {profile?.website && (
                 <div style={{ marginTop: '12px' }}>
-                  <a href={profile.website.startsWith('http') ? profile.website : `https://${profile.website}`} target="_blank" rel="noopener noreferrer" className="profile-link-item">
-                    🔗 {profile.website.replace(/^https?:\/\//, '')}
+                  <a href={profile.website.startsWith('http') ? profile.website : `https://${profile.website}`} target="_blank" rel="noopener noreferrer" className="profile-link-item" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                    <LinkIcon /> {profile.website.replace(/^https?:\/\//, '')}
                   </a>
                 </div>
               )}
               {profile?.portfolioLink && (
                 <div style={{ marginTop: '8px' }}>
-                  <a href={profile.portfolioLink.startsWith('http') ? profile.portfolioLink : `https://${profile.portfolioLink}`} target="_blank" rel="noopener noreferrer" className="profile-link-item">
-                    🎨 Portfolio
+                  <a href={profile.portfolioLink.startsWith('http') ? profile.portfolioLink : `https://${profile.portfolioLink}`} target="_blank" rel="noopener noreferrer" className="profile-link-item" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                    <PaletteIcon /> Portfolio
                   </a>
                 </div>
               )}
               {profile?.socialMediaLink && (
                 <div style={{ marginTop: '8px' }}>
-                  <a href={profile.socialMediaLink.startsWith('http') ? profile.socialMediaLink : `https://${profile.socialMediaLink}`} target="_blank" rel="noopener noreferrer" className="profile-link-item">
-                    💼 LinkedIn
+                  <a href={profile.socialMediaLink.startsWith('http') ? profile.socialMediaLink : `https://${profile.socialMediaLink}`} target="_blank" rel="noopener noreferrer" className="profile-link-item" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                    <BriefcaseIcon /> LinkedIn
                   </a>
                 </div>
               )}

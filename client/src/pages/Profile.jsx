@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { GridIcon, BriefcaseIcon, TagIcon, ProfileIcon, RocketIcon, ShoppingBagIcon, StarIcon, HandshakeIcon, InfinityIcon, TrendingDownIcon, EyeIcon, UsersIcon } from "../components/Icons.jsx";
+import { GridIcon, BriefcaseIcon, TagIcon, ProfileIcon, RocketIcon, ShoppingBagIcon, StarIcon, HandshakeIcon, InfinityIcon, TrendingDownIcon, EyeIcon, UsersIcon, MapPinIcon, PaletteIcon, LinkIcon } from "../components/Icons.jsx";
 import { api } from "../services/api.js";
 import { BASE_URL } from "../config/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
@@ -108,6 +108,36 @@ export default function Profile() {
       }
     } catch (err) {
       toast.error("Failed to share post");
+    }
+  };
+
+  const handlePortfolioMediaUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    // Check file type
+    if (!file.type.startsWith("image/") && !file.type.startsWith("video/")) {
+      return toast.error("Only images and videos are allowed.");
+    }
+    // Check file size (max 50MB)
+    if (file.size > 50 * 1024 * 1024) {
+      return toast.error("File size must be less than 50MB.");
+    }
+
+    try {
+      setPortfolioUploading(true);
+      const formData = new FormData();
+      formData.append("media", file);
+
+      const res = await api.users.uploadPortfolioMedia(formData);
+      if (res.error) throw new Error(res.error);
+      
+      setPortfolioUrl(res.url);
+      toast.success("Media uploaded successfully");
+    } catch (err) {
+      toast.error(err.message || "Failed to upload media");
+    } finally {
+      setPortfolioUploading(false);
     }
   };
 
@@ -292,7 +322,9 @@ export default function Profile() {
                 {user?.location && (
                   <>
                     <span className="profile-title-separator">|</span>
-                    <span>📍 {user.location}</span>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                      <MapPinIcon /> {user.location}
+                    </span>
                   </>
                 )}
               </div>
@@ -310,8 +342,8 @@ export default function Profile() {
                 {user?.portfolioLink && (
                   <div>
                     <h4 style={{ fontSize: '14px', fontWeight: '600', marginBottom: '4px', color: 'transparent', userSelect: 'none' }}>&nbsp;</h4>
-                    <a href={user.portfolioLink.startsWith('http') ? user.portfolioLink : `https://${user.portfolioLink}`} target="_blank" rel="noopener noreferrer" className="profile-link-item">
-                      🎨 Portfolio
+                    <a href={user.portfolioLink.startsWith('http') ? user.portfolioLink : `https://${user.portfolioLink}`} target="_blank" rel="noopener noreferrer" className="profile-link-item" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                      <PaletteIcon /> Portfolio
                     </a>
                   </div>
                 )}
@@ -319,8 +351,8 @@ export default function Profile() {
                 {user?.socialMediaLink && (
                   <div>
                     <h4 style={{ fontSize: '14px', fontWeight: '600', marginBottom: '4px', color: 'transparent', userSelect: 'none' }}>&nbsp;</h4>
-                    <a href={user.socialMediaLink.startsWith('http') ? user.socialMediaLink : `https://${user.socialMediaLink}`} target="_blank" rel="noopener noreferrer" className="profile-link-item">
-                      💼 LinkedIn
+                    <a href={user.socialMediaLink.startsWith('http') ? user.socialMediaLink : `https://${user.socialMediaLink}`} target="_blank" rel="noopener noreferrer" className="profile-link-item" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                      <BriefcaseIcon /> LinkedIn
                     </a>
                   </div>
                 )}
@@ -328,8 +360,8 @@ export default function Profile() {
 
               {user?.website && (
                 <div style={{ marginTop: '16px' }}>
-                  <a href={user.website.startsWith('http') ? user.website : `https://${user.website}`} target="_blank" rel="noopener noreferrer" className="profile-link-item">
-                    🔗 {user.website.replace(/^https?:\/\//, '')}
+                  <a href={user.website.startsWith('http') ? user.website : `https://${user.website}`} target="_blank" rel="noopener noreferrer" className="profile-link-item" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                    <LinkIcon /> {user.website.replace(/^https?:\/\//, '')}
                   </a>
                 </div>
               )}
@@ -567,13 +599,31 @@ export default function Profile() {
             <h2 className="text-xl font-bold mb-4 text-slate-900">Add Portfolio Item</h2>
             <div className="flex flex-col gap-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Media URL (Image or Video)</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Upload Media (Optional)</label>
+                <div className="flex items-center gap-2 mb-3">
+                  <input 
+                    type="file" 
+                    accept="image/*,video/*"
+                    onChange={handlePortfolioMediaUpload}
+                    disabled={portfolioUploading}
+                    className="block w-full text-sm text-slate-500
+                      file:mr-4 file:py-2 file:px-4
+                      file:rounded-full file:border-0
+                      file:text-sm file:font-semibold
+                      file:bg-blue-50 file:text-blue-700
+                      hover:file:bg-blue-100 outline-none"
+                  />
+                  {portfolioUploading && <LoadingSpinner />}
+                </div>
+
+                <label className="block text-sm font-medium text-slate-700 mb-1">Or paste Media URL</label>
                 <input 
                   type="url" 
                   placeholder="https://..." 
                   className="w-full border border-slate-300 rounded-lg p-2 outline-none focus:border-blue-500"
                   value={portfolioUrl} 
                   onChange={e => setPortfolioUrl(e.target.value)} 
+                  disabled={portfolioUploading}
                 />
               </div>
               <div>

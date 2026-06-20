@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext.jsx";
 import { api } from "../services/api.js";
 import toast from "react-hot-toast";
+import { SparklesIcon } from "../components/Icons.jsx";
 import "./Premium.css";
 
 const TIERS = [
@@ -38,6 +39,7 @@ export default function Premium() {
   const [success, setSuccess] = useState(false);
   const [checkoutTier, setCheckoutTier] = useState(null);
   const [processing, setProcessing] = useState(false);
+  const [error, setError] = useState(null);
 
   const startCheckout = (tier) => {
     setCheckoutTier(tier);
@@ -104,7 +106,7 @@ export default function Premium() {
     return (
       <div className="premium-page success-view slide-in">
         <div className="success-container">
-          <div className="success-lottie">✨</div>
+          <div className="success-lottie" style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}><SparklesIcon style={{ width: '3em', height: '3em' }} /></div>
           <h1 className="success-title">Payment Successful!</h1>
           <p className="success-text">
             Congratulations! You are now a <strong>{user.premiumTier.toUpperCase()}</strong> member.
@@ -182,7 +184,7 @@ export default function Premium() {
 
       {user?.isPremium && (
         <div className="current-plan-banner gold-gradient">
-          <p>✨ Active Plan: <strong>{user.premiumTier.toUpperCase()}</strong></p>
+          <p style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><SparklesIcon /> Active Plan: <strong>{user.premiumTier.toUpperCase()}</strong></p>
         </div>
       )}
 

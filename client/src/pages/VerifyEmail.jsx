@@ -3,6 +3,8 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { api } from "../services/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import ErrorBanner from "../components/ErrorBanner.jsx";
+import { CheckCircleIcon } from "../components/Icons.jsx";
+import "./Auth.css";
 
 export default function VerifyEmail() {
   const [searchParams] = useSearchParams();
@@ -114,7 +116,7 @@ export default function VerifyEmail() {
 
         {step === "success" && (
           <>
-            <div style={{ fontSize: '4rem', marginBottom: '1.5rem' }}>✅</div>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem', color: 'var(--success)' }}><CheckCircleIcon style={{ width: '4rem', height: '4rem' }} /></div>
             <h1 className="page-title">Account Verified!</h1>
             <p className="subtitle" style={{ marginBottom: '2rem' }}>
               Your email has been verified successfully.

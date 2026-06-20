@@ -203,6 +203,7 @@ export const api = {
     getVerified: () => request("/users/discover/verified"),
     getBrands: () => request("/users/discover/brands"),
     getSuggested: () => request("/users/discover/suggested"),
+    uploadPortfolioMedia: (formData) => request("/users/me/portfolio/upload", { method: "POST", body: formData }),
     addPortfolioItem: (body) => request("/users/me/portfolio", { method: "POST", body }),
     removePortfolioItem: (itemId) => request(`/users/me/portfolio/${itemId}`, { method: "DELETE" }),
     support: (body) => request("/users/support", { method: "POST", body }),

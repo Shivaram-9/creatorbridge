@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { api } from "../services/api.js";
 import ErrorBanner from "../components/ErrorBanner.jsx";
+import { CheckCircleIcon } from "../components/Icons.jsx";
 
 export default function ResetPassword() {
   const { token } = useParams();
@@ -53,7 +54,7 @@ export default function ResetPassword() {
         
         {success ? (
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>✅</div>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem', color: 'var(--success)' }}><CheckCircleIcon style={{ width: '3rem', height: '3rem' }} /></div>
             <p style={{ color: 'var(--success)', fontWeight: 600, marginBottom: '2rem' }}>
               Password updated! Redirecting to login...
             </p>

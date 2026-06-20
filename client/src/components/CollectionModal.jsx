@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { api } from "../services/api.js";
+import { CheckCircleIcon, XCircleIcon } from "./Icons.jsx";
 import "./CollectionModal.css";
 
 export default function CollectionModal({ postId, onClose }) {
@@ -60,8 +61,8 @@ export default function CollectionModal({ postId, onClose }) {
 
         {success ? (
           <div className="success-state">
-            <span className="success-icon">✅</span>
-            <p>Saved successfully!</p>
+            <span className="success-icon" style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px' }}><CheckCircleIcon /></span>
+            <p>Saved to Collection!</p>
           </div>
         ) : (
           <div className="modal-body">

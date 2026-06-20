@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { SparklesIcon } from "./Icons.jsx";
 import VerifiedBadge from "./VerifiedBadge.jsx";
 import { api } from "../services/api.js";
 import "./SmartDiscoverCard.css";
@@ -40,7 +41,7 @@ export default function SmartDiscoverCard({ user, onAction }) {
     <div className="smart-card" onClick={handleCardClick}>
       {/* AI Match Score Badge */}
       <div className={`smart-card-match-badge ${matchScore >= 90 ? 'high' : ''}`}>
-        ✨ {matchScore}% Match
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}><SparklesIcon /> {matchScore}% Match</span>
       </div>
 
       <div className="smart-card-header">
