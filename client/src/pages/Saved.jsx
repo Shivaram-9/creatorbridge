@@ -4,6 +4,7 @@ import PostCard from "../components/PostCard.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import ErrorBanner from "../components/ErrorBanner.jsx";
 import EmptyState from "../components/EmptyState.jsx";
+import { BookmarkIcon } from "../components/Icons.jsx";
 import "./Saved.css";
 
 export default function Saved() {
@@ -59,7 +60,7 @@ export default function Saved() {
         <LoadingSpinner centered />
       ) : displayedPosts.length === 0 ? (
         <EmptyState 
-          icon="🔖" 
+          icon={<BookmarkIcon style={{ width: '48px', height: '48px', color: '#94a3b8' }} />} 
           title="Nothing saved yet" 
           description="Save posts to see them here in your collections."
         />

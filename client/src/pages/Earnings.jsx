@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { api } from "../services/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
-import { RocketIcon } from "../components/Icons.jsx";
+import { RocketIcon, BriefcaseIcon } from "../components/Icons.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import toast from "react-hot-toast";
 import "./Earnings.css";
@@ -133,7 +133,7 @@ export default function Earnings() {
         <div className="transactions-list">
           {transactions.length === 0 ? (
             <div className="empty-transactions">
-              <div className="icon">💸</div>
+              <div className="icon"><BriefcaseIcon style={{ width: '48px', height: '48px' }} /></div>
               <p>No transactions found.</p>
             </div>
           ) : (

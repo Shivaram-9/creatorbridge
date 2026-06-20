@@ -137,7 +137,7 @@ export default function Notifications() {
         </div>
       ) : (Array.isArray(filteredItems) && filteredItems.length === 0) ? (
         <div className="empty-state">
-          <div className="empty-icon">🔔</div>
+          <div className="empty-icon"><BellIcon style={{ width: '48px', height: '48px' }} /></div>
           <h3>No notifications here</h3>
           <p>We'll notify you when someone interacts with you.</p>
         </div>

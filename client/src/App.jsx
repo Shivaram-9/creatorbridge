@@ -1,4 +1,5 @@
 import { Suspense, lazy } from "react";
+import { Toaster } from "react-hot-toast";
 import { Navigate, Route, Routes } from "react-router-dom";
 import Layout from "./components/Layout.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
@@ -40,7 +41,8 @@ const EditProfile = lazy(() => import("./pages/EditProfile.jsx"));
 
 export default function App() {
   return (
-    <Suspense fallback={<LoadingSpinner centered />}>
+    <>
+    <Suspense fallback={<SplashScreen />}>
       <Routes>
         <Route path="/" element={<SplashScreen />} />
         <Route path="/login" element={<Login />} />
@@ -106,5 +108,26 @@ export default function App() {
         <Route path="*" element={<Navigate to="/home" replace />} />
       </Routes>
     </Suspense>
+    <Toaster 
+      position="top-center"
+      toastOptions={{
+        style: {
+          background: 'var(--bg-card)',
+          color: 'var(--text-main)',
+          borderRadius: '12px',
+          boxShadow: '0 8px 30px rgba(0,0,0,0.12)',
+          border: '1px solid var(--border-light)',
+          fontSize: '14px',
+          fontWeight: '500'
+        },
+        success: {
+          iconTheme: {
+            primary: 'var(--accent-color)',
+            secondary: 'white',
+          },
+        },
+      }}
+    />
+    </>
   );
 }

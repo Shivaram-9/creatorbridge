@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { api } from "../services/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import CollaborationCard from "../components/CollaborationCard.jsx";
+import { HandshakeIcon } from "../components/Icons.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import "./Collaborations.css";
 
@@ -69,7 +70,11 @@ export default function Collaborations() {
             />
           ))
         ) : (
-          <div className="empty-state">No collaborations found in this category.</div>
+          <div className="empty-state">
+            <div className="empty-icon"><HandshakeIcon style={{ width: '48px', height: '48px' }} /></div>
+            <h3>No collaborations yet</h3>
+            <p>You have no collaborations found in this category.</p>
+          </div>
         )}
       </div>
     </div>

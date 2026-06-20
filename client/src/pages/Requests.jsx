@@ -3,6 +3,7 @@ import { api } from "../services/api.js";
 import Avatar from "../components/Avatar.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import ErrorBanner from "../components/ErrorBanner.jsx";
+import { UsersIcon } from "../components/Icons.jsx";
 import "./Requests.css";
 
 export default function Requests() {
@@ -51,10 +52,10 @@ export default function Requests() {
       <ErrorBanner message={error} onDismiss={() => setError("")} />
 
       {requests.length === 0 ? (
-        <div className="empty-requests">
-          <span className="icon">👤</span>
-          <h3>No pending requests</h3>
-          <p>When someone requests to connect with you, they'll show up here.</p>
+        <div className="empty-requests empty-state" style={{ padding: '48px 20px', textAlign: 'center' }}>
+          <div className="empty-icon"><UsersIcon style={{ width: '48px', height: '48px', color: '#94a3b8', marginBottom: '16px' }} /></div>
+          <h3 style={{ color: 'var(--text-main)', marginBottom: '8px' }}>No pending requests</h3>
+          <p style={{ color: '#64748b', fontSize: '14px' }}>When someone requests to connect with you, they'll show up here.</p>
         </div>
       ) : (
         <div className="requests-list">

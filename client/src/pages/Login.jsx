@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 import { api } from "../services/api.js";
 import ErrorBanner from "../components/ErrorBanner.jsx";
+import toast from "react-hot-toast";
 import "./Auth.css";
 
 export default function Login() {
@@ -18,15 +19,25 @@ export default function Login() {
     e.preventDefault();
     setLoading(true);
     setError("");
+    if (!email || !password) {
+      toast.error("Please fill in all fields");
+      setLoading(false);
+      return;
+    }
     try {
       const result = await login(email, password);
       if (result.ok) {
+        toast.success("Welcome back!");
         navigate("/home");
       } else {
-        setError(result.error || "Invalid email or password");
+        const errorMsg = result.error || "Invalid email or password";
+        setError(errorMsg);
+        toast.error(errorMsg);
       }
     } catch (err) {
-      setError("Something went wrong. Please try again.");
+      const errorMsg = "Something went wrong. Please try again.";
+      setError(errorMsg);
+      toast.error(errorMsg);
     } finally {
       setLoading(false);
     }

@@ -4,6 +4,7 @@ import { api } from "../services/api.js";
 import ErrorBanner from "../components/ErrorBanner.jsx";
 import Avatar from "../components/Avatar.jsx";
 import Chat from "./Chat.jsx";
+import { MessageIcon, SearchIcon } from "../components/Icons.jsx";
 import "./Messages.css";
 
 export default function Messages() {
@@ -155,7 +156,11 @@ export default function Messages() {
           {loading ? (
             <div style={{ padding: '48px', textAlign: 'center', color: '#94a3b8' }}>Loading chats...</div>
           ) : filteredConversations.length === 0 && !searchQuery ? (
-            <div style={{ padding: '48px', textAlign: 'center', color: '#94a3b8' }}>No messages yet.</div>
+            <div className="empty-state" style={{ padding: '48px 20px', textAlign: 'center' }}>
+              <div className="empty-icon"><MessageIcon style={{ width: '48px', height: '48px', color: '#94a3b8', marginBottom: '16px' }} /></div>
+              <h3 style={{ color: 'var(--text-main)', marginBottom: '8px' }}>No messages yet</h3>
+              <p style={{ color: '#64748b', fontSize: '14px' }}>When you connect with others, your conversations will appear here.</p>
+            </div>
           ) : (
             filteredConversations.map(conv => conv && conv.partner && (
               <div 

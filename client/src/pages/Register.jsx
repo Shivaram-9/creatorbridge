@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 import { api } from "../services/api.js";
 import ErrorBanner from "../components/ErrorBanner.jsx";
+import toast from "react-hot-toast";
 import "./Auth.css";
 
 export default function Register() {
@@ -24,12 +25,17 @@ export default function Register() {
     try {
       const result = await socialSignIn(provider);
       if (result.ok) {
+        toast.success("Welcome!");
         navigate("/home");
       } else {
-        setError(result.error || "Social sign-up failed");
+        const errorMsg = result.error || "Social sign-up failed";
+        setError(errorMsg);
+        toast.error(errorMsg);
       }
     } catch (err) {
-      setError("An unexpected error occurred during social sign-up");
+      const errorMsg = "An unexpected error occurred during social sign-up";
+      setError(errorMsg);
+      toast.error(errorMsg);
     } finally {
       setLoading(false);
     }
@@ -54,9 +60,11 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (formData.password !== formData.confirmPassword) {
+      toast.error("Passwords do not match");
       return setError("Passwords do not match");
     }
     if (!Object.values(reqs).every(Boolean)) {
+      toast.error("Please meet all password requirements");
       return setError("Please meet all password requirements");
     }
 
@@ -65,12 +73,17 @@ export default function Register() {
     try {
       const result = await register(formData.name, formData.email, formData.password);
       if (result.ok) {
+        toast.success("Account created successfully!");
         navigate("/select-role");
       } else {
-        setError(result.error || "Something went wrong");
+        const errorMsg = result.error || "Something went wrong";
+        setError(errorMsg);
+        toast.error(errorMsg);
       }
     } catch (err) {
-      setError("Registration failed. Please try again.");
+      const errorMsg = "Registration failed. Please try again.";
+      setError(errorMsg);
+      toast.error(errorMsg);
     } finally {
       setLoading(false);
     }
