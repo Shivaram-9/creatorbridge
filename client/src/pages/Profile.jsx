@@ -302,14 +302,14 @@ export default function Profile() {
             
             <div className="profile-info-content">
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                <h1 className="profile-display-name" style={{ margin: 0 }}>
+                <h1 className={`profile-display-name ${(user?.isVerified || user?.isPremium) ? (user.role === 'brand' ? 'verified-name-brand' : 'verified-name-creator') : ''}`} style={{ margin: 0 }}>
                   {user?.name || user?.username}
                 </h1>
                 {(user?.isVerified || user?.isPremium) && <VerifiedBadge size="lg" tier={user.premiumTier} role={user.role} />}
               </div>
               {(user?.isVerified || user?.isPremium) && (
                 <div style={{ marginTop: '4px', marginBottom: '8px' }}>
-                  <span className="verified-badge-pill">
+                  <span className={`verified-badge-pill ${user.role === 'brand' ? 'brand' : 'creator'}`}>
                     <span>{user.role === 'brand' ? 'Verified Brand' : 'Verified Creator'}</span>
                   </span>
                 </div>
