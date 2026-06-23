@@ -5,7 +5,8 @@ import {
   FlagIcon, 
   CreditCardIcon, 
   CheckCircleIcon,
-  ShieldIcon 
+  ShieldIcon,
+  BriefcaseIcon
 } from "../components/Icons.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import Avatar from "../components/Avatar.jsx";
@@ -78,16 +79,6 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleToggleBan = async (userId) => {
-    if (!window.confirm("Change suspension status for this user?")) return;
-    try {
-      const res = await api.admin.toggleBan(userId);
-      setUsers(prev => prev.map(u => u._id === userId ? { ...u, isBanned: res.isBanned } : u));
-    } catch {
-      setError("Failed to toggle ban");
-    }
-  };
-
   const handleWithdrawal = async (id, status) => {
     const adminNotes = window.prompt("Add admin notes (optional):");
     try {
@@ -150,14 +141,20 @@ export default function AdminDashboard() {
         {activeTab === 'overview' && (
           <div className="stats-grid">
             <div className="stat-card">
-              <span className="stat-label">Total Revenue</span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
+                <span className="stat-label">Total Revenue</span>
+                <CreditCardIcon style={{ width: 24, height: 24, color: '#3b82f6' }} />
+              </div>
               <span className="stat-value">₹{stats?.totalRevenue?.toLocaleString()}</span>
               <div className="stat-sub">
                 <span className="pill gold">{stats?.premiumUsers} Premium Users</span>
               </div>
             </div>
             <div className="stat-card">
-              <span className="stat-label">Platform Growth</span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
+                <span className="stat-label">Platform Growth</span>
+                <UsersIcon style={{ width: 24, height: 24, color: '#3b82f6' }} />
+              </div>
               <span className="stat-value">{stats?.userCount}</span>
               <div className="stat-sub">
                 <span className="pill">{stats?.influencerCount} Influencers</span>
@@ -165,12 +162,18 @@ export default function AdminDashboard() {
               </div>
             </div>
             <div className="stat-card warning">
-              <span className="stat-label">Moderation Queue</span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
+                <span className="stat-label">Moderation Queue</span>
+                <FlagIcon style={{ width: 24, height: 24, color: '#ef4444' }} />
+              </div>
               <span className="stat-value">{stats?.pendingReports}</span>
               <span className="stat-trend">Reports pending</span>
             </div>
             <div className="stat-card info">
-              <span className="stat-label">Campaign Activity</span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
+                <span className="stat-label">Campaign Activity</span>
+                <BriefcaseIcon style={{ width: 24, height: 24, color: '#0052cc' }} />
+              </div>
               <span className="stat-value">{stats?.dealCount || 0}</span>
               <span className="stat-trend">Active Campaigns</span>
             </div>
@@ -191,7 +194,7 @@ export default function AdminDashboard() {
                     <th>Role</th>
                     <th>Wallet</th>
                     <th>Status</th>
-                    <th>Actions</th>
+                    
                   </tr>
                 </thead>
                 <tbody>
@@ -216,13 +219,7 @@ export default function AdminDashboard() {
                           {u.isBanned ? 'Suspended' : 'Active'}
                         </span>
                       </td>
-                      <td>
-                        <div className="table-actions">
-                          <button className={`btn btn-sm ${u.isBanned ? 'btn-success' : 'btn-danger'}`} onClick={() => handleToggleBan(u._id)}>
-                            {u.isBanned ? 'Restore' : 'Suspend'}
-                          </button>
-                        </div>
-                      </td>
+                      
                     </tr>
                   ))}
                   {users.filter(u => u.isVerified && u.role === 'influencer').length === 0 && (
@@ -246,7 +243,7 @@ export default function AdminDashboard() {
                     <th>Role</th>
                     <th>Wallet</th>
                     <th>Status</th>
-                    <th>Actions</th>
+                    
                   </tr>
                 </thead>
                 <tbody>
@@ -271,13 +268,7 @@ export default function AdminDashboard() {
                           {u.isBanned ? 'Suspended' : 'Active'}
                         </span>
                       </td>
-                      <td>
-                        <div className="table-actions">
-                          <button className={`btn btn-sm ${u.isBanned ? 'btn-success' : 'btn-danger'}`} onClick={() => handleToggleBan(u._id)}>
-                            {u.isBanned ? 'Restore' : 'Suspend'}
-                          </button>
-                        </div>
-                      </td>
+                      
                     </tr>
                   ))}
                   {users.filter(u => u.isVerified && u.role === 'brand').length === 0 && (
@@ -301,7 +292,7 @@ export default function AdminDashboard() {
                     <th>Role</th>
                     <th>Wallet</th>
                     <th>Status</th>
-                    <th>Actions</th>
+                    
                   </tr>
                 </thead>
                 <tbody>
@@ -323,13 +314,7 @@ export default function AdminDashboard() {
                           {u.isBanned ? 'Suspended' : 'Active'}
                         </span>
                       </td>
-                      <td>
-                        <div className="table-actions">
-                          <button className={`btn btn-sm ${u.isBanned ? 'btn-success' : 'btn-danger'}`} onClick={() => handleToggleBan(u._id)}>
-                            {u.isBanned ? 'Restore' : 'Suspend'}
-                          </button>
-                        </div>
-                      </td>
+                      
                     </tr>
                   ))}
                 </tbody>

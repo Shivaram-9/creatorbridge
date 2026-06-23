@@ -81,7 +81,7 @@ authRouter.post("/register", async (req, res) => {
       name: name.trim(),
       email: email.toLowerCase().trim(),
       password: hashed,
-      role: ["influencer", "brand", "admin"].includes(role) ? role : "influencer",
+      role: ["influencer", "brand"].includes(role) ? role : "influencer",
       emailVerificationToken: hashedVerificationToken,
     });
 
