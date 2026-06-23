@@ -4,6 +4,7 @@ import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import Avatar from "../components/Avatar.jsx";
 import ErrorBanner from "../components/ErrorBanner.jsx";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
 import "./AdminDashboard.css";
 
 export default function AdminDashboard() {
@@ -13,6 +14,7 @@ export default function AdminDashboard() {
   const [withdrawals, setWithdrawals] = useState([]);
   const [verifications, setVerifications] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -21,8 +23,12 @@ export default function AdminDashboard() {
     loadData();
   }, [activeTab]);
 
-  const loadData = async () => {
-    setLoading(true);
+  const loadData = async (isManualRefresh = false) => {
+    if (isManualRefresh) {
+      setIsRefreshing(true);
+    } else {
+      setLoading(true);
+    }
     try {
       const s = await api.admin.getStats();
       setStats(s);
@@ -43,10 +49,16 @@ export default function AdminDashboard() {
         const v = await api.admin.getVerifications();
         setVerifications(v);
       }
+      
+      if (isManualRefresh) {
+        toast.success("Dashboard statistics refreshed!");
+      }
     } catch (err) {
       setError("Failed to load admin data");
+      if (isManualRefresh) toast.error("Refresh failed");
     } finally {
       setLoading(false);
+      setIsRefreshing(false);
     }
   };
 
@@ -103,7 +115,14 @@ export default function AdminDashboard() {
           <h1>Enterprise Control Panel</h1>
           <p>Global platform oversight, revenue monitoring, and moderation</p>
         </div>
-        <button className="btn btn-secondary" onClick={loadData}>🔄 Refresh</button>
+        <button 
+          className="btn btn-primary" 
+          onClick={() => loadData(true)}
+          disabled={isRefreshing}
+          style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+        >
+          {isRefreshing ? '↻ Refreshing...' : '↻ Refresh Data'}
+        </button>
       </header>
 
       <ErrorBanner message={error} onDismiss={() => setError("")} />
