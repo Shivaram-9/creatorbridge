@@ -6,6 +6,8 @@ import UserCard from "../components/UserCard.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import ErrorBanner from "../components/ErrorBanner.jsx";
 import { INFLUENCER_CATEGORIES, BRAND_CATEGORIES, ALL_CATEGORIES } from "../constants/categories.js";
+import EmptyState from "../components/EmptyState.jsx";
+import { SearchIcon, SparklesIcon } from "../components/Icons.jsx";
 import "./Discover.css"; // Reuse discover CSS for grid layout
 
 export default function CategorySearch() {
@@ -78,11 +80,13 @@ export default function CategorySearch() {
       <div style={{ marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '16px' }}>
         <button 
           onClick={() => navigate('/discover')}
-          style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px', display: 'flex', alignItems: 'center', color: 'var(--text-secondary)' }}
+          style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-light)', cursor: 'pointer', fontSize: '15px', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-main)', padding: '8px 16px', borderRadius: '100px', transition: 'all 0.2s', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}
+          onMouseOver={(e) => e.currentTarget.style.background = 'var(--hover-bg)'}
+          onMouseOut={(e) => e.currentTarget.style.background = 'var(--bg-secondary)'}
         >
-          ← Back
+          <span>←</span> Back
         </button>
-        <h1 style={{ fontSize: '24px', fontWeight: 'bold', margin: 0 }}>Find Your Collab</h1>
+        <h1 style={{ fontSize: '26px', fontWeight: '800', margin: 0, color: 'var(--text-main)' }}>Find Your Collab</h1>
       </div>
 
       <ErrorBanner message={error} onDismiss={() => setError("")} />
@@ -140,15 +144,19 @@ export default function CategorySearch() {
       </div>
 
       <div className="discover-section">
-        <div className="discover-search-announcement" style={{ marginBottom: '24px', padding: '16px', background: 'var(--bg-secondary)', borderRadius: '12px', color: 'var(--text-main)', fontWeight: '500' }}>
-          <p>The suggested {targetText} according to your category and city</p>
+        <div style={{ marginBottom: '24px', padding: '20px 24px', background: 'linear-gradient(135deg, #F0F7FF 0%, #E0EFFF 100%)', borderRadius: '16px', color: '#0052CC', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '12px', border: '1px solid #B3D4FF', boxShadow: '0 4px 12px rgba(0,82,204,0.06)' }}>
+          <SparklesIcon />
+          <p style={{ margin: 0, fontSize: '15px' }}>Showing top suggested {targetText} matched exactly to your category and city.</p>
         </div>
 
         {searchResults.length === 0 ? (
-          <div className="discover-empty">
-            <span>🔍</span>
-            <p>No {targetText} found.</p>
-          </div>
+          <EmptyState 
+            icon={<SearchIcon />} 
+            title={`No ${targetText} found`} 
+            description="We couldn't find any exact matches for these filters. Try clearing your city or checking back later!" 
+            actionText={selectedCategory || selectedCity ? "Clear Filters" : null}
+            onAction={() => { setSelectedCategory(""); setSelectedCity(""); }}
+          />
         ) : (
           <div className="discover-user-grid">
             {searchResults.map(u => <UserCard key={u._id} user={u} layout="list" />)}
