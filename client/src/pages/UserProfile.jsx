@@ -316,8 +316,8 @@ export default function UserProfile() {
               {(profile?.isVerified || profile?.isPremium) && (
                 <div style={{ marginTop: '4px', marginBottom: '8px' }}>
                   <span className={`verified-badge-pill ${profile.role === 'brand' ? 'brand' : 'influencer'}`}>
-                    <BadgeCheckIcon style={{ width: '16px', height: '16px' }} />
-                    <span>{profile.role === 'brand' ? 'Verified Brand' : 'Verified Influencer'}</span>
+                    <VerifiedBadge size="xs" role={profile.role} showTooltip={false} style={{ marginLeft: 0 }} />
+                    <span>{profile.role === 'brand' ? 'Verified Brand' : 'Verified Creator'}</span>
                   </span>
                 </div>
               )}
