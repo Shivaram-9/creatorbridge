@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { GridIcon, BriefcaseIcon, TagIcon, ProfileIcon, RocketIcon, ShoppingBagIcon, StarIcon, HandshakeIcon, InfinityIcon, TrendingDownIcon, EyeIcon, UsersIcon, MapPinIcon, PaletteIcon, LinkIcon } from "../components/Icons.jsx";
+import { GridIcon, BriefcaseIcon, TagIcon, ProfileIcon, RocketIcon, ShoppingBagIcon, StarIcon, HandshakeIcon, InfinityIcon, TrendingDownIcon, EyeIcon, UsersIcon, MapPinIcon, PaletteIcon, LinkIcon, BadgeCheckIcon } from "../components/Icons.jsx";
 import { api } from "../services/api.js";
 import { BASE_URL } from "../config/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
@@ -309,8 +309,9 @@ export default function Profile() {
               </div>
               {(user?.isVerified || user?.isPremium) && (
                 <div style={{ marginTop: '4px', marginBottom: '8px' }}>
-                  <span className={`verified-badge-pill ${user.role === 'brand' ? 'brand' : 'creator'}`}>
-                    <span>{user.role === 'brand' ? 'Verified Brand' : 'Verified Creator'}</span>
+                  <span className={`verified-badge-pill ${user.role === 'brand' ? 'brand' : 'influencer'}`}>
+                    <BadgeCheckIcon style={{ width: '16px', height: '16px' }} />
+                    <span>{user.role === 'brand' ? 'Verified Brand' : 'Verified Influencer'}</span>
                   </span>
                 </div>
               )}

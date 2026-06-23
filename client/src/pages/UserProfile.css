@@ -165,7 +165,7 @@
   text-transform: capitalize;
 }
 
-.verified-badge-pill.creator {
+.verified-badge-pill.influencer {
   background: linear-gradient(135deg, #F0F7FF 0%, #E0EFFF 100%);
   color: #0052CC; /* Professional Trust Blue */
   border: 1px solid #B3D4FF;
@@ -179,7 +179,7 @@
   box-shadow: 0 2px 8px rgba(180, 130, 50, 0.08); /* Soft gold glow */
 }
 
-.profile-display-name.verified-name-creator {
+.profile-display-name.verified-name-influencer {
   color: #0052CC;
 }
 
