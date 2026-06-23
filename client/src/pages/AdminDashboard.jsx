@@ -1,5 +1,12 @@
 import { useState, useEffect } from "react";
 import { api } from "../services/api.js";
+import { 
+  UsersIcon, 
+  FlagIcon, 
+  CreditCardIcon, 
+  CheckCircleIcon,
+  ShieldIcon 
+} from "../components/Icons.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import Avatar from "../components/Avatar.jsx";
 import ErrorBanner from "../components/ErrorBanner.jsx";
@@ -171,59 +178,163 @@ export default function AdminDashboard() {
         )}
 
         {activeTab === 'users' && (
-          <div className="users-table-container card">
-            <div style={{ padding: '20px', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h3 style={{ margin: 0, fontSize: '18px', fontWeight: '700' }}>Verified Network</h3>
-              <span className="pill gold">Showing Verified Only</span>
-            </div>
-            <table className="admin-table">
-              <thead>
-                <tr>
-                  <th>User</th>
-                  <th>Role</th>
-                  <th>Wallet</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {users.filter(u => u.isVerified || u.role === 'admin').map(u => (
-                  <tr key={u._id}>
-                    <td>
-                      <div className="user-cell">
-                        <Avatar user={u} size="sm" />
-                        <div className="user-cell-info">
-                          <strong>
-                            {u.name || u.username}
-                            {u.isVerified && <span style={{ color: '#3b82f6', marginLeft: '4px' }}>✓</span>}
-                          </strong>
-                          <span>@{u.username}</span>
-                        </div>
-                      </div>
-                    </td>
-                    <td><span className={`role-pill ${u.role}`}>{u.role}</span></td>
-                    <td>₹{u.walletBalance || 0}</td>
-                    <td>
-                      <span className={`status-pill ${u.isBanned ? 'banned' : 'active'}`}>
-                        {u.isBanned ? 'Banned' : 'Active'}
-                      </span>
-                    </td>
-                    <td>
-                      <div className="table-actions">
-                        <button className={`btn btn-sm ${u.isBanned ? 'btn-success' : 'btn-danger'}`} onClick={() => handleToggleBan(u._id)}>
-                          {u.isBanned ? 'Unban' : 'Ban'}
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-                {users.filter(u => u.isVerified || u.role === 'admin').length === 0 && (
+          <div className="users-content">
+            <div className="users-table-container card" style={{ marginBottom: '32px' }}>
+              <div style={{ padding: '20px', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h3 style={{ margin: 0, fontSize: '18px', fontWeight: '700' }}>Verified Creators</h3>
+                <span className="pill gold">Creators Only</span>
+              </div>
+              <table className="admin-table">
+                <thead>
                   <tr>
-                    <td colSpan="5" style={{ textAlign: 'center', padding: '40px' }}>No verified users found.</td>
+                    <th>User</th>
+                    <th>Role</th>
+                    <th>Wallet</th>
+                    <th>Status</th>
+                    <th>Actions</th>
                   </tr>
-                )}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {users.filter(u => u.isVerified && u.role === 'influencer').map(u => (
+                    <tr key={u._id}>
+                      <td>
+                        <div className="user-cell">
+                          <Avatar user={u} size="sm" />
+                          <div className="user-cell-info">
+                            <strong>
+                              {u.name || u.username}
+                              <span style={{ color: '#3b82f6', marginLeft: '4px' }}>✓</span>
+                            </strong>
+                            <span>@{u.username}</span>
+                          </div>
+                        </div>
+                      </td>
+                      <td><span className="role-pill influencer">Creator</span></td>
+                      <td>₹{u.walletBalance || 0}</td>
+                      <td>
+                        <span className={`status-pill ${u.isBanned ? 'banned' : 'active'}`}>
+                          {u.isBanned ? 'Banned' : 'Active'}
+                        </span>
+                      </td>
+                      <td>
+                        <div className="table-actions">
+                          <button className={`btn btn-sm ${u.isBanned ? 'btn-success' : 'btn-danger'}`} onClick={() => handleToggleBan(u._id)}>
+                            {u.isBanned ? 'Unban' : 'Ban'}
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                  {users.filter(u => u.isVerified && u.role === 'influencer').length === 0 && (
+                    <tr>
+                      <td colSpan="5" style={{ textAlign: 'center', padding: '40px' }}>No verified creators found.</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="users-table-container card" style={{ marginBottom: '32px' }}>
+              <div style={{ padding: '20px', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h3 style={{ margin: 0, fontSize: '18px', fontWeight: '700' }}>Verified Brands</h3>
+                <span className="pill gold">Brands Only</span>
+              </div>
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>User</th>
+                    <th>Role</th>
+                    <th>Wallet</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {users.filter(u => u.isVerified && u.role === 'brand').map(u => (
+                    <tr key={u._id}>
+                      <td>
+                        <div className="user-cell">
+                          <Avatar user={u} size="sm" />
+                          <div className="user-cell-info">
+                            <strong>
+                              {u.name || u.username}
+                              <span style={{ color: '#3b82f6', marginLeft: '4px' }}>✓</span>
+                            </strong>
+                            <span>@{u.username}</span>
+                          </div>
+                        </div>
+                      </td>
+                      <td><span className="role-pill brand">Brand</span></td>
+                      <td>₹{u.walletBalance || 0}</td>
+                      <td>
+                        <span className={`status-pill ${u.isBanned ? 'banned' : 'active'}`}>
+                          {u.isBanned ? 'Banned' : 'Active'}
+                        </span>
+                      </td>
+                      <td>
+                        <div className="table-actions">
+                          <button className={`btn btn-sm ${u.isBanned ? 'btn-success' : 'btn-danger'}`} onClick={() => handleToggleBan(u._id)}>
+                            {u.isBanned ? 'Unban' : 'Ban'}
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                  {users.filter(u => u.isVerified && u.role === 'brand').length === 0 && (
+                    <tr>
+                      <td colSpan="5" style={{ textAlign: 'center', padding: '40px' }}>No verified brands found.</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="users-table-container card">
+              <div style={{ padding: '20px', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h3 style={{ margin: 0, fontSize: '18px', fontWeight: '700' }}>Platform Admins</h3>
+                <span className="pill info">Administrators</span>
+              </div>
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>User</th>
+                    <th>Role</th>
+                    <th>Wallet</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {users.filter(u => u.role === 'admin').map(u => (
+                    <tr key={u._id}>
+                      <td>
+                        <div className="user-cell">
+                          <Avatar user={u} size="sm" />
+                          <div className="user-cell-info">
+                            <strong>{u.name || u.username} <ShieldIcon style={{width: 14, height: 14, color: '#3b82f6'}}/></strong>
+                            <span>@{u.username}</span>
+                          </div>
+                        </div>
+                      </td>
+                      <td><span className="role-pill admin">Admin</span></td>
+                      <td>₹{u.walletBalance || 0}</td>
+                      <td>
+                        <span className={`status-pill ${u.isBanned ? 'banned' : 'active'}`}>
+                          {u.isBanned ? 'Banned' : 'Active'}
+                        </span>
+                      </td>
+                      <td>
+                        <div className="table-actions">
+                          <button className={`btn btn-sm ${u.isBanned ? 'btn-success' : 'btn-danger'}`} onClick={() => handleToggleBan(u._id)}>
+                            {u.isBanned ? 'Unban' : 'Ban'}
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
 
