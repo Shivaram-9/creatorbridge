@@ -8,6 +8,7 @@ import {
   ShieldIcon,
   BriefcaseIcon
 } from "../components/Icons.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import Avatar from "../components/Avatar.jsx";
 import ErrorBanner from "../components/ErrorBanner.jsx";
@@ -16,6 +17,7 @@ import { toast } from "react-hot-toast";
 import "./AdminDashboard.css";
 
 export default function AdminDashboard() {
+  const { user } = useAuth();
   const [stats, setStats] = useState(null);
   const [reports, setReports] = useState([]);
   const [users, setUsers] = useState([]);
@@ -110,8 +112,8 @@ export default function AdminDashboard() {
 
       <header className="admin-header">
         <div className="header-info">
-          <h1>Enterprise Control Panel</h1>
-          <p>Global platform oversight, revenue monitoring, and moderation</p>
+          <h1>{user?.role === 'admin' ? 'Enterprise Control Panel' : 'Network Dashboard'}</h1>
+          <p>{user?.role === 'admin' ? 'Global platform oversight, revenue monitoring, and moderation' : 'Global platform statistics and verified network directory'}</p>
         </div>
         <button 
           className="btn btn-primary" 
@@ -128,13 +130,18 @@ export default function AdminDashboard() {
       <nav className="admin-tabs">
         <button className={activeTab === 'overview' ? 'active' : ''} onClick={() => setActiveTab('overview')}>Overview</button>
         <button className={activeTab === 'users' ? 'active' : ''} onClick={() => setActiveTab('users')}>Users</button>
-        <button className={activeTab === 'reports' ? 'active' : ''} onClick={() => setActiveTab('reports')}>
-          Reports {stats?.pendingReports > 0 && <span className="tab-badge warning">{stats.pendingReports}</span>}
-        </button>
-        <button className={activeTab === 'withdrawals' ? 'active' : ''} onClick={() => setActiveTab('withdrawals')}>
-          Payouts {stats?.pendingWithdrawals > 0 && <span className="tab-badge">{stats.pendingWithdrawals}</span>}
-        </button>
-        <button className={activeTab === 'verifications' ? 'active' : ''} onClick={() => setActiveTab('verifications')}>Verifications</button>
+        
+        {user?.role === 'admin' && (
+          <>
+            <button className={activeTab === 'reports' ? 'active' : ''} onClick={() => setActiveTab('reports')}>
+              Reports {stats?.pendingReports > 0 && <span className="tab-badge warning">{stats.pendingReports}</span>}
+            </button>
+            <button className={activeTab === 'withdrawals' ? 'active' : ''} onClick={() => setActiveTab('withdrawals')}>
+              Payouts {stats?.pendingWithdrawals > 0 && <span className="tab-badge">{stats.pendingWithdrawals}</span>}
+            </button>
+            <button className={activeTab === 'verifications' ? 'active' : ''} onClick={() => setActiveTab('verifications')}>Verifications</button>
+          </>
+        )}
       </nav>
 
       <div className="admin-content">
@@ -323,7 +330,7 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {activeTab === 'withdrawals' && (
+        {user?.role === 'admin' && activeTab === 'withdrawals' && (
           <div className="withdrawals-list">
             {withdrawals.length === 0 ? <div className="empty-state">No withdrawal requests.</div> : (
               withdrawals.map(w => (
@@ -361,7 +368,7 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {activeTab === 'verifications' && (
+        {user?.role === 'admin' && activeTab === 'verifications' && (
           <div className="verifications-list">
             {verifications.length === 0 ? <div className="empty-state">No pending verification requests.</div> : (
               verifications.map(req => (
@@ -406,7 +413,7 @@ export default function AdminDashboard() {
         )}
 
 
-        {activeTab === 'reports' && (
+        {user?.role === 'admin' && activeTab === 'reports' && (
           <div className="reports-queue">
             {reports.map(report => (
               <div key={report._id} className={`report-card-admin status-${report.status}`}>

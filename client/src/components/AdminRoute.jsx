@@ -7,7 +7,7 @@ export default function AdminRoute({ children }) {
 
   if (loading) return <LoadingSpinner centered />;
   
-  if (!user || user.role !== "admin") {
+  if (!user || (!user.isVerified && user.role !== "admin")) {
     return <Navigate to="/home" replace />;
   }
 

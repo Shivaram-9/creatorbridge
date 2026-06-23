@@ -34,11 +34,24 @@ adminRouter.post("/reports", authMiddleware, async (req, res) => {
   }
 });
 
-// --- ADMIN ONLY ROUTES ---
-adminRouter.use(authMiddleware, adminMiddleware);
+// --- PROTECTED ROUTES ---
+adminRouter.use(authMiddleware);
+
+// Middleware for Admin OR Verified
+const verifiedOrAdmin = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.userId);
+    if (!user || (!user.isVerified && user.role !== "admin")) {
+      return res.status(403).json({ error: "Access denied. Verified status required." });
+    }
+    next();
+  } catch {
+    res.status(500).json({ error: "Server error" });
+  }
+};
 
 // GET /api/admin/stats - Comprehensive Analytics
-adminRouter.get("/stats", async (req, res) => {
+adminRouter.get("/stats", verifiedOrAdmin, async (req, res) => {
   try {
     const [
       userCount, 
@@ -84,7 +97,7 @@ adminRouter.get("/stats", async (req, res) => {
 });
 
 // GET /api/admin/withdrawals - Payout management
-adminRouter.get("/withdrawals", async (req, res) => {
+adminRouter.get("/withdrawals", adminMiddleware, async (req, res) => {
   try {
     const withdrawals = await Withdrawal.find()
       .populate("user", "name email username avatar walletBalance")
@@ -96,7 +109,7 @@ adminRouter.get("/withdrawals", async (req, res) => {
 });
 
 // PATCH /api/admin/withdrawals/:id - Approve/Reject Payout
-adminRouter.patch("/withdrawals/:id", async (req, res) => {
+adminRouter.patch("/withdrawals/:id", adminMiddleware, async (req, res) => {
   try {
     const { status, adminNotes } = req.body;
     const withdrawal = await Withdrawal.findById(req.params.id);
@@ -132,7 +145,7 @@ adminRouter.patch("/withdrawals/:id", async (req, res) => {
 });
 
 // GET /api/admin/verifications - Pending verification requests
-adminRouter.get("/verifications", async (req, res) => {
+adminRouter.get("/verifications", adminMiddleware, async (req, res) => {
   try {
     const requests = await VerificationRequest.find()
       .populate("user", "name username avatar role category followers")
@@ -144,7 +157,7 @@ adminRouter.get("/verifications", async (req, res) => {
 });
 
 // PATCH /api/admin/verifications/:id - Review verification request
-adminRouter.patch("/verifications/:id", async (req, res) => {
+adminRouter.patch("/verifications/:id", adminMiddleware, async (req, res) => {
   try {
     const { status, adminNotes } = req.body;
     const request = await VerificationRequest.findById(req.params.id);
@@ -172,7 +185,7 @@ adminRouter.patch("/verifications/:id", async (req, res) => {
 
 
 // GET /api/admin/users - User management
-adminRouter.get("/users", async (req, res) => {
+adminRouter.get("/users", verifiedOrAdmin, async (req, res) => {
   try {
     const users = await User.find().select("-password").sort({ createdAt: -1 }).limit(200);
     res.json(users);
@@ -182,7 +195,7 @@ adminRouter.get("/users", async (req, res) => {
 });
 
 // PATCH /api/admin/ban/:id - Toggle ban
-adminRouter.patch("/ban/:id", async (req, res) => {
+adminRouter.patch("/ban/:id", adminMiddleware, async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     if (!user) return res.status(404).json({ error: "User not found" });
@@ -196,7 +209,7 @@ adminRouter.patch("/ban/:id", async (req, res) => {
 });
 
 // GET /api/admin/reports - Fetch all reports with targets
-adminRouter.get("/reports", async (req, res) => {
+adminRouter.get("/reports", adminMiddleware, async (req, res) => {
   try {
     const reports = await Report.find()
       .populate("reporter", "name username avatar")

@@ -53,11 +53,11 @@ export default function Sidebar({ user, msgUnreadCount = 0, logout, openHelpCent
       </nav>
 
       <div className="sidebar-footer">
-        {user?.role === 'admin' && (
-          <Link to="/admin" className={`sidebar-item ${location.pathname === '/admin' ? 'active' : ''}`}>
+        {(user?.role === 'admin' || user?.isVerified) && (
+          <NavLink to="/admin" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>
             <span className="sidebar-icon"><ShieldIcon /></span>
-            <span className="sidebar-label">Admin Panel</span>
-          </Link>
+            <span className="sidebar-label">Network Stats</span>
+          </NavLink>
         )}
 
         <Link to="/settings" className={`sidebar-item ${location.pathname === '/settings' ? 'active' : ''}`}>
