@@ -172,6 +172,10 @@ export default function AdminDashboard() {
 
         {activeTab === 'users' && (
           <div className="users-table-container card">
+            <div style={{ padding: '20px', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3 style={{ margin: 0, fontSize: '18px', fontWeight: '700' }}>Verified Network</h3>
+              <span className="pill gold">Showing Verified Only</span>
+            </div>
             <table className="admin-table">
               <thead>
                 <tr>
@@ -183,13 +187,16 @@ export default function AdminDashboard() {
                 </tr>
               </thead>
               <tbody>
-                {users.map(u => (
+                {users.filter(u => u.isVerified || u.role === 'admin').map(u => (
                   <tr key={u._id}>
                     <td>
                       <div className="user-cell">
                         <Avatar user={u} size="sm" />
                         <div className="user-cell-info">
-                          <strong>{u.name || u.username}</strong>
+                          <strong>
+                            {u.name || u.username}
+                            {u.isVerified && <span style={{ color: '#3b82f6', marginLeft: '4px' }}>✓</span>}
+                          </strong>
                           <span>@{u.username}</span>
                         </div>
                       </div>
@@ -210,6 +217,11 @@ export default function AdminDashboard() {
                     </td>
                   </tr>
                 ))}
+                {users.filter(u => u.isVerified || u.role === 'admin').length === 0 && (
+                  <tr>
+                    <td colSpan="5" style={{ textAlign: 'center', padding: '40px' }}>No verified users found.</td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
