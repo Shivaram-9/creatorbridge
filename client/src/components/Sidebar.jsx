@@ -9,7 +9,8 @@ import {
   ProfileIcon,
   SettingsIcon,
   HelpCircleIcon,
-  LogOutIcon
+  LogOutIcon,
+  ShieldIcon
 } from "./Icons.jsx";
 import "./Sidebar.css";
 
@@ -52,6 +53,13 @@ export default function Sidebar({ user, msgUnreadCount = 0, logout, openHelpCent
       </nav>
 
       <div className="sidebar-footer">
+        {user?.role === 'admin' && (
+          <Link to="/admin" className={`sidebar-item ${location.pathname === '/admin' ? 'active' : ''}`}>
+            <span className="sidebar-icon"><ShieldIcon /></span>
+            <span className="sidebar-label">Admin Panel</span>
+          </Link>
+        )}
+
         <Link to="/settings" className={`sidebar-item ${location.pathname === '/settings' ? 'active' : ''}`}>
           <span className="sidebar-icon"><SettingsIcon /></span>
           <span className="sidebar-label">Settings</span>
