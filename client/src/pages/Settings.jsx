@@ -6,7 +6,7 @@ import ErrorBanner from "../components/ErrorBanner.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import { BASE_URL } from "../config/api.js";
 import "./Settings.css";
-import { ShieldIcon, LockIcon, BadgeCheckIcon, BellIcon, ProfileIcon } from "../components/Icons.jsx";
+import { ShieldIcon, LockIcon, BadgeCheckIcon, BellIcon, ProfileIcon, HelpCircleIcon } from "../components/Icons.jsx";
 
 export default function Settings() {
   const { user, refreshUser } = useAuth();
@@ -324,22 +324,22 @@ export default function Settings() {
           <h2>Settings</h2>
           <nav>
             <button className={activeTab === 'privacy' ? 'active' : ''} onClick={() => setActiveTab('privacy')}>
-              Privacy
+              <ShieldIcon /> Privacy
             </button>
             <button className={activeTab === 'security' ? 'active' : ''} onClick={() => setActiveTab('security')}>
-              Security & Sessions
+              <LockIcon /> Security & Sessions
             </button>
             <button className={activeTab === 'verification' ? 'active' : ''} onClick={() => setActiveTab('verification')}>
-              Verification
+              <BadgeCheckIcon /> Verification
             </button>
             <button className={activeTab === 'notifications' ? 'active' : ''} onClick={() => setActiveTab('notifications')}>
-              Notifications
+              <BellIcon /> Notifications
             </button>
             <button className={activeTab === 'account' ? 'active' : ''} onClick={() => setActiveTab('account')}>
-              Account Details
+              <ProfileIcon /> Account Details
             </button>
-            <button className="help-center-btn" onClick={openHelpCenter} style={{ marginTop: 'auto', color: '#64748b' }}>
-              Help Center
+            <button className="help-center-btn" onClick={openHelpCenter} style={{ marginTop: 'auto' }}>
+              <HelpCircleIcon /> Help Center
             </button>
           </nav>
         </aside>
