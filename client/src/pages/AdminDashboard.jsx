@@ -79,7 +79,7 @@ export default function AdminDashboard() {
   };
 
   const handleToggleBan = async (userId) => {
-    if (!window.confirm("Change ban status for this user?")) return;
+    if (!window.confirm("Change suspension status for this user?")) return;
     try {
       const res = await api.admin.toggleBan(userId);
       setUsers(prev => prev.map(u => u._id === userId ? { ...u, isBanned: res.isBanned } : u));
@@ -213,13 +213,13 @@ export default function AdminDashboard() {
                       <td>₹{u.walletBalance || 0}</td>
                       <td>
                         <span className={`status-pill ${u.isBanned ? 'banned' : 'active'}`}>
-                          {u.isBanned ? 'Banned' : 'Active'}
+                          {u.isBanned ? 'Suspended' : 'Active'}
                         </span>
                       </td>
                       <td>
                         <div className="table-actions">
                           <button className={`btn btn-sm ${u.isBanned ? 'btn-success' : 'btn-danger'}`} onClick={() => handleToggleBan(u._id)}>
-                            {u.isBanned ? 'Unban' : 'Ban'}
+                            {u.isBanned ? 'Restore' : 'Suspend'}
                           </button>
                         </div>
                       </td>
@@ -268,13 +268,13 @@ export default function AdminDashboard() {
                       <td>₹{u.walletBalance || 0}</td>
                       <td>
                         <span className={`status-pill ${u.isBanned ? 'banned' : 'active'}`}>
-                          {u.isBanned ? 'Banned' : 'Active'}
+                          {u.isBanned ? 'Suspended' : 'Active'}
                         </span>
                       </td>
                       <td>
                         <div className="table-actions">
                           <button className={`btn btn-sm ${u.isBanned ? 'btn-success' : 'btn-danger'}`} onClick={() => handleToggleBan(u._id)}>
-                            {u.isBanned ? 'Unban' : 'Ban'}
+                            {u.isBanned ? 'Restore' : 'Suspend'}
                           </button>
                         </div>
                       </td>
@@ -320,13 +320,13 @@ export default function AdminDashboard() {
                       <td>₹{u.walletBalance || 0}</td>
                       <td>
                         <span className={`status-pill ${u.isBanned ? 'banned' : 'active'}`}>
-                          {u.isBanned ? 'Banned' : 'Active'}
+                          {u.isBanned ? 'Suspended' : 'Active'}
                         </span>
                       </td>
                       <td>
                         <div className="table-actions">
                           <button className={`btn btn-sm ${u.isBanned ? 'btn-success' : 'btn-danger'}`} onClick={() => handleToggleBan(u._id)}>
-                            {u.isBanned ? 'Unban' : 'Ban'}
+                            {u.isBanned ? 'Restore' : 'Suspend'}
                           </button>
                         </div>
                       </td>
