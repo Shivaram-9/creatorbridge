@@ -197,9 +197,30 @@ io.on("connection", async (socket) => {
 });
 
 mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log("MongoDB connected 🔥");
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(async () => {
+    console.log("Connected to MongoDB");
+    
+    // --- TEMPORARY MIGRATION TO FIX BRAND ROLE ---
+    try {
+      const { User } = await import("./models/User.js");
+      const result1 = await User.updateMany(
+        { name: /SAIBALAJI/i },
+        { $set: { role: "brand", premiumTier: "gold", category: "Creative Studio" } }
+      );
+      const result2 = await User.updateMany(
+        { username: "shivaram" },
+        { $set: { role: "influencer", category: "Creator / Builder" } }
+      );
+      console.log("Migration complete:", { saibalaji: result1.modifiedCount, shivaram: result2.modifiedCount });
+    } catch (err) {
+      console.error("Migration failed:", err);
+    }
+    // ---------------------------------------------
+    
     server.listen(PORT, "0.0.0.0", () => {
       console.log(`Pactogram API listening on http://localhost:${PORT}`);
     });

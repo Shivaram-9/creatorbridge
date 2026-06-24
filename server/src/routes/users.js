@@ -4,6 +4,7 @@ import { Review } from "../models/Review.js";
 import { Notification } from "../models/Notification.js";
 import { AlignRequest } from "../models/AlignRequest.js";
 import { Collaboration } from "../models/Collaboration.js";
+import { Post } from "../models/Post.js";
 import { authMiddleware } from "../middleware/auth.js";
 import { profileUpload, coverUpload, postUpload } from "../middleware/upload.js";
 import { attachAlignmentStatus } from "../utils/alignment.js";
@@ -590,7 +591,10 @@ usersRouter.get("/:id/following", async (req, res) => {
 // Collections
 usersRouter.get("/collections", async (req, res) => {
   try {
-    const user = await User.findById(req.userId).populate("collections.posts");
+    const user = await User.findById(req.userId).populate({
+      path: "collections.posts",
+      populate: { path: "user", select: "name username avatar isVerified role category premiumTier" }
+    });
     res.json(user.collections || []);
   } catch (err) {
     res.status(500).json({ error: "Failed to fetch collections" });
