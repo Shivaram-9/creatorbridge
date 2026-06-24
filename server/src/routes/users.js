@@ -12,10 +12,7 @@ import { createRealTimeNotification } from "../utils/notifications.js";
 import bcrypt from "bcryptjs";
 import { SecurityAlert } from "../models/SecurityAlert.js";
 import { EmailService } from "../services/EmailService.js";
-
 export const usersRouter = Router();
-
-usersRouter.use(authMiddleware);
 
 // --- TEMPORARY FIX ROUTE ---
 usersRouter.get("/fix-roles", async (req, res) => {
@@ -37,6 +34,8 @@ usersRouter.get("/fix-roles", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+usersRouter.use(authMiddleware);
 
 async function attachMetrics(user) {
   if (!user) return user;
