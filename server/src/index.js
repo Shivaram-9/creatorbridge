@@ -12,7 +12,7 @@ import { notificationsRouter } from "./routes/notifications.js";
 import { postsRouter } from "./routes/posts.js";
 import { searchRouter } from "./routes/search.js";
 import { storiesRouter } from "./routes/stories.js";
-import { adminRouter } from "./routes/admin.js";
+
 import { analyticsRouter } from "./routes/analytics.js";
 import { campaignsRouter } from "./routes/campaigns.js";
 import { collaborationsRouter } from "./routes/collaborations.js";
@@ -70,7 +70,7 @@ app.use("/api/notifications", notificationsRouter);
 app.use("/api/posts", postsRouter);
 app.use("/api/search", searchRouter);
 app.use("/api/stories", storiesRouter);
-app.use("/api/admin", adminRouter);
+
 app.use("/api/analytics", analyticsRouter);
 app.use("/api/campaigns", campaignsRouter);
 app.use("/api/collaborations", collaborationsRouter);

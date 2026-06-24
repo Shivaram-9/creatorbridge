@@ -21,11 +21,9 @@ const Settings = lazy(() => import("./pages/Settings.jsx"));
 const Chat = lazy(() => import("./pages/Chat.jsx"));
 const Saved = lazy(() => import("./pages/Saved.jsx"));
 const Collaborations = lazy(() => import("./pages/Collaborations.jsx"));
-const AdminDashboard = lazy(() => import("./pages/AdminDashboard.jsx"));
 const Analytics = lazy(() => import("./pages/Analytics.jsx"));
 const Premium = lazy(() => import("./pages/Premium.jsx"));
 const Earnings = lazy(() => import("./pages/Earnings.jsx"));
-const AdminRoute = lazy(() => import("./components/AdminRoute.jsx"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword.jsx"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword.jsx"));
 const VerifyEmail = lazy(() => import("./pages/VerifyEmail.jsx"));
@@ -87,11 +85,6 @@ export default function App() {
           <Route path="/messages/:userId" element={<Messages />} />
           <Route path="/saved" element={<Saved />} />
           <Route path="/collaborations" element={<Collaborations />} />
-          <Route path="/admin" element={
-            <AdminRoute>
-              <AdminDashboard />
-            </AdminRoute>
-          } />
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/premium" element={<Premium />} />
           <Route path="/earnings" element={<Earnings />} />
