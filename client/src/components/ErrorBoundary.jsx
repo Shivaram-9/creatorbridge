@@ -49,10 +49,13 @@ class ErrorBoundary extends React.Component {
           <p style={{ color: '#64748b', marginBottom: '1rem', maxWidth: '400px' }}>
             The platform encountered an unexpected error.
           </p>
-          {process.env.NODE_ENV === 'development' && this.state.error && (
-            <pre style={{ textAlign: 'left', fontSize: '10px', background: '#eee', padding: '10px', borderRadius: '4px', overflow: 'auto', maxWidth: '90vw' }}>
-              {this.state.error.toString()}
-            </pre>
+          {this.state.error && (
+            <div style={{ background: '#f1f5f9', padding: '1rem', borderRadius: '8px', maxWidth: '80%', overflow: 'auto', textAlign: 'left', marginBottom: '2rem' }}>
+              <p style={{ fontWeight: 'bold', color: '#ef4444' }}>{this.state.error.toString()}</p>
+              <pre style={{ fontSize: '12px', color: '#334155', marginTop: '0.5rem' }}>
+                {this.state.errorInfo?.componentStack || this.state.error.stack}
+              </pre>
+            </div>
           )}
           <button 
             className="btn btn-primary" 
