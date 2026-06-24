@@ -37,6 +37,16 @@ export default function Saved() {
     ? posts 
     : collections.find(c => c._id === activeTab)?.posts || [];
 
+  const isVideoPost = (post) => {
+    const media = post.media && post.media.length > 0 ? post.media[0] : post.image;
+    if (!media) return false;
+    const src = media.toLowerCase();
+    return !!src.split('?')[0].match(/\.(mp4|mov|webm|ogg|mkv|avi|m4v|3gp)$/) || src.includes('/video/') || src.includes('video/upload');
+  };
+
+  const savedVideos = displayedPosts.filter(isVideoPost);
+  const savedImages = displayedPosts.filter(p => !isVideoPost(p));
+
   return (
     <div className="saved-page slide-in">
 
@@ -65,14 +75,36 @@ export default function Saved() {
           description="Save posts to see them here in your collections."
         />
       ) : (
-        <div className="saved-grid">
-          {displayedPosts.map((post) => (
-            <PostCard 
-              key={post._id} 
-              post={post} 
-              onDelete={() => setPosts(prev => prev.filter(p => p._id !== post._id))}
-            />
-          ))}
+        <div className="saved-content">
+          {savedVideos.length > 0 && (
+            <div className="saved-section">
+              <h2 className="saved-section-title">Saved Videos</h2>
+              <div className="saved-grid">
+                {savedVideos.map((post) => (
+                  <PostCard 
+                    key={post._id} 
+                    post={post} 
+                    onDelete={() => setPosts(prev => prev.filter(p => p._id !== post._id))}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {savedImages.length > 0 && (
+            <div className="saved-section">
+              <h2 className="saved-section-title">Saved Images</h2>
+              <div className="saved-grid">
+                {savedImages.map((post) => (
+                  <PostCard 
+                    key={post._id} 
+                    post={post} 
+                    onDelete={() => setPosts(prev => prev.filter(p => p._id !== post._id))}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
