@@ -112,8 +112,8 @@ export default function AdminDashboard() {
 
       <header className="admin-header">
         <div className="header-info">
-          <h1>{user?.role === 'admin' ? 'Enterprise Control Panel' : 'Network Dashboard'}</h1>
-          <p>{user?.role === 'admin' ? 'Global platform oversight, revenue monitoring, and moderation' : 'Global platform statistics and verified network directory'}</p>
+          <h1>Enterprise Control Panel</h1>
+          <p>Global platform oversight, revenue monitoring, and moderation</p>
         </div>
         <button 
           className="btn btn-primary" 
@@ -131,17 +131,13 @@ export default function AdminDashboard() {
         <button className={activeTab === 'overview' ? 'active' : ''} onClick={() => setActiveTab('overview')}>Overview</button>
         <button className={activeTab === 'users' ? 'active' : ''} onClick={() => setActiveTab('users')}>Users</button>
         
-        {user?.role === 'admin' && (
-          <>
-            <button className={activeTab === 'reports' ? 'active' : ''} onClick={() => setActiveTab('reports')}>
-              Reports {stats?.pendingReports > 0 && <span className="tab-badge warning">{stats.pendingReports}</span>}
-            </button>
-            <button className={activeTab === 'withdrawals' ? 'active' : ''} onClick={() => setActiveTab('withdrawals')}>
-              Payouts {stats?.pendingWithdrawals > 0 && <span className="tab-badge">{stats.pendingWithdrawals}</span>}
-            </button>
-            <button className={activeTab === 'verifications' ? 'active' : ''} onClick={() => setActiveTab('verifications')}>Verifications</button>
-          </>
-        )}
+        <button className={activeTab === 'reports' ? 'active' : ''} onClick={() => setActiveTab('reports')}>
+          Reports {stats?.pendingReports > 0 && <span className="tab-badge warning">{stats.pendingReports}</span>}
+        </button>
+        <button className={activeTab === 'withdrawals' ? 'active' : ''} onClick={() => setActiveTab('withdrawals')}>
+          Payouts {stats?.pendingWithdrawals > 0 && <span className="tab-badge">{stats.pendingWithdrawals}</span>}
+        </button>
+        <button className={activeTab === 'verifications' ? 'active' : ''} onClick={() => setActiveTab('verifications')}>Verifications</button>
       </nav>
 
       <div className="admin-content">

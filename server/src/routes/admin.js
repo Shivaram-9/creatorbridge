@@ -37,21 +37,8 @@ adminRouter.post("/reports", authMiddleware, async (req, res) => {
 // --- PROTECTED ROUTES ---
 adminRouter.use(authMiddleware);
 
-// Middleware for Admin OR Verified
-const verifiedOrAdmin = async (req, res, next) => {
-  try {
-    const user = await User.findById(req.userId);
-    if (!user || (!user.isVerified && user.role !== "admin")) {
-      return res.status(403).json({ error: "Access denied. Verified status required." });
-    }
-    next();
-  } catch {
-    res.status(500).json({ error: "Server error" });
-  }
-};
-
 // GET /api/admin/stats - Comprehensive Analytics
-adminRouter.get("/stats", verifiedOrAdmin, async (req, res) => {
+adminRouter.get("/stats", adminMiddleware, async (req, res) => {
   try {
     const [
       userCount, 
@@ -185,7 +172,7 @@ adminRouter.patch("/verifications/:id", adminMiddleware, async (req, res) => {
 
 
 // GET /api/admin/users - User management
-adminRouter.get("/users", verifiedOrAdmin, async (req, res) => {
+adminRouter.get("/users", adminMiddleware, async (req, res) => {
   try {
     const users = await User.find().select("-password").sort({ createdAt: -1 }).limit(200);
     res.json(users);

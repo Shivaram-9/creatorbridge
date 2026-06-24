@@ -159,11 +159,11 @@ export default function Navbar({
                   <div className="absolute top-12 right-0 w-48 bg-white rounded-lg shadow-premium border border-gray-100 py-2 fade-up">
                     <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-black transition-colors" onClick={() => setMenuOpen(false)}>Profile</Link>
                     <Link to="/saved" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-black transition-colors" onClick={() => setMenuOpen(false)}>Saved</Link>
-                    {(user?.role === 'admin' || user?.isVerified) && (
+                    {user?.role === 'admin' && (
                       <Link to="/admin" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-black transition-colors" onClick={() => setMenuOpen(false)}>
                         <div className="flex items-center gap-2">
                           <ShieldIcon style={{ width: 16, height: 16 }} />
-                          Network Stats
+                          Admin Panel
                         </div>
                       </Link>
                     )}

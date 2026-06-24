@@ -53,10 +53,10 @@ export default function Sidebar({ user, msgUnreadCount = 0, logout, openHelpCent
       </nav>
 
       <div className="sidebar-footer">
-        {(user?.role === 'admin' || user?.isVerified) && (
+        {user?.role === 'admin' && (
           <NavLink to="/admin" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>
             <span className="sidebar-icon"><ShieldIcon /></span>
-            <span className="sidebar-label">Network Stats</span>
+            <span className="sidebar-label">Admin Panel</span>
           </NavLink>
         )}
 
