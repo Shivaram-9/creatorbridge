@@ -50,16 +50,24 @@ export default function CategorySearch() {
   const targetRole = user?.role === "brand" ? "influencer" : "brand";
   const targetText = targetRole === "brand" ? "brands" : "influencers";
   
-  // Dynamically extract unique cities from users of the target role
-  const availableCities = Array.from(new Set(
-    allUsers.filter(u => u.role === targetRole && u.location && u.location.trim() !== "").map(u => u.location.trim())
-  )).sort();
+  // Provide a professional list of major cities for filtering
+  const availableCities = [
+    "Mumbai", "Delhi", "Bangalore", "Hyderabad", "Ahmedabad", "Chennai",
+    "Kolkata", "Surat", "Pune", "Jaipur", "Lucknow", "Kanpur", "Nagpur",
+    "Indore", "Thane", "Bhopal", "Visakhapatnam", "Pimpri-Chinchwad",
+    "Patna", "Vadodara", "Ghaziabad", "Ludhiana", "Agra", "Nashik",
+    "Faridabad", "Meerut", "Rajkot", "Kalyan-Dombivli", "Vasai-Virar",
+    "Varanasi", "Srinagar", "Aurangabad", "Dhanbad", "Amritsar", "Navi Mumbai",
+    "Allahabad", "Ranchi", "Howrah", "Coimbatore", "Jabalpur", "Gwalior",
+    "Vijayawada", "Jodhpur", "Madurai", "Raipur", "Kota", "Guwahati",
+    "Chandigarh", "Solapur", "Hubli-Dharwad"
+  ];
 
   // Available categories to select based on user role
   const categoriesToSelect = targetRole === "brand" ? BRAND_CATEGORIES : INFLUENCER_CATEGORIES;
 
-  // If the user hasn't actively selected a category, use their own profile category as the default for suggestions
-  const activeCategory = selectedCategory || user?.category || user?.industry || "";
+  // Do not restrict by default; show ALL target users unless actively filtered
+  const activeCategory = selectedCategory;
 
   const searchResults = allUsers.filter(u => {
     if (!u || u._id === user?._id) return false;
@@ -67,11 +75,11 @@ export default function CategorySearch() {
     // Exact match on role (brand looking for brand, influencer looking for influencer)
     if (u.role !== targetRole) return false;
 
-    // Filter by city if selected
-    if (selectedCity && u.location?.trim() !== selectedCity) return false;
+    // Filter by city if selected (use partial match to handle full addresses like "HYDERABAD,TELANGANA,INDIA")
+    if (selectedCity && (!u.location || !u.location.toLowerCase().includes(selectedCity.toLowerCase()))) return false;
 
     // Filter by category
-    if (!activeCategory) return true; // Show all if no category selected and user has no category
+    if (!activeCategory) return true; // Show all if no category selected
     return (u.category || u.industry || "") === activeCategory;
   });
 
@@ -144,10 +152,18 @@ export default function CategorySearch() {
       </div>
 
       <div className="discover-section">
-        <div style={{ marginBottom: '24px', padding: '20px 24px', background: 'linear-gradient(135deg, #F0F7FF 0%, #E0EFFF 100%)', borderRadius: '16px', color: '#0052CC', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '12px', border: '1px solid #B3D4FF', boxShadow: '0 4px 12px rgba(0,82,204,0.06)' }}>
-          <SparklesIcon />
-          <p style={{ margin: 0, fontSize: '15px' }}>Showing top suggested {targetText} matched exactly to your category and city.</p>
-        </div>
+          {/* Alert banner for default view vs filtered view */}
+          {!selectedCategory && !selectedCity && (
+            <div style={{ background: 'var(--bg-secondary)', padding: '12px 20px', borderRadius: '12px', color: 'var(--text-main)', fontSize: '14px', display: 'flex', alignItems: 'center', gap: '8px', border: '1px solid var(--border-light)', marginBottom: '24px' }}>
+              <span style={{ color: 'var(--primary-color)' }}>✨</span> Showing all verified {targetText} in the network.
+            </div>
+          )}
+          
+          {(selectedCategory || selectedCity) && (
+            <div style={{ background: '#e0f2fe', padding: '12px 20px', borderRadius: '12px', color: '#0369a1', fontSize: '14px', display: 'flex', alignItems: 'center', gap: '8px', border: '1px solid #bae6fd', marginBottom: '24px' }}>
+              <span style={{ color: '#0ea5e9' }}>✨</span> Showing {targetText} matched to your selected filters.
+            </div>
+          )}
 
         {searchResults.length === 0 ? (
           <EmptyState 
