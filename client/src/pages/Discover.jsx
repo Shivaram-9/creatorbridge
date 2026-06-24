@@ -151,7 +151,7 @@ export default function Discover() {
         <div className="discover-search-overlay-view">
           {(() => {
             const targetRole = user?.role === "influencer" ? "brand" : "influencer";
-            const targetText = targetRole === "brand" ? "brands" : "influencers";
+            const targetText = targetRole === "brand" ? "brands" : "creators";
             const userCategory = user?.category || user?.industry || "";
             
             const searchResults = allUsers.filter(u => {

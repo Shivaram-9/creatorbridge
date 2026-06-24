@@ -77,7 +77,7 @@ export default function CreateCampaign() {
             <textarea name="description" required value={formData.description} onChange={handleChange} rows="4"></textarea>
           </div>
           <div className="form-group">
-            <label>Influencer Requirements</label>
+            <label>Creator Requirements</label>
             <textarea name="requirements" required value={formData.requirements} onChange={handleChange} rows="3" placeholder="Min 10k followers, Fashion niche..."></textarea>
           </div>
           <div className="form-group">

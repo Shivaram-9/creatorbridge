@@ -10,14 +10,14 @@ const ROLES = [
   {
     id: "influencer",
     icon: "🎤",
-    title: "Influencer",
-    description: "I create content and grow audiences. I'm looking for brand collaborations.",
+    title: "Creator",
+    description: "I am a content creator or KOL. I want to partner with brands.",
   },
   {
     id: "brand",
     icon: "🏢",
     title: "Brand",
-    description: "I represent a brand or business. I'm looking for influencers to partner with.",
+    description: "I represent a brand or business. I'm looking for creators to partner with.",
   },
 ];
 

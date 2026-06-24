@@ -185,7 +185,7 @@ export default function BrandTools() {
                   <span className="text-success">8.4/10</span>
                 </div>
              </div>
-             <p className="muted">Detailed influencer-wise breakdown coming soon in the next iteration.</p>
+             <p className="muted">Detailed creator-wise breakdown coming soon in the next iteration.</p>
           </div>
         )}
       </div>
