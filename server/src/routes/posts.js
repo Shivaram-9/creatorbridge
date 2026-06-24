@@ -48,7 +48,7 @@ router.post("/", authMiddleware, postUpload.array("media", 10), async (req, res)
       taggedUsers: (typeof taggedUsers === "string") ? taggedUsers.split(",").filter(Boolean) : [],
     });
 
-    await post.populate("user", "name username avatar role isVerified isPremium");
+    await post.populate("user", "name username avatar role category isVerified isPremium premiumTier");
     console.log("✅ Post created successfully:", post._id);
     res.status(201).json(post);
   } catch (err) {
@@ -78,7 +78,7 @@ router.get("/feed-alliances", authMiddleware, async (req, res) => {
       user: { $in: allianceIds },
       isArchived: { $ne: true }
     })
-      .populate("user", "name username avatar role isVerified isPremium")
+      .populate("user", "name username avatar role category isVerified isPremium premiumTier")
       .sort({ createdAt: -1 })
       .limit(50);
       
@@ -93,7 +93,7 @@ router.get("/feed-alliances", authMiddleware, async (req, res) => {
 router.get("/", async (req, res) => {
   try {
     const posts = await Post.find({ isArchived: false })
-      .populate("user", "name username avatar role isVerified isPremium")
+      .populate("user", "name username avatar role category isVerified isPremium premiumTier")
       .sort("-isPinned -createdAt")
       .limit(20);
     res.json(posts);
@@ -106,7 +106,7 @@ router.get("/", async (req, res) => {
 router.get("/user/:userId", async (req, res) => {
   try {
     const posts = await Post.find({ user: req.params.userId, isArchived: false })
-      .populate("user", "name avatar role")
+      .populate("user", "name avatar role category premiumTier")
       .sort("-isPinned -createdAt");
     res.json(posts);
   } catch (err) {
@@ -118,7 +118,7 @@ router.get("/user/:userId", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const post = await Post.findById(req.params.id)
-      .populate("user", "name username avatar role isVerified isPremium");
+      .populate("user", "name username avatar role category isVerified isPremium premiumTier");
     if (!post) return res.status(404).json({ error: "Post not found" });
     res.json(post);
   } catch (err) {
@@ -135,7 +135,7 @@ router.patch("/pin/:id", authMiddleware, async (req, res) => {
 
     post.isPinned = !post.isPinned;
     await post.save();
-    await post.populate("user", "name avatar role");
+    await post.populate("user", "name avatar role category premiumTier");
     res.json(post);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -151,7 +151,7 @@ router.patch("/archive/:id", authMiddleware, async (req, res) => {
 
     post.isArchived = !post.isArchived;
     await post.save();
-    await post.populate("user", "name avatar role");
+    await post.populate("user", "name avatar role category premiumTier");
     res.json(post);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -171,7 +171,7 @@ router.patch("/:id", authMiddleware, async (req, res) => {
     post.location = location || post.location;
     
     await post.save();
-    await post.populate("user", "name avatar role");
+    await post.populate("user", "name avatar role category premiumTier");
     res.json(post);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -220,7 +220,7 @@ router.post("/like/:postId", authMiddleware, async (req, res) => {
       });
     }
 
-    await post.populate("user", "name avatar role");
+    await post.populate("user", "name avatar role category premiumTier");
     res.json(post);
   } catch (err) {
     res.status(500).json({ error: err.message });

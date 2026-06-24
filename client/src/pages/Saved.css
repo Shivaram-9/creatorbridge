@@ -11,6 +11,24 @@
   scrollbar-width: none;
 }
 
+.saved-select {
+  padding: 8px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border, #e2e8f0);
+  background: white;
+  font-size: 14px;
+  font-weight: 600;
+  color: #0f172a;
+  cursor: pointer;
+  outline: none;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.saved-select:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
 .saved-tabs::-webkit-scrollbar { display: none; }
 
 .saved-tabs button {

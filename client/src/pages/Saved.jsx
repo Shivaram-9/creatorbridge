@@ -33,9 +33,7 @@ export default function Saved() {
     load();
   }, []);
 
-  const displayedPosts = activeTab === "all" 
-    ? posts 
-    : collections.find(c => c._id === activeTab)?.posts || [];
+  const displayedPosts = posts; // We'll filter below
 
   const isVideoPost = (post) => {
     const media = post.media && post.media.length > 0 ? post.media[0] : post.image;
@@ -44,67 +42,59 @@ export default function Saved() {
     return !!src.split('?')[0].match(/\.(mp4|mov|webm|ogg|mkv|avi|m4v|3gp)$/) || src.includes('/video/') || src.includes('video/upload');
   };
 
-  const savedVideos = displayedPosts.filter(isVideoPost);
-  const savedImages = displayedPosts.filter(p => !isVideoPost(p));
+  const filteredPosts = displayedPosts.filter(post => {
+    if (activeTab === "videos") return isVideoPost(post);
+    if (activeTab === "images") return !isVideoPost(post);
+    if (activeTab === "all") return true;
+    // Otherwise it's a collection ID
+    const collection = collections.find(c => c._id === activeTab);
+    if (collection) return collection.posts.some(p => p._id === post._id || p === post._id);
+    return false;
+  });
 
   return (
     <div className="saved-page slide-in">
 
-      <header className="page-header">
-        <h1 className="page-title">Saved</h1>
-        <p className="subtitle">Your private collections of inspiration.</p>
+      <header className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>
+          <h1 className="page-title">Saved</h1>
+          <p className="subtitle">Your private collections of inspiration.</p>
+        </div>
+        <div className="saved-filter-dropdown">
+          <select 
+            value={activeTab} 
+            onChange={(e) => setActiveTab(e.target.value)}
+            className="saved-select"
+          >
+            <option value="all">All Posts</option>
+            <option value="videos">Videos</option>
+            <option value="images">Images</option>
+            {collections.map(c => (
+              <option key={c._id} value={c._id}>📁 {c.name}</option>
+            ))}
+          </select>
+        </div>
       </header>
-
-      <div className="saved-tabs">
-        <button className={activeTab === "all" ? "active" : ""} onClick={() => setActiveTab("all")}>All Posts</button>
-        {collections.map(c => (
-          <button key={c._id} className={activeTab === c._id ? "active" : ""} onClick={() => setActiveTab(c._id)}>
-            📁 {c.name}
-          </button>
-        ))}
-      </div>
 
       <ErrorBanner message={error} onDismiss={() => setError("")} />
 
       {loading ? (
         <LoadingSpinner centered />
-      ) : displayedPosts.length === 0 ? (
+      ) : filteredPosts.length === 0 ? (
         <EmptyState 
           icon={<BookmarkIcon style={{ width: '48px', height: '48px', color: '#94a3b8' }} />} 
           title="Nothing saved yet" 
           description="Save posts to see them here in your collections."
         />
       ) : (
-        <div className="saved-content">
-          {savedVideos.length > 0 && (
-            <div className="saved-section">
-              <h2 className="saved-section-title">Saved Videos</h2>
-              <div className="saved-grid">
-                {savedVideos.map((post) => (
-                  <PostCard 
-                    key={post._id} 
-                    post={post} 
-                    onDelete={() => setPosts(prev => prev.filter(p => p._id !== post._id))}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {savedImages.length > 0 && (
-            <div className="saved-section">
-              <h2 className="saved-section-title">Saved Images</h2>
-              <div className="saved-grid">
-                {savedImages.map((post) => (
-                  <PostCard 
-                    key={post._id} 
-                    post={post} 
-                    onDelete={() => setPosts(prev => prev.filter(p => p._id !== post._id))}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
+        <div className="saved-grid">
+          {filteredPosts.map((post) => (
+            <PostCard 
+              key={post._id} 
+              post={post} 
+              onDelete={() => setPosts(prev => prev.filter(p => p._id !== post._id))}
+            />
+          ))}
         </div>
       )}
     </div>

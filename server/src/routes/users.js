@@ -89,7 +89,7 @@ usersRouter.get("/saved", async (req, res) => {
   try {
     const user = await User.findById(req.userId).populate({
       path: "savedPosts",
-      populate: { path: "user", select: "name username avatar isVerified" }
+      populate: { path: "user", select: "name username avatar isVerified role category premiumTier" }
     });
 
     if (!user) return res.status(404).json({ error: "User not found" });

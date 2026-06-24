@@ -207,11 +207,20 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
         <div className="flex gap-4">
           <Avatar user={post.user} size="md" onClick={() => navigate(`/user/${post.user?._id}`)} className="cursor-pointer" />
           <div>
-            <h3 className="font-bold text-slate-900 cursor-pointer hover:text-blue-600 transition-colors flex items-center gap-1" onClick={() => navigate(`/user/${post.user?._id}`)}>
+            <h3 
+              className={`font-bold cursor-pointer transition-colors flex items-center gap-1 ${
+                (post.user?.isVerified || post.user?.isPremium) 
+                  ? (post.user?.role === 'brand' ? 'text-amber-500 hover:text-amber-600' : 'text-sky-500 hover:text-sky-600') 
+                  : 'text-slate-900 hover:text-blue-600'
+              }`} 
+              onClick={() => navigate(`/user/${post.user?._id}`)}
+            >
               {post.user?.name || post.username}
               {(post.user?.isVerified || post.user?.isPremium) && <VerifiedBadge size="sm" tier={post.user?.premiumTier} role={post.user?.role} />}
             </h3>
-            <p className="text-sm text-slate-500">{post.user?.role || "Creator / Builder"} • {new Date(post.createdAt).toLocaleDateString()}</p>
+            <p className="text-sm text-slate-500">
+              {post.user?.role === 'brand' ? 'Brand' : 'Creator'} / {post.user?.category || 'Builder'} • {new Date(post.createdAt).toLocaleDateString()}
+            </p>
           </div>
         </div>
 
