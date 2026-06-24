@@ -122,7 +122,11 @@ export default function Login() {
             </Link>
           </div>
 
-          <button type="submit" className="auth-submit-btn" disabled={loading}>
+          <button 
+            type="submit" 
+            className="w-full h-[52px] bg-slate-900 text-white rounded-xl text-[15px] font-bold flex items-center justify-center gap-2 mt-2 shadow-md hover:translate-y-[-1px] hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed transition-all" 
+            disabled={loading}
+          >
             {loading ? "Signing in..." : "Login"}
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
               <path d="M5 12H19M19 12L12 5M19 12L12 19" />
