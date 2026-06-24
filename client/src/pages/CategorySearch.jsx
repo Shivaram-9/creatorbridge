@@ -48,7 +48,7 @@ export default function CategorySearch() {
 
   // Cross-role discovery: Influencers find Brands, Brands find Influencers
   const targetRole = user?.role === "brand" ? "influencer" : "brand";
-  const targetText = targetRole === "brand" ? "brands" : "creators";
+  const targetText = targetRole === "brand" ? "brands" : "Creators";
   
   // Comprehensive list of Indian cities
   const availableCities = [
