@@ -40,7 +40,7 @@ const EditProfile = lazy(() => import("./pages/EditProfile.jsx"));
 export default function App() {
   return (
     <>
-    <Suspense fallback={<SplashScreen />}>
+    <Suspense fallback={<LoadingSpinner centered />}>
       <Routes>
         <Route path="/" element={<SplashScreen />} />
         <Route path="/login" element={<Login />} />
