@@ -7,33 +7,34 @@ import LoadingSpinner from "./components/LoadingSpinner.jsx";
 import SplashScreen from "./pages/SplashScreen.jsx";
 import Home from "./pages/Home.jsx";
 
+// Static import critical pages to avoid loading spinner on click
+import Login from "./pages/Login.jsx";
+import Register from "./pages/Register.jsx";
+import RoleSelect from "./pages/RoleSelect.jsx";
+import Profile from "./pages/Profile.jsx";
+import UserProfile from "./pages/UserProfile.jsx";
+import Discover from "./pages/Discover.jsx";
+import CategorySearch from "./pages/CategorySearch.jsx";
+import Messages from "./pages/Messages.jsx";
+import Notifications from "./pages/Notifications.jsx";
+import Settings from "./pages/Settings.jsx";
+import Chat from "./pages/Chat.jsx";
+import Saved from "./pages/Saved.jsx";
+import Collaborations from "./pages/Collaborations.jsx";
+import Analytics from "./pages/Analytics.jsx";
+import Premium from "./pages/Premium.jsx";
+import Earnings from "./pages/Earnings.jsx";
+import BrandTools from "./pages/BrandTools.jsx";
+import Requests from "./pages/Requests.jsx";
+import BrandDashboard from "./pages/BrandDashboard.jsx";
+
 // Lazy load non-critical pages
-const Login = lazy(() => import("./pages/Login.jsx"));
-const Register = lazy(() => import("./pages/Register.jsx"));
-const RoleSelect = lazy(() => import("./pages/RoleSelect.jsx"));
-const Profile = lazy(() => import("./pages/Profile.jsx"));
-const UserProfile = lazy(() => import("./pages/UserProfile.jsx"));
-const Discover = lazy(() => import("./pages/Discover.jsx"));
-const CategorySearch = lazy(() => import("./pages/CategorySearch.jsx"));
-const Messages = lazy(() => import("./pages/Messages.jsx"));
-const Notifications = lazy(() => import("./pages/Notifications.jsx"));
-const Settings = lazy(() => import("./pages/Settings.jsx"));
-const Chat = lazy(() => import("./pages/Chat.jsx"));
-const Saved = lazy(() => import("./pages/Saved.jsx"));
-const Collaborations = lazy(() => import("./pages/Collaborations.jsx"));
-const Analytics = lazy(() => import("./pages/Analytics.jsx"));
-const Premium = lazy(() => import("./pages/Premium.jsx"));
-const Earnings = lazy(() => import("./pages/Earnings.jsx"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword.jsx"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword.jsx"));
 const VerifyEmail = lazy(() => import("./pages/VerifyEmail.jsx"));
 const UsersList = lazy(() => import("./pages/UsersList.jsx"));
 const Onboarding = lazy(() => import("./pages/Onboarding.jsx"));
 const ApplyVerification = lazy(() => import("./pages/ApplyVerification.jsx"));
-const BrandTools = lazy(() => import("./pages/BrandTools.jsx"));
-
-const Requests = lazy(() => import("./pages/Requests.jsx"));
-const BrandDashboard = lazy(() => import("./pages/BrandDashboard.jsx"));
 const EditProfile = lazy(() => import("./pages/EditProfile.jsx"));
 
 
