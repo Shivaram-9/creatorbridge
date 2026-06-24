@@ -210,7 +210,7 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
             <h3 
               className={`font-bold cursor-pointer transition-colors flex items-center gap-1 ${
                 (post.user?.isVerified || post.user?.isPremium) 
-                  ? (post.user?.role === 'brand' ? 'text-amber-500 hover:text-amber-600' : 'text-[#1d9bf0] hover:text-blue-600') 
+                  ? (post.user?.role === 'brand' ? 'text-yellow-500 hover:text-yellow-600' : 'text-[#1d9bf0] hover:text-blue-600') 
                   : 'text-slate-900 hover:text-blue-600'
               }`} 
               onClick={() => navigate(`/user/${post.user?._id}`)}
