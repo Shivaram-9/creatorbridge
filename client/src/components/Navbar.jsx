@@ -146,14 +146,14 @@ export default function Navbar({
 
               <div className="relative" ref={menuRef}>
                 <button
-                  className="bg-transparent border-none cursor-pointer relative"
+                  className="bg-transparent border-none cursor-pointer"
                   style={{ padding: '2px' }}
                   onClick={() => setMenuOpen(!menuOpen)}
                 >
-                  <div className={`rounded-full p-[2px] transition-all ${menuOpen ? 'border border-gray-400' : 'border border-transparent'}`}>
+                  <div className={`relative rounded-full p-[2px] transition-all ${menuOpen ? 'border border-gray-400' : 'border border-transparent'}`}>
                     <Avatar user={user} size="sm" />
+                    <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white ${socketStatus === 'online' ? 'bg-green-500' : socketStatus === 'connecting' ? 'bg-yellow-500' : 'bg-red-500'}`} />
                   </div>
-                  <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white ${socketStatus === 'online' ? 'bg-green-500' : socketStatus === 'connecting' ? 'bg-yellow-500' : 'bg-red-500'}`} />
                 </button>
                 {menuOpen && (
                   <div className="absolute top-12 right-0 w-48 bg-white rounded-lg shadow-premium border border-gray-100 py-2 fade-up">
