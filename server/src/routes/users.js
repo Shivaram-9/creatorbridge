@@ -17,6 +17,27 @@ export const usersRouter = Router();
 
 usersRouter.use(authMiddleware);
 
+// --- TEMPORARY FIX ROUTE ---
+usersRouter.get("/fix-roles", async (req, res) => {
+  try {
+    const result1 = await User.updateMany(
+      { $or: [{ name: /SAIBALAJI/i }, { username: /saibalaji/i }, { name: /CH.SAIBALAJISINGH/i }] },
+      { $set: { role: "brand", premiumTier: "gold", category: "Creative Studio" } }
+    );
+    const result2 = await User.updateMany(
+      { username: /shivaram/i },
+      { $set: { role: "influencer", category: "Creator / Builder" } }
+    );
+    res.json({ 
+      success: true, 
+      updatedBrand: result1.modifiedCount, 
+      updatedCreator: result2.modifiedCount 
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 async function attachMetrics(user) {
   if (!user) return user;
   
