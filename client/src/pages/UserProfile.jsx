@@ -49,6 +49,12 @@ export default function UserProfile() {
   const isOwn = me?._id === userId;
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (isOwn) {
+      navigate("/profile", { replace: true });
+    }
+  }, [isOwn, navigate]);
+
   const loadPosts = useCallback(async () => {
     setLoadingPosts(true);
     try {
