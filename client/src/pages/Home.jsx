@@ -18,8 +18,8 @@ function HeroBanner({ user }) {
   return (
     <div className="mb-8 pt-4 px-2 md:px-0">
       <div className="max-w-2xl">
-        <h1 className="text-2xl md:text-3xl font-extrabold mb-3 text-slate-900 tracking-tight">Discover Top Creators & Brands</h1>
-        <p className="text-slate-600 text-base md:text-lg mb-6 leading-relaxed">
+        <h1 className="text-2xl md:text-3xl font-extrabold mb-3 text-slate-900 dark:text-slate-100 tracking-tight">Discover Top Creators & Brands</h1>
+        <p className="text-slate-600 dark:text-slate-300 text-base md:text-lg mb-6 leading-relaxed">
           The premium network for builders, designers, and innovators. Showcase your portfolio and connect with verified professionals.
         </p>
         <div className="flex gap-4">
