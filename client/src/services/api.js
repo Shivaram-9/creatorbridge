@@ -206,6 +206,7 @@ export const api = {
     uploadPortfolioMedia: (formData) => request("/users/me/portfolio/upload", { method: "POST", body: formData }),
     addPortfolioItem: (body) => request("/users/me/portfolio", { method: "POST", body }),
     removePortfolioItem: (itemId) => request(`/users/me/portfolio/${itemId}`, { method: "DELETE" }),
+    updatePortfolioDetails: (portfolioDetails) => request("/users/portfolio-details", { method: "PUT", body: { portfolioDetails } }),
     support: (body) => request("/users/support", { method: "POST", body }),
     rate: (id, rating) => request(`/users/${id}/rate`, { method: "POST", body: { rating } }),
   },

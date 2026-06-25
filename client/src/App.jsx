@@ -27,6 +27,7 @@ import Earnings from "./pages/Earnings.jsx";
 import BrandTools from "./pages/BrandTools.jsx";
 import Requests from "./pages/Requests.jsx";
 import BrandDashboard from "./pages/BrandDashboard.jsx";
+import PortfolioBuilder from "./pages/PortfolioBuilder.jsx";
 
 // Lazy load non-critical pages
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword.jsx"));
@@ -96,6 +97,7 @@ export default function App() {
           <Route path="/brand-dashboard" element={<BrandDashboard />} />
           <Route path="/verify-account" element={<ApplyVerification />} />
           <Route path="/brand-tools" element={<BrandTools />} />
+          <Route path="/build-portfolio" element={<PortfolioBuilder />} />
         </Route>
 
 

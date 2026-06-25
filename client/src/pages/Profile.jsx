@@ -481,6 +481,21 @@ export default function Profile() {
           <div style={{ padding: '0 16px' }}>
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
               <button 
+                onClick={() => navigate('/build-portfolio')}
+                style={{
+                  background: 'transparent',
+                  color: '#3b82f6',
+                  border: '1px solid #3b82f6',
+                  borderRadius: '20px',
+                  padding: '8px 16px',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  marginRight: '12px'
+                }}
+              >
+                📄 Build PDF Portfolio
+              </button>
+              <button 
                 onClick={() => setShowPortfolioModal(true)}
                 style={{
                   background: '#3b82f6',

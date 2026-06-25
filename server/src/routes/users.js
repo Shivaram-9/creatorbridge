@@ -174,6 +174,26 @@ usersRouter.post("/me/cover", coverUpload.single("cover"), async (req, res) => {
   }
 });
 
+// PUT /api/users/portfolio-details - Save portfolio builder data
+usersRouter.put("/portfolio-details", async (req, res) => {
+  try {
+    const { portfolioDetails } = req.body;
+    if (!portfolioDetails) return res.status(400).json({ error: "portfolioDetails required" });
+    
+    const user = await User.findByIdAndUpdate(
+      req.userId,
+      { $set: { portfolioDetails } },
+      { new: true }
+    );
+    
+    if (!user) return res.status(404).json({ error: "User not found" });
+    res.json({ success: true, portfolioDetails: user.portfolioDetails });
+  } catch (err) {
+    console.error("Error updating portfolio details:", err);
+    res.status(500).json({ error: "Failed to save portfolio details" });
+  }
+});
+
 usersRouter.patch("/me", async (req, res) => {
   try {
     const { name, username, category, bio, experience, location, role, avatar, website, portfolioLink, socialMediaLink, instagram, youtube, trustScore, completedCampaigns, responseRate, onTimeDelivery, averageRating } = req.body;

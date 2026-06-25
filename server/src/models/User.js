@@ -55,6 +55,7 @@ const userSchema = new mongoose.Schema(
     resetPasswordToken: { type: String },
     resetPasswordExpire: { type: Date },
     portfolio: { type: [portfolioItemSchema], default: [] },
+    portfolioDetails: { type: mongoose.Schema.Types.Mixed, default: {} },
     
     // Privacy & Security (Prompt-6)
     isPrivate: { type: Boolean, default: false },
