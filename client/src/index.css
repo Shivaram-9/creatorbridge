@@ -32,6 +32,30 @@
   --radius-md: 8px;
   --radius-lg: 12px;
   --radius-full: 9999px;
+  --radius-full: 9999px;
+}
+
+/* DARK MODE SAAS UI */
+.dark {
+  --bg-main: #0F172A;           /* Slate 900 Background */
+  --primary: #3B82F6;           /* Brighter Blue */
+  --bg-secondary: #1E293B;      /* Slate 800 */
+  --primary-action: #60A5FA;    /* Lighter Blue */
+  --text-main: #F8FAFC;         /* Light Text Primary */
+  --text-muted: #94A3B8;        /* Light Text Secondary */
+  --verified: #3B82F6;          /* Verified Badge */
+  --bg-chat: #1E293B;           
+  --bubble-mine: #3B82F6;       
+  --bubble-other: #334155;      
+  --bg-card: #1E293B;           /* Cards */
+  --shadow-premium: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  
+  --primary-hover: #60A5FA;
+  --primary-gradient: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+  --border-light: #334155;      /* Dark Slate Borders */
+  --divider: #334155;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
