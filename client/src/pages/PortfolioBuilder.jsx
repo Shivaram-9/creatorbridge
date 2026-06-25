@@ -15,6 +15,20 @@ import BrandTemplateThree from "../components/portfolio-templates/BrandTemplateT
 import BrandTemplateFour from "../components/portfolio-templates/BrandTemplateFour.jsx";
 import * as Generated from "../components/portfolio-templates/generated/index.js";
 
+const CREATOR_LAYOUT_NAMES = [
+  "Dynamic Showcase", "Visual Journey", "Modern Canvas", "Artistic Flourish", "Clean Perspective",
+  "Bold Statement", "Fluid Motion", "Urban Edge", "Organic Flow", "Tech Minimalist",
+  "Vibrant Palette", "Cinematic View", "Elegant Grid", "Geometric Focus", "Neon Highlights",
+  "Soft Horizons", "Abstract Space", "Structured Clarity", "Retro Vintage", "Future Forward"
+];
+
+const BRAND_LAYOUT_NAMES = [
+  "Enterprise Authority", "Market Leader", "Strategic Vision", "Premium Corporate", "Trust & Heritage",
+  "Innovation Hub", "Global Reach", "Executive Summary", "Apex Solutions", "Vanguard Design",
+  "Pinnacle Professional", "Synergy Platform", "Corporate Canvas", "Foundation Builder", "Horizon Ventures",
+  "Momentum Drive", "Blueprint Standard", "Summit Strategy", "Nexus Network", "Paramount Focus"
+];
+
 const DEFAULT_DATA = {
   personal: { name: "", title: "", email: "", phone: "", location: "", summary: "", website: "" },
   experience: [], // { id, company, role, startDate, endDate, description }
@@ -130,8 +144,8 @@ export default function PortfolioBuilder() {
                 <option value="creator-2">Minimalist Modern</option>
                 <option value="creator-3">Vibrant Portfolio</option>
                 <option value="creator-4">Editorial Elegance</option>
-                {Array.from({ length: 20 }, (_, i) => (
-                  <option key={`c-${i+1}`} value={`gen-creator-${i+1}`}>Creator Layout {i+1}</option>
+                {CREATOR_LAYOUT_NAMES.map((name, i) => (
+                  <option key={`c-${i+1}`} value={`gen-creator-${i+1}`}>{name}</option>
                 ))}
               </>
             ) : (
@@ -140,8 +154,8 @@ export default function PortfolioBuilder() {
                 <option value="brand-2">Agency Brief</option>
                 <option value="brand-3">Bold Impact</option>
                 <option value="brand-4">Classic Heritage</option>
-                {Array.from({ length: 20 }, (_, i) => (
-                  <option key={`b-${i+1}`} value={`gen-brand-${i+1}`}>Brand Layout {i+1}</option>
+                {BRAND_LAYOUT_NAMES.map((name, i) => (
+                  <option key={`b-${i+1}`} value={`gen-brand-${i+1}`}>{name}</option>
                 ))}
               </>
             )}
