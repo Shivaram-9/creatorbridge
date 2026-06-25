@@ -208,7 +208,7 @@
 }
 
 .profile-link-item {
-  color: #0f172a;
+  color: var(--text-main);
   text-decoration: none;
   font-size: 14px;
   display: flex;
