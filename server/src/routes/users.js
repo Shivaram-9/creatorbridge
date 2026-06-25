@@ -12,28 +12,8 @@ import { createRealTimeNotification } from "../utils/notifications.js";
 import bcrypt from "bcryptjs";
 import { SecurityAlert } from "../models/SecurityAlert.js";
 import { EmailService } from "../services/EmailService.js";
-export const usersRouter = Router();
 
-// --- TEMPORARY FIX ROUTE ---
-usersRouter.get("/fix-roles", async (req, res) => {
-  try {
-    const result1 = await User.updateMany(
-      { $or: [{ name: /SAIBALAJI/i }, { username: /saibalaji/i }, { name: /CH.SAIBALAJISINGH/i }] },
-      { $set: { role: "brand", premiumTier: "gold", category: "Creative Studio" } }
-    );
-    const result2 = await User.updateMany(
-      { username: /shivaram/i },
-      { $set: { role: "influencer", category: "Creator / Builder" } }
-    );
-    res.json({ 
-      success: true, 
-      updatedBrand: result1.modifiedCount, 
-      updatedCreator: result2.modifiedCount 
-    });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+export const usersRouter = Router();
 
 usersRouter.use(authMiddleware);
 
@@ -80,6 +60,15 @@ async function attachMetrics(user) {
     } else {
       userObj.featuredIn = 0;
     }
+
+    // 4. Post Impressions (Total views across all user posts)
+    const [impressionData] = await Post.aggregate([
+      { $match: { user: userId } },
+      { $group: { _id: null, totalViews: { $sum: "$views" } } }
+    ]);
+    userObj.postImpressions = impressionData ? impressionData.totalViews : 0;
+    userObj.profileViews = userObj.profileViews || 0;
+
   } catch (err) {
     console.error("Error calculating genuine metrics:", err);
     userObj.connectionsCount = 0;

@@ -237,11 +237,11 @@ export default function Home() {
           </div>
           <div className="flex justify-between text-sm py-3 border-t border-slate-100">
             <span className="text-slate-500">Profile Views</span>
-            <span className="font-bold text-slate-900">42</span>
+            <span className="font-bold text-slate-900">{user?.profileViews || 0}</span>
           </div>
           <div className="flex justify-between text-sm py-3 border-t border-slate-100">
             <span className="text-slate-500">Post Impressions</span>
-            <span className="font-bold text-slate-900">128</span>
+            <span className="font-bold text-slate-900">{user?.postImpressions || 0}</span>
           </div>
           <button onClick={() => navigate(`/user/${user?._id}`)} className="mt-2 w-full text-center text-sm font-semibold text-slate-700 bg-slate-50 hover:bg-slate-100 py-2 rounded-lg transition-colors">
             View My Profile
