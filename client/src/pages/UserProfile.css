@@ -21,8 +21,8 @@
 }
 @media (min-width: 768px) {
   .cover-container {
-    border-radius: 24px 24px 0 0;
-    margin-top: 20px;
+    border-radius: 0;
+    margin-top: 0;
   }
 }
 
