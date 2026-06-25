@@ -13,6 +13,7 @@ import BrandTemplateOne from "../components/portfolio-templates/BrandTemplateOne
 import BrandTemplateTwo from "../components/portfolio-templates/BrandTemplateTwo.jsx";
 import BrandTemplateThree from "../components/portfolio-templates/BrandTemplateThree.jsx";
 import BrandTemplateFour from "../components/portfolio-templates/BrandTemplateFour.jsx";
+import * as Generated from "../components/portfolio-templates/generated/index.js";
 
 const DEFAULT_DATA = {
   personal: { name: "", title: "", email: "", phone: "", location: "", summary: "", website: "" },
@@ -129,6 +130,9 @@ export default function PortfolioBuilder() {
                 <option value="creator-2">Minimalist Modern</option>
                 <option value="creator-3">Vibrant Portfolio</option>
                 <option value="creator-4">Editorial Elegance</option>
+                {Array.from({ length: 20 }, (_, i) => (
+                  <option key={`c-${i+1}`} value={`gen-creator-${i+1}`}>Creator Layout {i+1}</option>
+                ))}
               </>
             ) : (
               <>
@@ -136,6 +140,9 @@ export default function PortfolioBuilder() {
                 <option value="brand-2">Agency Brief</option>
                 <option value="brand-3">Bold Impact</option>
                 <option value="brand-4">Classic Heritage</option>
+                {Array.from({ length: 20 }, (_, i) => (
+                  <option key={`b-${i+1}`} value={`gen-brand-${i+1}`}>Brand Layout {i+1}</option>
+                ))}
               </>
             )}
           </select>
@@ -235,14 +242,27 @@ export default function PortfolioBuilder() {
         <div className="w-2/3 bg-slate-200 dark:bg-slate-900 p-8 overflow-y-auto flex justify-center pb-24">
           <div className="bg-white shadow-xl" style={{ width: '210mm', minHeight: '297mm', padding: '0', boxSizing: 'border-box', overflow: 'hidden', position: 'relative' }}>
             <div ref={printRef} style={{ width: '100%', height: '100%', backgroundColor: '#fff' }}>
-              {selectedTemplateId === "creator-1" && <CreatorTemplateOne data={data} />}
-              {selectedTemplateId === "creator-2" && <CreatorTemplateTwo data={data} />}
-              {selectedTemplateId === "creator-3" && <CreatorTemplateThree data={data} />}
-              {selectedTemplateId === "creator-4" && <CreatorTemplateFour data={data} />}
-              {selectedTemplateId === "brand-1" && <BrandTemplateOne data={data} />}
-              {selectedTemplateId === "brand-2" && <BrandTemplateTwo data={data} />}
-              {selectedTemplateId === "brand-3" && <BrandTemplateThree data={data} />}
-              {selectedTemplateId === "brand-4" && <BrandTemplateFour data={data} />}
+              {(() => {
+                if (selectedTemplateId.startsWith('gen-')) {
+                  const parts = selectedTemplateId.split('-');
+                  const type = parts[1];
+                  const num = parts[2];
+                  const ComponentName = type === 'creator' ? `CreatorTemplate${num}` : `BrandTemplate${num}`;
+                  const TemplateComponent = Generated[ComponentName];
+                  return TemplateComponent ? <TemplateComponent data={data} /> : null;
+                }
+                switch(selectedTemplateId) {
+                  case "creator-1": return <CreatorTemplateOne data={data} />;
+                  case "creator-2": return <CreatorTemplateTwo data={data} />;
+                  case "creator-3": return <CreatorTemplateThree data={data} />;
+                  case "creator-4": return <CreatorTemplateFour data={data} />;
+                  case "brand-1": return <BrandTemplateOne data={data} />;
+                  case "brand-2": return <BrandTemplateTwo data={data} />;
+                  case "brand-3": return <BrandTemplateThree data={data} />;
+                  case "brand-4": return <BrandTemplateFour data={data} />;
+                  default: return null;
+                }
+              })()}
             </div>
           </div>
         </div>
