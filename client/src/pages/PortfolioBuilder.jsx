@@ -7,8 +7,12 @@ import html2pdf from "html2pdf.js";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import CreatorTemplateOne from "../components/portfolio-templates/CreatorTemplateOne.jsx";
 import CreatorTemplateTwo from "../components/portfolio-templates/CreatorTemplateTwo.jsx";
+import CreatorTemplateThree from "../components/portfolio-templates/CreatorTemplateThree.jsx";
+import CreatorTemplateFour from "../components/portfolio-templates/CreatorTemplateFour.jsx";
 import BrandTemplateOne from "../components/portfolio-templates/BrandTemplateOne.jsx";
 import BrandTemplateTwo from "../components/portfolio-templates/BrandTemplateTwo.jsx";
+import BrandTemplateThree from "../components/portfolio-templates/BrandTemplateThree.jsx";
+import BrandTemplateFour from "../components/portfolio-templates/BrandTemplateFour.jsx";
 
 const DEFAULT_DATA = {
   personal: { name: "", title: "", email: "", phone: "", location: "", summary: "", website: "" },
@@ -123,11 +127,15 @@ export default function PortfolioBuilder() {
               <>
                 <option value="creator-1">Creative Professional</option>
                 <option value="creator-2">Minimalist Modern</option>
+                <option value="creator-3">Vibrant Portfolio</option>
+                <option value="creator-4">Editorial Elegance</option>
               </>
             ) : (
               <>
                 <option value="brand-1">Corporate Profile</option>
                 <option value="brand-2">Agency Brief</option>
+                <option value="brand-3">Bold Impact</option>
+                <option value="brand-4">Classic Heritage</option>
               </>
             )}
           </select>
@@ -229,8 +237,12 @@ export default function PortfolioBuilder() {
             <div ref={printRef} style={{ width: '100%', height: '100%', backgroundColor: '#fff' }}>
               {selectedTemplateId === "creator-1" && <CreatorTemplateOne data={data} />}
               {selectedTemplateId === "creator-2" && <CreatorTemplateTwo data={data} />}
+              {selectedTemplateId === "creator-3" && <CreatorTemplateThree data={data} />}
+              {selectedTemplateId === "creator-4" && <CreatorTemplateFour data={data} />}
               {selectedTemplateId === "brand-1" && <BrandTemplateOne data={data} />}
               {selectedTemplateId === "brand-2" && <BrandTemplateTwo data={data} />}
+              {selectedTemplateId === "brand-3" && <BrandTemplateThree data={data} />}
+              {selectedTemplateId === "brand-4" && <BrandTemplateFour data={data} />}
             </div>
           </div>
         </div>
