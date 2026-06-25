@@ -24,7 +24,7 @@
 .btn-text {
   background: none;
   border: none;
-  color: #0f172a;
+  color: var(--text-main);
   font-weight: 700;
   font-size: 14px;
   cursor: pointer;
@@ -51,20 +51,20 @@
 }
 
 .notif-filters button {
-  background: #efefef;
+  background: var(--bg-secondary);
   border: none;
   padding: 8px 16px;
   border-radius: 20px;
   font-size: 13px;
   font-weight: 600;
-  color: #666;
+  color: var(--text-muted);
   white-space: nowrap;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .notif-filters button.active {
-  background: #0f172a;
+  background: var(--primary-action);
   color: white;
 }
 
@@ -100,7 +100,7 @@
   position: absolute;
   bottom: -4px;
   right: -4px;
-  background: white;
+  background: var(--bg-card);
   width: 20px;
   height: 20px;
   border-radius: 50%;
@@ -109,7 +109,7 @@
   justify-content: center;
   font-size: 10px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  border: 1.5px solid white;
+  border: 1.5px solid var(--bg-card);
 }
 
 .notif-info {
@@ -121,7 +121,7 @@
   margin: 0;
   font-size: 14px;
   line-height: 1.4;
-  color: var(--text);
+  color: var(--text-main);
 }
 
 .notif-text .username {
@@ -136,7 +136,7 @@
 .unread-dot {
   width: 8px;
   height: 8px;
-  background: #0f172a;
+  background: var(--primary-action);
   border-radius: 50%;
   flex-shrink: 0;
 }
@@ -149,7 +149,7 @@
 
 .skeleton-item {
   height: 60px;
-  background: #f3f4f6;
+  background: var(--bg-secondary);
   border-radius: 12px;
   animation: pulse 1.5s infinite;
 }
@@ -172,11 +172,11 @@
   align-items: center;
   gap: 16px;
   padding: 16px 20px;
-  background: #f8fafc;
+  background: var(--bg-main);
   border-radius: 16px;
   margin-bottom: 24px;
   cursor: pointer;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border-light);
   transition: all 0.2s;
 }
 
@@ -192,7 +192,7 @@
 
 .requests-avatar-stack .avatar-container {
   margin-right: -12px;
-  border: 2px solid #f8fafc;
+  border: 2px solid var(--bg-main);
 }
 
 .requests-preview-text {
@@ -202,7 +202,7 @@
 .requests-preview-text strong {
   display: block;
   font-size: 15px;
-  color: #0f172a;
+  color: var(--text-main);
 }
 
 .requests-preview-text span {
@@ -232,7 +232,7 @@
 }
 
 .btn-accept {
-  background: #0f172a;
+  background: var(--primary-action);
   color: white;
 }
 
@@ -242,9 +242,9 @@
 }
 
 .btn-decline {
-  background: #f1f5f9;
-  color: #64748b;
-  border: 1px solid #e2e8f0;
+  background: var(--bg-secondary);
+  color: var(--text-muted);
+  border: 1px solid var(--border-light);
 }
 
 .btn-decline:hover {

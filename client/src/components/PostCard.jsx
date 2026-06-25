@@ -201,7 +201,7 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
   }, [post.media, post.image]);
 
   return (
-    <div ref={cardRef} className={`bg-white border border-slate-200 rounded-xl p-6 transition-all hover:shadow-md hover:border-slate-300 ${post.isPinned ? "ring-2 ring-blue-100" : ""} animate-fade-in`}>
+    <div ref={cardRef} className={`bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6 transition-all hover:shadow-md hover:border-slate-300 dark:hover:border-slate-600 ${post.isPinned ? "ring-2 ring-blue-100 dark:ring-blue-900" : ""} animate-fade-in`}>
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex gap-4">
@@ -211,36 +211,36 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
               className={`font-bold cursor-pointer transition-colors flex items-center gap-1 ${
                 (post.user?.isVerified || post.user?.isPremium) 
                   ? (post.user?.role === 'brand' ? 'text-yellow-500 hover:text-yellow-600' : 'text-[#1d9bf0] hover:text-blue-600') 
-                  : 'text-slate-900 hover:text-blue-600'
+                  : 'text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400'
               }`} 
               onClick={() => navigate(`/user/${post.user?._id}`)}
             >
               {post.user?.name || post.username}
               {(post.user?.isVerified || post.user?.isPremium) && <VerifiedBadge size="sm" tier={post.user?.premiumTier} role={post.user?.role} />}
             </h3>
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-slate-500 dark:text-slate-400">
               {post.user?.role === 'brand' ? 'Brand' : 'Creator'}{post.user?.category ? ` / ${post.user.category}` : ''} • {new Date(post.createdAt).toLocaleDateString()}
             </p>
           </div>
         </div>
 
         <div className="relative">
-          <button className="p-2 text-slate-400 hover:bg-slate-50 rounded-full transition-colors" onClick={() => setShowMenu(!showMenu)}>
+          <button className="p-2 text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-full transition-colors" onClick={() => setShowMenu(!showMenu)}>
             <MoreHorizontalIcon />
           </button>
           {showMenu && (
-            <div className="absolute right-0 mt-2 w-48 bg-white border border-slate-200 rounded-xl shadow-lg z-20 py-1">
+            <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg z-20 py-1">
               {isOwner ? (
                 <>
-                  <button className="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50" onClick={() => { setIsEditing(true); setShowMenu(false); }}>Edit Project</button>
-                  <button className="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50" onClick={handlePin}>{post.isPinned ? "Unpin" : "Pin to Profile"}</button>
-                  <button className="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50" onClick={handleArchive}>Archive</button>
-                  <button className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-bold" onClick={handleDelete} disabled={isDeleting}>Delete</button>
+                  <button className="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700" onClick={() => { setIsEditing(true); setShowMenu(false); }}>Edit Project</button>
+                  <button className="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700" onClick={handlePin}>{post.isPinned ? "Unpin" : "Pin to Profile"}</button>
+                  <button className="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700" onClick={handleArchive}>Archive</button>
+                  <button className="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 font-bold" onClick={handleDelete} disabled={isDeleting}>Delete</button>
                 </>
               ) : (
                 <>
-                  <button className="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50" onClick={() => { setShowCollectionModal(true); setShowMenu(false); }}>Save to Collection</button>
-                  <button className="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50" onClick={() => { setShowReportModal(true); setShowMenu(false); }}>Report</button>
+                  <button className="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700" onClick={() => { setShowCollectionModal(true); setShowMenu(false); }}>Save to Collection</button>
+                  <button className="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700" onClick={() => { setShowReportModal(true); setShowMenu(false); }}>Report</button>
                 </>
               )}
             </div>
@@ -251,26 +251,26 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
       {/* Content */}
       <div className="mb-4">
         {isEditing ? (
-          <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
+          <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
             <textarea
-              className="w-full bg-white border border-slate-300 rounded-lg p-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none"
+              className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg p-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none dark:text-white"
               rows="3"
               value={editContent}
               onChange={(e) => setEditContent(e.target.value)}
             />
             <div className="flex justify-end gap-2 mt-3">
-              <button className="px-4 py-1.5 text-sm font-bold text-slate-600 hover:bg-slate-100 rounded-lg" onClick={() => setIsEditing(false)}>Cancel</button>
+              <button className="px-4 py-1.5 text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg" onClick={() => setIsEditing(false)}>Cancel</button>
               <button className="px-4 py-1.5 text-sm font-bold bg-blue-600 text-white hover:bg-blue-700 rounded-lg" onClick={handleEdit}>Save</button>
             </div>
           </div>
         ) : (
           <div>
-            <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap mb-4">{post.content}</p>
+            <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-wrap mb-4">{post.content}</p>
             
             {post.hashtags && post.hashtags.length > 0 && (
               <div className="flex gap-2 flex-wrap mb-4">
                 {post.hashtags.map((tag, i) => (
-                  <span key={i} className="px-2.5 py-1 bg-slate-100 text-slate-600 text-xs font-bold rounded-md">
+                  <span key={i} className="px-2.5 py-1 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-xs font-bold rounded-md">
                     {tag.startsWith('#') ? tag : `#${tag}`}
                   </span>
                 ))}
@@ -282,31 +282,31 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
 
       {/* Media Thumbnail */}
       {mediaList.length > 0 && (
-        <div className="mb-4 -mx-6 sm:mx-0 sm:rounded-xl overflow-hidden border-y sm:border border-slate-200 bg-black cursor-pointer" onClick={() => setShowLightbox(true)}>
+        <div className="mb-4 -mx-6 sm:mx-0 sm:rounded-xl overflow-hidden border-y sm:border border-slate-200 dark:border-slate-700 bg-black cursor-pointer" onClick={() => setShowLightbox(true)}>
           <MediaGallery media={mediaList} />
         </div>
       )}
 
       {/* Stats / Footer Actions */}
-      <div className="flex items-center justify-between pt-4 border-t border-slate-100">
+      <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-700/50">
         <div className="flex items-center gap-6">
-          <button className={`flex items-center gap-1.5 text-sm font-bold transition-colors ${liked ? "text-red-500" : "text-slate-500 hover:text-slate-700"}`} onClick={handleLike}>
+          <button className={`flex items-center gap-1.5 text-sm font-bold transition-colors ${liked ? "text-red-500" : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"}`} onClick={handleLike}>
             <HeartIcon filled={liked} /> <span>{likesCount}</span>
           </button>
-          <button className="flex items-center gap-1.5 text-sm font-bold text-slate-500 hover:text-slate-700 transition-colors" onClick={() => setShowComments(!showComments)}>
+          <button className="flex items-center gap-1.5 text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors" onClick={() => setShowComments(!showComments)}>
             <MessageCircleIcon /> <span>{post.comments?.length || 0}</span>
           </button>
-          <button className="flex items-center gap-1.5 text-sm font-bold text-slate-500 hover:text-slate-700 transition-colors">
+          <button className="flex items-center gap-1.5 text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
             <span>{localViews}</span>
           </button>
         </div>
         
         <div className="flex items-center gap-2">
-          <button className={`p-2 rounded-lg transition-colors ${saved ? "text-blue-600 bg-blue-50" : "text-slate-400 hover:bg-slate-50"}`} onClick={handleSave}>
+          <button className={`p-2 rounded-lg transition-colors ${saved ? "text-blue-600 bg-blue-50 dark:bg-blue-900/30" : "text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700"}`} onClick={handleSave}>
             <BookmarkIcon filled={saved} />
           </button>
-          <button className="p-2 text-slate-400 hover:bg-slate-50 rounded-lg transition-colors" onClick={handleShare}>
+          <button className="p-2 text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg transition-colors" onClick={handleShare}>
             <SendIcon />
           </button>
         </div>
@@ -314,18 +314,18 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
 
       {/* Comments Dropdown */}
       {showComments && (
-        <div className="mt-4 pt-4 border-t border-slate-100 animate-fade-in">
+        <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-700/50 animate-fade-in">
           {comments.map((c, i) => (
             <div key={i} className="flex gap-2 text-sm mb-2">
-              <span className="font-bold text-slate-900 cursor-pointer hover:text-blue-600" onClick={() => navigate(`/user/${c.user?._id || c.user}`)}>
+              <span className="font-bold text-slate-900 dark:text-white cursor-pointer hover:text-blue-600" onClick={() => navigate(`/user/${c.user?._id || c.user}`)}>
                 {c.username || c.user?.name || "User"}:
               </span>
-              <span className="text-slate-600">{c.text}</span>
+              <span className="text-slate-600 dark:text-slate-300">{c.text}</span>
             </div>
           ))}
           <form onSubmit={handleCommentSubmit} className="flex gap-2 mt-3">
             <input 
-              className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+              className="flex-1 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
               placeholder="Add a comment..." 
               value={commentText} 
               onChange={(e) => setCommentText(e.target.value)} 

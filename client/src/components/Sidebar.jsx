@@ -29,7 +29,7 @@ export default function Sidebar({ user, msgUnreadCount = 0, logout, openHelpCent
     <aside className="sidebar">
       <div className="sidebar-logo">
         <Link to="/home" className="logo-text" style={{ display: 'flex', alignItems: 'center' }}>
-          <img src="/LOGOAPP1.png" alt="Pactogram" style={{ height: '36px', width: 'auto', flexShrink: 0 }} />
+          <img src="/LOGOAPP1.png" alt="Pactogram" className="dark:invert" style={{ height: '36px', width: 'auto', flexShrink: 0 }} />
         </Link>
       </div>
 

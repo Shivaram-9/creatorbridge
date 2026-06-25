@@ -135,7 +135,7 @@ export default function Navbar({
       <div className="navbar-inner">
         <div style={{ flex: '1 0 0' }}>
           <Link to="/home" className="logo-main-text" style={{ display: 'flex', alignItems: 'center' }}>
-            <img src="/LOGOAPP1.png" alt="Pactogram" style={{ height: '36px', width: 'auto', flexShrink: 0 }} />
+            <img src="/LOGOAPP1.png" alt="Pactogram" className="dark:invert dark:mix-blend-screen" style={{ height: '36px', width: 'auto', flexShrink: 0 }} />
           </Link>
         </div>
 
@@ -180,14 +180,14 @@ export default function Navbar({
                   </div>
                 </button>
                 {menuOpen && (
-                  <div className="absolute top-12 right-0 w-48 bg-white rounded-lg shadow-premium border border-gray-100 py-2 fade-up">
-                    <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-black transition-colors" onClick={() => setMenuOpen(false)}>Profile</Link>
-                    <Link to="/saved" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-black transition-colors" onClick={() => setMenuOpen(false)}>Saved</Link>
+                  <div className="absolute top-12 right-0 w-48 bg-white dark:bg-slate-800 rounded-lg shadow-premium border border-gray-100 dark:border-slate-700 py-2 fade-up">
+                    <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700 hover:text-black dark:hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Profile</Link>
+                    <Link to="/saved" className="block px-4 py-2 text-sm text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700 hover:text-black dark:hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Saved</Link>
 
-                    <Link to="/settings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-black transition-colors" onClick={() => setMenuOpen(false)}>Settings</Link>
-                    <div className="h-px bg-gray-100 my-2"></div>
+                    <Link to="/settings" className="block px-4 py-2 text-sm text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700 hover:text-black dark:hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Settings</Link>
+                    <div className="h-px bg-gray-100 dark:bg-slate-700 my-2"></div>
                     <button
-                      className="w-full text-left bg-transparent border-none px-4 py-2 text-sm text-black hover:bg-gray-50 transition-colors cursor-pointer"
+                      className="w-full text-left bg-transparent border-none px-4 py-2 text-sm text-black dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors cursor-pointer"
                       onClick={() => { setMenuOpen(false); logout(); }}
                     >
                       Log out

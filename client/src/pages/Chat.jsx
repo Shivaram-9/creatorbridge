@@ -486,13 +486,13 @@ export default function Chat({ standalone = true }) {
         <div ref={bottomRef} />
       </div>
 
-      <form style={{ padding: '16px', background: 'white', borderTop: '1px solid #f1f5f9' }} onSubmit={handleSubmit}>
+      <form style={{ padding: '16px', background: 'var(--bg-main)', borderTop: '1px solid var(--border-light)' }} onSubmit={handleSubmit}>
         {previewUrl && (
           <div style={{ marginBottom: '12px', position: 'relative', display: 'inline-block' }}>
             {selectedFile?.type.startsWith("video") ? (
-              <video src={previewUrl} style={{ height: '100px', borderRadius: '8px', border: '1px solid #e2e8f0' }} />
+              <video src={previewUrl} style={{ height: '100px', borderRadius: '8px', border: '1px solid var(--border-light)' }} />
             ) : (
-              <img src={previewUrl} alt="Preview" style={{ height: '100px', borderRadius: '8px', border: '1px solid #e2e8f0' }} />
+              <img src={previewUrl} alt="Preview" style={{ height: '100px', borderRadius: '8px', border: '1px solid var(--border-light)' }} />
             )}
             <button 
               type="button"
@@ -510,32 +510,32 @@ export default function Chat({ standalone = true }) {
             style={{ 
               whiteSpace: 'nowrap', 
               padding: '6px 14px', 
-              background: '#f1f5f9', 
-              border: '1px solid #e2e8f0', 
+              background: 'var(--bg-card)', 
+              border: '1px solid var(--border-light)', 
               borderRadius: '20px', 
               fontSize: '13px', 
               fontWeight: '600', 
-              color: '#0f172a', 
+              color: 'var(--text-main)', 
               cursor: 'pointer',
               transition: 'all 0.2s ease',
               display: 'flex',
               alignItems: 'center',
               gap: '6px'
             }}
-            onMouseOver={(e) => { e.currentTarget.style.background = '#e2e8f0'; e.currentTarget.style.borderColor = '#cbd5e1'; }}
-            onMouseOut={(e) => { e.currentTarget.style.background = '#f1f5f9'; e.currentTarget.style.borderColor = '#e2e8f0'; }}
+            onMouseOver={(e) => { e.currentTarget.style.background = 'var(--bg-secondary)'; e.currentTarget.style.borderColor = 'var(--primary)'; }}
+            onMouseOut={(e) => { e.currentTarget.style.background = 'var(--bg-card)'; e.currentTarget.style.borderColor = 'var(--border-light)'; }}
           >
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
             Request Collaboration
           </button>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', background: '#f8fafc', padding: '8px', borderRadius: '24px', border: '1px solid #e2e8f0' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', background: 'var(--bg-card)', padding: '8px', borderRadius: '24px', border: '1px solid var(--border-light)' }}>
           <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*,video/*" style={{ display: 'none' }} />
-          <button type="button" onClick={() => fileInputRef.current?.click()} style={{ border: 'none', background: 'none', cursor: 'pointer', padding: '8px', color: '#64748b', display: 'flex', alignItems: 'center' }}>
+          <button type="button" onClick={() => fileInputRef.current?.click()} style={{ border: 'none', background: 'none', cursor: 'pointer', padding: '8px', color: 'var(--text-muted)', display: 'flex', alignItems: 'center' }}>
             <MediaIcon />
           </button>
           <input
-            style={{ flex: 1, background: 'transparent', border: 'none', outline: 'none', padding: '8px', fontSize: '14px', color: '#0f172a' }}
+            style={{ flex: 1, background: 'transparent', border: 'none', outline: 'none', padding: '8px', fontSize: '14px', color: 'var(--text-main)' }}
             placeholder="Write a message..."
             value={input}
             onChange={handleInputChange}
@@ -543,7 +543,7 @@ export default function Chat({ standalone = true }) {
           />
           <button 
             type="submit" 
-            style={{ padding: '8px 24px', borderRadius: '20px', border: 'none', background: '#0f172a', color: 'white', fontWeight: '700', cursor: 'pointer', opacity: (!input.trim() && !selectedFile) ? 0.5 : 1 }}
+            style={{ padding: '8px 24px', borderRadius: '20px', border: 'none', background: 'var(--primary-action)', color: 'white', fontWeight: '700', cursor: 'pointer', opacity: (!input.trim() && !selectedFile) ? 0.5 : 1 }}
             disabled={!input.trim() && !selectedFile}
           >
             Send

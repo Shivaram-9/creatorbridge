@@ -377,7 +377,7 @@ export default function Profile() {
                 <div style={{ position: 'relative' }}>
                   <button className="action-btn secondary icon-only" onClick={() => setShowMenu(!showMenu)}>•••</button>
                   {showMenu && (
-                    <div className="dropdown-menu show slide-in" style={{ position: 'absolute', left: 0, top: '100%', marginTop: '8px', background: 'white', border: '1px solid #eee', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', zIndex: 100, minWidth: '150px' }}>
+                    <div className="dropdown-menu show slide-in" style={{ position: 'absolute', left: 0, top: '100%', marginTop: '8px', background: 'var(--bg-card)', border: '1px solid var(--border-light)', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', zIndex: 100, minWidth: '150px' }}>
                       <button className="dropdown-item" onClick={() => navigate("/profile/edit")}>Edit Profile</button>
                       <button className="dropdown-item" onClick={() => navigate("/settings")}>Settings</button>
                       <button className="dropdown-item danger" onClick={() => { localStorage.clear(); window.location.href = "/login"; }}>Logout</button>
@@ -596,11 +596,11 @@ export default function Profile() {
 
       {showPortfolioModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-xl" onClick={e => e.stopPropagation()}>
-            <h2 className="text-xl font-bold mb-4 text-slate-900">Add Portfolio Item</h2>
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 w-full max-w-md shadow-xl" onClick={e => e.stopPropagation()}>
+            <h2 className="text-xl font-bold mb-4 text-slate-900 dark:text-white">Add Portfolio Item</h2>
             <div className="flex flex-col gap-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Upload Media (Optional)</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Upload Media (Optional)</label>
                 <div className="flex items-center gap-2 mb-3">
                   <input 
                     type="file" 
@@ -617,21 +617,21 @@ export default function Profile() {
                   {portfolioUploading && <LoadingSpinner />}
                 </div>
 
-                <label className="block text-sm font-medium text-slate-700 mb-1">Or paste Media URL</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Or paste Media URL</label>
                 <input 
                   type="url" 
                   placeholder="https://..." 
-                  className="w-full border border-slate-300 rounded-lg p-2 outline-none focus:border-blue-500"
+                  className="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-white rounded-lg p-2 outline-none focus:border-blue-500"
                   value={portfolioUrl} 
                   onChange={e => setPortfolioUrl(e.target.value)} 
                   disabled={portfolioUploading}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Caption (Optional)</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Caption (Optional)</label>
                 <textarea 
                   placeholder="Project details..." 
-                  className="w-full border border-slate-300 rounded-lg p-2 outline-none focus:border-blue-500 resize-none"
+                  className="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-white rounded-lg p-2 outline-none focus:border-blue-500 resize-none"
                   rows="3"
                   value={portfolioCaption} 
                   onChange={e => setPortfolioCaption(e.target.value)} 
@@ -640,7 +640,7 @@ export default function Profile() {
               <div className="flex justify-end gap-2 mt-4">
                 <button 
                   onClick={() => setShowPortfolioModal(false)}
-                  className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors font-medium"
+                  className="px-4 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors font-medium"
                   disabled={portfolioUploading}
                 >
                   Cancel
@@ -662,8 +662,8 @@ export default function Profile() {
       {showExperienceModal && (
         <div className="modal-overlay slide-in" onClick={() => setShowExperienceModal(false)}>
           <div className="modal-content fade-in" onClick={e => e.stopPropagation()} style={{ maxWidth: '500px', padding: '32px' }}>
-            <h3 style={{ marginBottom: '16px', fontSize: '20px', fontWeight: 'bold' }}>Work Experience</h3>
-            <div style={{ whiteSpace: 'pre-line', color: '#334155', fontSize: '15px', lineHeight: '1.6', maxHeight: '60vh', overflowY: 'auto' }}>
+            <h3 style={{ marginBottom: '16px', fontSize: '20px', fontWeight: 'bold' }} className="dark:text-white">Work Experience</h3>
+            <div className="text-slate-700 dark:text-slate-300" style={{ whiteSpace: 'pre-line', fontSize: '15px', lineHeight: '1.6', maxHeight: '60vh', overflowY: 'auto' }}>
               {user?.experience}
             </div>
           </div>

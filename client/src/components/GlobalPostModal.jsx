@@ -49,12 +49,12 @@ export default function GlobalPostModal({ user }) {
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm" onClick={close}>
-      <div className="bg-white rounded-2xl w-full max-w-lg m-4 shadow-2xl relative" onClick={e => e.stopPropagation()}>
-        <button className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-xl font-bold" onClick={close}>
+      <div className="bg-white dark:bg-slate-800 rounded-2xl w-full max-w-lg m-4 shadow-2xl relative" onClick={e => e.stopPropagation()}>
+        <button className="absolute top-4 right-4 text-gray-500 dark:text-slate-400 hover:text-gray-800 dark:hover:text-white text-xl font-bold" onClick={close}>
           &times;
         </button>
         <div className="p-6">
-          <h2 className="text-xl font-bold text-gray-800 mb-4">Create Post</h2>
+          <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-4">Create Post</h2>
           <CreatePost user={user} onPost={handlePost} />
         </div>
       </div>

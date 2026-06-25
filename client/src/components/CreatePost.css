@@ -116,8 +116,8 @@
 }
 
 .btn-submit {
-  background-color: #0f172a !important;
-  color: #ffffff !important;
+  background-color: var(--text-main) !important;
+  color: var(--bg-main) !important;
   border: none !important;
   padding: 12px 24px !important;
   border-radius: 8px !important;
@@ -133,15 +133,15 @@
 }
 
 .btn-submit:disabled {
-  background-color: #f1f5f9 !important;
-  color: #94a3b8 !important;
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-muted) !important;
   opacity: 1 !important;
   cursor: not-allowed !important;
   pointer-events: none !important;
 }
 
 .btn-submit:hover:not(:disabled) {
-  background-color: #1e293b !important;
+  opacity: 0.9 !important;
 }
 
 .cp-actions {

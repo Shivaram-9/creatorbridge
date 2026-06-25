@@ -23,7 +23,7 @@ function HeroBanner({ user }) {
           The premium network for builders, designers, and innovators. Showcase your portfolio and connect with verified professionals.
         </p>
         <div className="flex gap-4">
-          <button onClick={() => navigate('/discover')} className="border border-slate-300 text-slate-700 bg-white px-6 py-2.5 rounded-lg font-bold shadow-sm hover:bg-slate-50 transition-colors w-full md:w-auto flex justify-center items-center">
+          <button onClick={() => navigate('/discover')} className="border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 px-6 py-2.5 rounded-lg font-bold shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors w-full md:w-auto flex justify-center items-center">
             Build Your Pact
           </button>
         </div>
@@ -227,30 +227,30 @@ export default function Home() {
       {/* Right Sidebar Column */}
       <div className="home-sidebar-col">
         {/* Profile Stats Widget */}
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+        <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-700">
           <div className="flex items-center gap-3 mb-4">
             <Avatar user={user} size="sm" />
             <div>
-              <h3 className="font-bold text-slate-900 text-sm leading-tight">{user?.name || user?.username}</h3>
-              <p className="text-slate-500 text-xs">{user?.role === 'brand' ? 'Brand' : 'Creator'}</p>
+              <h3 className="font-bold text-slate-900 dark:text-white text-sm leading-tight">{user?.name || user?.username}</h3>
+              <p className="text-slate-500 dark:text-slate-400 text-xs">{user?.role === 'brand' ? 'Brand' : 'Creator'}</p>
             </div>
           </div>
-          <div className="flex justify-between text-sm py-3 border-t border-slate-100">
-            <span className="text-slate-500">Profile Views</span>
-            <span className="font-bold text-slate-900">{user?.profileViews || 0}</span>
+          <div className="flex justify-between text-sm py-3 border-t border-slate-100 dark:border-slate-700/50">
+            <span className="text-slate-500 dark:text-slate-400">Profile Views</span>
+            <span className="font-bold text-slate-900 dark:text-white">{user?.profileViews || 0}</span>
           </div>
-          <div className="flex justify-between text-sm py-3 border-t border-slate-100">
-            <span className="text-slate-500">Post Impressions</span>
-            <span className="font-bold text-slate-900">{user?.postImpressions || 0}</span>
+          <div className="flex justify-between text-sm py-3 border-t border-slate-100 dark:border-slate-700/50">
+            <span className="text-slate-500 dark:text-slate-400">Post Impressions</span>
+            <span className="font-bold text-slate-900 dark:text-white">{user?.postImpressions || 0}</span>
           </div>
-          <button onClick={() => navigate(`/user/${user?._id}`)} className="mt-2 w-full text-center text-sm font-semibold text-slate-700 bg-slate-50 hover:bg-slate-100 py-2 rounded-lg transition-colors">
+          <button onClick={() => navigate(`/user/${user?._id}`)} className="mt-2 w-full text-center text-sm font-semibold text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-700 py-2 rounded-lg transition-colors">
             View My Profile
           </button>
         </div>
 
         {/* Suggested Connections Widget */}
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
-          <h3 className="font-bold text-slate-900 mb-4">Suggested Connections</h3>
+        <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-700">
+          <h3 className="font-bold text-slate-900 dark:text-white mb-4">Suggested Connections</h3>
           <div className="flex flex-col gap-4">
             {suggestedVerifiedUsers.length > 0 ? suggestedVerifiedUsers.map(u => (
               <div key={u._id} className="flex items-center justify-between">
@@ -259,22 +259,22 @@ export default function Home() {
                     <Avatar user={u} size="sm" />
                   </div>
                   <div className="cursor-pointer" onClick={() => navigate(`/user/${u._id}`)}>
-                    <h4 className="text-sm font-bold text-slate-900">{u.name || u.username}</h4>
-                    <p className="text-xs text-slate-500 capitalize">{u.role || 'Creator'}</p>
+                    <h4 className="text-sm font-bold text-slate-900 dark:text-white">{u.name || u.username}</h4>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 capitalize">{u.role || 'Creator'}</p>
                   </div>
                 </div>
                 <button 
                   onClick={() => navigate(`/user/${u._id}`)}
-                  className="text-xs font-bold border border-slate-300 text-slate-700 px-3 py-1.5 rounded-full hover:bg-slate-50 transition-colors"
+                  className="text-xs font-bold border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-full hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
                 >
                   View
                 </button>
               </div>
             )) : (
-              <div className="text-sm text-slate-500 text-center py-2">No verified users found.</div>
+              <div className="text-sm text-slate-500 dark:text-slate-400 text-center py-2">No verified users found.</div>
             )}
           </div>
-          <button onClick={() => navigate('/discover')} className="mt-4 w-full text-center text-sm font-semibold text-slate-700 hover:text-slate-900 transition-colors">
+          <button onClick={() => navigate('/discover')} className="mt-4 w-full text-center text-sm font-semibold text-slate-700 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 transition-colors">
             View all recommendations
           </button>
         </div>

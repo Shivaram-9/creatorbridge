@@ -34,7 +34,7 @@
 
 /* Profile Header Base */
 .profile-header-base {
-  background: #fff;
+  background: var(--bg-card);
   border-radius: 24px;
   padding: 30px 40px 40px;
   box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.04);
@@ -85,8 +85,8 @@
 
 /* Overview Card */
 .identity-overview-card {
-  background: #F8FAFC;
-  border: 1px solid #E2E8F0;
+  background: var(--bg-main);
+  border: 1px solid var(--border-light);
   border-radius: 16px;
   padding: 20px;
   width: 320px;
@@ -96,7 +96,7 @@
 .overview-title {
   font-size: 14px;
   font-weight: 700;
-  color: #1E293B;
+  color: var(--text-main);
   margin-bottom: 16px;
   display: flex;
   align-items: center;
@@ -117,7 +117,7 @@
 }
 
 .overview-key {
-  color: #64748B;
+  color: var(--text-muted);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -125,7 +125,7 @@
 
 .overview-val {
   font-weight: 600;
-  color: #0F172A;
+  color: var(--text-main);
 }
 
 /* Profile Info */
@@ -146,7 +146,7 @@
 .profile-display-name {
   font-size: 28px;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--text-main);
   margin: 0;
   display: flex;
   align-items: center;
@@ -202,7 +202,7 @@
 
 .profile-bio-text {
   font-size: 15px;
-  color: #334155;
+  color: var(--text-main);
   line-height: 1.5;
   margin: 0;
 }
@@ -241,20 +241,20 @@
 }
 
 .action-btn.primary {
-  background-color: #0f172a;
-  color: #ffffff;
+  background-color: var(--primary-action);
+  color: white;
 }
 .action-btn.primary:hover {
-  background-color: #1e293b;
+  background-color: var(--primary);
 }
 
 .action-btn.secondary {
-  background-color: #F8FAFC;
-  color: #334155;
-  border: 1px solid #E2E8F0;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  border: 1px solid var(--border-light);
 }
 .action-btn.secondary:hover {
-  background-color: #F1F5F9;
+  background-color: var(--bg-secondary);
 }
 .action-btn.icon-only {
   padding: 10px;
@@ -262,7 +262,7 @@
 
 /* Collab Tags */
 .collab-section {
-  background: #fff;
+  background: var(--bg-card);
   border-radius: 16px;
   padding: 20px 24px;
   margin-bottom: 24px;
@@ -304,14 +304,14 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background: #F8FAFC;
-  border: 1px solid #E2E8F0;
-  color: #334155;
+  background: var(--bg-main);
+  border: 1px solid var(--border-light);
+  color: var(--text-main);
 }
 .collab-tag.blue, .collab-tag.green, .collab-tag.purple, .collab-tag.orange { 
-  color: #0f172a; 
-  background: #f1f5f9; 
-  border-color: #e2e8f0; 
+  color: var(--text-main); 
+  background: var(--bg-secondary); 
+  border-color: var(--border-light); 
 }
 
 /* Stats Row */
@@ -323,14 +323,14 @@
 }
 
 .stat-card-wide {
-  background: #fff;
+  background: var(--bg-card);
   border-radius: 16px;
   padding: 20px;
   display: flex;
   align-items: center;
   gap: 16px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.02);
-  border: 1px solid #F1F5F9;
+  border: 1px solid var(--border-light);
 }
 
 .stat-icon-wrap {
@@ -343,8 +343,8 @@
   font-size: 20px;
 }
 .stat-icon-wrap.purple, .stat-icon-wrap.green, .stat-icon-wrap.orange, .stat-icon-wrap.blue, .stat-icon-wrap.red { 
-  background: #f1f5f9; 
-  color: #0f172a; 
+  background: var(--bg-secondary); 
+  color: var(--text-main); 
 }
 
 .stat-info {
@@ -355,14 +355,14 @@
 .stat-val {
   font-size: 20px;
   font-weight: 800;
-  color: #0F172A;
+  color: var(--text-main);
   line-height: 1;
 }
 
 .stat-lbl {
   font-size: 13px;
   font-weight: 600;
-  color: #475569;
+  color: var(--text-muted);
   margin-top: 4px;
 }
 .stat-sub {
@@ -375,9 +375,9 @@
 .profile-tabs-wide {
   display: flex;
   gap: 32px;
-  border-bottom: 1px solid #E2E8F0;
+  border-bottom: 1px solid var(--border-light);
   margin-bottom: 24px;
-  background: #fff;
+  background: var(--bg-card);
   padding: 0 24px;
   border-radius: 16px 16px 0 0;
 }
@@ -400,7 +400,7 @@
 }
 
 .tab-item-wide.active {
-  color: #0f172a;
+  color: var(--text-main);
 }
 
 .tab-item-wide.active::after {
@@ -410,7 +410,7 @@
   left: 0;
   right: 0;
   height: 2px;
-  background: #0f172a;
+  background: var(--text-main);
   border-radius: 2px 2px 0 0;
 }
 

@@ -64,7 +64,7 @@
 
 /* Profile Header Base */
 .profile-header-base {
-  background: #fff;
+  background: var(--bg-card);
   border-radius: 24px;
   padding: 30px 40px 40px;
   box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.04);
@@ -115,8 +115,8 @@
 
 /* Overview Card */
 .identity-overview-card {
-  background: #F8FAFC;
-  border: 1px solid #E2E8F0;
+  background: var(--bg-main);
+  border: 1px solid var(--border-light);
   border-radius: 16px;
   padding: 20px;
   width: 320px;
@@ -126,7 +126,7 @@
 .overview-title {
   font-size: 14px;
   font-weight: 700;
-  color: #1E293B;
+  color: var(--text-main);
   margin-bottom: 16px;
   display: flex;
   align-items: center;
@@ -147,7 +147,7 @@
 }
 
 .overview-key {
-  color: #64748B;
+  color: var(--text-muted);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -155,7 +155,7 @@
 
 .overview-val {
   font-weight: 600;
-  color: #0F172A;
+  color: var(--text-main);
 }
 
 .get-verified-card {
@@ -198,7 +198,7 @@
 .profile-display-name {
   font-size: 24px;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--text-main);
   margin: 0;
   display: flex;
   align-items: center;
@@ -254,7 +254,7 @@
 
 .profile-bio-text {
   font-size: 15px;
-  color: #334155;
+  color: var(--text-main);
   line-height: 1.5;
   margin: 0;
 }
@@ -314,7 +314,7 @@
 
 /* Collab Tags */
 .collab-section {
-  background: #fff;
+  background: var(--bg-card);
   border-radius: 16px;
   padding: 20px 24px;
   margin-bottom: 24px;
@@ -375,14 +375,14 @@
 }
 
 .stat-card-wide {
-  background: #fff;
+  background: var(--bg-card);
   border-radius: 16px;
   padding: 20px;
   display: flex;
   align-items: center;
   gap: 16px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.02);
-  border: 1px solid #F1F5F9;
+  border: 1px solid var(--border-light);
 }
 
 .stat-icon-wrap {
@@ -407,14 +407,14 @@
 .stat-val {
   font-size: 20px;
   font-weight: 800;
-  color: #0F172A;
+  color: var(--text-main);
   line-height: 1;
 }
 
 .stat-lbl {
   font-size: 13px;
   font-weight: 600;
-  color: #475569;
+  color: var(--text-muted);
   margin-top: 4px;
 }
 .stat-sub {
@@ -425,7 +425,7 @@
 
 /* Bottom Wrapper */
 .profile-bottom-wrapper {
-  background-color: #ffffff;
+  background-color: var(--bg-main);
   margin: 0 -24px;
   padding: 0 24px 60px 24px;
   min-height: 50vh;
@@ -442,9 +442,9 @@
 .profile-tabs-wide {
   display: flex;
   gap: 32px;
-  border-bottom: 1px solid #E2E8F0;
+  border-bottom: 1px solid var(--border-light);
   margin-bottom: 24px;
-  background: #fff;
+  background: var(--bg-card);
   padding: 0 24px;
   border-radius: 16px 16px 0 0;
 }
@@ -689,7 +689,7 @@
     border-radius: 0;
     padding: 20px;
     box-shadow: none;
-    background: #ffffff;
+    background: var(--bg-card);
   }
 
   .profile-top-row {

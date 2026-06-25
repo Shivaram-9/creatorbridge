@@ -54,18 +54,18 @@
 }
 
 .settings-sidebar nav button:hover {
-  background: #f8fafc;
-  color: #0f172a;
+  background: var(--bg-secondary);
+  color: var(--text-main);
 }
 
 .settings-sidebar nav button.active {
-  background: linear-gradient(135deg, #F0F7FF 0%, #E0EFFF 100%);
-  color: #0052cc;
-  box-shadow: 0 2px 8px rgba(0, 82, 204, 0.08);
+  background: var(--primary-action);
+  color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .settings-sidebar nav button.active svg {
-  color: #0052cc;
+  color: white;
 }
 
 .settings-content {
@@ -73,18 +73,18 @@
 }
 
 .settings-section {
-  background: #ffffff;
+  background: var(--bg-card);
   border-radius: 20px;
   padding: 40px;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
-  border: 1px solid #f1f5f9;
+  border: 1px solid var(--border-light);
 }
 
 .settings-section h3 {
   font-size: 24px;
   font-weight: 800;
   margin-bottom: 32px;
-  color: #0f172a;
+  color: var(--text-main);
 }
 
 .settings-list {
@@ -125,7 +125,7 @@
   font-size: 16px;
   font-weight: 700;
   margin-bottom: 6px;
-  color: #1e293b;
+  color: var(--text-main);
 }
 
 .setting-info p {
@@ -139,10 +139,10 @@
   width: 100%;
   padding: 14px 16px;
   border-radius: 12px;
-  border: 1px solid #e2e8f0;
-  background: #f8fafc;
+  border: 1px solid var(--border-light);
+  background: var(--bg-main);
   font-weight: 500;
-  color: #0f172a;
+  color: var(--text-main);
   outline: none;
   font-size: 15px;
   transition: all 0.2s;
@@ -225,7 +225,7 @@
   align-items: center;
   gap: 16px;
   padding: 16px;
-  background: #f8fafc;
+  background: var(--bg-main);
   border-radius: 16px;
   margin-bottom: 12px;
 }
@@ -234,7 +234,7 @@
   font-size: 24px;
   width: 48px;
   height: 48px;
-  background: white;
+  background: var(--bg-card);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -271,8 +271,8 @@
 .alert-item {
   padding: 16px;
   border-radius: 12px;
-  background: white;
-  border: 1px solid #f1f5f9;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
   margin-bottom: 12px;
 }
 
@@ -292,7 +292,7 @@
 }
 
 .account-preview {
-  background: #f8fafc;
+  background: var(--bg-main);
   padding: 24px;
   border-radius: 20px;
   margin: 20px 0 32px 0;
@@ -345,7 +345,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 12px 16px;
-  background: #f8fafc;
+  background: var(--bg-main);
   border-radius: 16px;
   transition: transform 0.2s;
 }
@@ -365,14 +365,14 @@
   height: 44px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid white;
+  border: 2px solid var(--bg-card);
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .blocked-name {
   font-size: 15px;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--text-main);
   margin: 0;
 }
 
@@ -601,15 +601,15 @@
 }
 
 .account-preview-card {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
   padding: 24px;
   border-radius: 20px;
 }
 
 .security-card-item {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
   border-radius: 20px;
   padding: 24px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -617,7 +617,7 @@
 }
 
 .security-card-item:hover {
-  border-color: #cbd5e1;
+  border-color: var(--primary);
   box-shadow: 0 4px 12px rgba(0,0,0,0.03);
 }
 
@@ -646,24 +646,24 @@
 
 .security-icon-circle.email-icon {
   background: transparent;
-  color: #475569;
+  color: var(--text-muted);
 }
 
 .security-icon-circle.key-icon {
   background: transparent;
-  color: #475569;
+  color: var(--text-muted);
 }
 
 .security-card-title-group h4 {
   font-size: 16px;
   font-weight: 700;
   margin: 0 0 4px 0;
-  color: #0f172a;
+  color: var(--text-main);
 }
 
 .security-card-title-group p {
   font-size: 13px;
-  color: #64748b;
+  color: var(--text-muted);
   margin: 0;
 }
 
@@ -696,7 +696,7 @@
 .security-card-body {
   margin-top: 20px;
   padding-top: 20px;
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid var(--border-light);
 }
 
 /* Forms & Input fields inside Settings */

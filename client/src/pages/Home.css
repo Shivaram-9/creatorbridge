@@ -69,7 +69,7 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  background: #ffffff;
+  background: var(--bg-card);
   padding: 15px;
   border-radius: 16px;
   border: 1px solid var(--border-light, #f1f5f9);
@@ -305,7 +305,7 @@
 }
 .carousel-item {
   flex: 0 0 140px;
-  background: white;
+  background: var(--bg-card);
   border: 1px solid var(--border-light);
   border-radius: 12px;
   padding: 16px;
@@ -405,7 +405,7 @@
   top: 100%;
   left: 0;
   margin-top: 4px;
-  background: white;
+  background: var(--bg-card);
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.1);
   border: 1px solid var(--border-light);
@@ -428,19 +428,19 @@
   transition: background 0.2s;
 }
 .feed-dropdown-item:hover {
-  background-color: #F8FAFC;
+  background-color: var(--bg-secondary);
 }
 
 .feed-dropdown-item.active {
-  color: #0f172a;
-  background-color: #f1f5f9;
+  color: var(--text-main);
+  background-color: var(--bg-secondary);
   font-weight: 700;
 }
 .feed-filter-btn {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: white;
+  background: var(--bg-card);
   border: 1px solid var(--border-light);
   padding: 6px 12px;
   border-radius: 6px;

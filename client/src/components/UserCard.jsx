@@ -162,9 +162,9 @@ const UserCard = memo(({ user, minimal, layout = "card" }) => {
         flexDirection: 'column',
         alignItems: 'center',
         padding: '1.25rem',
-        backgroundColor: 'white',
+        backgroundColor: 'var(--bg-card)',
         borderRadius: '24px',
-        border: '1px solid #f1f5f9',
+        border: '1px solid var(--border-light)',
         transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
         position: 'relative',
         overflow: 'hidden',
@@ -177,12 +177,12 @@ const UserCard = memo(({ user, minimal, layout = "card" }) => {
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = 'translateY(-6px)';
         e.currentTarget.style.boxShadow = '0 12px 30px rgba(0,0,0,0.06)';
-        e.currentTarget.style.borderColor = '#e2e8f0';
+        e.currentTarget.style.borderColor = 'var(--primary)';
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.transform = 'translateY(0)';
         e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.02)';
-        e.currentTarget.style.borderColor = '#f1f5f9';
+        e.currentTarget.style.borderColor = 'var(--border-light)';
       }}
       onClick={() => navigate(`/user/${user._id}`)}
     >
@@ -194,7 +194,7 @@ const UserCard = memo(({ user, minimal, layout = "card" }) => {
         <h3 style={{ 
           fontSize: '16px', 
           fontWeight: 700, 
-          color: '#1a1a1a', 
+          color: 'var(--text-main)', 
           marginBottom: '4px',
           whiteSpace: 'nowrap',
           overflow: 'hidden',
@@ -207,7 +207,7 @@ const UserCard = memo(({ user, minimal, layout = "card" }) => {
           {user.name || user.username}
           {user.isVerified && <VerifiedBadge size="sm" tier={user.premiumTier} role={user.role} />}
         </h3>
-        <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '12px' }}>@{user.username}</p>
+        <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '12px' }}>@{user.username}</p>
         
         {!minimal && (
           <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginBottom: '1.25rem' }}>
@@ -266,9 +266,9 @@ const UserCard = memo(({ user, minimal, layout = "card" }) => {
             width: '100%',
             padding: '10px',
             borderRadius: '12px',
-            backgroundColor: hasRequested ? '#f1f5f9' : isFollowing ? '#f8fafc' : '#1a1a1a',
-            color: hasRequested ? '#64748b' : isFollowing ? '#1a1a1a' : 'white',
-            border: isFollowing ? '1px solid #e2e8f0' : 'none',
+            backgroundColor: hasRequested ? 'var(--bg-secondary)' : isFollowing ? 'var(--bg-secondary)' : 'var(--text-main)',
+            color: hasRequested ? 'var(--text-muted)' : isFollowing ? 'var(--text-main)' : 'var(--bg-main)',
+            border: isFollowing ? '1px solid var(--border-light)' : 'none',
             fontSize: '13px',
             fontWeight: 700,
             cursor: (actionBusy || hasRequested) ? 'not-allowed' : 'pointer',
