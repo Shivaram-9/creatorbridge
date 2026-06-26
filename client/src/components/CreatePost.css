@@ -159,7 +159,7 @@
   gap: 8px;
   font-size: 14px;
   font-weight: 600;
-  color: #64748b;
+  color: var(--text-muted, #64748b);
   cursor: pointer;
   transition: color 0.2s;
 }
@@ -176,6 +176,7 @@
   cursor: pointer;
 }
 .cp-post-btn:disabled {
-  background: #cbd5e1;
+  background: var(--bg-secondary, #cbd5e1) !important;
+  color: var(--text-muted) !important;
   cursor: not-allowed;
 }

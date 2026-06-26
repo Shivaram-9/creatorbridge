@@ -18,12 +18,12 @@ function HeroBanner({ user }) {
   return (
     <div className="mb-8 pt-4 px-2 md:px-0">
       <div className="max-w-2xl">
-        <h1 className="text-2xl md:text-3xl font-extrabold mb-3 text-slate-900 dark:text-white tracking-tight">Discover Top Creators & Brands</h1>
-        <p className="text-slate-600 dark:text-slate-300 text-base md:text-lg mb-6 leading-relaxed">
+        <h1 className="text-2xl md:text-3xl font-extrabold mb-3 tracking-tight" style={{ color: 'var(--text-main)' }}>Discover Top Creators & Brands</h1>
+        <p className="text-base md:text-lg mb-6 leading-relaxed" style={{ color: 'var(--text-muted)' }}>
           The premium network for builders, designers, and innovators. Showcase your portfolio and connect with verified professionals.
         </p>
         <div className="flex gap-4">
-          <button onClick={() => navigate('/discover')} className="border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 bg-white dark:bg-[#171717] px-6 py-2.5 rounded-lg font-bold shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors w-full md:w-auto flex justify-center items-center">
+          <button onClick={() => navigate('/discover')} className="px-6 py-2.5 rounded-lg font-bold shadow-sm transition-colors w-full md:w-auto flex justify-center items-center" style={{ background: 'var(--bg-card)', color: 'var(--text-main)', border: '1px solid var(--border-light)' }}>
             Build Your Pact
           </button>
         </div>
