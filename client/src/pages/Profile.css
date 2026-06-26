@@ -333,10 +333,10 @@
   margin: 0;
   font-size: 16px;
   font-weight: 700;
-  color: #0F172A;
+  color: var(--text-main);
 }
 .collab-header a {
-  color: #0f172a;
+  color: var(--text-main);
   text-decoration: none;
   font-size: 13px;
   font-weight: 600;
@@ -361,9 +361,9 @@
   color: #334155;
 }
 .collab-tag.blue, .collab-tag.green, .collab-tag.purple, .collab-tag.orange { 
-  color: #0f172a; 
-  background: #f1f5f9; 
-  border-color: #e2e8f0; 
+  color: var(--text-main); 
+  background: var(--bg-secondary); 
+  border-color: var(--border-light); 
 }
 
 /* Stats Row */
@@ -465,11 +465,11 @@
 }
 
 .tab-item-wide:hover {
-  color: #0F172A;
+  color: var(--text-main);
 }
 
 .tab-item-wide.active {
-  color: #0f172a;
+  color: var(--text-main);
 }
 
 .tab-item-wide.active::after {
@@ -656,7 +656,7 @@
 .profile-ig-lightbox-comment-form button {
   background: none;
   border: none;
-  color: #0f172a;
+  color: var(--text-main);
   font-weight: 600;
   cursor: pointer;
 }
@@ -822,8 +822,8 @@
   }
   .profile-tab-btn.active {
     background: transparent;
-    border-bottom-color: #0f172a;
-    color: #0f172a;
+    border-bottom-color: var(--text-main);
+    color: var(--text-main);
     border-radius: 0;
   }
 
