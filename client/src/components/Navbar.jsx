@@ -180,7 +180,7 @@ export default function Navbar({
                   </div>
                 </button>
                 {menuOpen && (
-                  <div className="absolute top-12 right-0 w-48 bg-white dark:bg-slate-800 rounded-lg shadow-premium border border-gray-100 dark:border-slate-700 py-2 fade-up">
+                  <div className="absolute top-12 right-0 w-48 bg-white dark:bg-[#171717] rounded-lg shadow-premium border border-gray-100 dark:border-[#262626] py-2 fade-up">
                     <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700 hover:text-black dark:hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Profile</Link>
                     <Link to="/saved" className="block px-4 py-2 text-sm text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700 hover:text-black dark:hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>Saved</Link>
 

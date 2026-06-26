@@ -347,28 +347,28 @@ export default function Chat({ standalone = true }) {
   };
 
   if (loading) return (
-    <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'white' }}>
+    <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-main)' }}>
       <div style={{ textAlign: 'center' }}>
-        <p style={{ color: '#94a3b8', fontSize: '0.9rem' }}>Loading conversation...</p>
+        <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Loading conversation...</p>
       </div>
     </div>
   );
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: 'var(--bg-chat, #f8fafc)' }}>
-      <header style={{ padding: '16px 24px', borderBottom: '1px solid #f1f5f9', display: 'flex', alignItems: 'center', position: 'sticky', top: 0, background: 'var(--bg-card, rgba(255,255,255,0.72))', backdropFilter: 'blur(10px)', zIndex: 10 }}>
-        <button onClick={() => navigate("/messages")} style={{ border: 'none', background: 'none', cursor: 'pointer', marginRight: '16px', color: '#64748b' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: 'var(--bg-main)' }}>
+      <header style={{ padding: '16px 24px', borderBottom: '1px solid var(--border-light)', display: 'flex', alignItems: 'center', position: 'sticky', top: 0, background: 'var(--bg-card)', zIndex: 10 }}>
+        <button onClick={() => navigate("/messages")} style={{ border: 'none', background: 'none', cursor: 'pointer', marginRight: '16px', color: 'var(--text-muted)' }}>
           <svg style={{ width: '24px', height: '24px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" /></svg>
         </button>
         <Avatar user={partner} size="sm" />
         <div style={{ marginLeft: '12px', flex: 1 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <h2 style={{ fontSize: '1rem', fontWeight: '700', color: '#0f172a', margin: 0 }}>{partner?.name || partner?.username}</h2>
+            <h2 style={{ fontSize: '1rem', fontWeight: '700', color: 'var(--text-main)', margin: 0 }}>{partner?.name || partner?.username}</h2>
             {(partner?.isVerified || partner?.isPremium) && <VerifiedBadge size="sm" tier={partner.premiumTier} role={partner.role} />}
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: socketOnline ? '#10b981' : '#cbd5e1' }}></span>
-            <p style={{ fontSize: '10px', color: '#64748b', fontWeight: '700', textTransform: 'uppercase', margin: 0 }}>
+            <p style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: '700', textTransform: 'uppercase', margin: 0 }}>
               {socketOnline ? "Active now" : "Offline"}
             </p>
           </div>
@@ -425,9 +425,9 @@ export default function Chat({ standalone = true }) {
                 borderRadius: '12px', 
                 borderTopRightRadius: isMine ? '0' : '12px', 
                 borderTopLeftRadius: isMine ? '12px' : '0', 
-                background: isMine ? '#0f172a' : '#ffffff', 
-                color: isMine ? '#ffffff' : '#0f172a',
-                border: isMine ? 'none' : '1px solid #e2e8f0',
+                background: isMine ? 'var(--bubble-mine)' : 'var(--bubble-other)', 
+                color: isMine ? '#ffffff' : 'var(--text-main)',
+                border: isMine ? 'none' : '1px solid var(--border-light)',
                 boxShadow: isMine ? '0 1px 2px rgba(0,0,0,0.1)' : '0 1px 2px rgba(0,0,0,0.02)',
                 display: 'flex',
                 flexDirection: 'column',

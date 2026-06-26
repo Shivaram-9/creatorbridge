@@ -96,7 +96,7 @@ export default function Layout() {
       import("react-hot-toast").then(m => {
         const toast = m.default;
         toast.custom((t) => (
-          <div className={`${t.visible ? 'animate-enter' : 'animate-leave'} max-w-md w-full bg-white dark:bg-slate-800 shadow-xl rounded-2xl pointer-events-auto flex ring-1 ring-black ring-opacity-10 border border-indigo-50 dark:border-slate-700`}>
+          <div className={`${t.visible ? 'animate-enter' : 'animate-leave'} max-w-md w-full bg-white dark:bg-[#171717] shadow-xl rounded-2xl pointer-events-auto flex ring-1 ring-black ring-opacity-10 border border-indigo-50 dark:border-[#262626]`}>
             <div className="flex-1 w-0 p-5">
               <div className="flex items-start">
                 <div className="flex-shrink-0 pt-0.5">
@@ -247,7 +247,7 @@ export default function Layout() {
       {/* Logout Confirmation Modal */}
       {showLogoutConfirm && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm" onClick={() => setShowLogoutConfirm(false)}>
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-[90%] max-w-sm overflow-hidden" onClick={e => e.stopPropagation()}>
+          <div className="bg-white dark:bg-[#171717] rounded-2xl shadow-2xl w-[90%] max-w-sm overflow-hidden" onClick={e => e.stopPropagation()}>
             <div className="p-6 text-center">
               <div className="w-16 h-16 rounded-full bg-red-100 text-red-500 mx-auto flex items-center justify-center mb-4">
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -281,7 +281,7 @@ export default function Layout() {
       {/* Help Center Modal */}
       {showHelpCenter && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" onClick={() => setShowHelpCenter(false)}>
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col" onClick={e => e.stopPropagation()}>
+          <div className="bg-white dark:bg-[#171717] rounded-2xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col" onClick={e => e.stopPropagation()}>
             <div className="px-6 py-5 border-b border-gray-100 dark:border-slate-700 flex items-center justify-between">
               <div>
                 <h3 className="text-xl font-bold text-slate-900 dark:text-white">Help Center</h3>

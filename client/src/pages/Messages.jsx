@@ -104,13 +104,13 @@ export default function Messages() {
         </header>
 
         <div style={{ padding: '0 20px 16px' }}>
-          <div style={{ background: '#f5f5f5', borderRadius: '8px', padding: '8px 12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ color: '#8e8e8e' }}>🔍</span>
+          <div style={{ background: 'var(--bg-main)', borderRadius: '8px', padding: '8px 12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ color: 'var(--text-muted)' }}>🔍</span>
             <input 
               id="message-search-input"
               type="text" 
               placeholder="Search people or messages" 
-              style={{ background: 'transparent', border: 'none', outline: 'none', fontSize: '14px', width: '100%' }} 
+              style={{ background: 'transparent', border: 'none', outline: 'none', fontSize: '14px', width: '100%', color: 'var(--text-main)' }} 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -171,15 +171,15 @@ export default function Messages() {
                 <div style={{ position: 'relative' }}>
                   <Avatar user={conv.partner} size="md" />
                   {conv.unreadCount > 0 && (
-                    <span style={{ position: 'absolute', top: '-2px', right: '-2px', width: '12px', height: '12px', background: '#0f172a', border: '2px solid white', borderRadius: '50%' }}></span>
+                    <span style={{ position: 'absolute', top: '-2px', right: '-2px', width: '12px', height: '12px', background: 'var(--primary)', border: '2px solid white', borderRadius: '50%' }}></span>
                   )}
                 </div>
                 <div className="chat-item-info">
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '2px' }}>
                     <span className="chat-item-name">{conv.partner?.name || conv.partner?.username || "Unknown User"}</span>
-                    <span style={{ fontSize: '10px', color: '#94a3b8' }}>{conv.lastMessage?.createdAt ? formatTime(conv.lastMessage.createdAt) : ""}</span>
+                    <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{conv.lastMessage?.createdAt ? formatTime(conv.lastMessage.createdAt) : ""}</span>
                   </div>
-                  <p className="chat-item-preview" style={{ fontWeight: conv.unreadCount > 0 ? '700' : '400', color: conv.unreadCount > 0 ? '#0f172a' : '#64748b' }}>
+                  <p className="chat-item-preview" style={{ fontWeight: conv.unreadCount > 0 ? '700' : '400', color: conv.unreadCount > 0 ? 'var(--text-main)' : 'var(--text-muted)' }}>
                     {conv.lastMessage?.content || (conv.lastMessage?.media ? "📷 Photo" : "Media")}
                   </p>
                 </div>

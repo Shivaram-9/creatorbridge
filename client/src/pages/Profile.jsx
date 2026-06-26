@@ -611,7 +611,7 @@ export default function Profile() {
 
       {showPortfolioModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 w-full max-w-md shadow-xl" onClick={e => e.stopPropagation()}>
+          <div className="bg-white dark:bg-[#171717] rounded-xl p-6 w-full max-w-md shadow-xl" onClick={e => e.stopPropagation()}>
             <h2 className="text-xl font-bold mb-4 text-slate-900 dark:text-white">Add Portfolio Item</h2>
             <div className="flex flex-col gap-4">
               <div>

@@ -201,7 +201,7 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
   }, [post.media, post.image]);
 
   return (
-    <div ref={cardRef} className={`bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6 transition-all hover:shadow-md hover:border-slate-300 dark:hover:border-slate-600 ${post.isPinned ? "ring-2 ring-blue-100 dark:ring-blue-900" : ""} animate-fade-in`}>
+    <div ref={cardRef} className={`bg-white dark:bg-[#171717] border border-slate-200 dark:border-[#262626] rounded-xl p-6 transition-all hover:shadow-md hover:border-slate-300 dark:hover:border-slate-600 ${post.isPinned ? "ring-2 ring-blue-100 dark:ring-blue-900" : ""} animate-fade-in`}>
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex gap-4">
@@ -229,7 +229,7 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
             <MoreHorizontalIcon />
           </button>
           {showMenu && (
-            <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg z-20 py-1">
+            <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-[#171717] border border-slate-200 dark:border-[#262626] rounded-xl shadow-lg z-20 py-1">
               {isOwner ? (
                 <>
                   <button className="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700" onClick={() => { setIsEditing(true); setShowMenu(false); }}>Edit Project</button>
@@ -251,7 +251,7 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
       {/* Content */}
       <div className="mb-4">
         {isEditing ? (
-          <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+          <div className="bg-slate-50 dark:bg-[#171717]/50 p-4 rounded-xl border border-slate-200 dark:border-[#262626]">
             <textarea
               className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg p-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none dark:text-white"
               rows="3"
