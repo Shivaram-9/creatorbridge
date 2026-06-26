@@ -32,3 +32,30 @@ export const ALL_CATEGORIES = [...new Set([...INFLUENCER_CATEGORIES, ...BRAND_CA
 
 // Fallback compatibility for any direct imports of CATEGORIES
 export const CATEGORIES = ALL_CATEGORIES;
+
+export const RELATED_CATEGORIES = {
+  "Fashion": ["Beauty", "Lifestyle", "Accessories", "Luxury", "Apparel", "Modeling", "Jewelry"],
+  "Fitness": ["Health", "Nutrition", "Sports", "Wellness", "Personal Training", "Yoga", "Martial Arts"],
+  "Food": ["Culinary", "Nutrition", "Hospitality", "Agriculture", "Farming"],
+  "Travel": ["Hospitality", "Photography", "Vlogging", "Aviation"],
+  "Music": ["Entertainment", "Theater", "Dance", "Audio", "Podcast"],
+  "Gaming": ["Entertainment", "Technology", "Software", "Web3"],
+  "Photography": ["Art", "Design", "Travel", "Fashion", "Video Production", "Illustration"],
+  "Beauty": ["Fashion", "Wellness", "Lifestyle", "Cosmetics", "Skincare"],
+  "Technology": ["Software", "Hardware", "Web3", "Robotics", "Ecommerce", "Startup", "Telecommunications"],
+  "Education": ["E-learning", "Tutoring", "Coaching", "Languages", "Science"],
+  "Finance": ["Banking", "Crypto", "Investment", "Taxes", "Accounting"],
+  "Healthcare": ["Wellness", "Nutrition", "Mental Health", "Fitness", "Pharmaceuticals", "Dentistry", "Veterinary"],
+  "Marketing": ["Advertising", "SEO", "Public Relations", "Social Media", "Agency"],
+  "Art": ["Design", "Illustration", "Photography", "Graphic Design", "Crafts", "DIY"],
+  "Design": ["Art", "Architecture", "Graphic Design", "Interior Design", "UI/UX", "Web Design"],
+  "Media": ["News", "Journalism", "Publishing", "Video Production", "Podcast", "Social Media"],
+  "Real Estate": ["Architecture", "Interior Design", "Construction", "Home Improvement"],
+  "Luxury": ["Fashion", "Beauty", "Travel", "Real Estate", "Automobile"],
+  "Automobile": ["Technology", "Travel", "Logistics", "Transportation"]
+};
+
+export const getRelatedCategories = (category) => {
+  if (!category) return [];
+  return RELATED_CATEGORIES[category] || [];
+};

@@ -5,7 +5,7 @@ import { api } from "../services/api.js";
 import UserCard from "../components/UserCard.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import ErrorBanner from "../components/ErrorBanner.jsx";
-import { INFLUENCER_CATEGORIES, BRAND_CATEGORIES, ALL_CATEGORIES } from "../constants/categories.js";
+import { INFLUENCER_CATEGORIES, BRAND_CATEGORIES, ALL_CATEGORIES, getRelatedCategories } from "../constants/categories.js";
 import EmptyState from "../components/EmptyState.jsx";
 import { SearchIcon, SparklesIcon } from "../components/Icons.jsx";
 import "./Discover.css"; // Reuse discover CSS for grid layout
@@ -82,21 +82,32 @@ export default function CategorySearch() {
   // Available categories to select based on user role
   const categoriesToSelect = targetRole === "brand" ? BRAND_CATEGORIES : INFLUENCER_CATEGORIES;
 
-  // Do not restrict by default; show ALL target users unless actively filtered
   const activeCategory = selectedCategory;
 
-  const searchResults = allUsers.filter(u => {
-    if (!u || u._id === user?._id) return false;
+  const exactMatches = [];
+  const relatedMatches = [];
+
+  allUsers.forEach(u => {
+    if (!u || u._id === user?._id) return;
+    if (u.role !== targetRole) return;
     
-    // Exact match on role (brand looking for brand, influencer looking for influencer)
-    if (u.role !== targetRole) return false;
+    // Filter by city if selected
+    if (selectedCity && (!u.location || !u.location.toLowerCase().includes(selectedCity.toLowerCase()))) return;
 
-    // Filter by city if selected (use partial match to handle full addresses like "HYDERABAD,TELANGANA,INDIA")
-    if (selectedCity && (!u.location || !u.location.toLowerCase().includes(selectedCity.toLowerCase()))) return false;
+    if (!activeCategory) {
+      exactMatches.push(u);
+      return;
+    }
 
-    // Filter by category
-    if (!activeCategory) return true; // Show all if no category selected
-    return (u.category || u.industry || "") === activeCategory;
+    const userCategory = (u.category || u.industry || "");
+    if (userCategory === activeCategory) {
+      exactMatches.push(u);
+    } else {
+      const related = getRelatedCategories(activeCategory);
+      if (related.includes(userCategory)) {
+        relatedMatches.push(u);
+      }
+    }
   });
 
   return (
@@ -181,17 +192,36 @@ export default function CategorySearch() {
             </div>
           )}
 
-        {searchResults.length === 0 ? (
+        {exactMatches.length === 0 && relatedMatches.length === 0 ? (
           <EmptyState 
             icon={<SearchIcon />} 
             title={`No ${targetText} found`} 
-            description="We couldn't find any exact matches for these filters. Try clearing your city or checking back later!" 
+            description="We couldn't find any exact matches or related suggestions for these filters. Try clearing your city or checking back later!" 
             actionText={selectedCategory || selectedCity ? "Clear Filters" : null}
             onAction={() => { setSelectedCategory(""); setSelectedCity(""); }}
           />
         ) : (
-          <div className="discover-user-grid">
-            {searchResults.map(u => <UserCard key={u._id} user={u} layout="list" />)}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+            {exactMatches.length > 0 && (
+              <div>
+                {activeCategory && <h3 style={{ marginBottom: '16px', color: 'var(--text-main)', fontSize: '18px' }}>Exact Matches</h3>}
+                <div className="discover-user-grid">
+                  {exactMatches.map(u => <UserCard key={u._id} user={u} layout="list" />)}
+                </div>
+              </div>
+            )}
+
+            {relatedMatches.length > 0 && (
+              <div>
+                <h3 style={{ marginBottom: '16px', color: 'var(--text-muted)', fontSize: '18px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <SparklesIcon /> 
+                  Related Suggestions (Categories like {getRelatedCategories(activeCategory).slice(0, 3).join(', ')}...)
+                </h3>
+                <div className="discover-user-grid">
+                  {relatedMatches.map(u => <UserCard key={u._id} user={u} layout="list" />)}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
