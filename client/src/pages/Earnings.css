@@ -11,7 +11,7 @@
   display: inline-block;
   padding: 4px 12px;
   background: #f1f5f9;
-  color: #0f172a;
+  color: var(--text-main);
   font-size: 11px;
   font-weight: 800;
   border-radius: 100px;
@@ -40,9 +40,9 @@
   flex-direction: column;
 }
 
-.earnings-card.primary { background: #0f172a; }
+.earnings-card.primary { background: var(--bg-secondary); }
 .earnings-card.pending { background: #475569; }
-.earnings-card.completed { background: #1e293b; }
+.earnings-card.completed { background: var(--bg-secondary); }
 
 .earnings-card .lbl {
   font-size: 13px;
@@ -109,13 +109,13 @@
   text-transform: uppercase;
 }
 
-.tx-type.earning { background: #f8fafc; color: #0f172a; }
+.tx-type.earning { background: #f8fafc; color: var(--text-main); }
 .tx-type.payout { background: #f1f5f9; color: #475569; }
 
-.tx-amount { font-weight: 800; color: #0f172a; }
+.tx-amount { font-weight: 800; color: var(--text-main); }
 
 .tx-status { font-size: 12px; color: #64748b; }
-.tx-status.completed { color: #0f172a; }
+.tx-status.completed { color: var(--text-main); }
 
 .empty-transactions {
   text-align: center;
@@ -136,7 +136,7 @@
 
 .settings-info h3 { font-size: 16px; font-weight: 800; margin-bottom: 4px; }
 .invoice-link {
-  color: #0f172a;
+  color: var(--text-main);
   text-decoration: none;
   font-size: 12px;
   font-weight: 700;
@@ -166,7 +166,7 @@
   border-radius: 24px;
   width: 100%;
   max-width: 450px;
-  color: #0f172a;
+  color: var(--text-main);
 }
 
 .withdraw-modal h3 {

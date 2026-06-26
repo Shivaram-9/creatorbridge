@@ -22,7 +22,7 @@
   font-size: 28px;
   font-weight: 800;
   margin-bottom: 30px;
-  color: #0f172a;
+  color: var(--text-main);
 }
 
 .settings-sidebar nav {
@@ -329,7 +329,7 @@
 .blocked-users-section h4 {
   font-size: 18px;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--text-main);
   margin-bottom: 8px;
 }
 
@@ -406,7 +406,7 @@
 .verification-title {
   font-size: 24px;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--text-main);
   margin-bottom: 8px;
 }
 
@@ -460,7 +460,7 @@
 .pricing-amount {
   font-size: 32px;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--text-main);
   margin-bottom: 8px;
 }
 
@@ -478,7 +478,7 @@
 }
 
 .get-verified-action-btn {
-  background: #0f172a;
+  background: var(--bg-secondary);
   color: white;
   width: 100%;
   padding: 14px;
@@ -491,7 +491,7 @@
 }
 
 .get-verified-action-btn:hover {
-  background: #1e293b;
+  background: var(--bg-secondary);
 }
 
 @media (max-width: 768px) {
@@ -566,9 +566,9 @@
     font-size: 15px;
   }
   .settings-sidebar nav button.active {
-    background: #0f172a;
+    background: var(--bg-secondary);
     color: #fff;
-    border-color: #0f172a;
+    border-color: var(--text-main);
   }
   .settings-content {
     padding: 20px 16px;
@@ -710,7 +710,7 @@
 .settings-section .field label {
   font-size: 14px;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--text-main);
   display: flex;
   align-items: center;
 }
@@ -728,7 +728,7 @@
   border-radius: 12px;
   border: 1px solid #cbd5e1;
   background: #f8fafc;
-  color: #0f172a;
+  color: var(--text-main);
   font-size: 15px;
   font-weight: 500;
   transition: all 0.2s ease;
@@ -737,7 +737,7 @@
 
 .settings-section .input:focus {
   outline: none;
-  border-color: #0f172a;
+  border-color: var(--text-main);
   background: #ffffff;
   box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.1);
 }
@@ -797,14 +797,14 @@
 }
 
 .btn-group .btn-primary {
-  background: #0f172a;
+  background: var(--bg-secondary);
   color: #ffffff;
   border: 1px solid #0f172a;
 }
 
 .btn-group .btn-primary:hover {
-  background: #1e293b;
-  border-color: #1e293b;
+  background: var(--bg-secondary);
+  border-color: var(--text-main);
 }
 
 .btn-group .btn-outline {
@@ -815,7 +815,7 @@
 
 .btn-group .btn-outline:hover {
   background: #f1f5f9;
-  color: #0f172a;
+  color: var(--text-main);
 }
 
 .btn-group .btn-text.danger {
@@ -837,7 +837,7 @@
 }
 
 .text-highlight {
-  color: #0f172a;
+  color: var(--text-main);
 }
 
 /* Animations */

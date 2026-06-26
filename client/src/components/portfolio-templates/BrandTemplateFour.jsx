@@ -1,9 +1,9 @@
 export default function BrandTemplateFour({ data }) {
   return (
-    <div className="p-0 font-serif text-slate-800 bg-white min-h-[297mm]">
+    <div className="p-0 font-serif text-slate-800 dark:text-white bg-white min-h-[297mm]">
       {/* Elegant Header */}
       <div className="p-16 pb-12 text-center bg-slate-50 border-b border-slate-200">
-        <h1 className="text-5xl font-semibold tracking-wide text-slate-900 mb-4">{data.personal.name || "Brand Name"}</h1>
+        <h1 className="text-5xl font-semibold tracking-wide text-slate-900 dark:text-white mb-4">{data.personal.name || "Brand Name"}</h1>
         <div className="w-16 h-1 bg-amber-500 mx-auto mb-6"></div>
         <h2 className="text-lg text-slate-500 tracking-widest uppercase mb-8">{data.personal.title || "Brand Category"}</h2>
         <div className="flex justify-center gap-8 text-xs font-sans font-semibold text-slate-500 tracking-wider">
@@ -42,7 +42,7 @@ export default function BrandTemplateFour({ data }) {
               <div className="space-y-10">
                 {data.experience.map(exp => (
                   <div key={exp.id}>
-                    <h4 className="text-xl font-semibold text-slate-900 mb-1">{exp.role}</h4>
+                    <h4 className="text-xl font-semibold text-slate-900 dark:text-white mb-1">{exp.role}</h4>
                     <p className="text-sm font-sans text-amber-600 font-semibold mb-3 uppercase tracking-wider">{exp.company} <span className="text-slate-400 font-normal ml-2">({exp.startDate} - {exp.endDate || 'Present'})</span></p>
                     <p className="text-sm leading-relaxed text-slate-600 whitespace-pre-wrap">{exp.description}</p>
                   </div>
@@ -57,7 +57,7 @@ export default function BrandTemplateFour({ data }) {
               <div className="space-y-10">
                 {data.projects.map(proj => (
                   <div key={proj.id}>
-                    <h4 className="text-xl font-semibold text-slate-900 mb-2">{proj.title}</h4>
+                    <h4 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">{proj.title}</h4>
                     <p className="text-sm leading-relaxed text-slate-600 whitespace-pre-wrap mb-3">{proj.description}</p>
                     {proj.link && <a href={proj.link} className="text-xs font-sans font-bold uppercase tracking-widest text-amber-600 hover:text-amber-700">{proj.link}</a>}
                   </div>

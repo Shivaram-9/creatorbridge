@@ -601,7 +601,7 @@
   font-size: 14px;
   font-weight: 700;
   margin: 0;
-  color: #1e293b;
+  color: var(--text-main);
 }
 .verification-banner-mobile .banner-text p {
   font-size: 12px;

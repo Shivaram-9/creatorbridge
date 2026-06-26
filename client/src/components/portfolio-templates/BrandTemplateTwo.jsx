@@ -1,6 +1,6 @@
 export default function BrandTemplateTwo({ data }) {
   return (
-    <div className="p-0 font-sans text-slate-800 bg-slate-100 min-h-[297mm]">
+    <div className="p-0 font-sans text-slate-800 dark:text-white bg-slate-100 min-h-[297mm]">
       {/* Top Hero Banner */}
       <div className="bg-indigo-900 text-white p-12 text-center">
         <h1 className="text-5xl font-extrabold tracking-tight mb-4">{data.personal.name || "Brand Name"}</h1>
@@ -48,7 +48,7 @@ export default function BrandTemplateTwo({ data }) {
               <div className="space-y-6">
                 {data.experience.map(exp => (
                   <div key={exp.id} className="relative pl-4 border-l-2 border-indigo-200">
-                    <h4 className="text-lg font-bold text-slate-800">{exp.company}</h4>
+                    <h4 className="text-lg font-bold text-slate-800 dark:text-white">{exp.company}</h4>
                     <p className="text-sm font-semibold text-indigo-600 mb-2">{exp.role} <span className="text-slate-400 font-normal ml-2">({exp.startDate} - {exp.endDate || 'Present'})</span></p>
                     <p className="text-sm text-slate-600 whitespace-pre-wrap">{exp.description}</p>
                   </div>
@@ -64,7 +64,7 @@ export default function BrandTemplateTwo({ data }) {
               <div className="space-y-6">
                 {data.projects.map(proj => (
                   <div key={proj.id} className="bg-slate-50 p-6 rounded border border-slate-200">
-                    <h4 className="text-lg font-bold text-slate-800 mb-2">{proj.title}</h4>
+                    <h4 className="text-lg font-bold text-slate-800 dark:text-white mb-2">{proj.title}</h4>
                     <p className="text-sm text-slate-600 whitespace-pre-wrap mb-3">{proj.description}</p>
                     {proj.link && <a href={proj.link} className="text-sm font-semibold text-indigo-600 inline-block border-b border-indigo-600 pb-1">View Initiative →</a>}
                   </div>

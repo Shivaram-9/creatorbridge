@@ -105,7 +105,7 @@ export default function Layout() {
                   </div>
                 </div>
                 <div className="ml-3 flex-1">
-                  <p className="text-sm font-bold text-gray-900">
+                  <p className="text-sm font-bold text-gray-900 dark:text-white">
                     Connection Request
                   </p>
                   <p className="mt-1 text-sm text-gray-600">
@@ -282,7 +282,7 @@ export default function Layout() {
       {showHelpCenter && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" onClick={() => setShowHelpCenter(false)}>
           <div className="bg-white dark:bg-[#171717] rounded-2xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col" onClick={e => e.stopPropagation()}>
-            <div className="px-6 py-5 border-b border-gray-100 dark:border-slate-700 flex items-center justify-between">
+            <div className="px-6 py-5 border-b border-gray-100 dark:border-[#262626] flex items-center justify-between">
               <div>
                 <h3 className="text-xl font-bold text-slate-900 dark:text-white">Help Center</h3>
                 <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Send a request to our support team.</p>
@@ -299,7 +299,7 @@ export default function Layout() {
                   value={helpSubject}
                   onChange={e => setHelpSubject(e.target.value)}
                   placeholder="What do you need help with?"
-                  className="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-sm dark:text-white"
+                  className="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-[#262626] rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-sm dark:text-white"
                   required
                 />
               </div>
@@ -310,7 +310,7 @@ export default function Layout() {
                   onChange={e => setHelpMessage(e.target.value)}
                   placeholder="Describe your issue or question in detail..."
                   rows="4"
-                  className="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-sm resize-none dark:text-white"
+                  className="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-[#262626] rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-sm resize-none dark:text-white"
                   required
                 ></textarea>
               </div>

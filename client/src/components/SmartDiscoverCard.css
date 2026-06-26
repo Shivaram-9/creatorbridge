@@ -51,7 +51,7 @@
 .smart-card-name {
   font-size: 16px;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--text-main);
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
@@ -115,7 +115,7 @@
 .smart-metric-val {
   font-size: 14px;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--text-main);
 }
 
 .smart-card-actions {
@@ -137,7 +137,7 @@
 }
 
 .smart-btn-primary {
-  background: #0f172a;
+  background: var(--bg-secondary);
   color: #fff;
 }
 
@@ -164,14 +164,14 @@
     color: #f8fafc;
   }
   .smart-card-metrics {
-    background: #0f172a;
+    background: var(--bg-secondary);
   }
   .smart-metric-val {
     color: #f8fafc;
   }
   .smart-btn-primary {
     background: #38bdf8;
-    color: #0f172a;
+    color: var(--text-main);
   }
   .smart-btn-primary:hover {
     background: #7dd3fc;

@@ -107,7 +107,7 @@
   height: 24px;
   border-radius: 50%;
   border: 4px solid #fff;
-  background: #0f172a;
+  background: var(--bg-secondary);
 }
 .role-badge-dot.brand {
   background: #334155;
@@ -172,7 +172,7 @@
 .get-verified-btn {
   width: 100%;
   padding: 8px;
-  background: #0f172a;
+  background: var(--bg-secondary);
   color: white;
   border: none;
   border-radius: 8px;
@@ -293,11 +293,11 @@
 }
 
 .action-btn.primary {
-  background-color: #0f172a;
+  background-color: var(--text-main);
   color: #ffffff;
 }
 .action-btn.primary:hover {
-  background-color: #1e293b;
+  background-color: var(--text-main);
 }
 
 .action-btn.secondary {
@@ -479,7 +479,7 @@
   left: 0;
   right: 0;
   height: 2px;
-  background: #0f172a;
+  background: var(--bg-secondary);
   border-radius: 2px 2px 0 0;
 }
 

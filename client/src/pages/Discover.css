@@ -107,7 +107,7 @@
 }
 
 .discover-search-clear:hover {
-  color: #0f172a;
+  color: var(--text-main);
 }
 
 /* ===== FEATURED CAROUSELS ===== */

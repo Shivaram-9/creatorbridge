@@ -127,7 +127,7 @@ export default function PortfolioBuilder() {
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex flex-col pt-16">
       <div className="bg-white dark:bg-[#171717] border-b border-slate-200 dark:border-[#262626] px-6 py-4 flex justify-between items-center sticky top-16 z-20">
         <div className="flex items-center gap-4">
-          <button onClick={() => navigate('/profile')} className="text-slate-500 hover:text-slate-800 dark:hover:text-white">← Back</button>
+          <button onClick={() => navigate('/profile')} className="text-slate-500 hover:text-slate-800 dark:text-white dark:hover:text-white">← Back</button>
           <h1 className="text-xl font-bold text-slate-900 dark:text-white">Portfolio Builder</h1>
         </div>
         
@@ -168,9 +168,9 @@ export default function PortfolioBuilder() {
 
       <div className="flex flex-1 overflow-hidden" style={{ height: "calc(100vh - 140px)" }}>
         <div className="w-1/3 bg-white dark:bg-[#171717] border-r border-slate-200 dark:border-[#262626] flex flex-col overflow-y-auto">
-          <div className="flex border-b border-slate-200 dark:border-slate-700 flex-wrap">
+          <div className="flex border-b border-slate-200 dark:border-[#262626] flex-wrap">
             {['personal', 'experience', 'education', 'skills', 'projects'].map(tab => (
-              <button key={tab} onClick={() => setActiveTab(tab)} className={`flex-1 py-3 px-2 text-xs font-semibold capitalize tracking-wider ${activeTab === tab ? 'border-b-2 border-blue-600 text-blue-600' : 'text-slate-500 hover:text-slate-800 dark:hover:text-white'}`}>{tab}</button>
+              <button key={tab} onClick={() => setActiveTab(tab)} className={`flex-1 py-3 px-2 text-xs font-semibold capitalize tracking-wider ${activeTab === tab ? 'border-b-2 border-blue-600 text-blue-600' : 'text-slate-500 hover:text-slate-800 dark:text-white dark:hover:text-white'}`}>{tab}</button>
             ))}
           </div>
           
@@ -229,7 +229,7 @@ export default function PortfolioBuilder() {
                 </form>
                 <div className="flex flex-wrap gap-2 mt-4">
                   {data.skills.map(skill => (
-                    <span key={skill} className="px-3 py-1 bg-slate-200 dark:bg-slate-700 rounded-full flex items-center gap-2 text-slate-800 dark:text-slate-200">
+                    <span key={skill} className="px-3 py-1 bg-slate-200 dark:bg-slate-700 rounded-full flex items-center gap-2 text-slate-800 dark:text-white">
                       {skill} <button onClick={() => removeSkill(skill)} className="text-red-500 font-bold hover:text-red-700">✕</button>
                     </span>
                   ))}

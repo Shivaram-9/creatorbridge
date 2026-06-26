@@ -49,7 +49,7 @@
 .auth-header-text h1 {
   font-size: 24px;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--text-main);
   margin-bottom: 8px;
   letter-spacing: -0.02em;
 }
@@ -81,14 +81,14 @@
   padding: 0 16px;
   font-size: 15px;
   font-weight: 500;
-  color: #1e293b;
+  color: var(--text-main);
   outline: none;
   transition: all 0.2s;
   box-sizing: border-box;
 }
 
 .auth-input-field:focus {
-  border-color: #0f172a;
+  border-color: var(--text-main);
   box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.1);
 }
 
@@ -139,20 +139,20 @@
   width: 16px;
   height: 16px;
   cursor: pointer;
-  accent-color: #0f172a;
+  accent-color: var(--text-main);
 }
 
 .auth-forgot-link {
   font-size: 13px;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--text-main);
   text-decoration: none;
 }
 
 .auth-submit-btn {
   width: 100%;
   height: 52px;
-  background: #0f172a;
+  background: var(--bg-secondary);
   color: white;
   border: none;
   border-radius: 12px;
@@ -258,7 +258,7 @@
 }
 
 .auth-footer-link {
-  color: #0f172a;
+  color: var(--text-main);
   font-weight: 700;
   text-decoration: none;
 }

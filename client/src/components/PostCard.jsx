@@ -282,13 +282,13 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
 
       {/* Media Thumbnail */}
       {mediaList.length > 0 && (
-        <div className="mb-4 -mx-6 sm:mx-0 sm:rounded-xl overflow-hidden border-y sm:border border-slate-200 dark:border-slate-700 bg-black cursor-pointer" onClick={() => setShowLightbox(true)}>
+        <div className="mb-4 -mx-6 sm:mx-0 sm:rounded-xl overflow-hidden border-y sm:border border-slate-200 dark:border-[#262626] bg-black cursor-pointer" onClick={() => setShowLightbox(true)}>
           <MediaGallery media={mediaList} />
         </div>
       )}
 
       {/* Stats / Footer Actions */}
-      <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-700/50">
+      <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-[#262626]/50">
         <div className="flex items-center gap-6">
           <button className={`flex items-center gap-1.5 text-sm font-bold transition-colors ${liked ? "text-red-500" : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"}`} onClick={handleLike}>
             <HeartIcon filled={liked} /> <span>{likesCount}</span>
@@ -314,7 +314,7 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
 
       {/* Comments Dropdown */}
       {showComments && (
-        <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-700/50 animate-fade-in">
+        <div className="mt-4 pt-4 border-t border-slate-100 dark:border-[#262626]/50 animate-fade-in">
           {comments.map((c, i) => (
             <div key={i} className="flex gap-2 text-sm mb-2">
               <span className="font-bold text-slate-900 dark:text-white cursor-pointer hover:text-blue-600" onClick={() => navigate(`/user/${c.user?._id || c.user}`)}>
@@ -325,7 +325,7 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
           ))}
           <form onSubmit={handleCommentSubmit} className="flex gap-2 mt-3">
             <input 
-              className="flex-1 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
+              className="flex-1 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-[#262626] rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
               placeholder="Add a comment..." 
               value={commentText} 
               onChange={(e) => setCommentText(e.target.value)} 

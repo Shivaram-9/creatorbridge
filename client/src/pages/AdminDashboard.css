@@ -15,7 +15,7 @@
   font-size: 36px;
   font-weight: 900;
   margin-bottom: 6px;
-  color: #0f172a;
+  color: var(--text-main);
 }
 
 .admin-header p {
@@ -50,7 +50,7 @@
 }
 
 .admin-tabs button:hover {
-  color: #0f172a;
+  color: var(--text-main);
   background: rgba(0,0,0,0.03);
 }
 
@@ -109,7 +109,7 @@
   display: block;
   font-size: 56px;
   font-weight: 900;
-  color: #0f172a;
+  color: var(--text-main);
   margin-bottom: 16px;
   line-height: 1;
   letter-spacing: -0.03em;
@@ -193,9 +193,9 @@
 }
 
 .status-pill.pending { background: #f8fafc; color: #475569; }
-.status-pill.resolved { background: #f1f5f9; color: #0f172a; }
-.status-pill.banned { background: #1e293b; color: #ffffff; }
-.status-pill.active { background: #f1f5f9; color: #0f172a; }
+.status-pill.resolved { background: #f1f5f9; color: var(--text-main); }
+.status-pill.banned { background: var(--bg-secondary); color: #ffffff; }
+.status-pill.active { background: #f1f5f9; color: var(--text-main); }
 
 .report-reason {
   font-size: 18px;
@@ -299,7 +299,7 @@
 }
 
 .role-pill.influencer { background: #f8fafc; color: #475569; }
-.role-pill.brand { background: #f1f5f9; color: #0f172a; }
+.role-pill.brand { background: #f1f5f9; color: var(--text-main); }
 
 .table-actions {
   display: flex;

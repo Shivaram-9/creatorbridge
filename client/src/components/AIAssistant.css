@@ -52,7 +52,7 @@
 
 .ai-chat-header {
   padding: 15px 20px;
-  background: #0f172a;
+  background: var(--bg-secondary);
   color: white;
   display: flex;
   justify-content: space-between;
@@ -136,7 +136,7 @@
 
 .assistant .ai-bubble {
   background: white;
-  color: #1e293b;
+  color: var(--text-main);
   border-bottom-left-radius: 2px;
 }
 

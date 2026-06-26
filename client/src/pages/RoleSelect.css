@@ -24,7 +24,7 @@
 .role-select-header h1 {
   font-size: 38px;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--text-main);
   margin-bottom: 16px;
   letter-spacing: -1px;
 }
@@ -96,7 +96,7 @@
 .role-card__title {
   font-size: 24px;
   font-weight: 800;
-  color: #1e293b;
+  color: var(--text-main);
   margin: 0;
 }
 
@@ -196,7 +196,7 @@
 .terms-modal-header h2 {
   font-size: 24px;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--text-main);
   margin: 0;
 }
 
@@ -217,7 +217,7 @@
 
 .terms-close:hover {
   background: #e2e8f0;
-  color: #0f172a;
+  color: var(--text-main);
 }
 
 .terms-modal-body {
@@ -230,7 +230,7 @@
 .terms-modal-body h3 {
   font-size: 18px;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--text-main);
   margin: 24px 0 12px;
 }
 

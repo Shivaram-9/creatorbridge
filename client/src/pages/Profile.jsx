@@ -636,7 +636,7 @@ export default function Profile() {
                 <input 
                   type="url" 
                   placeholder="https://..." 
-                  className="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-white rounded-lg p-2 outline-none focus:border-blue-500"
+                  className="w-full border border-slate-300 dark:border-[#262626] dark:bg-slate-900 dark:text-white rounded-lg p-2 outline-none focus:border-blue-500"
                   value={portfolioUrl} 
                   onChange={e => setPortfolioUrl(e.target.value)} 
                   disabled={portfolioUploading}
@@ -646,7 +646,7 @@ export default function Profile() {
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Caption (Optional)</label>
                 <textarea 
                   placeholder="Project details..." 
-                  className="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-white rounded-lg p-2 outline-none focus:border-blue-500 resize-none"
+                  className="w-full border border-slate-300 dark:border-[#262626] dark:bg-slate-900 dark:text-white rounded-lg p-2 outline-none focus:border-blue-500 resize-none"
                   rows="3"
                   value={portfolioCaption} 
                   onChange={e => setPortfolioCaption(e.target.value)} 

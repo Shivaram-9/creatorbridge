@@ -1,6 +1,6 @@
 export default function CreatorTemplateFour({ data }) {
   return (
-    <div className="p-12 font-serif text-slate-800 bg-stone-50 min-h-[297mm] border-[12px] border-stone-200">
+    <div className="p-12 font-serif text-slate-800 dark:text-white bg-stone-50 min-h-[297mm] border-[12px] border-stone-200">
       <header className="text-center mb-12 pb-12 border-b border-stone-300">
         <h1 className="text-5xl font-normal tracking-widest uppercase text-stone-900 mb-4">{data.personal.name || "YOUR NAME"}</h1>
         <h2 className="text-lg font-light tracking-[0.2em] uppercase text-stone-500 mb-8">{data.personal.title || "Profession"}</h2>

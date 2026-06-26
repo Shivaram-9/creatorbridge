@@ -1,6 +1,6 @@
 export default function CreatorTemplateThree({ data }) {
   return (
-    <div className="p-0 font-sans text-slate-900 bg-white min-h-[297mm]">
+    <div className="p-0 font-sans text-slate-900 dark:text-white bg-white min-h-[297mm]">
       {/* Top Graphic Header */}
       <div className="bg-gradient-to-r from-teal-500 to-emerald-600 p-12 text-white shadow-md relative overflow-hidden">
         <div className="relative z-10">
@@ -35,7 +35,7 @@ export default function CreatorTemplateThree({ data }) {
                 {data.experience.map(exp => (
                   <div key={exp.id}>
                     <div className="flex justify-between items-baseline mb-1">
-                      <h4 className="text-lg font-bold text-slate-800">{exp.role}</h4>
+                      <h4 className="text-lg font-bold text-slate-800 dark:text-white">{exp.role}</h4>
                       <span className="text-xs font-bold text-teal-600 bg-teal-50 px-2 py-1 rounded">{exp.startDate} - {exp.endDate || 'Present'}</span>
                     </div>
                     <p className="text-md font-semibold text-slate-600 mb-2">{exp.company}</p>
@@ -54,7 +54,7 @@ export default function CreatorTemplateThree({ data }) {
               <div className="grid grid-cols-2 gap-6">
                 {data.projects.map(proj => (
                   <div key={proj.id} className="border border-slate-200 p-4 rounded-lg shadow-sm border-t-4 border-t-teal-500">
-                    <h4 className="text-md font-bold text-slate-800 mb-1">{proj.title}</h4>
+                    <h4 className="text-md font-bold text-slate-800 dark:text-white mb-1">{proj.title}</h4>
                     {proj.link && <p className="text-xs text-blue-500 mb-2">{proj.link}</p>}
                     <p className="text-xs text-slate-600 leading-relaxed whitespace-pre-wrap">{proj.description}</p>
                   </div>
@@ -95,7 +95,7 @@ export default function CreatorTemplateThree({ data }) {
               <div className="space-y-4">
                 {data.education.map(edu => (
                   <div key={edu.id} className="relative pl-4 border-l-2 border-teal-200">
-                    <p className="font-bold text-slate-800 text-sm">{edu.degree}</p>
+                    <p className="font-bold text-slate-800 dark:text-white text-sm">{edu.degree}</p>
                     <p className="text-slate-600 text-xs my-1">{edu.institution}</p>
                     <p className="text-teal-600 text-xs font-semibold">{edu.year}</p>
                   </div>

@@ -1,6 +1,6 @@
 export default function BrandTemplate8({ data }) {
   return (
-    <div className="p-10 font-mono text-slate-800 bg-white min-h-[297mm]">
+    <div className="p-10 font-mono text-slate-800 dark:text-white bg-white min-h-[297mm]">
       <header className="border-b-4 border-violet-500 pb-6 mb-8 text-center">
         <h1 className="text-4xl font-bold uppercase tracking-widest mb-2 text-violet-900">{data.personal.name || "BRAND NAME"}</h1>
         <h2 className="text-xl font-medium text-violet-600">{data.personal.title || "Profession"}</h2>
@@ -27,7 +27,7 @@ export default function BrandTemplate8({ data }) {
               <div className="space-y-6">
                 {data.experience.map(exp => (
                   <div key={exp.id} className="relative pl-4 border-l-2 border-violet-200">
-                    <h4 className="text-lg font-bold text-slate-800">{exp.role}</h4>
+                    <h4 className="text-lg font-bold text-slate-800 dark:text-white">{exp.role}</h4>
                     <p className="text-sm font-semibold text-violet-600 mb-2">{exp.company} | {exp.startDate} - {exp.endDate || 'Present'}</p>
                     <p className="text-sm text-slate-600 leading-relaxed whitespace-pre-wrap">{exp.description}</p>
                   </div>
@@ -42,7 +42,7 @@ export default function BrandTemplate8({ data }) {
               <div className="grid grid-cols-1 gap-6">
                 {data.projects.map(proj => (
                   <div key={proj.id} className="p-4 border border-slate-200 rounded shadow-sm bg-white">
-                    <h4 className="text-md font-bold text-slate-800 mb-1">{proj.title}</h4>
+                    <h4 className="text-md font-bold text-slate-800 dark:text-white mb-1">{proj.title}</h4>
                     {proj.link && <p className="text-xs text-blue-500 mb-2">{proj.link}</p>}
                     <p className="text-sm text-slate-600 leading-relaxed whitespace-pre-wrap">{proj.description}</p>
                   </div>
@@ -72,7 +72,7 @@ export default function BrandTemplate8({ data }) {
               <div className="space-y-4">
                 {data.education.map(edu => (
                   <div key={edu.id}>
-                    <p className="font-bold text-slate-800 text-sm">{edu.degree}</p>
+                    <p className="font-bold text-slate-800 dark:text-white text-sm">{edu.degree}</p>
                     <p className="text-slate-600 text-xs my-1">{edu.institution}</p>
                     <p className="text-violet-600 text-xs font-semibold">{edu.year}</p>
                   </div>

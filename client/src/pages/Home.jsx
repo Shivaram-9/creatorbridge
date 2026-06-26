@@ -18,12 +18,12 @@ function HeroBanner({ user }) {
   return (
     <div className="mb-8 pt-4 px-2 md:px-0">
       <div className="max-w-2xl">
-        <h1 className="text-2xl md:text-3xl font-extrabold mb-3 text-slate-900 dark:text-slate-100 tracking-tight">Discover Top Creators & Brands</h1>
+        <h1 className="text-2xl md:text-3xl font-extrabold mb-3 text-slate-900 dark:text-white tracking-tight">Discover Top Creators & Brands</h1>
         <p className="text-slate-600 dark:text-slate-300 text-base md:text-lg mb-6 leading-relaxed">
           The premium network for builders, designers, and innovators. Showcase your portfolio and connect with verified professionals.
         </p>
         <div className="flex gap-4">
-          <button onClick={() => navigate('/discover')} className="border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 px-6 py-2.5 rounded-lg font-bold shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors w-full md:w-auto flex justify-center items-center">
+          <button onClick={() => navigate('/discover')} className="border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 bg-white dark:bg-[#171717] px-6 py-2.5 rounded-lg font-bold shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors w-full md:w-auto flex justify-center items-center">
             Build Your Pact
           </button>
         </div>
@@ -235,11 +235,11 @@ export default function Home() {
               <p className="text-slate-500 dark:text-slate-400 text-xs">{user?.role === 'brand' ? 'Brand' : 'Creator'}</p>
             </div>
           </div>
-          <div className="flex justify-between text-sm py-3 border-t border-slate-100 dark:border-slate-700/50">
+          <div className="flex justify-between text-sm py-3 border-t border-slate-100 dark:border-[#262626]/50">
             <span className="text-slate-500 dark:text-slate-400">Profile Views</span>
             <span className="font-bold text-slate-900 dark:text-white">{user?.profileViews || 0}</span>
           </div>
-          <div className="flex justify-between text-sm py-3 border-t border-slate-100 dark:border-slate-700/50">
+          <div className="flex justify-between text-sm py-3 border-t border-slate-100 dark:border-[#262626]/50">
             <span className="text-slate-500 dark:text-slate-400">Post Impressions</span>
             <span className="font-bold text-slate-900 dark:text-white">{user?.postImpressions || 0}</span>
           </div>
@@ -274,7 +274,7 @@ export default function Home() {
               <div className="text-sm text-slate-500 dark:text-slate-400 text-center py-2">No verified users found.</div>
             )}
           </div>
-          <button onClick={() => navigate('/discover')} className="mt-4 w-full text-center text-sm font-semibold text-slate-700 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 transition-colors">
+          <button onClick={() => navigate('/discover')} className="mt-4 w-full text-center text-sm font-semibold text-slate-700 dark:text-slate-400 hover:text-slate-900 dark:text-white dark:hover:text-slate-200 transition-colors">
             View all recommendations
           </button>
         </div>

@@ -27,7 +27,7 @@
 
 .progress-fill {
   height: 100%;
-  background: #0f172a;
+  background: var(--bg-secondary);
   transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -35,7 +35,7 @@
   font-size: 32px;
   font-weight: 900;
   margin-bottom: 12px;
-  color: #0f172a;
+  color: var(--text-main);
 }
 
 .onboarding-step p {
@@ -48,7 +48,7 @@
   display: inline-block;
   padding: 4px 12px;
   background: #f1f5f9;
-  color: #0f172a;
+  color: var(--text-main);
   font-size: 11px;
   font-weight: 800;
   border-radius: 100px;
@@ -81,7 +81,7 @@
 
 .role-option.active {
   background: #f1f5f9;
-  border-color: #0f172a;
+  border-color: var(--text-main);
 }
 
 .role-option .icon {
@@ -92,7 +92,7 @@
   display: block;
   font-size: 18px;
   margin-bottom: 4px;
-  color: #0f172a;
+  color: var(--text-main);
 }
 
 .role-text p {
@@ -125,9 +125,9 @@
 }
 
 .cat-tag.active {
-  background: #0f172a;
+  background: var(--bg-secondary);
   color: white;
-  border-color: #0f172a;
+  border-color: var(--text-main);
 }
 
 .onboarding-textarea {
