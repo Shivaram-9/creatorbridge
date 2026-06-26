@@ -51,20 +51,20 @@
   gap: 15px;
   padding: 12px 15px;
   border-radius: 12px;
-  color: var(--text-muted, #71839B);
+  color: var(--text-muted, #71839B) !important;
   text-decoration: none;
   font-weight: 500;
   transition: all 0.2s ease;
 }
 
 .sidebar-item:hover {
-  background-color: var(--border-light);
-  color: var(--text-main);
+  background-color: var(--bg-card);
+  color: var(--text-main) !important;
 }
 
 .sidebar-item.active {
-  background-color: var(--border-light);
-  color: var(--text-main);
+  background-color: var(--bg-card);
+  color: var(--text-main) !important;
   font-weight: 600;
 }
 

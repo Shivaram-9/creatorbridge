@@ -176,7 +176,7 @@ export default function Navbar({
                 >
                   <div className={`relative rounded-full p-[2px] transition-all ${menuOpen ? 'border border-gray-400' : 'border border-transparent'}`}>
                     <Avatar user={user} size="sm" />
-                    <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white ${socketStatus === 'online' ? 'bg-green-500' : socketStatus === 'connecting' ? 'bg-yellow-500' : 'bg-red-500'}`} />
+                    <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white dark:border-[#171717] ${socketStatus === 'online' ? 'bg-green-500' : socketStatus === 'connecting' ? 'bg-yellow-500' : 'bg-red-500'}`} />
                   </div>
                 </button>
                 {menuOpen && (
