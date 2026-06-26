@@ -282,7 +282,7 @@ export default function Settings() {
           email: user?.email,
           contact: user?.phone || "9999999999"
         },
-        theme: { color: "#0f172a" },
+        theme: { color: 'var(--text-main)' },
       };
 
       const rzp = new window.Razorpay(options);

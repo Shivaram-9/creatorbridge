@@ -27,12 +27,12 @@ function SharedPostPreview({ url }) {
         marginTop: '8px', 
         marginBottom: '8px', 
         padding: '12px 16px', 
-        background: '#fff', 
+        background: 'var(--bg-card)', 
         borderRadius: '12px', 
         border: '1px solid rgba(0,0,0,0.1)', 
         width: '240px', 
         fontSize: '12px', 
-        color: '#64748b' 
+        color: 'var(--text-muted)' 
       }}>
         Loading preview...
       </div>
@@ -58,7 +58,7 @@ function SharedPostPreview({ url }) {
         marginBottom: '8px',
         borderRadius: '12px',
         overflow: 'hidden',
-        background: '#fff',
+        background: 'var(--bg-card)',
         cursor: 'pointer',
         border: '1px solid rgba(0,0,0,0.1)',
         width: '240px',
@@ -67,7 +67,7 @@ function SharedPostPreview({ url }) {
     >
       <div style={{ padding: '8px 12px', display: 'flex', alignItems: 'center', gap: '8px', borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
         <Avatar user={post.user} size="sm" />
-        <span style={{ fontSize: '13px', fontWeight: '600', color: '#0f172a' }}>{post.user?.name || post.user?.username || post.username || 'User'}</span>
+        <span style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-main)' }}>{post.user?.name || post.user?.username || post.username || 'User'}</span>
       </div>
       {mediaUrl ? (
         mediaUrl.toLowerCase().split('?')[0].match(/\.(mp4|mov|webm)$/) ? (
@@ -145,7 +145,7 @@ export default function Chat({ standalone = true }) {
               </button>
               <button 
                 onClick={() => handleAutoReply("Thank you for your time. I am unable to accept the request at this moment, but I hope we can connect in the future.")}
-                style={{ flex: 1, padding: '8px 12px', background: '#f8fafc', color: '#0f172a', border: '1px solid #e2e8f0', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', fontWeight: '600', transition: 'background 0.2s' }}
+                style={{ flex: 1, padding: '8px 12px', background: '#f8fafc', color: 'var(--text-main)', border: '1px solid var(--border-light)', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', fontWeight: '600', transition: 'background 0.2s' }}
                 onMouseOver={(e) => e.currentTarget.style.background = '#f1f5f9'}
                 onMouseOut={(e) => e.currentTarget.style.background = '#f8fafc'}
               >
@@ -454,7 +454,7 @@ export default function Chat({ standalone = true }) {
                             span.style.padding = '20px';
                             span.style.display = 'block';
                             span.style.fontSize = '12px';
-                            span.style.color = isMine ? '#a1a1aa' : '#64748b';
+                            span.style.color = isMine ? '#a1a1aa' : 'var(--text-muted)';
                             span.style.textAlign = 'center';
                             parent.appendChild(span);
                           }

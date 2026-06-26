@@ -94,7 +94,7 @@ export default function TrustScore({ user, isOwnProfile }) {
             <text x="18" y="19" className="percentage">{finalScore}</text>
             <text x="18" y="24" className="percentage-label">/ 100</text>
           </svg>
-          <div style={{ marginTop: '20px', textAlign: 'center', fontSize: '13px', color: '#64748b', fontWeight: '500' }}>
+          <div style={{ marginTop: '20px', textAlign: 'center', fontSize: '13px', color: 'var(--text-muted)', fontWeight: '500' }}>
             Calculated across 5 performance pillars
           </div>
         </div>

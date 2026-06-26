@@ -97,7 +97,7 @@ const UserCard = memo(({ user, minimal, layout = "card" }) => {
           alignItems: 'center',
           padding: '12px 16px',
           backgroundColor: 'transparent',
-          borderBottom: '1px solid #e2e8f0',
+          borderBottom: '1px solid var(--border-light)',
           cursor: 'pointer',
           width: '100%',
           transition: 'background-color 0.2s',
@@ -115,7 +115,7 @@ const UserCard = memo(({ user, minimal, layout = "card" }) => {
           <div style={{ 
             fontSize: '14px', 
             fontWeight: 700, 
-            color: '#1a1a1a', 
+            color: 'var(--text-main)', 
             whiteSpace: 'nowrap',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
@@ -126,7 +126,7 @@ const UserCard = memo(({ user, minimal, layout = "card" }) => {
             {user.name || user.username}
             {user.isVerified && <VerifiedBadge size="sm" tier={user.premiumTier} role={user.role} />}
           </div>
-          <div style={{ fontSize: '13px', color: '#64748b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          <div style={{ fontSize: '13px', color: 'var(--text-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
             @{user.username}
           </div>
         </div>
@@ -138,8 +138,8 @@ const UserCard = memo(({ user, minimal, layout = "card" }) => {
             style={{
               padding: '6px 16px',
               borderRadius: '8px',
-              backgroundColor: hasRequested ? '#f1f5f9' : isFollowing ? '#f1f5f9' : '#0f172a',
-              color: hasRequested ? '#64748b' : isFollowing ? '#0f172a' : 'white',
+              backgroundColor: hasRequested ? 'var(--bg-secondary)' : isFollowing ? 'var(--bg-secondary)' : 'var(--primary)',
+              color: hasRequested ? 'var(--text-muted)' : isFollowing ? 'var(--text-main)' : 'white',
               border: 'none',
               fontSize: '13px',
               fontWeight: 600,
@@ -217,9 +217,9 @@ const UserCard = memo(({ user, minimal, layout = "card" }) => {
               textTransform: 'uppercase', 
               padding: '4px 10px', 
               borderRadius: '6px',
-              backgroundColor: '#f1f5f9',
-              color: '#0f172a',
-              border: '1px solid #e2e8f0'
+              backgroundColor: 'var(--bg-secondary)',
+              color: 'var(--text-main)',
+              border: '1px solid var(--border-light)'
             }}>
               {user.role}
             </span>
@@ -229,9 +229,9 @@ const UserCard = memo(({ user, minimal, layout = "card" }) => {
                 fontWeight: 700, 
                 padding: '4px 10px', 
                 borderRadius: '6px',
-                backgroundColor: '#f8fafc',
+                backgroundColor: 'var(--bg-main)',
                 color: '#475569',
-                border: '1px solid #f1f5f9'
+                border: '1px solid var(--border-light)'
               }}>
                 {user.category}
               </span>
@@ -249,11 +249,11 @@ const UserCard = memo(({ user, minimal, layout = "card" }) => {
             marginBottom: '1rem'
           }}>
             <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '14px', fontWeight: 800, color: '#1a1a1a' }}>{user.followers?.length || 0}</div>
+              <div style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-main)' }}>{user.followers?.length || 0}</div>
               <div style={{ fontSize: '10px', color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase' }}>Alliances</div>
             </div>
             <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '14px', fontWeight: 800, color: '#1a1a1a' }}>{user.profileViews || 0}</div>
+              <div style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-main)' }}>{user.profileViews || 0}</div>
               <div style={{ fontSize: '10px', color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase' }}>Reach</div>
             </div>
           </div>

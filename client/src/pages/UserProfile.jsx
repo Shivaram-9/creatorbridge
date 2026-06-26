@@ -400,7 +400,7 @@ export default function UserProfile() {
                     ))}
                   </div>
                   {profile?.averageRating > 0 && (
-                    <span style={{ fontSize: '13px', color: '#64748b', marginLeft: '4px' }}>
+                    <span style={{ fontSize: '13px', color: 'var(--text-muted)', marginLeft: '4px' }}>
                       ({profile.averageRating.toFixed(1)})
                     </span>
                   )}
@@ -509,10 +509,10 @@ export default function UserProfile() {
 
       <div style={{ marginBottom: '40px' }}>
         {isPrivateAndHidden ? (
-          <div style={{ textAlign: 'center', padding: '60px', background: '#fff', borderRadius: '16px' }}>
+          <div style={{ textAlign: 'center', padding: '60px', background: 'var(--bg-card)', borderRadius: '16px' }}>
             <span style={{ fontSize: '40px' }}>🔒</span>
             <h3 style={{ margin: '16px 0 8px' }}>This account is private</h3>
-            <p style={{ color: '#64748B' }}>Connect with this user to see their posts and portfolio.</p>
+            <p style={{ color: 'var(--text-muted)' }}>Connect with this user to see their posts and portfolio.</p>
           </div>
         ) : (
           <>
@@ -521,7 +521,7 @@ export default function UserProfile() {
                 {loadingPosts ? (
                    <div style={{ gridColumn: '1 / -1' }}><PostSkeleton /></div>
                 ) : userPosts.length === 0 ? (
-                  <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '40px', background: '#fff', borderRadius: '16px' }}>
+                  <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '40px', background: 'var(--bg-card)', borderRadius: '16px' }}>
                     <span style={{ fontSize: '40px' }}>📷</span>
                     <h3 style={{ marginTop: '16px' }}>No Posts Yet</h3>
                   </div>
@@ -548,7 +548,7 @@ export default function UserProfile() {
             )}
             {activeTab === "portfolio" && <PortfolioGrid items={profile?.portfolio || []} />}
 
-            {activeTab === "about" && <div style={{ textAlign: 'center', padding: '40px', background: '#fff', borderRadius: '16px', color: '#64748B' }}>{profile?.bio || "No bio yet."}</div>}
+            {activeTab === "about" && <div style={{ textAlign: 'center', padding: '40px', background: 'var(--bg-card)', borderRadius: '16px', color: 'var(--text-muted)' }}>{profile?.bio || "No bio yet."}</div>}
 
             {activeTab === "trust" && (
               <div style={{ marginTop: '24px' }}>

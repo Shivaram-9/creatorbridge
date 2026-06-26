@@ -46,12 +46,12 @@ export default function UserListModal({ userId, type = "following", onClose, onS
 
   return (
     <div className="modal-overlay" onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000 }}>
-      <div className="modal-content" onClick={e => e.stopPropagation()} style={{ background: 'white', color: '#1a1a1a', borderRadius: '16px', width: '90%', maxWidth: '400px', maxHeight: '80vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }}>
+      <div className="modal-content" onClick={e => e.stopPropagation()} style={{ background: 'white', color: 'var(--text-main)', borderRadius: '16px', width: '90%', maxWidth: '400px', maxHeight: '80vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }}>
         
         {/* Header */}
         <div style={{ padding: '16px', borderBottom: '1px solid #eee', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h2 style={{ fontSize: '1rem', fontWeight: 600, margin: 0 }}>Share</h2>
-          <button style={{ background: 'none', border: 'none', color: '#1a1a1a', fontSize: '1.2rem', cursor: 'pointer' }} onClick={onClose}>✕</button>
+          <button style={{ background: 'none', border: 'none', color: 'var(--text-main)', fontSize: '1.2rem', cursor: 'pointer' }} onClick={onClose}>✕</button>
         </div>
 
         {/* Search */}
@@ -61,7 +61,7 @@ export default function UserListModal({ userId, type = "following", onClose, onS
             <input 
               type="text" 
               placeholder="Search" 
-              style={{ width: '100%', background: '#f5f5f5', border: 'none', borderRadius: '8px', padding: '10px 10px 10px 36px', color: '#1a1a1a', fontSize: '14px', outline: 'none' }}
+              style={{ width: '100%', background: '#f5f5f5', border: 'none', borderRadius: '8px', padding: '10px 10px 10px 36px', color: 'var(--text-main)', fontSize: '14px', outline: 'none' }}
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
             />
@@ -94,7 +94,7 @@ export default function UserListModal({ userId, type = "following", onClose, onS
                       </div>
                     )}
                   </div>
-                  <span style={{ fontSize: '0.8rem', color: '#1a1a1a', marginTop: '6px', textAlign: 'center', width: '100%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  <span style={{ fontSize: '0.8rem', color: 'var(--text-main)', marginTop: '6px', textAlign: 'center', width: '100%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     {u.username || u.name}
                   </span>
                 </div>

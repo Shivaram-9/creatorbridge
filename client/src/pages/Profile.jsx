@@ -452,7 +452,7 @@ export default function Profile() {
         {activeTab === "posts" && (
           <div className="profile-ig-grid">
             {posts.length === 0 ? (
-              <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '40px', background: '#fff', borderRadius: '16px' }}>
+              <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '40px', background: 'var(--bg-card)', borderRadius: '16px' }}>
                 <span style={{ fontSize: '40px' }}>📷</span>
                 <h3 style={{ marginTop: '16px' }}>No Posts Yet</h3>
               </div>
@@ -514,7 +514,7 @@ export default function Profile() {
           </div>
         )}
 
-        {activeTab === "about" && <div style={{ textAlign: 'center', padding: '40px', background: '#fff', borderRadius: '16px', color: '#64748B' }}>{user?.bio || "No bio yet."}</div>}
+        {activeTab === "about" && <div style={{ textAlign: 'center', padding: '40px', background: 'var(--bg-card)', borderRadius: '16px', color: 'var(--text-muted)' }}>{user?.bio || "No bio yet."}</div>}
 
         {activeTab === "trust" && (
           <div style={{ marginTop: '24px' }}>

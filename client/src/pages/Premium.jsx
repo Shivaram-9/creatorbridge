@@ -84,7 +84,7 @@ export default function Premium() {
           email: user.email,
         },
         theme: {
-          color: "#0f172a",
+          color: 'var(--text-main)',
         },
       };
 

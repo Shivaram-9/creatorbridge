@@ -124,9 +124,9 @@ export default function Messages() {
             <div className="search-results-section" style={{ borderBottom: '1px solid var(--border-light)', marginBottom: '10px' }}>
               <p style={{ padding: '0 20px 8px', fontSize: '12px', fontWeight: '600', color: '#94a3b8', textTransform: 'uppercase' }}>Profiles</p>
               {isSearching ? (
-                <div style={{ padding: '10px 20px', fontSize: '13px', color: '#64748b' }}>Searching...</div>
+                <div style={{ padding: '10px 20px', fontSize: '13px', color: 'var(--text-muted)' }}>Searching...</div>
               ) : searchResults.length === 0 ? (
-                <div style={{ padding: '10px 20px', fontSize: '13px', color: '#64748b' }}>No profiles found</div>
+                <div style={{ padding: '10px 20px', fontSize: '13px', color: 'var(--text-muted)' }}>No profiles found</div>
               ) : (
                 searchResults.map(user => (
                   <div 
@@ -141,7 +141,7 @@ export default function Messages() {
                     <Avatar user={user} size="sm" />
                     <div className="chat-item-info" style={{ marginLeft: '12px' }}>
                       <span style={{ fontWeight: '600', fontSize: '14px', color: 'var(--text-main)' }}>{user.name || user.username}</span>
-                      <p style={{ fontSize: '12px', color: '#64748b', margin: 0 }}>@{user.username}</p>
+                      <p style={{ fontSize: '12px', color: 'var(--text-muted)', margin: 0 }}>@{user.username}</p>
                     </div>
                   </div>
                 ))
@@ -159,7 +159,7 @@ export default function Messages() {
             <div className="empty-state" style={{ padding: '48px 20px', textAlign: 'center' }}>
               <div className="empty-icon"><MessageIcon style={{ width: '48px', height: '48px', color: '#94a3b8', marginBottom: '16px' }} /></div>
               <h3 style={{ color: 'var(--text-main)', marginBottom: '8px' }}>No messages yet</h3>
-              <p style={{ color: '#64748b', fontSize: '14px' }}>When you connect with others, your conversations will appear here.</p>
+              <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>When you connect with others, your conversations will appear here.</p>
             </div>
           ) : (
             filteredConversations.map(conv => conv && conv.partner && (

@@ -127,8 +127,8 @@ export default function SearchDropdown({ results, loading, onClose, onItemClick 
         .search-item:hover { background-color: #f8fafc; }
         .search-item-info { display: flex; flexDirection: column; flex: 1; }
         .name-row { display: flex; align-items: center; gap: 6px; }
-        .name { font-weight: 700; color: #1a1a1a; font-size: 14px; }
-        .handle { font-size: 12px; color: #64748b; }
+        .name { font-weight: 700; color: var(--text-main); font-size: 14px; }
+        .handle { font-size: 12px; color: var(--text-muted); }
         .role-badge { font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 800; text-transform: uppercase; }
         .role-badge.brand { background-color: #eff6ff; color: #2563eb; }
         .role-badge.influencer { background-color: #f0fdf4; color: #16a34a; }

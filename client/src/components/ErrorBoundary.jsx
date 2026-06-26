@@ -45,8 +45,8 @@ class ErrorBoundary extends React.Component {
           padding: '2rem'
         }}>
           <h1 style={{ fontSize: '4rem', marginBottom: '1rem' }}>⚠️</h1>
-          <h2 style={{ fontSize: '1.5rem', color: '#1e293b' }}>Something went wrong.</h2>
-          <p style={{ color: '#64748b', marginBottom: '1rem', maxWidth: '400px' }}>
+          <h2 style={{ fontSize: '1.5rem', color: 'var(--text-main)' }}>Something went wrong.</h2>
+          <p style={{ color: 'var(--text-muted)', marginBottom: '1rem', maxWidth: '400px' }}>
             The platform encountered an unexpected error.
           </p>
           {this.state.error && (
