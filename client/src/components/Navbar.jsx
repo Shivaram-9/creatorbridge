@@ -133,13 +133,13 @@ export default function Navbar({
   return (
     <header className="navbar-fixed">
       <div className="navbar-inner">
-        <div style={{ flex: '1 0 0' }}>
+        <div>
           <Link to="/home" className="logo-main-text" style={{ display: 'flex', alignItems: 'center' }}>
-            <img src="/LOGOAPP1.png" alt="Pactogram" className="dark:invert" style={{ height: '36px', width: 'auto', flexShrink: 0 }} />
+            <img src="/LOGOAPP1.png" alt="Pactogram" className="navbar-logo-img" />
           </Link>
         </div>
 
-        <div style={{ flex: '1 0 0', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '16px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           {user && (
             <>
               <button className="nav-icon-btn relative" onClick={handleBellClick}>

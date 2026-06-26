@@ -6,5 +6,10 @@
     "cleartext": true,
     "androidScheme": "http",
     "allowNavigation": ["10.0.2.2"]
+  },
+  "plugins": {
+    "StatusBar": {
+      "overlaysWebView": false
+    }
   }
 }

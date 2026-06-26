@@ -212,6 +212,19 @@ button:disabled {
   letter-spacing: -0.5px;
 }
 
+.navbar-logo-img {
+  height: 36px;
+  width: auto;
+  flex-shrink: 0;
+  mix-blend-mode: multiply;
+  transform: translateZ(0); /* Hardware acceleration fix for mobile */
+}
+
+.dark .navbar-logo-img {
+  filter: invert(1);
+  mix-blend-mode: screen;
+}
+
 @media (min-width: 768px) {
   .logo-main-text {
     display: none !important;
