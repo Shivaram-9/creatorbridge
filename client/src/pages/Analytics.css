@@ -427,3 +427,16 @@
     font-size: 22px;
   }
 }
+.dark .stat-card, .dark .insight-card, .dark .chart-card {
+  background: #171717;
+  border-color: #262626;
+}
+.dark .stat-card h4, .dark .stat-card .stat-value,
+.dark .insight-card h4, .dark .insight-card .insight-value,
+.dark .chart-card h3 {
+  color: white;
+}
+.dark .insight-type-label {
+  background: #262626;
+  color: #d4d4d8;
+}

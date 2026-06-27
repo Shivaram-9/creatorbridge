@@ -47,3 +47,19 @@
   background: #f9fafb;
   border-radius: 12px;
 }
+.dark .empty-state {
+  background: #171717;
+  color: #a3a3a3;
+}
+.dark .empty-state h3 {
+  color: white;
+}
+.dark .tab-navigation button {
+  background: #171717;
+  border-color: #262626;
+  color: #a3a3a3;
+}
+.dark .tab-navigation button.active {
+  background: white;
+  color: black;
+}
