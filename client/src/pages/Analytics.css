@@ -454,3 +454,30 @@
   background: #262626;
   color: #e5e5e5;
 }
+.dark .top-posts-card, .dark .campaign-insights-card {
+  background: #171717;
+  border-color: #262626;
+}
+.dark .badge {
+  background: #262626;
+  color: #e5e5e5;
+}
+.dark .post-rank-item:hover {
+  background: #262626;
+}
+.dark .post-rank-media {
+  background: #262626;
+}
+.dark .creator-name, .dark .metric-label, .dark .post-rank-footer .stat {
+  color: #a3a3a3;
+}
+.dark .metric-row {
+  background: #262626;
+}
+.dark .market-tips {
+  background: #422006;
+  border-color: #78350f;
+}
+.dark .market-tips p {
+  color: #fcd34d;
+}
