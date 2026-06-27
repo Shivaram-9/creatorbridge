@@ -61,7 +61,17 @@ export default function Home() {
     try {
       const data = await api.users.getVerified();
       if (!data?.error && Array.isArray(data)) {
-        const others = data.filter(u => u._id !== user?._id).slice(0, 3);
+        const others = data.filter(u => {
+          if (u._id === user?._id) return false;
+          if (u.role === 'admin') return false;
+          
+          const name = (u.name || '').toLowerCase();
+          const username = (u.username || '').toLowerCase();
+          if (name.includes('admin') || username.includes('admin')) return false;
+          if (name.includes('test') || username.includes('test')) return false;
+          
+          return true;
+        }).slice(0, 3);
         setSuggestedVerifiedUsers(others);
       }
     } catch { /* silent */ }
