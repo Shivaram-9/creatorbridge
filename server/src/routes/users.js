@@ -28,18 +28,6 @@ usersRouter.get("/reset-all-stats-secret", async (req, res) => {
   }
 });
 
-// TEMPORARY ENDPOINT TO RESET STATS
-usersRouter.get("/reset-all-stats-secret", async (req, res) => {
-  try {
-    const { User } = await import("../models/User.js");
-    const { Post } = await import("../models/Post.js");
-    const u = await User.updateMany({}, { $set: { profileViews: 0, postImpressions: 0 } });
-    const p = await Post.updateMany({}, { $set: { views: 0 } });
-    res.json({ success: true, usersModified: u.modifiedCount, postsModified: p.modifiedCount });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
 
 usersRouter.use(authMiddleware);
 
