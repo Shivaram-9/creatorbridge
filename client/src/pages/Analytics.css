@@ -440,3 +440,17 @@
   background: #262626;
   color: #d4d4d8;
 }
+.dark .chart-container {
+  background: #171717;
+  border-color: #262626;
+}
+.dark .chart-header h3 {
+  color: white;
+}
+.dark .chart-period {
+  color: #a3a3a3;
+}
+.dark .stat-change.positive, .dark .insight-type-label {
+  background: #262626;
+  color: #e5e5e5;
+}
