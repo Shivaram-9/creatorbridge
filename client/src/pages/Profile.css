@@ -486,17 +486,12 @@
 /* Lightbox & Media */
 .profile-ig-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-}
-@media (max-width: 1024px) {
-  .profile-ig-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
 }
 @media (max-width: 768px) {
   .profile-ig-grid {
-    grid-template-columns: repeat(2, 1fr);
+    gap: 4px;
   }
   .profile-header-base {
     padding: 0 20px 20px;
@@ -514,9 +509,9 @@
 .profile-ig-grid-item {
   position: relative;
   cursor: pointer;
-  border-radius: 16px;
+  border-radius: 4px;
   overflow: hidden;
-  aspect-ratio: 16/9; /* Wider cards like in screenshot */
+  aspect-ratio: 1 / 1; /* Perfect squares like Instagram */
   background: #f1f5f9;
 }
 
