@@ -488,6 +488,8 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
+  max-width: 935px; /* Restrict width to match Instagram's desktop layout */
+  margin: 0 auto;   /* Center the grid horizontally */
 }
 @media (max-width: 768px) {
   .profile-ig-grid {
