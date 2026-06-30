@@ -21,8 +21,8 @@ function HeroBanner({ user }) {
         <h1 className="text-2xl md:text-3xl font-extrabold mb-3 tracking-tight" style={{ color: 'var(--text-main)' }}>Discover Top Creators & Brands</h1>
 
         <div className="flex gap-4">
-          <button onClick={() => navigate('/discover')} className="px-6 py-2.5 rounded-lg font-bold shadow-sm transition-colors w-full md:w-auto flex justify-center items-center" style={{ background: 'var(--bg-card)', color: 'var(--text-main)', border: '1px solid var(--border-light)' }}>
-            Build Your Pact
+          <button onClick={() => navigate('/search')} className="px-6 py-2.5 rounded-lg font-bold shadow-sm transition-colors w-full md:w-auto flex justify-center items-center" style={{ background: 'var(--bg-card)', color: 'var(--text-main)', border: '1px solid var(--border-light)' }}>
+            Find Your Collab
           </button>
         </div>
       </div>
