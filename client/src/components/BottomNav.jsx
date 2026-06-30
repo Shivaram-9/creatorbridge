@@ -1,5 +1,5 @@
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
-import { HomeIcon, UsersIcon, MessageIcon, ProfileIcon } from "./Icons.jsx";
+import { HomeIcon, UsersIcon, SearchIcon, MessageIcon, ProfileIcon } from "./Icons.jsx";
 
 export default function BottomNav({ msgUnreadCount }) {
   const navigate = useNavigate();
@@ -13,8 +13,13 @@ export default function BottomNav({ msgUnreadCount }) {
         </NavLink>
         
         <NavLink to="/discover" className={({ isActive }) => `nav-tab-pro ${isActive ? "active" : "text-gray-500"}`}>
-          <UsersIcon />
+          <SearchIcon />
           <span className="text-[10px] font-medium mt-1">Discover</span>
+        </NavLink>
+        
+        <NavLink to="/search" className={({ isActive }) => `nav-tab-pro ${isActive ? "active" : "text-gray-500"}`}>
+          <UsersIcon />
+          <span className="text-[10px] font-medium mt-1">Collabs</span>
         </NavLink>
         
         <div className="nav-tab-pro" style={{ flex: '0 0 auto', padding: '0 10px' }}>
