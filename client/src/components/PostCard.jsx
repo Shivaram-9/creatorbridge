@@ -5,6 +5,7 @@ import { api } from "../services/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import Avatar from "./Avatar.jsx";
 import VerifiedBadge from "./VerifiedBadge.jsx";
+import VerifiedPill from "./VerifiedPill.jsx";
 import ReportModal from "./ReportModal.jsx";
 import MediaGallery from "./MediaGallery.jsx";
 import "./PostCard.css";
@@ -219,7 +220,10 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
               {(post.user?.isVerified || post.user?.isPremium) && <VerifiedBadge size="sm" tier={post.user?.premiumTier} role={post.user?.role} />}
             </h3>
             <p className="text-sm text-slate-500 dark:text-slate-400">
-              {post.user?.role === 'brand' ? 'Brand' : 'Creator'}{post.user?.category ? ` / ${post.user.category}` : ''} • {new Date(post.createdAt).toLocaleDateString()}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <VerifiedPill user={post.user} fallbackText={`${post.user?.role === 'brand' ? 'Brand' : 'Creator'}${post.user?.category ? ` / ${post.user.category}` : ''}`} />
+                <span>• {new Date(post.createdAt).toLocaleDateString()}</span>
+              </div>
             </p>
           </div>
         </div>
