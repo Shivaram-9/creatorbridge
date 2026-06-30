@@ -19,9 +19,7 @@ function HeroBanner({ user }) {
     <div className="mb-8 pt-4 px-2 md:px-0">
       <div className="max-w-2xl">
         <h1 className="text-2xl md:text-3xl font-extrabold mb-3 tracking-tight" style={{ color: 'var(--text-main)' }}>Discover Top Creators & Brands</h1>
-        <p className="text-base md:text-lg mb-6 leading-relaxed" style={{ color: 'var(--text-muted)' }}>
-          The premium network for builders, designers, and innovators. Showcase your portfolio and connect with verified professionals.
-        </p>
+
         <div className="flex gap-4">
           <button onClick={() => navigate('/discover')} className="px-6 py-2.5 rounded-lg font-bold shadow-sm transition-colors w-full md:w-auto flex justify-center items-center" style={{ background: 'var(--bg-card)', color: 'var(--text-main)', border: '1px solid var(--border-light)' }}>
             Build Your Pact
