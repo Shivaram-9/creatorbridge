@@ -8,6 +8,7 @@ import CreatePost from "../components/CreatePost.jsx";
 import StoriesBar from "../components/StoriesBar.jsx";
 import EmptyState from "../components/EmptyState.jsx";
 import Avatar from "../components/Avatar.jsx";
+import VerifiedBadge from "../components/VerifiedBadge.jsx";
 import { PostSkeleton } from "../components/Skeleton.jsx";
 import { HandshakeIcon } from "../components/Icons.jsx";
 import toast from "react-hot-toast";
@@ -239,7 +240,12 @@ export default function Home() {
           <div className="flex items-center gap-3 mb-4">
             <Avatar user={user} size="sm" />
             <div>
-              <h3 className="font-bold text-slate-900 dark:text-white text-sm leading-tight">{user?.name || user?.username}</h3>
+              <h3 className={`font-bold text-sm leading-tight flex items-center gap-1 ${
+                (user?.isVerified || user?.isPremium) ? (user.role === 'brand' ? 'metallic-gold-text' : 'metallic-blue-text') : 'text-slate-900 dark:text-white'
+              }`}>
+                {user?.name || user?.username}
+                {(user?.isVerified || user?.isPremium) && <VerifiedBadge size="xs" tier={user?.premiumTier} role={user?.role} />}
+              </h3>
               <p className="text-slate-500 dark:text-slate-400 text-xs">{user?.role === 'brand' ? 'Brand' : 'Creator'}</p>
             </div>
           </div>
@@ -263,7 +269,12 @@ export default function Home() {
                     <Avatar user={u} size="sm" />
                   </div>
                   <div className="cursor-pointer" onClick={() => navigate(`/user/${u._id}`)}>
-                    <h4 className="text-sm font-bold text-slate-900 dark:text-white">{u.name || u.username}</h4>
+                    <h4 className={`text-sm font-bold flex items-center gap-1 ${
+                      (u?.isVerified || u?.isPremium) ? (u.role === 'brand' ? 'metallic-gold-text' : 'metallic-blue-text') : 'text-slate-900 dark:text-white'
+                    }`}>
+                      {u.name || u.username}
+                      {(u?.isVerified || u?.isPremium) && <VerifiedBadge size="xs" tier={u?.premiumTier} role={u?.role} />}
+                    </h4>
                     <p className="text-xs text-slate-500 dark:text-slate-400 capitalize">{u.role || 'Creator'}</p>
                   </div>
                 </div>
