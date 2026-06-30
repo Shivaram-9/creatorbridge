@@ -11,7 +11,6 @@ export default function VerifiedPill({ user, className = '', style = {}, fallbac
 
   return (
     <span className={`verified-badge-pill ${isBrand ? 'brand' : 'influencer'} ${className}`} style={style}>
-      <VerifiedBadge size="xs" role={user.role} tier={user.premiumTier} showTooltip={false} style={{ marginLeft: 0 }} />
       <span>{isBrand ? 'Verified Brand' : 'Verified Creator'}</span>
     </span>
   );
