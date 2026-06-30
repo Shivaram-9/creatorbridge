@@ -112,16 +112,15 @@ const UserCard = memo(({ user, minimal, layout = "card" }) => {
         </div>
         
         <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-          <div style={{ 
-            fontSize: '14px', 
-            fontWeight: 700, 
-            color: 'var(--text-main)', 
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '4px'
+          <div className={(user.isVerified || user.isPremium) ? (user.role === 'brand' ? 'metallic-gold-text' : 'metallic-blue-text') : ''} style={{ 
+            fontSize: '15px', 
+            fontWeight: '600', 
+            whiteSpace: 'nowrap', 
+            overflow: 'hidden', 
+            textOverflow: 'ellipsis', 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '4px' 
           }}>
             {user.name || user.username}
             {user.isVerified && <VerifiedBadge size="sm" tier={user.premiumTier} role={user.role} />}
@@ -191,7 +190,8 @@ const UserCard = memo(({ user, minimal, layout = "card" }) => {
       </div>
 
       <div style={{ width: '100%' }}>
-        <h3 style={{ 
+        <h3 className={(user.isVerified || user.isPremium) ? (user.role === 'brand' ? 'metallic-gold-text' : 'metallic-blue-text') : ''} style={{ 
+          margin: 0,
           fontSize: '16px', 
           fontWeight: 700, 
           color: 'var(--text-main)', 
