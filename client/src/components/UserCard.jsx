@@ -2,6 +2,7 @@ import { memo, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Avatar from "./Avatar.jsx";
 import VerifiedBadge from "./VerifiedBadge.jsx";
+import VerifiedPill from "./VerifiedPill.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
 import { api } from "../services/api.js";
 import { getSocket } from "../services/socket.js";
@@ -128,6 +129,11 @@ const UserCard = memo(({ user, minimal, layout = "card" }) => {
           <div style={{ fontSize: '13px', color: 'var(--text-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
             @{user.username}
           </div>
+          {(user.isVerified || user.isPremium) && (
+            <div style={{ marginTop: '4px' }}>
+              <VerifiedPill user={user} />
+            </div>
+          )}
         </div>
 
         <div style={{ flexShrink: 0 }}>
@@ -207,7 +213,12 @@ const UserCard = memo(({ user, minimal, layout = "card" }) => {
           {user.name || user.username}
           {user.isVerified && <VerifiedBadge size="sm" tier={user.premiumTier} role={user.role} />}
         </h3>
-        <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '12px' }}>@{user.username}</p>
+        <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '8px' }}>@{user.username}</p>
+        {(user.isVerified || user.isPremium) && (
+          <div style={{ marginBottom: '12px' }}>
+            <VerifiedPill user={user} />
+          </div>
+        )}
         
         {!minimal && (
           <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginBottom: '1.25rem' }}>

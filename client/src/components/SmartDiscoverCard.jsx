@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { SparklesIcon } from "./Icons.jsx";
 import VerifiedBadge from "./VerifiedBadge.jsx";
+import VerifiedPill from "./VerifiedPill.jsx";
 import { api } from "../services/api.js";
 import "./SmartDiscoverCard.css";
 
@@ -58,7 +59,9 @@ export default function SmartDiscoverCard({ user, onAction }) {
               <VerifiedBadge size="sm" tier={user.premiumTier} role={user.role} />
             )}
           </div>
-          <p className="smart-card-role">{user.category || (isBrand ? "Brand" : "Creator")}</p>
+          <p className="smart-card-role">
+            <VerifiedPill user={user} fallbackText={user.category || (isBrand ? "Brand" : "Creator")} />
+          </p>
         </div>
       </div>
 

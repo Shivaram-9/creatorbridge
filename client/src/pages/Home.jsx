@@ -9,6 +9,7 @@ import StoriesBar from "../components/StoriesBar.jsx";
 import EmptyState from "../components/EmptyState.jsx";
 import Avatar from "../components/Avatar.jsx";
 import VerifiedBadge from "../components/VerifiedBadge.jsx";
+import VerifiedPill from "../components/VerifiedPill.jsx";
 import { PostSkeleton } from "../components/Skeleton.jsx";
 import { HandshakeIcon } from "../components/Icons.jsx";
 import toast from "react-hot-toast";
@@ -246,7 +247,9 @@ export default function Home() {
                 {user?.name || user?.username}
                 {(user?.isVerified || user?.isPremium) && <VerifiedBadge size="xs" tier={user?.premiumTier} role={user?.role} />}
               </h3>
-              <p className="text-slate-500 dark:text-slate-400 text-xs">{user?.role === 'brand' ? 'Brand' : 'Creator'}</p>
+              <div className="mt-1">
+                <VerifiedPill user={user} fallbackText={user?.role === 'brand' ? 'Brand' : 'Creator'} />
+              </div>
             </div>
           </div>
           <div className="flex justify-between text-sm py-3 border-t border-slate-100 dark:border-[#262626]/50">
@@ -275,7 +278,9 @@ export default function Home() {
                       {u.name || u.username}
                       {(u?.isVerified || u?.isPremium) && <VerifiedBadge size="xs" tier={u?.premiumTier} role={u?.role} />}
                     </h4>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 capitalize">{u.role || 'Creator'}</p>
+                    <div className="mt-1">
+                      <VerifiedPill user={u} fallbackText={u.role || 'Creator'} />
+                    </div>
                   </div>
                 </div>
                 <button 
