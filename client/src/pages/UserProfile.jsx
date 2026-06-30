@@ -314,7 +314,9 @@ export default function UserProfile() {
             
             <div className="profile-info-content">
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                <h1 className="profile-display-name" style={{ margin: 0, color: (profile?.isVerified || profile?.isPremium) ? (profile.role === 'brand' ? '#eab308' : '#1d9bf0') : 'inherit' }}>
+                <h1 className={`profile-display-name ${
+                  (profile?.isVerified || profile?.isPremium) ? (profile.role === 'brand' ? 'metallic-gold-text' : 'metallic-blue-text') : ''
+                }`} style={{ margin: 0 }}>
                   {profile?.name || profile?.username}
                 </h1>
                 {(profile?.isVerified || profile?.isPremium) && <VerifiedBadge size="lg" tier={profile.premiumTier} role={profile.role} />}
