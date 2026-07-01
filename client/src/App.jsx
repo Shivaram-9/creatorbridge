@@ -37,6 +37,7 @@ const UsersList = lazy(() => import("./pages/UsersList.jsx"));
 const Onboarding = lazy(() => import("./pages/Onboarding.jsx"));
 const ApplyVerification = lazy(() => import("./pages/ApplyVerification.jsx"));
 const EditProfile = lazy(() => import("./pages/EditProfile.jsx"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy.jsx"));
 
 
 export default function App() {
@@ -49,6 +50,7 @@ export default function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
 
         {/* Protected outside Layout */}
         <Route
