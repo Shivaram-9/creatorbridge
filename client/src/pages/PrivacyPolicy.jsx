@@ -111,8 +111,8 @@ const PrivacyPolicy = () => {
           <p>If you have questions or comments about this Privacy Policy, please contact us at:</p>
           <div className="contact-details">
             <strong>Auraon Technologies & Software Solutions</strong><br />
-            Email: privacy@auraontech.com<br />
-            Website: https://auraontech.com
+            Email: auraon.software@gmail.com<br />
+            Website: https://www.auraontechnologies.com/
           </div>
         </section>
       </div>
