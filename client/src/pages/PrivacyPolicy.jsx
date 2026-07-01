@@ -112,6 +112,7 @@ const PrivacyPolicy = () => {
           <div className="contact-details">
             <strong>Auraon Technologies & Software Solutions</strong><br />
             Email: auraon.software@gmail.com<br />
+            Phone: 9963058111<br />
             Website: https://www.auraontechnologies.com/
           </div>
         </section>
