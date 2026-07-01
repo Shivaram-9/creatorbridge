@@ -1,0 +1,64 @@
+name: Build iOS Application
+
+# This workflow only runs when YOU manually click the "Run workflow" button in GitHub.
+# It will NEVER run automatically, so it will never consume your free minutes accidentally.
+# This workflow is 100% isolated and CANNOT affect or harm your website hosting on Render.
+on:
+  workflow_dispatch:
+
+jobs:
+  build_ios:
+    name: Build iOS IPA
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install Project Dependencies
+        run: npm install
+
+      - name: Install Client Dependencies & Build Web App
+        run: |
+          cd client
+          npm install
+          npm run build
+
+      - name: Sync Capacitor iOS Project
+        run: npx cap sync ios
+
+      - name: Install CocoaPods
+        run: |
+          cd ios/App
+          pod install
+
+      - name: Build and Archive iOS App
+        # Note: To build a signed release .ipa, you must set up the following GitHub Secrets:
+        # P12_BASE64 (Your Apple Certificate)
+        # P12_PASSWORD (Your Certificate Password)
+        # BUILD_PROVISION_PROFILE_BASE64 (Your Provisioning Profile)
+        #
+        # For now, we run a "cert-less" compilation check just to ensure the code compiles cleanly
+        # on a Mac environment. Replace this block with a signing action once certificates are added.
+        run: |
+          cd ios/App
+          xcodebuild -workspace App.xcworkspace \
+            -scheme App \
+            -sdk iphoneos \
+            -configuration Release \
+            archive -archivePath $PWD/build/App.xcarchive \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Upload iOS Archive as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pactogram-iOS-Archive
+          path: ios/App/build/App.xcarchive
