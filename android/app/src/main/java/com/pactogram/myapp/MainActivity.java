@@ -1,4 +1,4 @@
-package com.pactogram.app;
+package com.PACTOGRAM.myapp;
 
 import com.getcapacitor.BridgeActivity;
 

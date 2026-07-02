@@ -1,5 +1,5 @@
 {
-  "appId": "com.pactogram.app",
+  "appId": "com.PACTOGRAM.myapp",
   "appName": "Pactogram",
   "webDir": "client/dist",
   "server": {
