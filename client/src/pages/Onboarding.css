@@ -168,3 +168,102 @@
 .skip-btn:hover {
   color: #64748b;
 }
+
+/* Dark Mode Overrides */
+.dark .onboarding-page {
+  background: var(--bg-main);
+}
+
+.dark .onboarding-card {
+  background: #1e293b;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.dark .onboarding-progress {
+  background: #334155;
+}
+
+.dark .onboarding-step p, .dark .role-text p {
+  color: #94a3b8;
+}
+
+.dark .step-badge {
+  background: #334155;
+  color: white;
+}
+
+.dark .role-option {
+  border-color: #334155;
+}
+
+.dark .role-option:hover {
+  background: #334155;
+  border-color: #475569;
+}
+
+.dark .role-option.active {
+  background: var(--bg-secondary);
+  border-color: var(--text-main);
+}
+
+.dark .cat-tag {
+  background: #334155;
+  border-color: #475569;
+  color: #e2e8f0;
+}
+
+.dark .cat-tag:hover {
+  background: #475569;
+}
+
+.dark .cat-tag.active {
+  background: var(--bg-secondary);
+  color: white;
+  border-color: var(--text-main);
+}
+
+.dark .onboarding-textarea {
+  background: #0f172a;
+  border-color: #334155;
+  color: white;
+}
+
+/* Search Dropdown Classes */
+.onboarding-search-input {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  font-size: 15px;
+  outline: none;
+  background: transparent;
+  color: var(--text-main);
+}
+
+.dark .onboarding-search-input {
+  border-color: #334155;
+  background: #0f172a;
+}
+
+.onboarding-dropdown {
+  margin-top: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: white;
+  color: var(--text-main);
+}
+
+.dark .onboarding-dropdown {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+.dark .onboarding-dropdown > div {
+  border-bottom: 1px solid #334155 !important;
+}
+
+.dark .onboarding-dropdown > div:hover {
+  background: #334155 !important;
+}

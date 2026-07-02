@@ -99,11 +99,11 @@ export default function Onboarding() {
                   setShowOtherInput(false);
                   setData({...data, category: ""});
                 }}
-                style={{ width: '100%', padding: '12px 16px', borderRadius: '8px', border: '1px solid #dbdbdb', fontSize: '15px', outline: 'none' }}
+                className="onboarding-search-input"
               />
               
               {!showOtherInput && (
-                <div style={{ marginTop: '8px', maxHeight: '200px', overflowY: 'auto', border: '1px solid #efefef', borderRadius: '8px', background: 'white' }}>
+                <div className="onboarding-dropdown">
                   {filteredCategories.map(cat => (
                     <div 
                       key={cat} 
