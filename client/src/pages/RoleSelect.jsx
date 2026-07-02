@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import PrivacyPolicyContent from '../components/PrivacyPolicyContent.jsx';
 import { api } from "../services/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import OfflineBanner from "../components/OfflineBanner.jsx";
@@ -28,9 +29,27 @@ export default function RoleSelect() {
   const [selected, setSelected] = useState(user?.role || "");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
-  function handleContinue() {
+  const [showTerms, setShowTerms] = useState(false);
+
+  async function handleAgreeAndContinue() {
     if (!selected) return;
-    navigate(`/privacy?onboarding=true&role=${selected}`);
+    setSaving(true);
+    setError("");
+    try {
+      const updated = await api.users.updateMe({ role: selected });
+      if (updated?.error) {
+        setError(typeof updated.error === "string" ? updated.error : "Something went wrong");
+      } else {
+        setUser(updated);
+        if (selected === "brand") navigate("/onboarding");
+        else navigate("/home", { replace: true });
+      }
+    } catch {
+      setError("Something went wrong");
+    } finally {
+      setSaving(false);
+      setShowTerms(false);
+    }
   }
 
   return (
@@ -69,10 +88,38 @@ export default function RoleSelect() {
           type="button"
           className="btn btn-primary btn-block role-select-continue"
           disabled={!selected || saving}
-          onClick={handleContinue}
+          onClick={() => setShowTerms(true)}
         >
           {saving ? "Saving…" : "Continue →"}
         </button>
+
+        {showTerms && (
+          <div className="terms-modal-overlay">
+            <div className="terms-modal-card fade-up">
+              <div className="terms-modal-header">
+                <h2>Privacy Policy</h2>
+                <button className="terms-close" onClick={() => setShowTerms(false)}>✕</button>
+              </div>
+              
+              <div className="terms-modal-body" style={{ padding: '0 32px' }}>
+                <PrivacyPolicyContent />
+              </div>
+              
+              <div className="terms-modal-footer" style={{ textAlign: 'center' }}>
+                <p style={{ marginBottom: '15px', color: '#64748b' }}>
+                  By clicking "I Agree", you acknowledge that you have read and accepted the Privacy Policy.
+                </p>
+                <button 
+                  className="btn btn-primary btn-block" 
+                  onClick={handleAgreeAndContinue}
+                  disabled={saving}
+                >
+                  {saving ? "Processing..." : "I Agree & Continue"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </>
   );
