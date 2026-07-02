@@ -41,8 +41,7 @@ const PrivacyPolicy = () => {
               By clicking "I Agree", you acknowledge that you have read and accepted the Terms and Privacy Policy.
             </p>
             <button 
-              className="btn btn-primary btn-block" 
-              style={{ maxWidth: '300px', margin: '0 auto', fontSize: '18px', padding: '15px' }}
+              className="privacy-agree-btn" 
               onClick={async () => {
                 if (!roleToSet) return;
                 setSaving(true);

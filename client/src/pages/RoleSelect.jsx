@@ -88,9 +88,8 @@ export default function RoleSelect() {
                   Please review our Privacy Policy to understand how we collect, use, and protect your data before completing registration.
                 </p>
                 <button 
-                  className="btn btn-primary" 
+                  className="privacy-link-btn" 
                   onClick={handleOpenPrivacy}
-                  style={{ width: '100%', maxWidth: '300px' }}
                 >
                   Read Privacy Policy
                 </button>
