@@ -99,8 +99,9 @@ async function request(path, options = {}) {
   }
 
   if (!res.ok) {
+    const errorField = data?.error || data?.message;
     const msg =
-      typeof data?.error === "string" ? data.error : data?.error != null ? String(data.error) : "";
+      typeof errorField === "string" ? errorField : errorField != null ? String(errorField) : "";
     return { error: msg || `Request failed (${res.status})` };
   }
 
@@ -141,8 +142,9 @@ export const login = async (body) => {
   }
 
   if (!res.ok) {
+    const errorField = data?.error || data?.message;
     const errMsg =
-      typeof data?.error === "string" ? data.error : data?.error != null ? String(data.error) : "";
+      typeof errorField === "string" ? errorField : errorField != null ? String(errorField) : "";
     return { error: errMsg || "Invalid credentials" };
   }
 
