@@ -5,17 +5,38 @@ import { useAuth } from "../context/AuthContext.jsx";
 import OfflineBanner from "../components/OfflineBanner.jsx";
 import ErrorBanner from "../components/ErrorBanner.jsx";
 import "./RoleSelect.css";
+import "./Auth.css";
 
 const ROLES = [
   {
     id: "influencer",
-    icon: "🎤",
+    icon: (
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+        <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+        <line x1="12" y1="19" x2="12" y2="22"></line>
+      </svg>
+    ),
     title: "Creator",
     description: "I am a content creator or KOL. I want to partner with brands.",
   },
   {
     id: "brand",
-    icon: "🏢",
+    icon: (
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect>
+        <path d="M9 22v-4h6v4"></path>
+        <path d="M8 6h.01"></path>
+        <path d="M16 6h.01"></path>
+        <path d="M12 6h.01"></path>
+        <path d="M12 10h.01"></path>
+        <path d="M12 14h.01"></path>
+        <path d="M16 10h.01"></path>
+        <path d="M16 14h.01"></path>
+        <path d="M8 10h.01"></path>
+        <path d="M8 14h.01"></path>
+      </svg>
+    ),
     title: "Brand",
     description: "I represent a brand or business. I'm looking for creators to partner with.",
   },
@@ -37,7 +58,20 @@ export default function RoleSelect() {
   return (
     <>
       <OfflineBanner />
-      <div className="role-select-page">
+      <div className="auth-stabilized-wrapper">
+        {/* 3D Floating Bubbles & Characters Background */}
+        <div className="auth-3d-bg">
+          <div className="bubble bubble-1">P</div>
+          <div className="bubble bubble-2">✨</div>
+          <div className="bubble bubble-3">🚀</div>
+          <div className="bubble bubble-4">C</div>
+          <div className="bubble bubble-5">🎯</div>
+          <div className="bubble bubble-6">B</div>
+          <div className="bubble bubble-7">💡</div>
+          <div className="bubble bubble-8">⭐</div>
+        </div>
+
+        <div className="role-select-page" style={{ position: 'relative', zIndex: 10, width: '100%', minHeight: 'auto' }}>
         <div className="role-select-header">
           <h1 className="page-title">Who are you?</h1>
           <p className="subtitle">Choose your role to get the best experience on Pactogram.</p>
@@ -97,6 +131,7 @@ export default function RoleSelect() {
             </div>
           </div>
         )}
+        </div>
       </div>
     </>
   );
