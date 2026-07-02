@@ -28,27 +28,9 @@ export default function RoleSelect() {
   const [selected, setSelected] = useState(user?.role || "");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
-  const [showTerms, setShowTerms] = useState(false);
-  const [agreed, setAgreed] = useState(false);
-
-  async function handleAgreeAndContinue() {
+  function handleContinue() {
     if (!selected) return;
-    setSaving(true);
-    setError("");
-    try {
-      const updated = await api.users.updateMe({ role: selected });
-      if (updated?.error) {
-        setError(typeof updated.error === "string" ? updated.error : "Something went wrong");
-      } else {
-        setUser(updated);
-        navigate("/", { replace: true });
-      }
-    } catch {
-      setError("Something went wrong");
-    } finally {
-      setSaving(false);
-      setShowTerms(false);
-    }
+    navigate(`/privacy?onboarding=true&role=${selected}`);
   }
 
   return (
@@ -87,57 +69,10 @@ export default function RoleSelect() {
           type="button"
           className="btn btn-primary btn-block role-select-continue"
           disabled={!selected || saving}
-          onClick={() => setShowTerms(true)}
+          onClick={handleContinue}
         >
           {saving ? "Saving…" : "Continue →"}
         </button>
-
-        {showTerms && (
-          <div className="terms-modal-overlay">
-            <div className="terms-modal-card fade-up">
-              <div className="terms-modal-header">
-                <h2>Terms & Conditions</h2>
-                <button className="terms-close" onClick={() => setShowTerms(false)}>✕</button>
-              </div>
-              <div className="terms-modal-body">
-                <p>Welcome to Pactogram! Please read and agree to our Terms of Use and Privacy Policy before continuing.</p>
-                
-                <h3>1. User Agreement</h3>
-                <p>You agree to use Pactogram responsibly and maintain the integrity of the platform. All brand-creator alliances must be conducted with professional standards.</p>
-                
-                <h3>2. Content & Conduct</h3>
-                <p>You are responsible for the content you post. Pactogram maintains a zero-tolerance policy for harassment, hate speech, or fraudulent behavior.</p>
-                
-                <h3>3. Privacy</h3>
-                <p>Your data is protected under our privacy protocols. We will never share your personal data with third parties without your explicit consent.</p>
-                
-                <h3>4. Alliances</h3>
-                <p>Pactogram facilitates connections but is not responsible for the contractual details of external brand-creator agreements unless specified.</p>
-              </div>
-              <div className="terms-modal-footer">
-                <div className="terms-checkbox-container" style={{ display: 'flex', alignItems: 'center', marginBottom: '15px', gap: '8px' }}>
-                  <input 
-                    type="checkbox" 
-                    id="agree-checkbox" 
-                    checked={agreed} 
-                    onChange={(e) => setAgreed(e.target.checked)} 
-                    style={{ width: '18px', height: '18px', cursor: 'pointer' }}
-                  />
-                  <label htmlFor="agree-checkbox" style={{ fontSize: '0.9rem', cursor: 'pointer', color: 'inherit' }}>
-                    I have read and agree to the <a href="/privacy" target="_blank" rel="noopener noreferrer" style={{ color: '#6366F1', textDecoration: 'underline' }}>Privacy Policy</a>
-                  </label>
-                </div>
-                <button 
-                  className="btn btn-primary btn-block" 
-                  onClick={handleAgreeAndContinue}
-                  disabled={saving || !agreed}
-                >
-                  {saving ? "Processing..." : "I Agree"}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </>
   );
