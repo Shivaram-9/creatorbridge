@@ -29,6 +29,7 @@ export default function RoleSelect() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [showTerms, setShowTerms] = useState(false);
+  const [agreed, setAgreed] = useState(false);
 
   async function handleAgreeAndContinue() {
     if (!selected) return;
@@ -99,7 +100,7 @@ export default function RoleSelect() {
                 <button className="terms-close" onClick={() => setShowTerms(false)}>✕</button>
               </div>
               <div className="terms-modal-body">
-                <p>Welcome to Pactogram! By clicking "I Agree", you acknowledge that you have read and agree to our Terms of Use and Privacy Policy.</p>
+                <p>Welcome to Pactogram! Please read and agree to our Terms of Use and Privacy Policy before continuing.</p>
                 
                 <h3>1. User Agreement</h3>
                 <p>You agree to use Pactogram responsibly and maintain the integrity of the platform. All brand-creator alliances must be conducted with professional standards.</p>
@@ -114,10 +115,22 @@ export default function RoleSelect() {
                 <p>Pactogram facilitates connections but is not responsible for the contractual details of external brand-creator agreements unless specified.</p>
               </div>
               <div className="terms-modal-footer">
+                <div className="terms-checkbox-container" style={{ display: 'flex', alignItems: 'center', marginBottom: '15px', gap: '8px' }}>
+                  <input 
+                    type="checkbox" 
+                    id="agree-checkbox" 
+                    checked={agreed} 
+                    onChange={(e) => setAgreed(e.target.checked)} 
+                    style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+                  />
+                  <label htmlFor="agree-checkbox" style={{ fontSize: '0.9rem', cursor: 'pointer', color: 'inherit' }}>
+                    I have read and agree to the <a href="/privacy" target="_blank" rel="noopener noreferrer" style={{ color: '#6366F1', textDecoration: 'underline' }}>Privacy Policy</a>
+                  </label>
+                </div>
                 <button 
                   className="btn btn-primary btn-block" 
                   onClick={handleAgreeAndContinue}
-                  disabled={saving}
+                  disabled={saving || !agreed}
                 >
                   {saving ? "Processing..." : "I Agree"}
                 </button>
