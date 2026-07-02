@@ -104,12 +104,17 @@ export default function Register() {
       </div>
 
       <div className="auth-card-stabilized fade-up" style={{ maxWidth: '440px' }}>
-        <div className="auth-icon-box">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="12" cy="8" r="4" stroke="#6366F1" strokeWidth="2"/>
-            <path d="M20 21C20 17.134 16.866 14 13 14H11C7.13401 14 4 17.134 4 21" stroke="#6366F1" strokeWidth="2" strokeLinecap="round"/>
-            <circle cx="18" cy="14" r="3" fill="#6366F1"/>
-            <path d="M18 12.5V15.5M16.5 14H19.5" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+        <div className="auth-icon-box" style={{ background: 'linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%)', boxShadow: 'inset 0 2px 4px rgba(255,255,255,0.5)' }}>
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="url(#blue-gradient)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <defs>
+              <linearGradient id="blue-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#2563EB" />
+                <stop offset="100%" stopColor="#1D4ED8" />
+              </linearGradient>
+            </defs>
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <polyline points="16 11 18 13 22 9"></polyline>
           </svg>
         </div>
 

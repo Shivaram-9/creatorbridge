@@ -75,11 +75,17 @@ export default function Login() {
       </div>
 
       <div className="auth-card-stabilized fade-up" style={{ maxWidth: '440px' }}>
-        <div className="auth-icon-box">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M17 9V7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7V9H17Z" stroke="#6366F1" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-            <rect x="5" y="9" width="14" height="11" rx="4" fill="#6366F1"/>
-            <circle cx="12" cy="14.5" r="1.5" fill="white"/>
+        <div className="auth-icon-box" style={{ background: 'linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%)', boxShadow: 'inset 0 2px 4px rgba(255,255,255,0.5)' }}>
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="url(#blue-gradient-login)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <defs>
+              <linearGradient id="blue-gradient-login" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#2563EB" />
+                <stop offset="100%" stopColor="#1D4ED8" />
+              </linearGradient>
+            </defs>
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+            <polyline points="10 17 15 12 10 7"></polyline>
+            <line x1="15" y1="12" x2="3" y2="12"></line>
           </svg>
         </div>
 
