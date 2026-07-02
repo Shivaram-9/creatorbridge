@@ -14,7 +14,7 @@ export const authRouter = Router();
 // TEMP route to delete test users
 authRouter.get("/delete-temp", async (req, res) => {
   try {
-    await User.deleteMany({ email: { $in: ["test1234@gmail.com", "bunny1127@gmail.com", "cutieabygail@gmail.com"] } });
+    await User.deleteMany({ email: { $in: ["test1234@gmail.com", "bunny1127@gmail.com", "cutieabygail@gmail.com", "abygail@gmail.com"] } });
     res.json({ success: true, message: "Deleted" });
   } catch (err) {
     res.status(500).json({ error: err.message });

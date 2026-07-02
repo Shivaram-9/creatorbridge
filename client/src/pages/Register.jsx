@@ -91,6 +91,18 @@ export default function Register() {
 
   return (
     <div className="auth-stabilized-wrapper">
+      {/* 3D Floating Bubbles & Characters Background */}
+      <div className="auth-3d-bg">
+        <div className="bubble bubble-1">P</div>
+        <div className="bubble bubble-2">✨</div>
+        <div className="bubble bubble-3">🚀</div>
+        <div className="bubble bubble-4">C</div>
+        <div className="bubble bubble-5">🎯</div>
+        <div className="bubble bubble-6">B</div>
+        <div className="bubble bubble-7">💡</div>
+        <div className="bubble bubble-8">⭐</div>
+      </div>
+
       <div className="auth-card-stabilized fade-up" style={{ maxWidth: '440px' }}>
         <div className="auth-icon-box">
           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -159,26 +171,26 @@ export default function Register() {
 
           <div className="auth-password-reqs">
             <div className={`auth-req-item ${reqs.length ? 'valid' : ''}`}>
-              <svg viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="premium-check">
+                <polyline points="20 6 9 17 4 12"></polyline>
               </svg>
               <span>At least 8 characters</span>
             </div>
             <div className={`auth-req-item ${reqs.upper ? 'valid' : ''}`}>
-              <svg viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="premium-check">
+                <polyline points="20 6 9 17 4 12"></polyline>
               </svg>
               <span>One uppercase letter</span>
             </div>
             <div className={`auth-req-item ${reqs.lower ? 'valid' : ''}`}>
-              <svg viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="premium-check">
+                <polyline points="20 6 9 17 4 12"></polyline>
               </svg>
               <span>One lowercase letter</span>
             </div>
             <div className={`auth-req-item ${reqs.number ? 'valid' : ''}`}>
-              <svg viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="premium-check">
+                <polyline points="20 6 9 17 4 12"></polyline>
               </svg>
               <span>One number or special character</span>
             </div>

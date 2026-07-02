@@ -62,7 +62,19 @@ export default function Login() {
 
   return (
     <div className="auth-stabilized-wrapper">
-      <div className="auth-card-stabilized fade-up">
+      {/* 3D Floating Bubbles & Characters Background */}
+      <div className="auth-3d-bg">
+        <div className="bubble bubble-1">P</div>
+        <div className="bubble bubble-2">✨</div>
+        <div className="bubble bubble-3">🚀</div>
+        <div className="bubble bubble-4">C</div>
+        <div className="bubble bubble-5">🎯</div>
+        <div className="bubble bubble-6">B</div>
+        <div className="bubble bubble-7">💡</div>
+        <div className="bubble bubble-8">⭐</div>
+      </div>
+
+      <div className="auth-card-stabilized fade-up" style={{ maxWidth: '440px' }}>
         <div className="auth-icon-box">
           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M17 9V7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7V9H17Z" stroke="#6366F1" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
