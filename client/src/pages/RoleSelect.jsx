@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import PrivacyPolicyContent from '../components/PrivacyPolicyContent.jsx';
 import { api } from "../services/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import OfflineBanner from "../components/OfflineBanner.jsx";
@@ -31,25 +30,8 @@ export default function RoleSelect() {
   const [error, setError] = useState("");
   const [showTerms, setShowTerms] = useState(false);
 
-  async function handleAgreeAndContinue() {
-    if (!selected) return;
-    setSaving(true);
-    setError("");
-    try {
-      const updated = await api.users.updateMe({ role: selected });
-      if (updated?.error) {
-        setError(typeof updated.error === "string" ? updated.error : "Something went wrong");
-      } else {
-        setUser(updated);
-        if (selected === "brand") navigate("/onboarding");
-        else navigate("/home", { replace: true });
-      }
-    } catch {
-      setError("Something went wrong");
-    } finally {
-      setSaving(false);
-      setShowTerms(false);
-    }
+  function handleOpenPrivacy() {
+    navigate(`/privacy?onboarding=true&role=${selected}`);
   }
 
   return (
@@ -101,20 +83,16 @@ export default function RoleSelect() {
                 <button className="terms-close" onClick={() => setShowTerms(false)}>✕</button>
               </div>
               
-              <div className="terms-modal-body" style={{ padding: '0 32px' }}>
-                <PrivacyPolicyContent />
-              </div>
-              
-              <div className="terms-modal-footer" style={{ textAlign: 'center' }}>
-                <p style={{ marginBottom: '15px', color: '#64748b' }}>
-                  By clicking "I Agree", you acknowledge that you have read and accepted the Privacy Policy.
+              <div className="terms-modal-body" style={{ padding: '32px', textAlign: 'center' }}>
+                <p style={{ marginBottom: '24px', fontSize: '16px', color: '#475569' }}>
+                  Please review our Privacy Policy to understand how we collect, use, and protect your data before completing registration.
                 </p>
                 <button 
-                  className="btn btn-primary btn-block" 
-                  onClick={handleAgreeAndContinue}
-                  disabled={saving}
+                  className="btn btn-primary" 
+                  onClick={handleOpenPrivacy}
+                  style={{ width: '100%', maxWidth: '300px' }}
                 >
-                  {saving ? "Processing..." : "I Agree & Continue"}
+                  Read Privacy Policy
                 </button>
               </div>
             </div>
