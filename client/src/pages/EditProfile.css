@@ -1,7 +1,7 @@
 /* Edit Profile Page - Modern Premium Layout */
 .edit-profile-page {
   min-height: 100vh;
-  background: #F8FAFC;
+  background: var(--bg-main);
   width: 100%;
 }
 
@@ -11,10 +11,10 @@
   align-items: center;
   justify-content: space-between;
   padding: 16px 24px;
-  border-bottom: 1px solid #E2E8F0;
+  border-bottom: 1px solid var(--border-light);
   position: sticky;
   top: 0;
-  background: #fff;
+  background: var(--bg-card);
   z-index: 10;
   box-shadow: 0 2px 10px rgba(0,0,0,0.02);
 }
@@ -32,7 +32,7 @@
 }
 
 .ep-back-btn:hover {
-  background: #F1F5F9;
+  background: var(--bg-main);
 }
 
 .ep-title {
@@ -70,8 +70,8 @@
   align-items: center;
   padding: 40px 16px 24px;
   gap: 16px;
-  background: #fff;
-  border-bottom: 1px solid #E2E8F0;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-light);
 }
 
 .ep-avatar-wrap {
@@ -117,13 +117,13 @@
   color: var(--text-main);
   cursor: pointer;
   padding: 8px 16px;
-  background: #f1f5f9;
+  background: var(--bg-main);
   border-radius: 20px;
   transition: all 0.2s;
 }
 
 .ep-change-photo-btn:hover {
-  background: #e2e8f0;
+  background: var(--border-light);
 }
 
 /* Form Container */
@@ -137,11 +137,11 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
-  background: #fff;
+  background: var(--bg-card);
   padding: 32px;
   border-radius: 16px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-  border: 1px solid #E2E8F0;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-light);
 }
 
 .ep-field {
@@ -159,12 +159,12 @@
 
 .ep-input {
   width: 100%;
-  border: 1px solid #CBD5E1;
+  border: 1px solid var(--border-light);
   border-radius: 8px;
   outline: none;
   font-size: 15px;
   color: var(--text-main);
-  background: #F8FAFC;
+  background: var(--bg-main);
   font-family: inherit;
   padding: 12px 16px;
   transition: all 0.2s ease;
@@ -172,9 +172,9 @@
 }
 
 .ep-input:focus {
-  border-color: var(--text-main);
-  background: #fff;
-  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1);
+  border-color: var(--primary);
+  background: var(--bg-card);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
 .ep-textarea {
