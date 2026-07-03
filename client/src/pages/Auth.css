@@ -384,7 +384,7 @@
   font-weight: 900;
   letter-spacing: -0.05em;
   text-transform: uppercase;
-  color: rgba(15, 23, 42, 0.04);
+  color: rgba(15, 23, 42, 0.12); /* Increased opacity for light mode visibility */
   white-space: nowrap;
   user-select: none;
   animation: floatText 35s infinite linear;
