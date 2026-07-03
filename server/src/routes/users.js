@@ -98,7 +98,7 @@ async function attachMetrics(user) {
 
 usersRouter.get("/me", async (req, res) => {
   try {
-    const user = await User.findById(req.userId);
+    const user = await User.findById(req.userId).lean();
     if (!user) return res.status(404).json({ error: "User not found" });
     const userWithMetrics = await attachMetrics(user);
     res.json(userWithMetrics);
@@ -234,7 +234,7 @@ usersRouter.patch("/me", async (req, res) => {
     if (onTimeDelivery !== undefined) updates.onTimeDelivery = Number(onTimeDelivery);
     if (averageRating !== undefined) updates.averageRating = Number(averageRating);
 
-    const user = await User.findByIdAndUpdate(req.userId, { $set: updates }, { new: true, strict: false });
+    const user = await User.findByIdAndUpdate(req.userId, { $set: updates }, { new: true, strict: false }).lean();
     if (!user) return res.status(404).json({ error: "User not found" });
     const userWithMetrics = await attachMetrics(user);
     if (updates.gender !== undefined) userWithMetrics.gender = updates.gender;
