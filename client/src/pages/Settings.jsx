@@ -9,7 +9,7 @@ import "./Settings.css";
 import { ShieldIcon, LockIcon, BadgeCheckIcon, BellIcon, ProfileIcon, HelpCircleIcon } from "../components/Icons.jsx";
 
 export default function Settings() {
-  const { user, refreshUser } = useAuth();
+  const { user, refreshUser, logout } = useAuth();
   const navigate = useNavigate();
   const outletContext = useOutletContext();
   const openHelpCenter = outletContext?.openHelpCenter || (() => {});
@@ -31,6 +31,8 @@ export default function Settings() {
   const [otpError, setOtpError] = useState("");
   const [otpSuccess, setOtpSuccess] = useState("");
   const [paying, setPaying] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   const [settings, setSettings] = useState({
     allowMessagesFrom: "everyone",
@@ -705,6 +707,70 @@ export default function Settings() {
                     </form>
                   </div>
                 )}
+              </div>
+
+              {/* Delete Account Section */}
+              <div className="security-card-item delete-account-section" style={{ border: '1px solid var(--error)', marginTop: '24px' }}>
+                <div className="security-card-header">
+                  <div className="security-card-title-group">
+                    <div className="security-icon-circle" style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', color: 'var(--error)' }}>
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path></svg>
+                    </div>
+                    <div>
+                      <h4 style={{ color: 'var(--error)', margin: 0, fontSize: '15px' }}>Delete Account</h4>
+                      <p style={{ margin: 0, fontSize: '13px' }}>Permanently remove your account and all associated data.</p>
+                    </div>
+                  </div>
+                  <button className="btn btn-outline danger" style={{ color: 'var(--error)', borderColor: 'var(--error)' }} onClick={() => setShowDeleteModal(true)}>
+                    Delete Account
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Delete Account Modal */}
+          {showDeleteModal && (
+            <div className="modal-backdrop" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}>
+              <div className="modal-content animate-slide-up" style={{ backgroundColor: 'var(--bg-card)', padding: '24px', borderRadius: '12px', maxWidth: '400px', width: '90%' }}>
+                <div className="modal-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                  <h3 style={{ margin: 0 }}>Delete Account</h3>
+                  <button className="icon-btn" onClick={() => setShowDeleteModal(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}>✕</button>
+                </div>
+                <div className="modal-body">
+                  <p style={{ color: 'var(--error)', fontWeight: 'bold', marginBottom: '12px' }}>This action is irreversible.</p>
+                  <p style={{ color: 'var(--text-main)' }}>All your user data, messages, posts, collaborations, and account information will be permanently removed.</p>
+                  <p style={{ marginTop: '12px', color: 'var(--text-main)' }}>Are you absolutely sure you want to proceed?</p>
+                </div>
+                <div className="modal-footer" style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', marginTop: '24px' }}>
+                  <button className="btn btn-outline" onClick={() => setShowDeleteModal(false)} disabled={deleteLoading}>
+                    Cancel
+                  </button>
+                  <button 
+                    className="btn btn-primary" 
+                    style={{ backgroundColor: 'var(--error)', borderColor: 'var(--error)' }} 
+                    disabled={deleteLoading}
+                    onClick={async () => {
+                      setDeleteLoading(true);
+                      try {
+                        const res = await api.users.deleteMe();
+                        if (res.error) {
+                          setError(res.error);
+                          setShowDeleteModal(false);
+                        } else {
+                          logout();
+                        }
+                      } catch (err) {
+                        setError("Failed to delete account");
+                        setShowDeleteModal(false);
+                      } finally {
+                        setDeleteLoading(false);
+                      }
+                    }}
+                  >
+                    {deleteLoading ? "Deleting..." : "Yes, Delete My Account"}
+                  </button>
+                </div>
               </div>
             </div>
           )}

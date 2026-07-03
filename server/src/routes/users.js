@@ -835,3 +835,40 @@ usersRouter.post("/:id/rate", async (req, res) => {
     res.status(500).json({ error: "Failed to submit rating" });
   }
 });
+
+// DELETE /api/users/me - Permanently delete account
+usersRouter.delete("/me", authMiddleware, async (req, res) => {
+  try {
+    const userId = req.userId;
+    
+    const { Message } = await import("../models/Message.js");
+    const { Session } = await import("../models/Session.js");
+    const { Campaign } = await import("../models/Campaign.js");
+    const { Deal } = await import("../models/Deal.js");
+    
+    // Delete all associated user data
+    await Promise.all([
+      User.findByIdAndDelete(userId),
+      Post.deleteMany({ user: userId }),
+      Message.deleteMany({ $or: [{ sender: userId }, { receiver: userId }] }),
+      Collaboration.deleteMany({ $or: [{ creator: userId }, { brand: userId }] }),
+      Notification.deleteMany({ user: userId }),
+      Review.deleteMany({ $or: [{ reviewer: userId }, { target: userId }] }),
+      AlignRequest.deleteMany({ $or: [{ requester: userId }, { recipient: userId }] }),
+      Session.deleteMany({ userId: userId }),
+      Campaign.deleteMany({ brand: userId }),
+      Deal.deleteMany({ $or: [{ brand: userId }, { creator: userId }] })
+    ]);
+
+    // Also remove this user from all other users' followers/following arrays
+    await User.updateMany(
+      { $or: [{ followers: userId }, { following: userId }] },
+      { $pull: { followers: userId, following: userId } }
+    );
+
+    res.json({ success: true, message: "Account deleted successfully" });
+  } catch (err) {
+    console.error("Account deletion error:", err);
+    res.status(500).json({ error: "Failed to delete account" });
+  }
+});

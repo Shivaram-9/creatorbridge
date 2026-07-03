@@ -173,6 +173,7 @@ export const api = {
     me: () => request("/users/me"),
     changePassword: (currentPassword, newPassword) => request("/users/change-password", { method: "POST", body: { currentPassword, newPassword } }),
     updateMe: (body) => request("/users/me", { method: "PATCH", body }),
+    deleteMe: () => request("/users/me", { method: "DELETE" }),
     updateAvatar: (formData) => request("/users/me/avatar", { method: "POST", body: formData }),
     updateCover: (formData) => request("/users/me/cover", { method: "POST", body: formData }),
     list: (category) => {
