@@ -220,11 +220,25 @@
 
 
 .profile-display-name.verified-name-creator {
-  color: #0052CC;
+  background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.dark .profile-display-name.verified-name-creator {
+  background: linear-gradient(135deg, #93C5FD 0%, #3B82F6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .profile-display-name.verified-name-brand {
-  color: #BA873B;
+  background: linear-gradient(135deg, #D97706 0%, #92400E 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.dark .profile-display-name.verified-name-brand {
+  background: linear-gradient(135deg, #FDE68A 0%, #F59E0B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .profile-title-row {
