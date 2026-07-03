@@ -515,25 +515,17 @@ button:disabled {
 
 /* METALLIC SHINE TEXT EFFECTS */
 .metallic-gold-text {
-  background: linear-gradient(135deg, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C) !important;
-  -webkit-background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
-  color: #D4AF37 !important; /* Fallback */
-  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.15) !important;
+  color: #D4AF37 !important;
 }
 .dark .metallic-gold-text {
-  text-shadow: 0px 1px 2px rgba(255, 255, 255, 0.1);
+  color: #FCD34D !important;
 }
 
 .metallic-blue-text {
-  background: linear-gradient(135deg, #1e40af, #93c5fd, #1d4ed8, #bfdbfe, #1e3a8a) !important;
-  -webkit-background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
-  color: #1d4ed8 !important; /* Fallback */
-  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.15) !important;
+  color: #2563EB !important;
 }
 .dark .metallic-blue-text {
-  text-shadow: 0px 1px 2px rgba(255, 255, 255, 0.1);
+  color: #60A5FA !important;
 }
 
 /* VERIFIED BADGE PILL GLOBAL STYLES */
