@@ -322,6 +322,12 @@ export default function Profile() {
                 <span>{user?.category || "Content Creator"}</span>
                 <span className="profile-title-separator">|</span>
                 <span>{user?.role === 'brand' ? 'Brand' : 'Creator'}</span>
+                {user?.gender && (
+                  <>
+                    <span className="profile-title-separator">|</span>
+                    <span>{user.gender}</span>
+                  </>
+                )}
                 {user?.location && (
                   <>
                     <span className="profile-title-separator">|</span>
