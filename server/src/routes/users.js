@@ -20,9 +20,11 @@ usersRouter.get("/reset-all-stats-secret", async (req, res) => {
   try {
     const { User } = await import("../models/User.js");
     const { Post } = await import("../models/Post.js");
+    const { Notification } = await import("../models/Notification.js");
     const u = await User.updateMany({}, { $set: { profileViews: 0, postImpressions: 0 } });
     const p = await Post.updateMany({}, { $set: { views: 0 } });
-    res.json({ success: true, usersModified: u.modifiedCount, postsModified: p.modifiedCount });
+    const n = await Notification.deleteMany({ type: "milestone" });
+    res.json({ success: true, usersModified: u.modifiedCount, postsModified: p.modifiedCount, notifsDeleted: n.deletedCount });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

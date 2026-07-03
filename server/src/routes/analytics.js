@@ -185,20 +185,30 @@ analyticsRouter.post("/view/profile/:userId", async (req, res) => {
 
 analyticsRouter.post("/view/post/:postId", async (req, res) => {
   try {
-    const post = await Post.findById(req.params.postId);
+    const post = await Post.findByIdAndUpdate(
+      req.params.postId,
+      { $inc: { views: 1 } },
+      { new: true }
+    );
     if (post) {
-      post.views = (post.views || 0) + 1;
-      await post.save();
-      
       // Milestone detection (Prompt-7)
       if ([100, 500, 1000, 5000].includes(post.views)) {
-        await Notification.create({
+        const existingNotif = await Notification.findOne({
           user: post.user,
-          sender: post.user, // System as sender
           type: "milestone",
           post: post._id,
           message: `Your post has reached ${post.views} views! 🔥`
         });
+        
+        if (!existingNotif) {
+          await Notification.create({
+            user: post.user,
+            sender: post.user, // System as sender
+            type: "milestone",
+            post: post._id,
+            message: `Your post has reached ${post.views} views! 🔥`
+          });
+        }
       }
 
       await AnalyticsEvent.create({ type: "post_view", targetId: req.params.postId });
