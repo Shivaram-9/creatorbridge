@@ -59,16 +59,9 @@ export default function RoleSelect() {
     <>
       <OfflineBanner />
       <div className="auth-stabilized-wrapper">
-        {/* 3D Floating Bubbles & Characters Background */}
-        <div className="auth-3d-bg">
-          <div className="bubble bubble-1">P</div>
-          <div className="bubble bubble-2">✨</div>
-          <div className="bubble bubble-3">🚀</div>
-          <div className="bubble bubble-4">C</div>
-          <div className="bubble bubble-5">🎯</div>
-          <div className="bubble bubble-6">B</div>
-          <div className="bubble bubble-7">💡</div>
-          <div className="bubble bubble-8">⭐</div>
+        {/* Floating Animated Text Background */}
+        <div className="auth-floating-text-bg">
+          <div className="floating-text">Pactogram</div>
         </div>
 
         <div className="role-select-page" style={{ position: 'relative', zIndex: 10, width: '100%', minHeight: 'auto' }}>
