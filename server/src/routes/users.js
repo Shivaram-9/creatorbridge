@@ -28,6 +28,16 @@ usersRouter.get("/reset-all-stats-secret", async (req, res) => {
   }
 });
 
+usersRouter.get("/test-gender/:username", async (req, res) => {
+  try {
+    const { User } = await import("../models/User.js");
+    const user = await User.findOne({ username: req.params.username }).lean();
+    res.json({ username: user.username, gender: user.gender, _id: user._id, fullDoc: user });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 usersRouter.use(authMiddleware);
 

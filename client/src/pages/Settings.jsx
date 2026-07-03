@@ -713,7 +713,7 @@ export default function Settings() {
               <div className="security-card-item delete-account-section" style={{ border: '1px solid var(--error)', marginTop: '24px' }}>
                 <div className="security-card-header">
                   <div className="security-card-title-group">
-                    <div className="security-icon-circle" style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', color: 'var(--error)' }}>
+                    <div className="security-icon-circle" style={{ background: 'transparent', color: 'var(--error)' }}>
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path></svg>
                     </div>
                     <div>
