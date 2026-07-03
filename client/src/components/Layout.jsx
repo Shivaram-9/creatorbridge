@@ -86,8 +86,37 @@ export default function Layout() {
     const socket = connectSocket();
     if (!socket) return;
 
-    socket.on("message", fetchUnreadMessages);
-    socket.on("notification", fetchNotifications);
+    socket.on("message", (msg) => {
+      fetchUnreadMessages();
+      if (!window.location.pathname.includes('/messages') && msg && msg.sender) {
+        import("react-hot-toast").then(m => {
+          m.default(`New message from ${msg.sender.name || 'someone'}: ${msg.content ? (msg.content.length > 30 ? msg.content.substring(0,30) + '...' : msg.content) : 'sent an attachment'}`, {
+            icon: '💬',
+            position: 'top-right',
+            style: { borderRadius: '10px', background: 'var(--bg-card)', color: 'var(--text-main)', border: '1px solid var(--border)' },
+          });
+        });
+      }
+    });
+
+    socket.on("notification", (notif) => {
+      fetchNotifications();
+      if (notif && notif.message) {
+        let icon = '🔔';
+        if (notif.type === 'like') icon = '❤️';
+        else if (notif.type === 'comment') icon = '💬';
+        else if (notif.type === 'follow') icon = '👥';
+        else if (notif.type === 'collaboration') icon = '🤝';
+        
+        import("react-hot-toast").then(m => {
+          m.default(notif.message, {
+            icon,
+            position: 'top-right',
+            style: { borderRadius: '10px', background: 'var(--bg-card)', color: 'var(--text-main)', border: '1px solid var(--border)' },
+          });
+        });
+      }
+    });
     
     socket.on("align_request_received", (data) => {
       fetchNotifications();
@@ -178,8 +207,8 @@ export default function Layout() {
     });
 
     return () => {
-      socket.off("message", fetchUnreadMessages);
-      socket.off("notification", fetchNotifications);
+      socket.off("message");
+      socket.off("notification");
       socket.off("align_request_received");
       socket.off("align_request_accepted");
       socket.off("align_request_declined");
