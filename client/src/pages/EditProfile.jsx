@@ -20,6 +20,7 @@ export default function EditProfile() {
   const [form, setForm] = useState({
     name: "",
     username: "",
+    gender: "",
     bio: "",
     experience: "",
     category: "",
@@ -34,6 +35,7 @@ export default function EditProfile() {
       setForm({
         name: user.name || "",
         username: user.username || "",
+        gender: user.gender || "",
         bio: user.bio || "",
         experience: user.experience || "",
         category: user.category || "",
@@ -211,6 +213,20 @@ export default function EditProfile() {
               placeholder="Username"
               autoComplete="off"
             />
+          </div>
+
+          <div className="ep-field">
+            <label className="ep-label">Gender</label>
+            <select
+              className="ep-input ep-select"
+              name="gender"
+              value={form.gender}
+              onChange={handleChange}
+            >
+              <option value="">Select gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
           </div>
 
           <div className="ep-field">

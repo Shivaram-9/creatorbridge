@@ -9,10 +9,13 @@ onboardingRouter.use(authMiddleware);
 // POST /api/onboarding/complete
 onboardingRouter.post("/complete", async (req, res) => {
   try {
-    const { category, bio, onboardingComplete } = req.body;
+    const { category, gender, bio, onboardingComplete } = req.body;
+    const updates = { category, bio, onboardingComplete: onboardingComplete ?? true };
+    if (gender && ["Male", "Female"].includes(gender)) updates.gender = gender;
+    
     const user = await User.findByIdAndUpdate(
       req.userId, 
-      { $set: { category, bio, onboardingComplete: onboardingComplete ?? true } }, 
+      { $set: updates }, 
       { new: true }
     );
     res.json(user);

@@ -210,10 +210,11 @@ usersRouter.put("/portfolio-details", async (req, res) => {
 
 usersRouter.patch("/me", async (req, res) => {
   try {
-    const { name, username, category, bio, experience, location, role, avatar, website, portfolioLink, socialMediaLink, instagram, youtube, trustScore, completedCampaigns, responseRate, onTimeDelivery, averageRating } = req.body;
+    const { name, username, gender, category, bio, experience, location, role, avatar, website, portfolioLink, socialMediaLink, instagram, youtube, trustScore, completedCampaigns, responseRate, onTimeDelivery, averageRating } = req.body;
     const updates = {};
     if (name !== undefined) updates.name = String(name).slice(0, 120);
     if (username !== undefined) updates.username = String(username).slice(0, 60);
+    if (gender !== undefined && ["Male", "Female", ""].includes(gender)) updates.gender = gender;
     if (category !== undefined) updates.category = String(category).slice(0, 80);
     if (bio !== undefined) updates.bio = String(bio).slice(0, 2000);
     if (experience !== undefined) updates.experience = String(experience).slice(0, 2000);

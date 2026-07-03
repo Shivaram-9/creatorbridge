@@ -17,6 +17,7 @@ const userSchema = new mongoose.Schema(
     isBanned: { type: Boolean, default: false },
     name: { type: String, default: "" },
     username: { type: String, default: "" },
+    gender: { type: String, enum: ["Male", "Female", ""], default: "" },
     category: { type: String, default: "" },
     bio: { type: String, default: "" },
     experience: { type: String, default: "" },

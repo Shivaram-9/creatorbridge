@@ -40,6 +40,7 @@ export default function Onboarding() {
   const [data, setData] = useState({
     category: "",
     customCategory: "",
+    gender: "",
     bio: "",
   });
 
@@ -59,6 +60,7 @@ export default function Onboarding() {
       const finalCategory = showOtherInput ? data.customCategory : data.category;
       const res = await api.onboarding.complete({
         category: finalCategory || "General",
+        gender: data.gender,
         bio: data.bio,
         onboardingComplete: true
       });
@@ -86,9 +88,23 @@ export default function Onboarding() {
         {step === 1 && (
           <div className="onboarding-step">
             <span className="step-badge">Identity</span>
-            <h1>Business Category</h1>
-            <p>Select the category that best describes your business.</p>
+            <h1>Business Category & Gender</h1>
+            <p>Select your category and gender.</p>
 
+            <div style={{ width: '100%', marginBottom: '20px', textAlign: 'left' }}>
+              <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Gender</label>
+              <select 
+                value={data.gender}
+                onChange={(e) => setData({...data, gender: e.target.value})}
+                style={{ width: '100%', padding: '12px 16px', borderRadius: '8px', border: '1px solid #e2e8f0', fontSize: '15px', outline: 'none', backgroundColor: 'transparent' }}
+              >
+                <option value="">Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+            </div>
+
+            <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', width: '100%', textAlign: 'left' }}>Category</label>
             <div style={{ position: 'relative', width: '100%', marginBottom: '20px', textAlign: 'left' }}>
               <input 
                 type="text" 
