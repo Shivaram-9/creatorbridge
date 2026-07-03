@@ -7,7 +7,11 @@ export default function ProtectedRoute({ children }) {
   const location = useLocation();
 
   if (loading) {
-    return <LoadingSpinner centered />;
+    return (
+      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <LoadingSpinner size="lg" centered />
+      </div>
+    );
   }
 
   if (!user) {
