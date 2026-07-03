@@ -234,9 +234,10 @@ usersRouter.patch("/me", async (req, res) => {
     if (onTimeDelivery !== undefined) updates.onTimeDelivery = Number(onTimeDelivery);
     if (averageRating !== undefined) updates.averageRating = Number(averageRating);
 
-    const user = await User.findByIdAndUpdate(req.userId, { $set: updates }, { new: true });
+    const user = await User.findByIdAndUpdate(req.userId, { $set: updates }, { new: true, strict: false });
     if (!user) return res.status(404).json({ error: "User not found" });
     const userWithMetrics = await attachMetrics(user);
+    if (updates.gender !== undefined) userWithMetrics.gender = updates.gender;
     res.json(userWithMetrics);
   } catch (err) {
     console.error(err);
