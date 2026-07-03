@@ -349,7 +349,7 @@
 }
 
 .dark .auth-stabilized-wrapper {
-  background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+  background: radial-gradient(circle at center, #111111 0%, #000000 100%);
 }
 
 .auth-3d-bg {
@@ -372,7 +372,8 @@
 }
 
 .dark .auth-card-stabilized {
-  background: rgba(15, 23, 42, 0.85);
+  background: rgba(10, 10, 10, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .floating-text {
@@ -382,7 +383,8 @@
   font-size: 18vw;
   font-weight: 900;
   letter-spacing: -0.05em;
-  color: rgba(37, 99, 235, 0.04);
+  text-transform: uppercase;
+  color: rgba(15, 23, 42, 0.04);
   white-space: nowrap;
   user-select: none;
   animation: floatText 35s infinite linear;
@@ -392,7 +394,7 @@
 }
 
 .dark .floating-text {
-  color: rgba(255, 255, 255, 0.02);
+  color: rgba(255, 255, 255, 0.03);
 }
 
 @keyframes floatText {
