@@ -53,7 +53,7 @@ export default function SearchDropdown({ results, loading, onClose, onItemClick 
                     <Avatar user={u} size="sm" />
                     <div className="search-item-info">
                       <div className="name-row">
-                        <span className="name">
+                        <span className={`name ${(u.isVerified || u.isPremium) ? (u.role === 'brand' ? 'verified-brand-text' : 'verified-creator-text') : ''}`}>
                           {u.name || u.username}
                         </span>
                         {(u.isVerified || u.isPremium) && <VerifiedBadge size="xs" tier={u.premiumTier} role={u.role} />}

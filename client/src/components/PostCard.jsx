@@ -209,7 +209,11 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
           <Avatar user={post.user} size="md" onClick={() => navigate(`/user/${post.user?._id}`)} className="cursor-pointer" />
           <div>
             <h3 
-              className="font-bold cursor-pointer transition-colors flex items-center gap-1 text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400" 
+              className={`font-bold cursor-pointer transition-colors flex items-center gap-1 ${
+                (post.user?.isVerified || post.user?.isPremium) 
+                  ? (post.user?.role === 'brand' ? 'verified-brand-text hover:brightness-110' : 'verified-creator-text hover:brightness-110') 
+                  : 'text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400'
+              }`} 
               onClick={() => navigate(`/user/${post.user?._id}`)}
             >
               {post.user?.name || post.username}
