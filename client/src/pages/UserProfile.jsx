@@ -473,27 +473,11 @@ export default function UserProfile() {
           </div>
         </div>
         <div className="stat-card-wide">
-          <div className="stat-icon-wrap"><BriefcaseIcon /></div>
-          <div className="stat-info">
-            <span className="stat-val">{fmtCount(profile?.profileViews || 0)}</span>
-            <span className="stat-lbl">Profile Views</span>
-            <span className="stat-sub">All time views</span>
-          </div>
-        </div>
-        <div className="stat-card-wide">
           <div className="stat-icon-wrap"><TrendingDownIcon /></div>
           <div className="stat-info">
             <span className="stat-val">{fmtCount(profile?.profileReach || 0)}</span>
-            <span className="stat-lbl">Profile Reach</span>
+            <span className="stat-lbl">Total Reach</span>
             <span className="stat-sub">Unique accounts</span>
-          </div>
-        </div>
-        <div className="stat-card-wide">
-          <div className="stat-icon-wrap"><EyeIcon /></div>
-          <div className="stat-info">
-            <span className="stat-val">{fmtCount(profile?.featuredIn || 0)}</span>
-            <span className="stat-lbl">Featured In</span>
-            <span className="stat-sub">By brands</span>
           </div>
         </div>
       </div>

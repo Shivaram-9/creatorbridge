@@ -414,27 +414,11 @@ export default function Profile() {
           </div>
         </div>
         <div className="stat-card-wide clickable" onClick={() => navigate("/analytics")}>
-          <div className="stat-icon-wrap"><BriefcaseIcon /></div>
-          <div className="stat-info">
-            <span className="stat-val">{fmtCount(user?.profileViews || 0)}</span>
-            <span className="stat-lbl">Profile Views</span>
-            <span className="stat-sub">All time views</span>
-          </div>
-        </div>
-        <div className="stat-card-wide clickable" onClick={() => navigate("/analytics")}>
           <div className="stat-icon-wrap"><TrendingDownIcon /></div>
           <div className="stat-info">
             <span className="stat-val">{fmtCount(user?.profileReach || 0)}</span>
-            <span className="stat-lbl">Profile Reach</span>
+            <span className="stat-lbl">Total Reach</span>
             <span className="stat-sub">Unique accounts</span>
-          </div>
-        </div>
-        <div className="stat-card-wide clickable" onClick={() => navigate("/collaborations")}>
-          <div className="stat-icon-wrap"><EyeIcon /></div>
-          <div className="stat-info">
-            <span className="stat-val">{fmtCount(user?.featuredIn || 0)}</span>
-            <span className="stat-lbl">Featured In</span>
-            <span className="stat-sub">By brands</span>
           </div>
         </div>
       </div>

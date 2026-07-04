@@ -132,14 +132,7 @@ export default function TrustScore({ user, isOwnProfile }) {
           </div>
 
 
-          <div className="metric-card">
-            <div className="metric-header">
-              <span className="metric-title">Avg. Response Rate</span>
-              <span className="metric-icon"><LightningIcon /></span>
-            </div>
-            <div className="metric-value">{responseRate}%</div>
-            <div className="metric-sub">Usually replies in &lt; 24h</div>
-          </div>
+
 
           <div className="metric-card">
             <div className="metric-header">

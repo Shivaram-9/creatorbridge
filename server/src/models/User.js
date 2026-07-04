@@ -68,8 +68,6 @@ const userSchema = new mongoose.Schema(
     
     // Trust Score & Collaboration Metrics
     trustScore: { type: Number, default: 0 },
-    completedCampaigns: { type: Number, default: 0 },
-    responseRate: { type: Number, default: 0 },
     onTimeDelivery: { type: Number, default: 0 },
     averageRating: { type: Number, default: 0 },
     
