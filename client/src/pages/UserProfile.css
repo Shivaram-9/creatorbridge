@@ -7,7 +7,7 @@
   margin: 0 auto;
   padding: 0;
   box-sizing: border-box;
-  background-color: var(--bg-main, #f8fafc);
+  background-color: var(--bg-card);
 }
 
 /* Cover Image */
@@ -34,13 +34,10 @@
 
 /* Profile Header Base */
 .profile-header-base {
-  background: var(--bg-card);
-  border-radius: 24px;
-  padding: 30px 40px 40px;
-  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.04);
-  margin-bottom: 24px;
+  background: transparent;
+  padding: 10px 40px 20px;
+  margin-bottom: 20px;
   position: relative;
-  margin-top: -20px;
   z-index: 2;
 }
 
@@ -57,7 +54,7 @@
   width: 170px;
   height: 170px;
   border-radius: 50%;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  box-shadow: none;
   position: relative;
   flex-shrink: 0;
   margin-top: -95px;
@@ -85,10 +82,10 @@
 
 /* Overview Card */
 .identity-overview-card {
-  background: var(--bg-main);
-  border: 1px solid var(--border-light);
-  border-radius: 16px;
-  padding: 20px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 20px 0;
   width: 320px;
   margin-top: 0;
 }
@@ -254,11 +251,11 @@
 
 /* Collab Tags */
 .collab-section {
-  background: var(--bg-card);
-  border-radius: 16px;
-  padding: 20px 24px;
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
   margin-bottom: 24px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+  box-shadow: none;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -315,14 +312,14 @@
 }
 
 .stat-card-wide {
-  background: var(--bg-card);
-  border-radius: 16px;
-  padding: 20px;
+  background: transparent;
+  border-radius: 0;
+  padding: 10px 0;
   display: flex;
   align-items: center;
   gap: 16px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.02);
-  border: 1px solid var(--border-light);
+  box-shadow: none;
+  border: none;
 }
 
 .stat-icon-wrap {
@@ -371,9 +368,9 @@
   gap: 32px;
   border-bottom: 1px solid var(--border-light);
   margin-bottom: 24px;
-  background: var(--bg-card);
-  padding: 0 24px;
-  border-radius: 16px 16px 0 0;
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
 }
 
 .tab-item-wide {
@@ -406,6 +403,19 @@
   height: 2px;
   background: var(--text-main);
   border-radius: 2px 2px 0 0;
+}
+
+.profile-bottom-wrapper {
+  background-color: transparent;
+  margin: 0;
+  padding: 0 40px 60px 40px;
+  min-height: 50vh;
+}
+@media (min-width: 768px) {
+  .profile-bottom-wrapper {
+    margin: 0;
+    padding: 0 40px 60px 40px;
+  }
 }
 
 @media (max-width: 768px) {
