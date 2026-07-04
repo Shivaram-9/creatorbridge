@@ -242,7 +242,7 @@ export default function Home() {
             <Avatar user={user} size="sm" />
             <div>
               <h3 className={`font-bold text-sm leading-tight flex items-center gap-1 ${
-                (user?.isVerified || user?.isPremium) ? (user.role === 'brand' ? 'metallic-gold-text' : 'metallic-blue-text') : 'text-slate-900 dark:text-white'
+                'text-slate-900 dark:text-white'
               }`}>
                 {user?.name || user?.username}
                 {(user?.isVerified || user?.isPremium) && <VerifiedBadge size="xs" tier={user?.premiumTier} role={user?.role} />}
@@ -273,7 +273,7 @@ export default function Home() {
                   </div>
                   <div className="cursor-pointer" onClick={() => navigate(`/user/${u._id}`)}>
                     <h4 className={`text-sm font-bold flex items-center gap-1 ${
-                      (u?.isVerified || u?.isPremium) ? (u.role === 'brand' ? 'metallic-gold-text' : 'metallic-blue-text') : 'text-slate-900 dark:text-white'
+                      'text-slate-900 dark:text-white'
                     }`}>
                       {u.name || u.username}
                       {(u?.isVerified || u?.isPremium) && <VerifiedBadge size="xs" tier={u?.premiumTier} role={u?.role} />}

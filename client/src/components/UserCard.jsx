@@ -113,7 +113,7 @@ const UserCard = memo(({ user, minimal, layout = "card" }) => {
         </div>
         
         <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-          <div className={(user.isVerified || user.isPremium) ? (user.role === 'brand' ? 'metallic-gold-text' : 'metallic-blue-text') : ''} style={{ 
+          <div className="" style={{ 
             fontSize: '15px', 
             fontWeight: '600', 
             whiteSpace: 'nowrap', 
@@ -196,7 +196,7 @@ const UserCard = memo(({ user, minimal, layout = "card" }) => {
       </div>
 
       <div style={{ width: '100%' }}>
-        <h3 className={(user.isVerified || user.isPremium) ? (user.role === 'brand' ? 'metallic-gold-text' : 'metallic-blue-text') : ''} style={{ 
+        <h3 className="" style={{ 
           margin: 0,
           fontSize: '16px', 
           fontWeight: 700, 

@@ -314,18 +314,20 @@ export default function UserProfile() {
             
             <div className="profile-info-content">
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                <h1 className={`profile-display-name ${
-                  (profile?.isVerified || profile?.isPremium) ? (profile.role === 'brand' ? 'metallic-gold-text' : 'metallic-blue-text') : ''
-                }`} style={{ margin: 0 }}>
+                <h1 className="profile-display-name text-slate-900 dark:text-white" style={{ margin: 0 }}>
                   {profile?.name || profile?.username}
                 </h1>
-                {(profile?.isVerified || profile?.isPremium) && <VerifiedBadge size="lg" tier={profile.premiumTier} role={profile.role} />}
+                {(profile?.isVerified || profile?.isPremium) && <VerifiedBadge role={profile.role} />}
               </div>
               {(profile?.isVerified || profile?.isPremium) && (
                 <div style={{ marginTop: '4px', marginBottom: '8px' }}>
-                  <span className={`verified-badge-pill ${profile.role === 'brand' ? 'brand' : 'influencer'}`}>
-                    <VerifiedBadge size="xs" role={profile.role} showTooltip={false} style={{ marginLeft: 0 }} />
-                    <span>{profile.role === 'brand' ? 'Verified Brand' : 'Verified Creator'}</span>
+                  <span style={{ 
+                    color: profile.role === 'brand' ? '#F5C024' : '#0095f6', 
+                    fontSize: '13px', 
+                    fontWeight: '600', 
+                    letterSpacing: '0.2px' 
+                  }}>
+                    {profile.role === 'brand' ? 'Verified Brand' : 'Verified Creator'}
                   </span>
                 </div>
               )}
