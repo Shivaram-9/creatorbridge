@@ -63,10 +63,11 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 40px 24px;
-  background: var(--bg-card, #f8fafc);
-  border-radius: 20px;
-  border: 1px solid var(--border-color, #e2e8f0);
+  padding: 20px 24px;
+  background: transparent;
+  border-radius: 0;
+  border: none;
+  /* Optional: border-right: 1px solid var(--border-light); if we want separation */
 }
 
 .circular-chart {
@@ -118,17 +119,22 @@
 }
 
 .metric-card {
-  padding: 20px;
-  border-radius: 16px;
-  border: 1px solid var(--border-color, #e2e8f0);
-  background: var(--bg-card, #ffffff);
-  transition: all 0.3s ease;
+  padding: 16px 8px;
+  background: transparent;
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+  border-right: 1px solid var(--border-light);
+}
+
+.metric-card:last-child {
+  border-right: none;
 }
 
 .metric-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
-  border-color: var(--primary-color, #cbd5e1);
 }
 
 .metric-header {

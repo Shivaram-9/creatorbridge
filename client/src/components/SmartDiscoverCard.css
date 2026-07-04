@@ -12,6 +12,22 @@
   overflow: hidden;
 }
 
+.smart-discover-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-card);
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.smart-discover-card:hover {
+  transform: translateY(-2px);
+  box-shadow: none;
+}
+
 .smart-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);

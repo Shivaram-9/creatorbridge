@@ -39,11 +39,11 @@
 }
 
 .chat-item-v3:hover {
-  background: var(--bg-secondary);
+  background: transparent;
 }
 
 .chat-item-v3.active {
-  background: var(--bg-secondary);
+  background: transparent;
   border-left-color: var(--primary);
 }
 

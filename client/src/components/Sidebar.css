@@ -58,14 +58,16 @@
 }
 
 .sidebar-item:hover {
-  background-color: var(--bg-card);
-  color: var(--text-main) !important;
+  background-color: transparent;
+  color: var(--primary) !important;
 }
 
 .sidebar-item.active {
-  background-color: var(--bg-card);
-  color: var(--text-main) !important;
-  font-weight: 600;
+  background-color: transparent;
+  color: var(--primary) !important;
+  font-weight: 700;
+  border-left: 3px solid var(--primary);
+  padding-left: 12px; /* adjust padding to account for 3px border */
 }
 
 .sidebar-icon {
