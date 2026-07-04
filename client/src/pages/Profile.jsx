@@ -340,30 +340,34 @@ export default function Profile() {
 
               <p className="profile-bio-text">{user?.bio || "No bio yet."}</p>
 
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '40px', marginTop: '16px', alignItems: 'flex-start' }}>
+              {user?.experience && (
+                <div style={{ marginTop: '16px' }}>
+                  <h4 style={{ fontSize: '14px', fontWeight: '600', marginBottom: '4px', color: 'var(--text-main)', textDecoration: 'underline' }}>Experience</h4>
+                </div>
+              )}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: user?.experience ? '4px' : '16px', alignItems: 'center' }}>
                 {user?.experience && (
-                  <div onClick={() => setShowExperienceModal(true)} style={{ cursor: 'pointer' }}>
-                    <h4 style={{ fontSize: '14px', fontWeight: '600', marginBottom: '4px', color: 'var(--text-main)', textDecoration: 'underline' }}>Experience</h4>
-                    <p className="profile-bio-text" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '200px', margin: 0 }}>{user.experience}</p>
+                  <div onClick={() => setShowExperienceModal(true)} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+                    <span className="profile-bio-text" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '200px', margin: 0 }}>{user.experience}</span>
                   </div>
                 )}
 
                 {user?.portfolioLink && (
-                  <div>
-                    <h4 style={{ fontSize: '14px', fontWeight: '600', marginBottom: '4px', color: 'transparent', userSelect: 'none' }}>&nbsp;</h4>
+                  <>
+                    {user?.experience && <span className="profile-title-separator">|</span>}
                     <a href={user.portfolioLink.startsWith('http') ? user.portfolioLink : `https://${user.portfolioLink}`} target="_blank" rel="noopener noreferrer" className="profile-link-item" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
                       <PaletteIcon /> Portfolio
                     </a>
-                  </div>
+                  </>
                 )}
 
                 {user?.socialMediaLink && (
-                  <div>
-                    <h4 style={{ fontSize: '14px', fontWeight: '600', marginBottom: '4px', color: 'transparent', userSelect: 'none' }}>&nbsp;</h4>
+                  <>
+                    {(user?.experience || user?.portfolioLink) && <span className="profile-title-separator">|</span>}
                     <a href={user.socialMediaLink.startsWith('http') ? user.socialMediaLink : `https://${user.socialMediaLink}`} target="_blank" rel="noopener noreferrer" className="profile-link-item" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
                       <BriefcaseIcon /> LinkedIn
                     </a>
-                  </div>
+                  </>
                 )}
               </div>
 

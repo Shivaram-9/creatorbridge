@@ -354,32 +354,44 @@ export default function UserProfile() {
 
               {profile?.experience && (
                 <div style={{ marginTop: '16px' }}>
-                  <h4 style={{ fontSize: '14px', fontWeight: '600', marginBottom: '4px', color: 'var(--text-main)' }}>Experience</h4>
-                  <p className="profile-bio-text" style={{ whiteSpace: 'pre-line' }}>{profile.experience}</p>
+                  <h4 style={{ fontSize: '14px', fontWeight: '600', marginBottom: '4px', color: 'var(--text-main)', textDecoration: 'underline' }}>Experience</h4>
                 </div>
               )}
-
-              {profile?.website && (
-                <div style={{ marginTop: '12px' }}>
-                  <a href={profile.website.startsWith('http') ? profile.website : `https://${profile.website}`} target="_blank" rel="noopener noreferrer" className="profile-link-item" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-                    <LinkIcon /> {profile.website.replace(/^https?:\/\//, '')}
-                  </a>
-                </div>
-              )}
-              {profile?.portfolioLink && (
-                <div style={{ marginTop: '8px' }}>
-                  <a href={profile.portfolioLink.startsWith('http') ? profile.portfolioLink : `https://${profile.portfolioLink}`} target="_blank" rel="noopener noreferrer" className="profile-link-item" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-                    <PaletteIcon /> Portfolio
-                  </a>
-                </div>
-              )}
-              {profile?.socialMediaLink && (
-                <div style={{ marginTop: '8px' }}>
-                  <a href={profile.socialMediaLink.startsWith('http') ? profile.socialMediaLink : `https://${profile.socialMediaLink}`} target="_blank" rel="noopener noreferrer" className="profile-link-item" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-                    <BriefcaseIcon /> LinkedIn
-                  </a>
-                </div>
-              )}
+              
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: profile?.experience ? '4px' : '16px', alignItems: 'center' }}>
+                {profile?.experience && (
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <span className="profile-bio-text" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '200px', margin: 0 }}>{profile.experience}</span>
+                  </div>
+                )}
+                
+                {profile?.website && (
+                  <>
+                    {profile?.experience && <span className="profile-title-separator">|</span>}
+                    <a href={profile.website.startsWith('http') ? profile.website : `https://${profile.website}`} target="_blank" rel="noopener noreferrer" className="profile-link-item" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                      <LinkIcon /> {profile.website.replace(/^https?:\/\//, '')}
+                    </a>
+                  </>
+                )}
+                
+                {profile?.portfolioLink && (
+                  <>
+                    {(profile?.experience || profile?.website) && <span className="profile-title-separator">|</span>}
+                    <a href={profile.portfolioLink.startsWith('http') ? profile.portfolioLink : `https://${profile.portfolioLink}`} target="_blank" rel="noopener noreferrer" className="profile-link-item" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                      <PaletteIcon /> Portfolio
+                    </a>
+                  </>
+                )}
+                
+                {profile?.socialMediaLink && (
+                  <>
+                    {(profile?.experience || profile?.website || profile?.portfolioLink) && <span className="profile-title-separator">|</span>}
+                    <a href={profile.socialMediaLink.startsWith('http') ? profile.socialMediaLink : `https://${profile.socialMediaLink}`} target="_blank" rel="noopener noreferrer" className="profile-link-item" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                      <BriefcaseIcon /> LinkedIn
+                    </a>
+                  </>
+                )}
+              </div>
 
               {!isOwn && (
                 <div style={{ marginTop: '16px', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
