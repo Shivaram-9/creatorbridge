@@ -513,3 +513,10 @@ button:disabled {
   }
 }
 
+/* VERIFIED FLAT TEXT COLORS */
+.verified-creator-text {
+  color: #0095f6 !important;
+}
+.verified-brand-text {
+  color: #F5C024 !important;
+}
