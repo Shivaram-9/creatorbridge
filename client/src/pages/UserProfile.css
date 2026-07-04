@@ -8,6 +8,7 @@
   padding: 0;
   box-sizing: border-box;
   background-color: var(--bg-card);
+  min-height: 100vh;
 }
 
 /* Cover Image */
