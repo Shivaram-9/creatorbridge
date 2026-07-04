@@ -143,8 +143,8 @@ export default function PortfolioBuilder() {
         <div className="flex items-center gap-5">
           <div className="flex bg-slate-100 dark:bg-slate-800/50 p-1 rounded-xl">
             <select value={templateType} onChange={(e) => { setTemplateType(e.target.value); setSelectedTemplateId(e.target.value === "brand" ? "brand-1" : "creator-1"); }} className="py-2 px-3 bg-transparent border-none text-sm font-medium text-slate-700 dark:text-slate-200 focus:ring-0 cursor-pointer outline-none">
-              <option value="creator">Creator Templates</option>
-              <option value="brand">Brand Templates</option>
+              <option value="creator" className="dark:bg-slate-800 dark:text-white">Creator Templates</option>
+              <option value="brand" className="dark:bg-slate-800 dark:text-white">Brand Templates</option>
             </select>
             
             <div className="w-[1px] bg-slate-300 dark:bg-slate-600 my-2 mx-1"></div>
@@ -152,22 +152,22 @@ export default function PortfolioBuilder() {
             <select value={selectedTemplateId} onChange={(e) => setSelectedTemplateId(e.target.value)} className="py-2 px-3 bg-transparent border-none text-sm font-medium text-slate-700 dark:text-slate-200 focus:ring-0 cursor-pointer outline-none max-w-[200px]">
               {templateType === "creator" ? (
                 <>
-                  <option value="creator-1">Creative Professional</option>
-                  <option value="creator-2">Minimalist Modern</option>
-                  <option value="creator-3">Vibrant Portfolio</option>
-                  <option value="creator-4">Editorial Elegance</option>
+                  <option value="creator-1" className="dark:bg-slate-800 dark:text-white">Creative Professional</option>
+                  <option value="creator-2" className="dark:bg-slate-800 dark:text-white">Minimalist Modern</option>
+                  <option value="creator-3" className="dark:bg-slate-800 dark:text-white">Vibrant Portfolio</option>
+                  <option value="creator-4" className="dark:bg-slate-800 dark:text-white">Editorial Elegance</option>
                   {CREATOR_LAYOUT_NAMES.map((name, i) => (
-                    <option key={`c-${i+1}`} value={`gen-creator-${i+1}`}>{name}</option>
+                    <option key={`c-${i+1}`} value={`gen-creator-${i+1}`} className="dark:bg-slate-800 dark:text-white">{name}</option>
                   ))}
                 </>
               ) : (
                 <>
-                  <option value="brand-1">Corporate Profile</option>
-                  <option value="brand-2">Agency Brief</option>
-                  <option value="brand-3">Bold Impact</option>
-                  <option value="brand-4">Classic Heritage</option>
+                  <option value="brand-1" className="dark:bg-slate-800 dark:text-white">Corporate Profile</option>
+                  <option value="brand-2" className="dark:bg-slate-800 dark:text-white">Agency Brief</option>
+                  <option value="brand-3" className="dark:bg-slate-800 dark:text-white">Bold Impact</option>
+                  <option value="brand-4" className="dark:bg-slate-800 dark:text-white">Classic Heritage</option>
                   {BRAND_LAYOUT_NAMES.map((name, i) => (
-                    <option key={`b-${i+1}`} value={`gen-brand-${i+1}`}>{name}</option>
+                    <option key={`b-${i+1}`} value={`gen-brand-${i+1}`} className="dark:bg-slate-800 dark:text-white">{name}</option>
                   ))}
                 </>
               )}
