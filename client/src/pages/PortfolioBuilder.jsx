@@ -254,8 +254,8 @@ export default function PortfolioBuilder() {
         </div>
 
         <div className="w-2/3 bg-slate-200 dark:bg-slate-900 p-8 overflow-y-auto flex justify-center pb-24">
-          <div className="bg-white shadow-xl" style={{ width: '210mm', minHeight: '297mm', padding: '0', boxSizing: 'border-box', overflow: 'hidden', position: 'relative' }}>
-            <div ref={printRef} style={{ width: '100%', height: '100%', backgroundColor: '#fff' }}>
+          <div className="bg-white shadow-xl" style={{ width: '210mm', minHeight: '297mm', padding: '0', boxSizing: 'border-box', overflow: 'hidden' }}>
+            <div ref={printRef} style={{ width: '100%', height: '100%', minHeight: '297mm', backgroundColor: '#fff', position: 'relative' }}>
               {(() => {
                 if (selectedTemplateId.startsWith('gen-')) {
                   const parts = selectedTemplateId.split('-');
@@ -277,6 +277,23 @@ export default function PortfolioBuilder() {
                   default: return null;
                 }
               })()}
+              
+              {/* Universal Watermark */}
+              <div style={{
+                position: 'absolute',
+                bottom: '20px',
+                right: '25px',
+                opacity: 0.08,
+                fontFamily: '"Outfit", sans-serif',
+                fontSize: '16px',
+                fontWeight: 700,
+                letterSpacing: '3px',
+                color: '#000',
+                pointerEvents: 'none',
+                zIndex: 9999
+              }}>
+                PACTOGRAM
+              </div>
             </div>
           </div>
         </div>
