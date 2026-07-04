@@ -123,114 +123,207 @@ export default function PortfolioBuilder() {
 
   if (loading) return <LoadingSpinner centered />;
 
+  const inputClass = "w-full p-3 border border-slate-200 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all dark:bg-slate-800/50 dark:border-slate-700 dark:text-white outline-none";
+  const labelClass = "block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider";
+
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex flex-col pt-16">
-      <div className="bg-white dark:bg-[#171717] border-b border-slate-200 dark:border-[#262626] px-6 py-4 flex justify-between items-center sticky top-16 z-20">
-        <div className="flex items-center gap-4">
-          <button onClick={() => navigate('/profile')} className="text-slate-500 hover:text-slate-800 dark:text-white dark:hover:text-white">← Back</button>
-          <h1 className="text-xl font-bold text-slate-900 dark:text-white">Portfolio Builder</h1>
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0a0a0a] flex flex-col pt-16">
+      
+      {/* Sleek Header */}
+      <div className="bg-white dark:bg-[#121212] border-b border-slate-200 dark:border-slate-800 px-8 py-5 flex justify-between items-center sticky top-16 z-20 shadow-sm">
+        <div className="flex items-center gap-6">
+          <button onClick={() => navigate('/profile')} className="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white font-medium flex items-center gap-2 transition-colors">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            Back
+          </button>
+          <div className="h-6 w-[1px] bg-slate-300 dark:bg-slate-700"></div>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Portfolio Builder</h1>
         </div>
         
-        <div className="flex items-center gap-4">
-          <select value={templateType} onChange={(e) => { setTemplateType(e.target.value); setSelectedTemplateId(e.target.value === "brand" ? "brand-1" : "creator-1"); }} className="p-2 border border-slate-300 dark:border-slate-600 rounded bg-white dark:bg-slate-700 text-slate-900 dark:text-white">
-            <option value="creator">Creator Templates</option>
-            <option value="brand">Brand Templates</option>
-          </select>
-          
-          <select value={selectedTemplateId} onChange={(e) => setSelectedTemplateId(e.target.value)} className="p-2 border border-slate-300 dark:border-slate-600 rounded bg-white dark:bg-slate-700 text-slate-900 dark:text-white">
-            {templateType === "creator" ? (
-              <>
-                <option value="creator-1">Creative Professional</option>
-                <option value="creator-2">Minimalist Modern</option>
-                <option value="creator-3">Vibrant Portfolio</option>
-                <option value="creator-4">Editorial Elegance</option>
-                {CREATOR_LAYOUT_NAMES.map((name, i) => (
-                  <option key={`c-${i+1}`} value={`gen-creator-${i+1}`}>{name}</option>
-                ))}
-              </>
-            ) : (
-              <>
-                <option value="brand-1">Corporate Profile</option>
-                <option value="brand-2">Agency Brief</option>
-                <option value="brand-3">Bold Impact</option>
-                <option value="brand-4">Classic Heritage</option>
-                {BRAND_LAYOUT_NAMES.map((name, i) => (
-                  <option key={`b-${i+1}`} value={`gen-brand-${i+1}`}>{name}</option>
-                ))}
-              </>
-            )}
-          </select>
+        <div className="flex items-center gap-5">
+          <div className="flex bg-slate-100 dark:bg-slate-800/50 p-1 rounded-xl">
+            <select value={templateType} onChange={(e) => { setTemplateType(e.target.value); setSelectedTemplateId(e.target.value === "brand" ? "brand-1" : "creator-1"); }} className="py-2 px-3 bg-transparent border-none text-sm font-medium text-slate-700 dark:text-slate-200 focus:ring-0 cursor-pointer outline-none">
+              <option value="creator">Creator Templates</option>
+              <option value="brand">Brand Templates</option>
+            </select>
+            
+            <div className="w-[1px] bg-slate-300 dark:bg-slate-600 my-2 mx-1"></div>
 
-          <button onClick={handleSave} disabled={saving} className="px-4 py-2 text-blue-600 border border-blue-600 rounded hover:bg-blue-50 dark:hover:bg-blue-900/30 transition">{saving ? "Saving..." : "Save Draft"}</button>
-          <button onClick={handleDownloadPdf} disabled={generating} className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition font-semibold">{generating ? "Generating..." : "Download PDF"}</button>
+            <select value={selectedTemplateId} onChange={(e) => setSelectedTemplateId(e.target.value)} className="py-2 px-3 bg-transparent border-none text-sm font-medium text-slate-700 dark:text-slate-200 focus:ring-0 cursor-pointer outline-none max-w-[200px]">
+              {templateType === "creator" ? (
+                <>
+                  <option value="creator-1">Creative Professional</option>
+                  <option value="creator-2">Minimalist Modern</option>
+                  <option value="creator-3">Vibrant Portfolio</option>
+                  <option value="creator-4">Editorial Elegance</option>
+                  {CREATOR_LAYOUT_NAMES.map((name, i) => (
+                    <option key={`c-${i+1}`} value={`gen-creator-${i+1}`}>{name}</option>
+                  ))}
+                </>
+              ) : (
+                <>
+                  <option value="brand-1">Corporate Profile</option>
+                  <option value="brand-2">Agency Brief</option>
+                  <option value="brand-3">Bold Impact</option>
+                  <option value="brand-4">Classic Heritage</option>
+                  {BRAND_LAYOUT_NAMES.map((name, i) => (
+                    <option key={`b-${i+1}`} value={`gen-brand-${i+1}`}>{name}</option>
+                  ))}
+                </>
+              )}
+            </select>
+          </div>
+
+          <button onClick={handleSave} disabled={saving} className="px-6 py-2.5 text-sm font-bold text-blue-600 bg-white border-2 border-blue-600 rounded-full hover:bg-blue-50 dark:bg-transparent dark:hover:bg-blue-900/30 transition-all">{saving ? "Saving..." : "Save Draft"}</button>
+          <button onClick={handleDownloadPdf} disabled={generating} className="px-6 py-2.5 text-sm font-bold bg-blue-600 text-white rounded-full hover:bg-blue-700 shadow-lg shadow-blue-500/20 transition-all">{generating ? "Generating..." : "Download PDF"}</button>
         </div>
       </div>
 
       <div className="flex flex-1 overflow-hidden" style={{ height: "calc(100vh - 140px)" }}>
-        <div className="w-1/3 bg-white dark:bg-[#171717] border-r border-slate-200 dark:border-[#262626] flex flex-col overflow-y-auto">
-          <div className="flex border-b border-slate-200 dark:border-[#262626] flex-wrap">
+        
+        {/* Left Form Sidebar */}
+        <div className="w-1/3 min-w-[380px] bg-white dark:bg-[#171717] border-r border-slate-200 dark:border-slate-800 flex flex-col overflow-y-auto">
+          
+          <div className="flex px-6 border-b border-slate-200 dark:border-slate-800 overflow-x-auto overflow-y-hidden gap-8 scrollbar-hide">
             {['personal', 'experience', 'education', 'skills', 'projects'].map(tab => (
-              <button key={tab} onClick={() => setActiveTab(tab)} className={`flex-1 py-3 px-2 text-xs font-semibold capitalize tracking-wider ${activeTab === tab ? 'border-b-2 border-blue-600 text-blue-600' : 'text-slate-500 hover:text-slate-800 dark:text-white dark:hover:text-white'}`}>{tab}</button>
+              <button 
+                key={tab} 
+                onClick={() => setActiveTab(tab)} 
+                className={`py-4 text-[13px] font-bold uppercase tracking-widest whitespace-nowrap transition-all relative ${activeTab === tab ? 'text-blue-600 dark:text-blue-500' : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'}`}
+              >
+                {tab}
+                {activeTab === tab && (
+                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-blue-600 dark:bg-blue-500 rounded-t-full"></div>
+                )}
+              </button>
             ))}
           </div>
           
-          <div className="p-6">
+          <div className="p-8">
             {activeTab === 'personal' && (
-              <div className="space-y-4">
-                <input className="w-full p-2 border rounded dark:bg-slate-700 dark:border-slate-600 dark:text-white" placeholder="Full Name" value={data.personal.name} onChange={e => updatePersonal('name', e.target.value)} />
-                <input className="w-full p-2 border rounded dark:bg-slate-700 dark:border-slate-600 dark:text-white" placeholder="Professional Title" value={data.personal.title} onChange={e => updatePersonal('title', e.target.value)} />
-                <input className="w-full p-2 border rounded dark:bg-slate-700 dark:border-slate-600 dark:text-white" placeholder="Email Address" value={data.personal.email} onChange={e => updatePersonal('email', e.target.value)} />
-                <input className="w-full p-2 border rounded dark:bg-slate-700 dark:border-slate-600 dark:text-white" placeholder="Phone Number" value={data.personal.phone} onChange={e => updatePersonal('phone', e.target.value)} />
-                <input className="w-full p-2 border rounded dark:bg-slate-700 dark:border-slate-600 dark:text-white" placeholder="Location" value={data.personal.location} onChange={e => updatePersonal('location', e.target.value)} />
-                <input className="w-full p-2 border rounded dark:bg-slate-700 dark:border-slate-600 dark:text-white" placeholder="Website / Portfolio URL" value={data.personal.website} onChange={e => updatePersonal('website', e.target.value)} />
-                <textarea className="w-full p-2 border rounded dark:bg-slate-700 dark:border-slate-600 dark:text-white min-h-[120px]" placeholder="Professional Summary" value={data.personal.summary} onChange={e => updatePersonal('summary', e.target.value)} />
+              <div className="space-y-6 fade-in">
+                <div>
+                  <label className={labelClass}>Full Name</label>
+                  <input className={inputClass} placeholder="e.g. Jane Doe" value={data.personal.name} onChange={e => updatePersonal('name', e.target.value)} />
+                </div>
+                <div>
+                  <label className={labelClass}>Professional Title</label>
+                  <input className={inputClass} placeholder="e.g. Senior Designer" value={data.personal.title} onChange={e => updatePersonal('title', e.target.value)} />
+                </div>
+                <div>
+                  <label className={labelClass}>Email Address</label>
+                  <input className={inputClass} placeholder="jane@example.com" value={data.personal.email} onChange={e => updatePersonal('email', e.target.value)} />
+                </div>
+                <div>
+                  <label className={labelClass}>Phone Number</label>
+                  <input className={inputClass} placeholder="+1 (555) 000-0000" value={data.personal.phone} onChange={e => updatePersonal('phone', e.target.value)} />
+                </div>
+                <div>
+                  <label className={labelClass}>Location</label>
+                  <input className={inputClass} placeholder="New York, NY" value={data.personal.location} onChange={e => updatePersonal('location', e.target.value)} />
+                </div>
+                <div>
+                  <label className={labelClass}>Website / Portfolio URL</label>
+                  <input className={inputClass} placeholder="www.janedoe.com" value={data.personal.website} onChange={e => updatePersonal('website', e.target.value)} />
+                </div>
+                <div>
+                  <label className={labelClass}>Professional Summary</label>
+                  <textarea className={`${inputClass} min-h-[140px] resize-y`} placeholder="Write a brief introduction about yourself..." value={data.personal.summary} onChange={e => updatePersonal('summary', e.target.value)} />
+                </div>
               </div>
             )}
             
             {activeTab === 'experience' && (
-              <div className="space-y-6">
-                {data.experience.map(exp => (
-                  <div key={exp.id} className="p-4 border rounded relative dark:border-slate-600">
-                    <button onClick={() => removeArrayItem('experience', exp.id)} className="absolute top-2 right-2 text-red-500">✕</button>
-                    <input className="w-full mb-2 p-2 border rounded dark:bg-slate-700 dark:border-slate-600 dark:text-white" placeholder="Company Name" value={exp.company} onChange={e => updateArrayItem('experience', exp.id, 'company', e.target.value)} />
-                    <input className="w-full mb-2 p-2 border rounded dark:bg-slate-700 dark:border-slate-600 dark:text-white" placeholder="Role / Job Title" value={exp.role} onChange={e => updateArrayItem('experience', exp.id, 'role', e.target.value)} />
-                    <div className="flex gap-2 mb-2">
-                      <input className="w-1/2 p-2 border rounded dark:bg-slate-700 dark:border-slate-600 dark:text-white" placeholder="Start Date" value={exp.startDate} onChange={e => updateArrayItem('experience', exp.id, 'startDate', e.target.value)} />
-                      <input className="w-1/2 p-2 border rounded dark:bg-slate-700 dark:border-slate-600 dark:text-white" placeholder="End Date" value={exp.endDate} onChange={e => updateArrayItem('experience', exp.id, 'endDate', e.target.value)} />
+              <div className="space-y-8 fade-in">
+                {data.experience.map((exp, index) => (
+                  <div key={exp.id} className="p-6 bg-slate-50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 rounded-2xl relative shadow-sm transition-all hover:shadow-md">
+                    <button onClick={() => removeArrayItem('experience', exp.id)} className="absolute top-4 right-4 text-slate-400 hover:text-red-500 transition-colors">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                    </button>
+                    <h3 className="font-bold text-slate-800 dark:text-slate-200 mb-4">Experience #{index + 1}</h3>
+                    <div className="space-y-4">
+                      <div>
+                        <label className={labelClass}>Company / Brand Name</label>
+                        <input className={inputClass} placeholder="Company Name" value={exp.company} onChange={e => updateArrayItem('experience', exp.id, 'company', e.target.value)} />
+                      </div>
+                      <div>
+                        <label className={labelClass}>Role / Job Title</label>
+                        <input className={inputClass} placeholder="e.g. Creative Director" value={exp.role} onChange={e => updateArrayItem('experience', exp.id, 'role', e.target.value)} />
+                      </div>
+                      <div className="flex gap-4">
+                        <div className="w-1/2">
+                          <label className={labelClass}>Start Date</label>
+                          <input className={inputClass} placeholder="MMM YYYY" value={exp.startDate} onChange={e => updateArrayItem('experience', exp.id, 'startDate', e.target.value)} />
+                        </div>
+                        <div className="w-1/2">
+                          <label className={labelClass}>End Date</label>
+                          <input className={inputClass} placeholder="Present" value={exp.endDate} onChange={e => updateArrayItem('experience', exp.id, 'endDate', e.target.value)} />
+                        </div>
+                      </div>
+                      <div>
+                        <label className={labelClass}>Description / Impact</label>
+                        <textarea className={`${inputClass} min-h-[100px] resize-y`} placeholder="Describe your responsibilities and achievements..." value={exp.description} onChange={e => updateArrayItem('experience', exp.id, 'description', e.target.value)} />
+                      </div>
                     </div>
-                    <textarea className="w-full p-2 border rounded dark:bg-slate-700 dark:border-slate-600 dark:text-white min-h-[80px]" placeholder="Description" value={exp.description} onChange={e => updateArrayItem('experience', exp.id, 'description', e.target.value)} />
                   </div>
                 ))}
-                <button onClick={() => addArrayItem('experience', { company: "", role: "", startDate: "", endDate: "", description: "" })} className="w-full py-2 border-2 border-dashed border-slate-300 dark:border-slate-600 text-slate-500 rounded hover:bg-slate-50 dark:hover:bg-slate-700">+ Add Experience</button>
+                <button onClick={() => addArrayItem('experience', { company: "", role: "", startDate: "", endDate: "", description: "" })} className="w-full py-4 border-2 border-dashed border-blue-200 dark:border-blue-900/50 text-blue-600 dark:text-blue-400 font-bold rounded-2xl hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all flex items-center justify-center gap-2">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                  Add Experience
+                </button>
               </div>
             )}
 
             {activeTab === 'education' && (
-              <div className="space-y-6">
-                {data.education.map(edu => (
-                  <div key={edu.id} className="p-4 border rounded relative dark:border-slate-600">
-                    <button onClick={() => removeArrayItem('education', edu.id)} className="absolute top-2 right-2 text-red-500">✕</button>
-                    <input className="w-full mb-2 p-2 border rounded dark:bg-slate-700 dark:border-slate-600 dark:text-white" placeholder="Institution Name" value={edu.institution} onChange={e => updateArrayItem('education', edu.id, 'institution', e.target.value)} />
-                    <input className="w-full mb-2 p-2 border rounded dark:bg-slate-700 dark:border-slate-600 dark:text-white" placeholder="Degree / Certification" value={edu.degree} onChange={e => updateArrayItem('education', edu.id, 'degree', e.target.value)} />
-                    <input className="w-full p-2 border rounded dark:bg-slate-700 dark:border-slate-600 dark:text-white" placeholder="Year" value={edu.year} onChange={e => updateArrayItem('education', edu.id, 'year', e.target.value)} />
+              <div className="space-y-8 fade-in">
+                {data.education.map((edu, index) => (
+                  <div key={edu.id} className="p-6 bg-slate-50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 rounded-2xl relative shadow-sm transition-all hover:shadow-md">
+                    <button onClick={() => removeArrayItem('education', edu.id)} className="absolute top-4 right-4 text-slate-400 hover:text-red-500 transition-colors">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                    </button>
+                    <h3 className="font-bold text-slate-800 dark:text-slate-200 mb-4">Education #{index + 1}</h3>
+                    <div className="space-y-4">
+                      <div>
+                        <label className={labelClass}>Institution Name</label>
+                        <input className={inputClass} placeholder="University / College" value={edu.institution} onChange={e => updateArrayItem('education', edu.id, 'institution', e.target.value)} />
+                      </div>
+                      <div>
+                        <label className={labelClass}>Degree / Certification</label>
+                        <input className={inputClass} placeholder="B.S. Design" value={edu.degree} onChange={e => updateArrayItem('education', edu.id, 'degree', e.target.value)} />
+                      </div>
+                      <div>
+                        <label className={labelClass}>Year of Graduation</label>
+                        <input className={inputClass} placeholder="2024" value={edu.year} onChange={e => updateArrayItem('education', edu.id, 'year', e.target.value)} />
+                      </div>
+                    </div>
                   </div>
                 ))}
-                <button onClick={() => addArrayItem('education', { institution: "", degree: "", year: "" })} className="w-full py-2 border-2 border-dashed border-slate-300 dark:border-slate-600 text-slate-500 rounded hover:bg-slate-50 dark:hover:bg-slate-700">+ Add Education</button>
+                <button onClick={() => addArrayItem('education', { institution: "", degree: "", year: "" })} className="w-full py-4 border-2 border-dashed border-blue-200 dark:border-blue-900/50 text-blue-600 dark:text-blue-400 font-bold rounded-2xl hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all flex items-center justify-center gap-2">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                  Add Education
+                </button>
               </div>
             )}
 
             {activeTab === 'skills' && (
-              <div className="space-y-4">
-                <form onSubmit={e => { e.preventDefault(); const v = e.target.skill.value; addSkill(v); e.target.skill.value = ""; }}>
-                  <div className="flex gap-2">
-                    <input name="skill" className="flex-1 p-2 border rounded dark:bg-slate-700 dark:border-slate-600 dark:text-white" placeholder="Add a skill" />
-                    <button type="submit" className="px-4 py-2 bg-slate-800 text-white rounded">Add</button>
-                  </div>
-                </form>
-                <div className="flex flex-wrap gap-2 mt-4">
+              <div className="space-y-8 fade-in">
+                <div>
+                  <label className={labelClass}>Add a Professional Skill</label>
+                  <form onSubmit={e => { e.preventDefault(); const v = e.target.skill.value; addSkill(v); e.target.skill.value = ""; }}>
+                    <div className="flex gap-3">
+                      <input name="skill" className={inputClass} placeholder="e.g. Graphic Design" />
+                      <button type="submit" className="px-6 py-3 bg-slate-800 dark:bg-blue-600 text-white font-bold rounded-xl hover:bg-slate-900 dark:hover:bg-blue-700 transition-colors">Add</button>
+                    </div>
+                  </form>
+                </div>
+                
+                <div className="flex flex-wrap gap-3 mt-6">
                   {data.skills.map(skill => (
-                    <span key={skill} className="px-3 py-1 bg-slate-200 dark:bg-slate-700 rounded-full flex items-center gap-2 text-slate-800 dark:text-white">
-                      {skill} <button onClick={() => removeSkill(skill)} className="text-red-500 font-bold hover:text-red-700">✕</button>
+                    <span key={skill} className="px-4 py-2 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800/50 rounded-full font-medium flex items-center gap-2 shadow-sm">
+                      {skill} 
+                      <button onClick={() => removeSkill(skill)} className="text-blue-400 hover:text-red-500 transition-colors ml-1">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                      </button>
                     </span>
                   ))}
                 </div>
@@ -238,23 +331,41 @@ export default function PortfolioBuilder() {
             )}
 
             {activeTab === 'projects' && (
-              <div className="space-y-6">
-                {data.projects.map(proj => (
-                  <div key={proj.id} className="p-4 border rounded relative dark:border-slate-600">
-                    <button onClick={() => removeArrayItem('projects', proj.id)} className="absolute top-2 right-2 text-red-500">✕</button>
-                    <input className="w-full mb-2 p-2 border rounded dark:bg-slate-700 dark:border-slate-600 dark:text-white" placeholder="Project Title" value={proj.title} onChange={e => updateArrayItem('projects', proj.id, 'title', e.target.value)} />
-                    <input className="w-full mb-2 p-2 border rounded dark:bg-slate-700 dark:border-slate-600 dark:text-white" placeholder="Link (Optional)" value={proj.link} onChange={e => updateArrayItem('projects', proj.id, 'link', e.target.value)} />
-                    <textarea className="w-full p-2 border rounded dark:bg-slate-700 dark:border-slate-600 dark:text-white min-h-[80px]" placeholder="Description" value={proj.description} onChange={e => updateArrayItem('projects', proj.id, 'description', e.target.value)} />
+              <div className="space-y-8 fade-in">
+                {data.projects.map((proj, index) => (
+                  <div key={proj.id} className="p-6 bg-slate-50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 rounded-2xl relative shadow-sm transition-all hover:shadow-md">
+                    <button onClick={() => removeArrayItem('projects', proj.id)} className="absolute top-4 right-4 text-slate-400 hover:text-red-500 transition-colors">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                    </button>
+                    <h3 className="font-bold text-slate-800 dark:text-slate-200 mb-4">Project #{index + 1}</h3>
+                    <div className="space-y-4">
+                      <div>
+                        <label className={labelClass}>Project Title</label>
+                        <input className={inputClass} placeholder="e.g. Rebranding Campaign" value={proj.title} onChange={e => updateArrayItem('projects', proj.id, 'title', e.target.value)} />
+                      </div>
+                      <div>
+                        <label className={labelClass}>Link (Optional)</label>
+                        <input className={inputClass} placeholder="https://..." value={proj.link} onChange={e => updateArrayItem('projects', proj.id, 'link', e.target.value)} />
+                      </div>
+                      <div>
+                        <label className={labelClass}>Project Description</label>
+                        <textarea className={`${inputClass} min-h-[100px] resize-y`} placeholder="Describe what you built, designed, or achieved..." value={proj.description} onChange={e => updateArrayItem('projects', proj.id, 'description', e.target.value)} />
+                      </div>
+                    </div>
                   </div>
                 ))}
-                <button onClick={() => addArrayItem('projects', { title: "", link: "", description: "" })} className="w-full py-2 border-2 border-dashed border-slate-300 dark:border-slate-600 text-slate-500 rounded hover:bg-slate-50 dark:hover:bg-slate-700">+ Add Project</button>
+                <button onClick={() => addArrayItem('projects', { title: "", link: "", description: "" })} className="w-full py-4 border-2 border-dashed border-blue-200 dark:border-blue-900/50 text-blue-600 dark:text-blue-400 font-bold rounded-2xl hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all flex items-center justify-center gap-2">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                  Add Project
+                </button>
               </div>
             )}
           </div>
         </div>
 
-        <div className="w-2/3 bg-slate-200 dark:bg-slate-900 p-8 overflow-y-auto flex justify-center pb-24">
-          <div className="bg-white shadow-xl" style={{ width: '210mm', minHeight: '297mm', padding: '0', boxSizing: 'border-box', overflow: 'hidden' }}>
+        {/* Right Preview Sidebar */}
+        <div className="w-2/3 bg-slate-100 dark:bg-[#0a0a0a] p-10 overflow-y-auto flex justify-center pb-32 custom-scrollbar">
+          <div className="bg-white shadow-[0_20px_50px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)] rounded-sm ring-1 ring-slate-900/5 dark:ring-white/10" style={{ width: '210mm', minHeight: '297mm', padding: '0', boxSizing: 'border-box', overflow: 'hidden' }}>
             <div ref={printRef} style={{ width: '100%', height: '100%', minHeight: '297mm', backgroundColor: '#fff', position: 'relative' }}>
               {(() => {
                 if (selectedTemplateId.startsWith('gen-')) {
