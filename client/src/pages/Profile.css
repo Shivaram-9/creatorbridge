@@ -367,14 +367,14 @@
 }
 
 .stat-card-wide {
-  background: transparent;
-  border-radius: 0;
-  padding: 10px 0;
+  background: var(--bg-card);
+  border-radius: 16px;
+  padding: 20px;
   display: flex;
   align-items: center;
   gap: 16px;
-  box-shadow: none;
-  border: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+  border: 1px solid var(--border-light);
 }
 
 .stat-icon-wrap {
