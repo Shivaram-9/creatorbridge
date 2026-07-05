@@ -32,11 +32,10 @@ export default function VerifiedBadge({ role = 'influencer', style = {}, classNa
         loading="lazy"
         decoding="async" 
         style={{ 
-          width: '2.4em', 
-          height: '2.4em', 
+          width: '0.7em', 
+          height: '0.7em', 
           display: 'block', 
           objectFit: 'contain',
-          margin: '-0.85em',
           pointerEvents: 'none'
         }}
       />
