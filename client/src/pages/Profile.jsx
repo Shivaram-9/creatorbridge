@@ -302,9 +302,7 @@ export default function Profile() {
             
             <div className="profile-info-content">
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                <h1 className={`profile-display-name ${
-                  (user?.isVerified || user?.isPremium) ? (user.role === 'brand' ? 'verified-brand-text' : 'verified-creator-text') : 'text-slate-900 dark:text-white'
-                }`} style={{ margin: 0 }}>
+                <h1 className={`text-2xl font-bold flex items-center gap-2 text-slate-900 dark:text-white`} style={{ margin: 0 }}>
                   {user?.name || user?.username}
                 </h1>
                 {(user?.isVerified || user?.isPremium) && <VerifiedBadge role={user.role} />}

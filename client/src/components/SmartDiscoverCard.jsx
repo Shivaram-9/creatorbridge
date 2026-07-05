@@ -54,7 +54,7 @@ export default function SmartDiscoverCard({ user, onAction }) {
         />
         <div className="smart-card-info">
           <div className="smart-card-name-row">
-            <h3 className={`smart-card-name ${(user.isVerified || user.isPremium) ? (user.role === 'brand' ? 'verified-brand-text' : 'verified-creator-text') : ''}`} title={user.name}>{user.name}</h3>
+            <h3 className={`smart-card-name text-slate-900 dark:text-white`} title={user.name}>{user.name}</h3>
             {(user.isVerified || user.isPremium) && (
               <VerifiedBadge size="sm" tier={user.premiumTier} role={user.role} />
             )}

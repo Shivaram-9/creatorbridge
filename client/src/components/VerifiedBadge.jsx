@@ -28,13 +28,16 @@ export default function VerifiedBadge({ role = 'influencer', style = {}, classNa
     >
       <img 
         src={badgeSrc} 
-        alt={isBrand ? "Verified Brand" : "Verified Creator"} 
+        alt={isBrand ? "Verified Brand" : "Verified Creator"}
+        loading="lazy"
+        decoding="async" 
         style={{ 
-          width: '2.5em', 
-          height: '2.5em', 
+          width: '2.4em', 
+          height: '2.4em', 
           display: 'block', 
           objectFit: 'contain',
-          margin: '-0.7em' // Negative margin to offset the image's transparent padding
+          margin: '-0.85em',
+          pointerEvents: 'none'
         }}
       />
     </span>

@@ -314,9 +314,7 @@ export default function UserProfile() {
             
             <div className="profile-info-content">
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                <h1 className={`profile-display-name ${
-                  (profile?.isVerified || profile?.isPremium) ? (profile.role === 'brand' ? 'verified-brand-text' : 'verified-creator-text') : 'text-slate-900 dark:text-white'
-                }`} style={{ margin: 0 }}>
+                <h1 className="text-2xl font-bold flex items-center gap-2 text-slate-900 dark:text-white" style={{ margin: 0 }}>
                   {profile?.name || profile?.username}
                 </h1>
                 {(profile?.isVerified || profile?.isPremium) && <VerifiedBadge role={profile.role} />}
