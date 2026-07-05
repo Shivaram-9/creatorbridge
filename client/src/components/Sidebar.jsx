@@ -21,6 +21,7 @@ export default function Sidebar({ user, msgUnreadCount = 0, logout, openHelpCent
     { name: "Home", path: "/home", icon: <HomeIcon /> },
     { name: "Discover", path: "/discover", icon: <SearchIcon /> },
     { name: "Messages", path: "/messages", icon: <MessageIcon />, badge: msgUnreadCount },
+    { name: "Find Your Collab", path: "/search", icon: <UsersIcon /> },
     { name: "Profile", path: "/profile", icon: <ProfileIcon /> },
   ];
 
