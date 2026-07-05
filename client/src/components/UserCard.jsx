@@ -130,8 +130,9 @@ const UserCard = memo(({ user, minimal, layout = "card" }) => {
             @{user.username}
           </div>
           {(user.isVerified || user.isPremium) && (
-            <div style={{ marginTop: '4px' }}>
+            <div style={{ marginTop: '4px', width: '100%' }}>
               <VerifiedPill user={user} />
+              <div className="w-full h-px bg-[#E5E5E5] dark:bg-[#2A2A2A] mt-2 mb-1" />
             </div>
           )}
         </div>
@@ -215,8 +216,9 @@ const UserCard = memo(({ user, minimal, layout = "card" }) => {
         </h3>
         <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '8px' }}>@{user.username}</p>
         {(user.isVerified || user.isPremium) && (
-          <div style={{ marginBottom: '12px' }}>
+          <div style={{ marginBottom: '12px', width: '100%' }}>
             <VerifiedPill user={user} />
+            <div className="w-full h-px bg-[#E5E5E5] dark:bg-[#2A2A2A] mt-2" />
           </div>
         )}
         

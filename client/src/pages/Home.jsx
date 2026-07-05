@@ -247,9 +247,16 @@ export default function Home() {
                 {user?.name || user?.username}
                 {(user?.isVerified || user?.isPremium) && <VerifiedBadge size="xs" tier={user?.premiumTier} role={user?.role} />}
               </h3>
-              <div className="mt-1">
-                <VerifiedPill user={user} fallbackText={user?.role === 'brand' ? 'Brand' : 'Creator'} />
-              </div>
+              {(user?.isVerified || user?.isPremium) ? (
+                <div className="mt-1 w-full">
+                  <VerifiedPill user={user} fallbackText={user?.role === 'brand' ? 'Brand' : 'Creator'} />
+                  <div className="w-full h-px bg-[#E5E5E5] dark:bg-[#2A2A2A] mt-2 mb-1"></div>
+                </div>
+              ) : (
+                <div className="mt-1">
+                  <VerifiedPill user={user} fallbackText={user?.role === 'brand' ? 'Brand' : 'Creator'} />
+                </div>
+              )}
             </div>
           </div>
           <div className="flex justify-between text-sm py-3 border-t border-slate-100 dark:border-[#262626]/50">
@@ -278,9 +285,16 @@ export default function Home() {
                       {u.name || u.username}
                       {(u?.isVerified || u?.isPremium) && <VerifiedBadge size="xs" tier={u?.premiumTier} role={u?.role} />}
                     </h4>
-                    <div className="mt-1">
-                      <VerifiedPill user={u} fallbackText={u.role || 'Creator'} />
-                    </div>
+                    {(u?.isVerified || u?.isPremium) ? (
+                      <div className="mt-1 w-full">
+                        <VerifiedPill user={u} fallbackText={u.role || 'Creator'} />
+                        <div className="w-full h-px bg-[#E5E5E5] dark:bg-[#2A2A2A] mt-2 mb-1"></div>
+                      </div>
+                    ) : (
+                      <div className="mt-1">
+                        <VerifiedPill user={u} fallbackText={u.role || 'Creator'} />
+                      </div>
+                    )}
                   </div>
                 </div>
                 <button 

@@ -207,11 +207,11 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
       <div className="flex items-start justify-between mb-4">
         <div className="flex gap-4">
           <Avatar user={post.user} size="md" onClick={() => navigate(`/user/${post.user?._id}`)} className="cursor-pointer" />
-          <div>
+          <div className="ml-3">
             <h3 
-              className={`font-bold cursor-pointer transition-colors flex items-center gap-1 ${
+              className={`font-bold text-[15px] cursor-pointer transition-colors flex items-center gap-1 ${
                 (post.user?.isVerified || post.user?.isPremium) 
-                  ? (post.user?.role === 'brand' ? 'verified-brand-text hover:brightness-110' : 'verified-creator-text hover:brightness-110') 
+                  ? 'text-slate-900 dark:text-white hover:opacity-80' 
                   : 'text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400'
               }`} 
               onClick={() => navigate(`/user/${post.user?._id}`)}
@@ -219,12 +219,15 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
               {post.user?.name || post.username}
               {(post.user?.isVerified || post.user?.isPremium) && <VerifiedBadge role={post.user?.role} />}
             </h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400">
+            <div className="text-sm text-slate-500 dark:text-slate-400">
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <VerifiedPill user={post.user} fallbackText={`${post.user?.role === 'brand' ? 'Brand' : 'Creator'}${post.user?.category ? ` / ${post.user.category}` : ''}`} />
                 <span>• {new Date(post.createdAt).toLocaleDateString()}</span>
               </div>
-            </p>
+              {(post.user?.isVerified || post.user?.isPremium) && (
+                <div className="w-full h-px bg-[#E5E5E5] dark:bg-[#2A2A2A] mt-2 mb-1"></div>
+              )}
+            </div>
           </div>
         </div>
 

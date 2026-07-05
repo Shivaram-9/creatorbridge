@@ -59,9 +59,12 @@ export default function SmartDiscoverCard({ user, onAction }) {
               <VerifiedBadge size="sm" tier={user.premiumTier} role={user.role} />
             )}
           </div>
-          <p className="smart-card-role">
+          <div className="smart-card-role" style={{ width: '100%' }}>
             <VerifiedPill user={user} fallbackText={user.category || (isBrand ? "Brand" : "Creator")} />
-          </p>
+            {(user.isVerified || user.isPremium) && (
+              <div className="w-full h-px bg-[#E5E5E5] dark:bg-[#2A2A2A] mt-2"></div>
+            )}
+          </div>
         </div>
       </div>
 

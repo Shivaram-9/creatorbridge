@@ -163,19 +163,7 @@
 
 
 
-.profile-display-name.verified-name-creator {
-  color: #2563EB;
-}
-.dark .profile-display-name.verified-name-creator {
-  color: #60A5FA;
-}
-
-.profile-display-name.verified-name-brand {
-  color: #D4AF37;
-}
-.dark .profile-display-name.verified-name-brand {
-  color: #FCD34D;
-}
+/* Removed verified name colors to inherit theme default */
 
 .profile-title-row {
   display: flex;

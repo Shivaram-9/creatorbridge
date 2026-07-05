@@ -310,7 +310,7 @@ export default function Profile() {
                 {(user?.isVerified || user?.isPremium) && <VerifiedBadge role={user.role} />}
               </div>
               {(user?.isVerified || user?.isPremium) && (
-                <div style={{ marginTop: '4px', marginBottom: '8px' }}>
+                <div style={{ marginTop: '4px', marginBottom: '8px', width: '100%' }}>
                   <span style={{ 
                     color: user.role === 'brand' ? '#F5C024' : '#0095f6', 
                     fontSize: '13px', 
@@ -319,6 +319,7 @@ export default function Profile() {
                   }}>
                     {user.role === 'brand' ? 'Verified Brand' : 'Verified Creator'}
                   </span>
+                  <div className="w-full h-px bg-[#E5E5E5] dark:bg-[#2A2A2A] mt-2"></div>
                 </div>
               )}
               
