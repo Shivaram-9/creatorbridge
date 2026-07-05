@@ -432,21 +432,42 @@ export default function UserProfile() {
               )}
 
               {isOwn ? (
-                <div className="profile-actions-row">
-                  <button className="action-btn primary" onClick={() => navigate("/profile")}>
-                    <UsersIcon /> Edit
-                  </button>
-                  <button className="action-btn secondary" onClick={handleShareProfile}>
-                    <SendIcon /> {copyStatus ? "Copied!" : "Share"}
-                  </button>
+                <div className="profile-actions-wrapper" style={{ marginTop: '24px' }}>
+                  <div className="profile-actions-row" style={{ display: 'flex', gap: '12px', marginBottom: '20px' }}>
+                    <button className="action-btn primary" onClick={() => navigate("/profile")} style={{ flex: '1', maxWidth: '160px', justifyContent: 'center' }}>
+                      <UsersIcon /> Edit
+                    </button>
+                    <button className="action-btn secondary" onClick={handleShareProfile} style={{ flex: '1', maxWidth: '160px', justifyContent: 'center' }}>
+                      <SendIcon /> {copyStatus ? "Copied!" : "Share"}
+                    </button>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+                    <div className="clickable" onClick={() => !isPrivateAndHidden && navigate(`/user/${userId}/alliances`)} style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: '1', maxWidth: '160px' }}>
+                      <UsersIcon />
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                        <span style={{ fontSize: '18px', fontWeight: '800', color: 'var(--text-main)', lineHeight: '1' }}>
+                          {fmtCount(profile?.connectionsCount !== undefined ? profile.connectionsCount : new Set([...(profile?.followers || []), ...(profile?.following || [])]).size)}
+                        </span>
+                        <span style={{ fontSize: '13px', color: 'var(--text-muted)', lineHeight: '1' }}>Connections</span>
+                        <span style={{ fontSize: '11px', color: 'var(--text-muted)', opacity: 0.7, lineHeight: '1' }}>People in network</span>
+                      </div>
+                    </div>
+                    <div style={{ width: '1px', height: '40px', backgroundColor: 'var(--border-light)' }}></div>
+                    <div className="clickable" style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: '1', maxWidth: '160px' }}>
+                      <TrendingDownIcon />
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                        <span style={{ fontSize: '18px', fontWeight: '800', color: 'var(--text-main)', lineHeight: '1' }}>{fmtCount(profile?.profileReach || 0)}</span>
+                        <span style={{ fontSize: '13px', color: 'var(--text-muted)', lineHeight: '1' }}>Total Reach</span>
+                        <span style={{ fontSize: '11px', color: 'var(--text-muted)', opacity: 0.7, lineHeight: '1' }}>Unique accounts</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               ) : (
-                <div style={{ display: 'flex', gap: '16px', marginTop: '16px', flexWrap: 'wrap', alignItems: 'flex-start' }}>
-                  
-                  {/* Column 1: Connect / Accept / Decline and Connections */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', flex: '1 1 200px', maxWidth: '300px' }}>
+                <div className="profile-actions-wrapper" style={{ marginTop: '24px' }}>
+                  <div className="profile-actions-row" style={{ display: 'flex', gap: '12px', marginBottom: '20px' }}>
                     {incomingRequest ? (
-                      <div style={{ display: 'flex', gap: '8px' }}>
+                      <div style={{ display: 'flex', gap: '8px', flex: '1', maxWidth: '160px' }}>
                         <button className="action-btn primary" onClick={() => handleRespondRequest('accept')} disabled={actionBusy} style={{ flex: 1, justifyContent: 'center' }}>Accept</button>
                         <button className="action-btn secondary" onClick={() => handleRespondRequest('reject')} disabled={actionBusy} style={{ flex: 1, justifyContent: 'center' }}>Decline</button>
                       </div>
@@ -455,44 +476,16 @@ export default function UserProfile() {
                         className={`action-btn ${isFollowing ? 'secondary' : 'primary'}`}
                         disabled={actionBusy || hasRequested}
                         onClick={handleFollowToggle}
-                        style={{ width: '100%', justifyContent: 'center' }}
+                        style={{ flex: '1', maxWidth: '160px', justifyContent: 'center' }}
                       >
                         <UsersIcon />
                         {actionBusy ? "..." : hasRequested ? "Pending" : isFollowing ? "Connected" : "Connect"}
                       </button>
                     )}
-                    
-                    <div className="stat-card-wide clickable" onClick={() => !isPrivateAndHidden && navigate(`/user/${userId}/alliances`)} style={{ margin: 0, width: '100%' }}>
-                      <div className="stat-icon-wrap"><UsersIcon /></div>
-                      <div className="stat-info">
-                        <span className="stat-val">
-                          {fmtCount(profile?.connectionsCount !== undefined ? profile.connectionsCount : new Set([...(profile?.followers || []), ...(profile?.following || [])]).size)}
-                        </span>
-                        <span className="stat-lbl">Connections</span>
-                        <span className="stat-sub">People in network</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Column 2: Message and Total Reach */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', flex: '1 1 200px', maxWidth: '300px' }}>
-                    <button className="action-btn secondary" onClick={() => navigate(`/messages/${userId}`)} style={{ width: '100%', justifyContent: 'center' }}>
+                    <button className="action-btn secondary" onClick={() => navigate(`/messages/${userId}`)} style={{ flex: '1', maxWidth: '160px', justifyContent: 'center' }}>
                       <MessageCircleIcon /> Message
                     </button>
-                    
-                    <div className="stat-card-wide" style={{ margin: 0, width: '100%' }}>
-                      <div className="stat-icon-wrap"><TrendingDownIcon /></div>
-                      <div className="stat-info">
-                        <span className="stat-val">{fmtCount(profile?.profileReach || 0)}</span>
-                        <span className="stat-lbl">Total Reach</span>
-                        <span className="stat-sub">Unique accounts</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Column 3: Share and More Menu */}
-                  <div style={{ display: 'flex', gap: '12px' }}>
-                    <button className="action-btn secondary" onClick={handleShareProfile}>
+                    <button className="action-btn secondary" onClick={handleShareProfile} style={{ flex: '1', maxWidth: '160px', justifyContent: 'center' }}>
                       <SendIcon /> {copyStatus ? "Copied!" : "Share"}
                     </button>
                     <div style={{ position: 'relative' }}>
@@ -506,7 +499,28 @@ export default function UserProfile() {
                       )}
                     </div>
                   </div>
-
+                  
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+                    <div className="clickable" onClick={() => !isPrivateAndHidden && navigate(`/user/${userId}/alliances`)} style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: '1', maxWidth: '160px' }}>
+                      <UsersIcon />
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                        <span style={{ fontSize: '18px', fontWeight: '800', color: 'var(--text-main)', lineHeight: '1' }}>
+                          {fmtCount(profile?.connectionsCount !== undefined ? profile.connectionsCount : new Set([...(profile?.followers || []), ...(profile?.following || [])]).size)}
+                        </span>
+                        <span style={{ fontSize: '13px', color: 'var(--text-muted)', lineHeight: '1' }}>Connections</span>
+                        <span style={{ fontSize: '11px', color: 'var(--text-muted)', opacity: 0.7, lineHeight: '1' }}>People in network</span>
+                      </div>
+                    </div>
+                    <div style={{ width: '1px', height: '40px', backgroundColor: 'var(--border-light)' }}></div>
+                    <div className="clickable" style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: '1', maxWidth: '160px' }}>
+                      <TrendingDownIcon />
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                        <span style={{ fontSize: '18px', fontWeight: '800', color: 'var(--text-main)', lineHeight: '1' }}>{fmtCount(profile?.profileReach || 0)}</span>
+                        <span style={{ fontSize: '13px', color: 'var(--text-muted)', lineHeight: '1' }}>Total Reach</span>
+                        <span style={{ fontSize: '11px', color: 'var(--text-muted)', opacity: 0.7, lineHeight: '1' }}>Unique accounts</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
 
@@ -514,29 +528,6 @@ export default function UserProfile() {
           </div>
         </div>
       </div>
-
-      {isOwn && (
-        <div className="stats-cards-row">
-          <div className="stat-card-wide clickable" onClick={() => !isPrivateAndHidden && navigate(`/user/${userId}/alliances`)}>
-            <div className="stat-icon-wrap"><UsersIcon /></div>
-            <div className="stat-info">
-              <span className="stat-val">
-                {fmtCount(profile?.connectionsCount !== undefined ? profile.connectionsCount : new Set([...(profile?.followers || []), ...(profile?.following || [])]).size)}
-              </span>
-              <span className="stat-lbl">Connections</span>
-              <span className="stat-sub">People in network</span>
-            </div>
-          </div>
-          <div className="stat-card-wide">
-            <div className="stat-icon-wrap"><TrendingDownIcon /></div>
-            <div className="stat-info">
-              <span className="stat-val">{fmtCount(profile?.profileReach || 0)}</span>
-              <span className="stat-lbl">Total Reach</span>
-              <span className="stat-sub">Unique accounts</span>
-            </div>
-          </div>
-        </div>
-      )}
 
       <div className="profile-bottom-wrapper">
       <div className="profile-tabs-wide">
