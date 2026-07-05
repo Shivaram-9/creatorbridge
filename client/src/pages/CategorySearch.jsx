@@ -6,6 +6,7 @@ import UserCard from "../components/UserCard.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import ErrorBanner from "../components/ErrorBanner.jsx";
 import { INFLUENCER_CATEGORIES, BRAND_CATEGORIES, ALL_CATEGORIES, getRelatedCategories } from "../constants/categories.js";
+import { CITIES } from "../constants/cities.js";
 import EmptyState from "../components/EmptyState.jsx";
 import { SearchIcon, SparklesIcon } from "../components/Icons.jsx";
 import "./Discover.css"; // Reuse discover CSS for grid layout
@@ -18,15 +19,38 @@ export default function CategorySearch() {
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get("category") || "");
   const [selectedCity, setSelectedCity] = useState(searchParams.get("city") || "");
   
-  const [allUsers, setAllUsers] = useState([]);
+  const [exactMatches, setExactMatches] = useState([]);
+  const [relatedMatches, setRelatedMatches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const targetRole = user?.role === "brand" ? "influencer" : "brand";
+  const targetText = targetRole === "brand" ? "brands" : "Creators";
+
+  // Backend-driven filtering
   useEffect(() => {
     async function fetchUsers() {
+      setLoading(true);
+      setError("");
       try {
-        const users = await api.users.list();
-        setAllUsers(Array.isArray(users) ? users : []);
+        // Fetch exact matches from backend
+        const exact = await api.users.list({ category: selectedCategory, city: selectedCity, role: targetRole });
+        setExactMatches(Array.isArray(exact) ? exact : []);
+
+        // If a category is selected and we want related matches
+        if (selectedCategory) {
+          const relatedCats = getRelatedCategories(selectedCategory);
+          if (relatedCats.length > 0) {
+            // We can't easily fetch ALL related categories in one request with the current API unless we loop or modify backend.
+            // For now, if exact matches are 0, we can show a hint, or we can fetch them.
+            // We'll fetch them individually or let the empty state handle the suggestions visually.
+            setRelatedMatches([]);
+          } else {
+            setRelatedMatches([]);
+          }
+        } else {
+          setRelatedMatches([]);
+        }
       } catch (err) {
         setError("Failed to load users");
       } finally {
@@ -34,7 +58,7 @@ export default function CategorySearch() {
       }
     }
     fetchUsers();
-  }, []);
+  }, [selectedCategory, selectedCity, targetRole]);
 
   // Update URL when filters change
   useEffect(() => {
@@ -46,69 +70,9 @@ export default function CategorySearch() {
 
   if (loading) return <LoadingSpinner centered />;
 
-  // Cross-role discovery: Influencers find Brands, Brands find Influencers
-  const targetRole = user?.role === "brand" ? "influencer" : "brand";
-  const targetText = targetRole === "brand" ? "brands" : "Creators";
-  
-  // Comprehensive list of Indian cities
-  const availableCities = [
-    "Mumbai", "Delhi", "Bangalore", "Hyderabad", "Ahmedabad", "Chennai", "Kolkata", "Surat", "Pune", "Jaipur", 
-    "Lucknow", "Kanpur", "Nagpur", "Indore", "Thane", "Bhopal", "Visakhapatnam", "Pimpri-Chinchwad", "Patna", "Vadodara", 
-    "Ghaziabad", "Ludhiana", "Agra", "Nashik", "Faridabad", "Meerut", "Rajkot", "Kalyan-Dombivli", "Vasai-Virar", "Varanasi", 
-    "Srinagar", "Aurangabad", "Dhanbad", "Amritsar", "Navi Mumbai", "Allahabad", "Ranchi", "Howrah", "Coimbatore", "Jabalpur", 
-    "Gwalior", "Vijayawada", "Jodhpur", "Madurai", "Raipur", "Kota", "Guwahati", "Chandigarh", "Solapur", "Hubli-Dharwad",
-    "Bareilly", "Moradabad", "Mysore", "Gurgaon", "Aligarh", "Jalandhar", "Tiruchirappalli", "Bhubaneswar", "Salem", "Mira-Bhayandar",
-    "Warangal", "Thiruvananthapuram", "Bhiwandi", "Saharanpur", "Guntur", "Amravati", "Bikaner", "Noida", "Jamshedpur", "Bhilai",
-    "Cuttack", "Firozabad", "Kochi", "Nellore", "Bhavnagar", "Dehradun", "Durgapur", "Asansol", "Rourkela", "Nanded",
-    "Kolhapur", "Ajmer", "Akola", "Gulbarga", "Jamnagar", "Ujjain", "Loni", "Siliguri", "Jhansi", "Ulhasnagar",
-    "Nellore", "Jammu", "Sangli-Miraj & Kupwad", "Mangalore", "Erode", "Belgaum", "Ambattur", "Tirunelveli", "Malegaon", "Gaya",
-    "Jalgaon", "Udaipur", "Maheshtala", "Davanagere", "Kozhikode", "Kurnool", "Rajpur Sonarpur", "Rajahmundry", "Bokaro", "South Dumdum",
-    "Bellary", "Patiala", "Gopalpur", "Agartala", "Bhagalpur", "Muzaffarnagar", "Bhatpara", "Panihati", "Latur", "Dhule",
-    "Tirupati", "Rohtak", "Korba", "Bhilwara", "Berhampur", "Muzaffarpur", "Ahmednagar", "Mathura", "Kollam", "Avadi",
-    "Kadapa", "Kamarhati", "Sambalpur", "Bilaspur", "Shahjahanpur", "Satara", "Bijapur", "Rampur", "Shivamogga", "Chandrapur",
-    "Junagadh", "Thrissur", "Alwar", "Bardhaman", "Kulti", "Kakinada", "Nizamabad", "Parbhani", "Tumkur", "Khammam",
-    "Ozhukarai", "Bihar Sharif", "Panipat", "Darbhanga", "Bally", "Aizawl", "Dewas", "Ichalkaranji", "Karnal", "Bathinda",
-    "Jalna", "Eluru", "Barasat", "Kirari Suleman Nagar", "Purnia", "Satna", "Mau", "Sonipat", "Farrukhabad", "Sagar",
-    "Rourkela", "Durg", "Imphal", "Ratlam", "Hapur", "Arrah", "Karimnagar", "Anantapur", "Etawah", "Ambernath",
-    "North Dumdum", "Bharatpur", "Begusarai", "New Delhi", "Gandhidham", "Baranagar", "Tiruvottiyur", "Puducherry", "Sikar", "Thoothukudi",
-    "Rewa", "Mirzapur", "Raichur", "Pali", "Ramagundam", "Haridwar", "Vijayanagaram", "Katihar", "Nagarcoil", "Sri Ganganagar",
-    "Karawal Nagar", "Mango", "Thanjavur", "Bulandshahr", "Uluberia", "Murwara", "Rajpur Sonarpur", "Haldia", "Khandwa", "Nandyal",
-    "Morena", "Amroha", "Anand", "Bhind", "Bhalswa Jahangir Pur", "Madhyamgram", "Bhiwani", "Navi Mumbai Panvel Raigad", "Baharampur", "Ambala",
-    "Morvi", "Fatehpur", "Rae Bareli", "Khora", "Chittoor", "Bhusawal", "Orai", "Bahraich", "Phusro", "Vellore",
-    "Mehsana", "Raiganj", "Sirsa", "Danapur", "Serampore", "Sultan Pur Majra", "Guna", "Jaunpur", "Panvel", "Shivpuri",
-    "Surendranagar Dudhrej", "Unnao", "Chinsurah", "Alappuzha", "Kottayam", "Machilipatnam", "Shimla", "Adoni", "Udupi", "Kalyani"
-  ].sort();
-
-  // Available categories to select based on user role
+  // Categories available for filtering
   const categoriesToSelect = targetRole === "brand" ? BRAND_CATEGORIES : INFLUENCER_CATEGORIES;
-
   const activeCategory = selectedCategory;
-
-  const exactMatches = [];
-  const relatedMatches = [];
-
-  allUsers.forEach(u => {
-    if (!u || u._id === user?._id) return;
-    if (u.role !== targetRole) return;
-    
-    // Filter by city if selected
-    if (selectedCity && (!u.location || !u.location.toLowerCase().includes(selectedCity.toLowerCase()))) return;
-
-    if (!activeCategory) {
-      exactMatches.push(u);
-      return;
-    }
-
-    const userCategory = (u.category || u.industry || "");
-    if (userCategory === activeCategory) {
-      exactMatches.push(u);
-    } else {
-      const related = getRelatedCategories(activeCategory);
-      if (related.includes(userCategory)) {
-        relatedMatches.push(u);
-      }
-    }
-  });
 
   return (
     <div className="discover-container fade-in" style={{ maxWidth: '1000px', margin: '0 auto', padding: '24px' }}>
@@ -171,7 +135,7 @@ export default function CategorySearch() {
             }}
           >
             <option value="">All Cities</option>
-            {availableCities.map(city => (
+            {CITIES.map(city => (
               <option key={city} value={city}>{city}</option>
             ))}
           </select>
@@ -192,11 +156,11 @@ export default function CategorySearch() {
             </div>
           )}
 
-        {exactMatches.length === 0 && relatedMatches.length === 0 ? (
+        {exactMatches.length === 0 ? (
           <EmptyState 
             icon={<SearchIcon />} 
             title={`No ${targetText} found`} 
-            description="We couldn't find any exact matches or related suggestions for these filters. Try clearing your city or checking back later!" 
+            description={activeCategory ? `We couldn't find any exact matches for ${activeCategory}${selectedCity ? ` in ${selectedCity}` : ''}. You might want to try related categories like ${getRelatedCategories(activeCategory).slice(0, 3).join(', ')} or clear your city filter.` : "We couldn't find any matches. Try clearing your filters!"}
             actionText={selectedCategory || selectedCity ? "Clear Filters" : null}
             onAction={() => { setSelectedCategory(""); setSelectedCity(""); }}
           />

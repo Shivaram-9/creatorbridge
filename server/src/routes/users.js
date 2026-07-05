@@ -434,7 +434,7 @@ usersRouter.delete("/me/portfolio/:itemId", async (req, res) => {
 /** Discovery: all users except self, optional ?category= */
 usersRouter.get("/", async (req, res) => {
   try {
-    const { category, role, verified } = req.query;
+    const { category, city, role, verified } = req.query;
     const filter = { 
       _id: { $ne: req.userId }, 
       isBanned: { $ne: true },
@@ -445,6 +445,9 @@ usersRouter.get("/", async (req, res) => {
     
     if (category && String(category).trim()) {
       filter.category = new RegExp(String(category).trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
+    }
+    if (city && String(city).trim()) {
+      filter.location = new RegExp(String(city).trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
     }
     if (role) filter.role = role;
     if (verified === "true") filter.isVerified = true;

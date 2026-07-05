@@ -176,8 +176,18 @@ export const api = {
     deleteMe: () => request("/users/me", { method: "DELETE" }),
     updateAvatar: (formData) => request("/users/me/avatar", { method: "POST", body: formData }),
     updateCover: (formData) => request("/users/me/cover", { method: "POST", body: formData }),
-    list: (category) => {
-      const q = category ? `?category=${encodeURIComponent(category)}` : "";
+    list: (params = {}) => {
+      // Backwards compatibility if a string is passed directly
+      if (typeof params === 'string') {
+        params = { category: params };
+      }
+      const sp = new URLSearchParams();
+      if (params.category) sp.append("category", params.category);
+      if (params.city) sp.append("city", params.city);
+      if (params.role) sp.append("role", params.role);
+      if (params.verified) sp.append("verified", params.verified);
+      
+      const q = sp.toString() ? `?${sp.toString()}` : "";
       return request(`/users${q}`);
     },
     search: (q, params = {}) => {

@@ -5,30 +5,8 @@ import { api } from "../services/api.js";
 import ErrorBanner from "../components/ErrorBanner.jsx";
 import "./Onboarding.css";
 
-const PRELOADED_CATEGORIES = [
-  "Fashion", "Technology", "Automobile", "Food", "Travel", "Fitness", 
-  "Music", "Gaming", "Education", "Finance", "Healthcare", "Real Estate", 
-  "Photography", "Luxury", "Beauty", "Sports", "Startup", "Marketing", 
-  "Agency", "Ecommerce", "Art", "Design", "Entertainment", "News", "Politics",
-  "Consulting", "Software", "Hardware", "Agriculture", "Architecture", 
-  "Aviation", "Biotechnology", "Chemicals", "Construction", "Energy", 
-  "Environment", "Events", "Insurance", "Legal", "Logistics", "Manufacturing", 
-  "Media", "Non-Profit", "Pharmaceuticals", "Retail", "Telecommunications", 
-  "Transportation", "Veterinary", "Wellness", "Wholesale", "Writing", 
-  "Accounting", "Advertising", "Apparel", "Astrology", "Banking", "Blogging", 
-  "Coaching", "Comedy", "Crafts", "Crypto", "Culinary", "Dance", "Dating", 
-  "Decor", "Dentistry", "DIY", "E-learning", "Engineering", "Farming", 
-  "Film", "Floral", "Furniture", "Gardening", "Genealogy", "Graphic Design", 
-  "Home Improvement", "Hospitality", "Human Resources", "Illustration", 
-  "Interior Design", "Investment", "Jewelry", "Journalism", "Languages", 
-  "Magic", "Management", "Martial Arts", "Mental Health", "Modeling", 
-  "Motivation", "Nutrition", "Parenting", "Personal Training", "Pets", 
-  "Podcast", "Public Relations", "Publishing", "Recruiting", "Robotics", 
-  "Sales", "Science", "Security", "SEO", "Social Media", "Software Development", 
-  "Space", "Sustainability", "Tattoos", "Taxes", "Theater", "Translation", 
-  "Tutoring", "UI/UX", "Venture Capital", "Video Production", "Virtual Reality", 
-  "Vlogging", "Web Design", "Web3", "Wedding Planning", "Yoga", "Zoology"
-].sort();
+import { CATEGORIES } from "../constants/categories.js";
+import { CITIES } from "../constants/cities.js";
 
 export default function Onboarding() {
   const { user, setUser } = useAuth();
@@ -41,6 +19,7 @@ export default function Onboarding() {
     category: "",
     customCategory: "",
     gender: "",
+    location: "",
     bio: "",
   });
 
@@ -48,7 +27,7 @@ export default function Onboarding() {
   const [showOtherInput, setShowOtherInput] = useState(false);
 
   const filteredCategories = useMemo(() => {
-    return PRELOADED_CATEGORIES.filter(c => c.toLowerCase().includes(searchQuery.toLowerCase()));
+    return CATEGORIES.filter(c => c.toLowerCase().includes(searchQuery.toLowerCase()));
   }, [searchQuery]);
 
   const handleNext = () => setStep(s => s + 1);
@@ -61,6 +40,7 @@ export default function Onboarding() {
       const res = await api.onboarding.complete({
         category: finalCategory || "General",
         gender: data.gender,
+        location: data.location,
         bio: data.bio,
         onboardingComplete: true
       });
@@ -101,6 +81,20 @@ export default function Onboarding() {
                 <option value="">Select Gender</option>
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
+              </select>
+            </div>
+
+            <div style={{ width: '100%', marginBottom: '20px', textAlign: 'left' }}>
+              <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>City / Location</label>
+              <select 
+                value={data.location}
+                onChange={(e) => setData({...data, location: e.target.value})}
+                style={{ width: '100%', padding: '12px 16px', borderRadius: '8px', border: '1px solid #e2e8f0', fontSize: '15px', outline: 'none', backgroundColor: 'transparent' }}
+              >
+                <option value="">Select City</option>
+                {CITIES.map(city => (
+                  <option key={city} value={city}>{city}</option>
+                ))}
               </select>
             </div>
 
@@ -167,7 +161,7 @@ export default function Onboarding() {
 
             <div className="nav-btns">
               <button className="btn btn-secondary" onClick={() => navigate("/home")}>Back</button>
-              <button className="btn btn-primary" onClick={handleNext} disabled={!data.category || (showOtherInput && !data.customCategory.trim())}>Continue</button>
+              <button className="btn btn-primary" onClick={handleNext} disabled={!data.category || !data.location || (showOtherInput && !data.customCategory.trim())}>Continue</button>
             </div>
           </div>
         )}

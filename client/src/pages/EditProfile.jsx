@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { api } from "../services/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import { CATEGORIES } from "../constants/categories.js";
+import { CITIES } from "../constants/cities.js";
 import Avatar from "../components/Avatar.jsx";
 import toast from "react-hot-toast";
 import "./EditProfile.css";
@@ -270,13 +271,17 @@ export default function EditProfile() {
 
           <div className="ep-field">
             <label className="ep-label">Location</label>
-            <input
+            <select
               className="ep-input"
               name="location"
               value={form.location}
               onChange={handleChange}
-              placeholder="City, Country"
-            />
+            >
+              <option value="">Select city</option>
+              {CITIES.map((city) => (
+                <option key={city} value={city}>{city}</option>
+              ))}
+            </select>
           </div>
 
           <div className="ep-field">
