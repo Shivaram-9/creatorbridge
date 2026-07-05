@@ -383,51 +383,57 @@ export default function Profile() {
                 </div>
               )}
 
-              <div className="profile-actions-row">
-                <button className="action-btn secondary" onClick={() => navigate("/profile/edit")}>
-                  <UsersIcon /> Edit
-                </button>
-                <button className="action-btn secondary" onClick={handleShare}>
-                  <SendIcon /> {copyStatus ? "Copied!" : "Share"}
-                </button>
-                <div style={{ position: 'relative' }}>
-                  <button className="action-btn secondary icon-only" onClick={() => setShowMenu(!showMenu)}>•••</button>
-                  {showMenu && (
-                    <div className="dropdown-menu show slide-in" style={{ position: 'absolute', left: 0, top: '100%', marginTop: '8px', background: 'var(--bg-card)', border: '1px solid var(--border-light)', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', zIndex: 100, minWidth: '150px' }}>
-                      <button className="dropdown-item" onClick={() => navigate("/profile/edit")}>Edit Profile</button>
-                      <button className="dropdown-item" onClick={() => navigate("/settings")}>Settings</button>
-                      <button className="dropdown-item danger" onClick={() => { localStorage.clear(); window.location.href = "/login"; }}>Logout</button>
+              <div style={{ display: 'flex', gap: '16px', marginTop: '16px', flexWrap: 'wrap', alignItems: 'flex-start' }}>
+                {/* Column 1: Edit and Connections */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', flex: '1 1 200px', maxWidth: '300px' }}>
+                  <button className="action-btn secondary" onClick={() => navigate("/profile/edit")} style={{ width: '100%', justifyContent: 'center' }}>
+                    <UsersIcon /> Edit
+                  </button>
+                  <div className="stat-card-wide clickable" onClick={() => navigate(`/user/${user._id}/alliances`)} style={{ margin: 0, width: '100%' }}>
+                    <div className="stat-icon-wrap"><UsersIcon /></div>
+                    <div className="stat-info">
+                      <span className="stat-val">
+                        {fmtCount(user?.connectionsCount !== undefined ? user.connectionsCount : new Set([...(user?.followers || []), ...(user?.following || [])]).size)}
+                      </span>
+                      <span className="stat-lbl">Connections</span>
+                      <span className="stat-sub">People in network</span>
                     </div>
-                  )}
+                  </div>
+                </div>
+
+                {/* Column 2: Share and Total Reach */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', flex: '1 1 200px', maxWidth: '300px' }}>
+                  <button className="action-btn secondary" onClick={handleShare} style={{ width: '100%', justifyContent: 'center' }}>
+                    <SendIcon /> {copyStatus ? "Copied!" : "Share"}
+                  </button>
+                  <div className="stat-card-wide clickable" onClick={() => navigate("/analytics")} style={{ margin: 0, width: '100%' }}>
+                    <div className="stat-icon-wrap"><TrendingDownIcon /></div>
+                    <div className="stat-info">
+                      <span className="stat-val">{fmtCount(user?.profileReach || 0)}</span>
+                      <span className="stat-lbl">Total Reach</span>
+                      <span className="stat-sub">Unique accounts</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Column 3: More Menu */}
+                <div style={{ display: 'flex', gap: '12px' }}>
+                  <div style={{ position: 'relative' }}>
+                    <button className="action-btn secondary icon-only" onClick={() => setShowMenu(!showMenu)}>•••</button>
+                    {showMenu && (
+                      <div className="dropdown-menu show slide-in" style={{ position: 'absolute', left: 0, top: '100%', marginTop: '8px', background: 'var(--bg-card)', border: '1px solid var(--border-light)', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', zIndex: 100, minWidth: '150px' }}>
+                        <button className="dropdown-item" onClick={() => navigate("/profile/edit")}>Edit Profile</button>
+                        <button className="dropdown-item" onClick={() => navigate("/settings")}>Settings</button>
+                        <button className="dropdown-item danger" onClick={() => { localStorage.clear(); window.location.href = "/login"; }}>Logout</button>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
 
-        </div>
-      </div>
-
-
-
-      <div className="stats-cards-row">
-        <div className="stat-card-wide clickable" onClick={() => navigate(`/user/${user._id}/alliances`)}>
-          <div className="stat-icon-wrap"><UsersIcon /></div>
-          <div className="stat-info">
-            <span className="stat-val">
-              {fmtCount(user?.connectionsCount !== undefined ? user.connectionsCount : new Set([...(user?.followers || []), ...(user?.following || [])]).size)}
-            </span>
-            <span className="stat-lbl">Connections</span>
-            <span className="stat-sub">People in network</span>
-          </div>
-        </div>
-        <div className="stat-card-wide clickable" onClick={() => navigate("/analytics")}>
-          <div className="stat-icon-wrap"><TrendingDownIcon /></div>
-          <div className="stat-info">
-            <span className="stat-val">{fmtCount(user?.profileReach || 0)}</span>
-            <span className="stat-lbl">Total Reach</span>
-            <span className="stat-sub">Unique accounts</span>
-          </div>
         </div>
       </div>
 
