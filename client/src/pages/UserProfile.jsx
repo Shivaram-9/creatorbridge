@@ -431,72 +431,112 @@ export default function UserProfile() {
                 </div>
               )}
 
-              <div className="profile-actions-row">
-                {isOwn ? (
+              {isOwn ? (
+                <div className="profile-actions-row">
                   <button className="action-btn primary" onClick={() => navigate("/profile")}>
                     <UsersIcon /> Edit
                   </button>
-                ) : incomingRequest ? (
-                  <>
-                    <button className="action-btn primary" onClick={() => handleRespondRequest('accept')} disabled={actionBusy}>Accept</button>
-                    <button className="action-btn secondary" onClick={() => handleRespondRequest('reject')} disabled={actionBusy}>Decline</button>
-                  </>
-                ) : (
-                  <>
-                    <button
-                      className={`action-btn ${isFollowing ? 'secondary' : 'primary'}`}
-                      disabled={actionBusy || hasRequested}
-                      onClick={handleFollowToggle}
-                    >
-                      <UsersIcon />
-                      {actionBusy ? "..." : hasRequested ? "Pending" : isFollowing ? "Connected" : "Connect"}
-                    </button>
-                    <button className="action-btn secondary" onClick={() => navigate(`/messages/${userId}`)}>
+                  <button className="action-btn secondary" onClick={handleShareProfile}>
+                    <SendIcon /> {copyStatus ? "Copied!" : "Share"}
+                  </button>
+                </div>
+              ) : (
+                <div style={{ display: 'flex', gap: '16px', marginTop: '16px', flexWrap: 'wrap', alignItems: 'flex-start' }}>
+                  
+                  {/* Column 1: Connect / Accept / Decline and Connections */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', flex: '1 1 200px', maxWidth: '300px' }}>
+                    {incomingRequest ? (
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <button className="action-btn primary" onClick={() => handleRespondRequest('accept')} disabled={actionBusy} style={{ flex: 1, justifyContent: 'center' }}>Accept</button>
+                        <button className="action-btn secondary" onClick={() => handleRespondRequest('reject')} disabled={actionBusy} style={{ flex: 1, justifyContent: 'center' }}>Decline</button>
+                      </div>
+                    ) : (
+                      <button
+                        className={`action-btn ${isFollowing ? 'secondary' : 'primary'}`}
+                        disabled={actionBusy || hasRequested}
+                        onClick={handleFollowToggle}
+                        style={{ width: '100%', justifyContent: 'center' }}
+                      >
+                        <UsersIcon />
+                        {actionBusy ? "..." : hasRequested ? "Pending" : isFollowing ? "Connected" : "Connect"}
+                      </button>
+                    )}
+                    
+                    <div className="stat-card-wide clickable" onClick={() => !isPrivateAndHidden && navigate(`/user/${userId}/alliances`)} style={{ margin: 0, width: '100%' }}>
+                      <div className="stat-icon-wrap"><UsersIcon /></div>
+                      <div className="stat-info">
+                        <span className="stat-val">
+                          {fmtCount(profile?.connectionsCount !== undefined ? profile.connectionsCount : new Set([...(profile?.followers || []), ...(profile?.following || [])]).size)}
+                        </span>
+                        <span className="stat-lbl">Connections</span>
+                        <span className="stat-sub">People in network</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Column 2: Message and Total Reach */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', flex: '1 1 200px', maxWidth: '300px' }}>
+                    <button className="action-btn secondary" onClick={() => navigate(`/messages/${userId}`)} style={{ width: '100%', justifyContent: 'center' }}>
                       <MessageCircleIcon /> Message
                     </button>
-                  </>
-                )}
-                
-                <button className="action-btn secondary" onClick={handleShareProfile}>
-                  <SendIcon /> {copyStatus ? "Copied!" : "Share"}
-                </button>
-                <div style={{ position: 'relative' }}>
-                  <button className="action-btn secondary icon-only" onClick={() => setShowAlignMenu(!showAlignMenu)}>•••</button>
-                  {showAlignMenu && (
-                    <div className="dropdown-menu show slide-in" style={{ position: 'absolute', left: 0, top: '100%', marginTop: '8px', background: 'white', border: '1px solid #eee', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', zIndex: 100, minWidth: '150px' }}>
-                      {isFollowing && <button className="dropdown-item danger" onClick={handleEndAlign}>End Connection</button>}
-                      <button className="dropdown-item danger" onClick={handleBlock}>Block User</button>
-                      <button className="dropdown-item danger" onClick={handleReport}>Report User</button>
+                    
+                    <div className="stat-card-wide" style={{ margin: 0, width: '100%' }}>
+                      <div className="stat-icon-wrap"><TrendingDownIcon /></div>
+                      <div className="stat-info">
+                        <span className="stat-val">{fmtCount(profile?.profileReach || 0)}</span>
+                        <span className="stat-lbl">Total Reach</span>
+                        <span className="stat-sub">Unique accounts</span>
+                      </div>
                     </div>
-                  )}
+                  </div>
+
+                  {/* Column 3: Share and More Menu */}
+                  <div style={{ display: 'flex', gap: '12px' }}>
+                    <button className="action-btn secondary" onClick={handleShareProfile}>
+                      <SendIcon /> {copyStatus ? "Copied!" : "Share"}
+                    </button>
+                    <div style={{ position: 'relative' }}>
+                      <button className="action-btn secondary icon-only" onClick={() => setShowAlignMenu(!showAlignMenu)}>•••</button>
+                      {showAlignMenu && (
+                        <div className="dropdown-menu show slide-in" style={{ position: 'absolute', left: 0, top: '100%', marginTop: '8px', background: 'var(--bg-card)', border: '1px solid var(--border-light)', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', zIndex: 100, minWidth: '150px' }}>
+                          {isFollowing && <button className="dropdown-item danger" onClick={handleEndAlign}>End Connection</button>}
+                          <button className="dropdown-item danger" onClick={handleBlock}>Block User</button>
+                          <button className="dropdown-item danger" onClick={handleReport}>Report User</button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
                 </div>
-              </div>
+              )}
+
             </div>
           </div>
-
         </div>
       </div>
 
-      <div className="stats-cards-row">
-        <div className="stat-card-wide clickable" onClick={() => !isPrivateAndHidden && navigate(`/user/${userId}/alliances`)}>
-          <div className="stat-icon-wrap"><UsersIcon /></div>
-          <div className="stat-info">
-            <span className="stat-val">
-              {fmtCount(profile?.connectionsCount !== undefined ? profile.connectionsCount : new Set([...(profile?.followers || []), ...(profile?.following || [])]).size)}
-            </span>
-            <span className="stat-lbl">Connections</span>
-            <span className="stat-sub">People in network</span>
+      {isOwn && (
+        <div className="stats-cards-row">
+          <div className="stat-card-wide clickable" onClick={() => !isPrivateAndHidden && navigate(`/user/${userId}/alliances`)}>
+            <div className="stat-icon-wrap"><UsersIcon /></div>
+            <div className="stat-info">
+              <span className="stat-val">
+                {fmtCount(profile?.connectionsCount !== undefined ? profile.connectionsCount : new Set([...(profile?.followers || []), ...(profile?.following || [])]).size)}
+              </span>
+              <span className="stat-lbl">Connections</span>
+              <span className="stat-sub">People in network</span>
+            </div>
+          </div>
+          <div className="stat-card-wide">
+            <div className="stat-icon-wrap"><TrendingDownIcon /></div>
+            <div className="stat-info">
+              <span className="stat-val">{fmtCount(profile?.profileReach || 0)}</span>
+              <span className="stat-lbl">Total Reach</span>
+              <span className="stat-sub">Unique accounts</span>
+            </div>
           </div>
         </div>
-        <div className="stat-card-wide">
-          <div className="stat-icon-wrap"><TrendingDownIcon /></div>
-          <div className="stat-info">
-            <span className="stat-val">{fmtCount(profile?.profileReach || 0)}</span>
-            <span className="stat-lbl">Total Reach</span>
-            <span className="stat-sub">Unique accounts</span>
-          </div>
-        </div>
-      </div>
+      )}
 
       <div className="profile-bottom-wrapper">
       <div className="profile-tabs-wide">
