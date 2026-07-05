@@ -151,14 +151,7 @@ export default function Navbar({
                 )}
               </button>
 
-              <Link to="/messages" className="nav-icon-btn relative">
-                <MessageIcon />
-                {msgUnreadCount > 0 && (
-                  <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[10px] flex items-center justify-center rounded-full font-bold">
-                    {msgUnreadCount > 9 ? "9+" : msgUnreadCount}
-                  </span>
-                )}
-              </Link>
+
 
               <button 
                 onClick={toggleTheme} 
