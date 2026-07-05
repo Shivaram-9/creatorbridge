@@ -6,10 +6,12 @@ import ErrorBanner from "../components/ErrorBanner.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import { BASE_URL } from "../config/api.js";
 import "./Settings.css";
-import { ShieldIcon, LockIcon, BadgeCheckIcon, BellIcon, ProfileIcon, HelpCircleIcon } from "../components/Icons.jsx";
+import { ShieldIcon, LockIcon, BadgeCheckIcon, BellIcon, ProfileIcon, HelpCircleIcon, PaletteIcon } from "../components/Icons.jsx";
+import { useTheme } from "../context/ThemeContext.jsx";
 
 export default function Settings() {
   const { user, refreshUser, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const outletContext = useOutletContext();
   const openHelpCenter = outletContext?.openHelpCenter || (() => {});
@@ -340,6 +342,9 @@ export default function Settings() {
             <button className={activeTab === 'account' ? 'active' : ''} onClick={() => setActiveTab('account')}>
               <ProfileIcon /> Account Details
             </button>
+            <button className={activeTab === 'appearance' ? 'active' : ''} onClick={() => setActiveTab('appearance')}>
+              <PaletteIcon /> Appearance
+            </button>
             <button className="help-center-btn" onClick={openHelpCenter} style={{ marginTop: 'auto' }}>
               <HelpCircleIcon /> Help Center
             </button>
@@ -536,6 +541,33 @@ export default function Settings() {
                     </label>
                   </div>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'appearance' && (
+            <div className="settings-section">
+              <div className="settings-section-header">
+                <h3>Appearance</h3>
+                <p className="subtitle">Customize the look and feel of your application.</p>
+              </div>
+
+              <div className="setting-item">
+                <div className="setting-info">
+                  <h4>Light / Dark Mode</h4>
+                  <p>Switch between a light and dark theme.</p>
+                </div>
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  <span style={{ fontSize: '14px', color: 'var(--text-muted)' }}>{theme === 'light' ? 'Light Mode' : 'Dark Mode'}</span>
+                  <label className="toggle">
+                    <input 
+                      type="checkbox" 
+                      checked={theme === 'dark'} 
+                      onChange={toggleTheme} 
+                    />
+                    <span className="slider"></span>
+                  </label>
+                </div>
               </div>
             </div>
           )}

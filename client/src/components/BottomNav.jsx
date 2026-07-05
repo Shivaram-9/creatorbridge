@@ -16,12 +16,7 @@ export default function BottomNav({ msgUnreadCount }) {
           <SearchIcon />
           <span className="text-[10px] font-medium mt-1">Discover</span>
         </NavLink>
-        
-        <NavLink to="/search" className={({ isActive }) => `nav-tab-pro ${isActive ? "active" : "text-gray-500"}`}>
-          <UsersIcon />
-          <span className="text-[10px] font-medium mt-1">Collabs</span>
-        </NavLink>
-        
+
         <div className="nav-tab-pro" style={{ flex: '0 0 auto', padding: '0 10px' }}>
           <button className="bottom-nav-create-btn" onClick={() => navigate(location.pathname + '?create=true')}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

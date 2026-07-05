@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { BellIcon, SearchIcon, MessageIcon, ShieldIcon } from "./Icons.jsx";
+import { BellIcon, SearchIcon, MessageIcon, ShieldIcon, UsersIcon } from "./Icons.jsx";
 import { getSocket } from "../services/socket.js";
 import Avatar from "./Avatar.jsx";
 import SearchDropdown from "./SearchDropdown.jsx";
@@ -153,13 +153,13 @@ export default function Navbar({
 
 
 
-              <button 
-                onClick={toggleTheme} 
-                className="p-2 ml-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors border-none bg-transparent cursor-pointer flex items-center justify-center"
-                title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+              <Link 
+                to="/search" 
+                className="p-2 ml-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors border-none bg-transparent cursor-pointer flex items-center justify-center text-slate-700 dark:text-slate-300"
+                title="Collabs"
               >
-                {theme === 'light' ? <MoonIcon /> : <SunIcon />}
-              </button>
+                <UsersIcon />
+              </Link>
 
               <div className="relative ml-2" ref={menuRef}>
                 <button
