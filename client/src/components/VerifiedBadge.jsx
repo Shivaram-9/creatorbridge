@@ -1,4 +1,6 @@
 import React from 'react';
+import creatorBadge from '../assets/creator_badge.png';
+import brandBadge from '../assets/brand_badge.png';
 
 /**
  * VerifiedBadge - A clean, modern Instagram/X style verified tick
@@ -6,7 +8,7 @@ import React from 'react';
  */
 export default function VerifiedBadge({ role = 'influencer', style = {}, className = '' }) {
   const isBrand = role?.toLowerCase() === 'brand';
-  const badgeColor = isBrand ? '#F5C024' : '#0095f6';
+  const badgeSrc = isBrand ? brandBadge : creatorBadge;
 
   return (
     <span 
@@ -17,7 +19,6 @@ export default function VerifiedBadge({ role = 'influencer', style = {}, classNa
         alignItems: 'center',
         justifyContent: 'center',
         marginLeft: '5px',
-        color: badgeColor,
         flexShrink: 0,
         verticalAlign: 'middle',
         position: 'relative',
@@ -25,15 +26,17 @@ export default function VerifiedBadge({ role = 'influencer', style = {}, classNa
         ...style
       }}
     >
-      <svg 
-        viewBox="0 0 24 24" 
-        aria-label="Verified" 
-        role="img" 
-        style={{ width: '0.95em', height: '0.95em', fill: 'currentColor', display: 'block' }}
-      >
-        <path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6.154-.435.238-.905.238-1.4 0-2.21-1.71-3.998-3.918-3.998-.47 0-.92.084-1.336.25C14.818 2.415 13.51 1.5 12 1.5s-2.816.917-3.337 2.25c-.416-.165-.866-.25-1.336-.25-2.21 0-3.918 1.79-3.918 4 0 .495.084.965.238 1.4-1.273.65-2.148 2.02-2.148 3.6 0 1.46.827 2.766 2.057 3.465-.02.137-.032.276-.032.418 0 2.21 1.71 3.998 3.918 3.998.47 0 .92-.084 1.336-.25 1.503 1.253 3.615 1.253 5.118 0 .416.166.866.25 1.336.25 2.21 0 3.918-1.79 3.918-4 0-.142-.012-.28-.032-.418 1.23-.698 2.057-2.004 2.057-3.465z" />
-        <path d="M11.026 15.222l-2.656-2.77c-.393-.41-.393-1.073 0-1.483.393-.41 1.03-.41 1.423 0l1.944 2.028 4.398-4.59c.393-.41 1.03-.41 1.423 0 .393.41.393 1.073 0 1.483l-5.11 5.332c-.393.41-1.03.41-1.423 0z" fill="#fff" />
-      </svg>
+      <img 
+        src={badgeSrc} 
+        alt={isBrand ? "Verified Brand" : "Verified Creator"} 
+        style={{ 
+          width: '2.5em', 
+          height: '2.5em', 
+          display: 'block', 
+          objectFit: 'contain',
+          margin: '-0.7em' // Negative margin to offset the image's transparent padding
+        }}
+      />
     </span>
   );
 }
