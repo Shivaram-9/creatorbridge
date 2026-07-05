@@ -161,7 +161,7 @@ export default function Navbar({
                 <UsersIcon />
               </Link>
 
-              <div className="relative ml-2" ref={menuRef}>
+              <div className="relative ml-2 hidden md:block" ref={menuRef}>
                 <button
                   className="bg-transparent border-none cursor-pointer"
                   style={{ padding: '2px' }}
