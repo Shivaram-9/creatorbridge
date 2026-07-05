@@ -155,13 +155,13 @@ export default function Navbar({
 
               <Link 
                 to="/search" 
-                className="p-2 ml-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors border-none bg-transparent cursor-pointer flex items-center justify-center text-slate-700 dark:text-slate-300 md:hidden"
+                className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors border-none bg-transparent cursor-pointer flex items-center justify-center text-slate-700 dark:text-slate-300 md:hidden"
                 title="Find Your Collab"
               >
                 <UsersIcon />
               </Link>
 
-              <div className="relative ml-2 hidden md:block" ref={menuRef}>
+              <div className="relative hidden md:block" ref={menuRef}>
                 <button
                   className="bg-transparent border-none cursor-pointer"
                   style={{ padding: '2px' }}
