@@ -1,6 +1,6 @@
 import React from 'react';
-import creatorBadge from '../assets/creator_badge.png';
-import brandBadge from '../assets/brand_badge.png';
+import creatorBadge from '../assets/creator_badge_v2.jpeg';
+import brandBadge from '../assets/brand_badge_v2.jpeg';
 
 /**
  * VerifiedBadge - A clean, modern Instagram/X style verified tick
@@ -32,8 +32,8 @@ export default function VerifiedBadge({ role = 'influencer', style = {}, classNa
         loading="lazy"
         decoding="async" 
         style={{ 
-          width: '18px', 
-          height: '18px', 
+          width: '19px', 
+          height: '19px', 
           display: 'block', 
           objectFit: 'contain',
           pointerEvents: 'none'
