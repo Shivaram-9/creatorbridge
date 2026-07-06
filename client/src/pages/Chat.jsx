@@ -233,20 +233,13 @@ export default function Chat({ standalone = true }) {
             <div style={{ display: 'flex', gap: '8px' }}>
               <button 
                 onClick={() => handleAcceptProposal(msgId)}
-                style={{ flex: 2, background: '#10b981', color: '#fff', border: 'none', padding: '10px', borderRadius: '8px', fontWeight: '600', fontSize: '14px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px' }}
+                style={{ width: '100%', background: '#10b981', color: '#fff', border: 'none', padding: '10px', borderRadius: '8px', fontWeight: '600', fontSize: '14px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px' }}
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                 Accept Proposal
               </button>
-              <button style={{ flex: 1, background: 'var(--bg-main)', color: 'var(--text-main)', border: '1px solid var(--border-light)', padding: '10px', borderRadius: '8px', fontWeight: '600', fontSize: '14px', cursor: 'pointer' }}>
-                View
-              </button>
             </div>
-          ) : (
-            <button style={{ width: '100%', background: '#f59e0b', color: '#fff', border: 'none', padding: '10px', borderRadius: '8px', fontWeight: '600', fontSize: '14px', cursor: 'pointer' }}>
-              View Proposal
-            </button>
-          )}
+          ) : null}
         </div>
       );
     }
