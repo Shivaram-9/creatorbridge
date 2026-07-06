@@ -151,7 +151,7 @@ export default function Chat({ standalone = true }) {
 
   const handleAcceptProposal = async (msgId) => {
     try {
-      await api.messages.updateProposalStatus(msgId, "Accepted");
+      const res = await api.messages.updateProposalStatus(msgId, { action: "accept" });
       setMessages(prev => prev.map(m => {
         if (m._id === msgId) {
            try {
@@ -162,8 +162,11 @@ export default function Chat({ standalone = true }) {
         }
         return m;
       }));
+      if (res.autoMsg) {
+         setMessages(prev => [...prev, res.autoMsg]);
+         scrollToBottom("smooth");
+      }
       toast.success("Collaboration Proposal Accepted!");
-      await handleAutoReply("✅ Collaboration Accepted! Let's discuss details.");
       if (showViewModal) setShowViewModal(false);
     } catch (err) {
       console.error(err);
@@ -171,25 +174,62 @@ export default function Chat({ standalone = true }) {
     }
   };
 
-  const handleDeclineProposal = async (msgId) => {
+  const handleDeclineProposal = async (msgId, reason = "") => {
     try {
-      await api.messages.updateProposalStatus(msgId, "Declined");
+      const res = await api.messages.updateProposalStatus(msgId, { action: "decline", message: reason });
       setMessages(prev => prev.map(m => {
         if (m._id === msgId) {
            try {
              const parsed = JSON.parse(m.content);
              parsed.status = "Declined";
+             if (reason) parsed.declineReason = reason;
              return { ...m, content: JSON.stringify(parsed) };
            } catch(e) {}
         }
         return m;
       }));
+      if (res.autoMsg) {
+         setMessages(prev => [...prev, res.autoMsg]);
+         scrollToBottom("smooth");
+      }
       toast.success("Collaboration Proposal Declined.");
-      await handleAutoReply("❌ Collaboration Declined.");
       if (showViewModal) setShowViewModal(false);
     } catch (err) {
       console.error(err);
       toast.error("Failed to decline proposal");
+    }
+  };
+
+  const handleCounterOffer = async (msgId, newBudget, message) => {
+    try {
+      const res = await api.messages.updateProposalStatus(msgId, { action: "counterOffer", newBudget, message });
+      setMessages(prev => prev.map(m => {
+        if (m._id === msgId) {
+           try {
+             const parsed = JSON.parse(m.content);
+             parsed.status = "Counter Offered";
+             parsed.budget = newBudget;
+             if (!parsed.negotiationHistory) parsed.negotiationHistory = [];
+             parsed.negotiationHistory.push({
+               sender: user?._id,
+               budget: newBudget,
+               message: message,
+               timestamp: new Date().toISOString()
+             });
+             return { ...m, content: JSON.stringify(parsed) };
+           } catch(e) {}
+        }
+        return m;
+      }));
+      if (res.autoMsg) {
+         setMessages(prev => [...prev, res.autoMsg]);
+         scrollToBottom("smooth");
+      }
+      toast.success("Counter Offer Sent!");
+      if (showViewModal) setShowViewModal(false);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to send counter offer");
     }
   };
 
@@ -259,21 +299,35 @@ export default function Chat({ standalone = true }) {
           </div>
 
           <div style={{ display: 'flex', gap: '16px', alignItems: 'center', marginTop: '4px' }}>
-            <button 
-              onClick={() => {
-                setSelectedProposal({ data: proposalData, msgId, isReceiver: !isMine });
-                setShowViewModal(true);
-              }}
-              style={{ background: '#f59e0b', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '8px', fontWeight: '600', fontSize: '13px', cursor: 'pointer' }}
-            >
-              View Proposal
-            </button>
-            {!isMine && (!proposalData || proposalData.status === "Pending") && (
+            {!isMine && (!proposalData || proposalData.status === "Pending" || proposalData.status === "Counter Offered") ? (
+              <>
+                <button 
+                  onClick={() => {
+                    setSelectedProposal({ data: proposalData, msgId, isReceiver: true });
+                    setShowViewModal(true);
+                  }}
+                  style={{ background: '#10b981', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '8px', fontWeight: '600', fontSize: '13px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
+                >
+                  <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+                  Accept Proposal
+                </button>
+                <button 
+                  onClick={() => handleDeclineProposal(msgId)}
+                  style={{ background: 'transparent', color: 'var(--text-muted)', border: 'none', fontWeight: '600', fontSize: '13px', cursor: 'pointer', padding: '8px 4px', display: 'flex', alignItems: 'center', gap: '4px' }}
+                >
+                  <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                  Decline Proposal
+                </button>
+              </>
+            ) : (
               <button 
-                onClick={() => handleDeclineProposal(msgId)}
-                style={{ background: 'transparent', color: 'var(--text-muted)', border: 'none', fontWeight: '600', fontSize: '13px', cursor: 'pointer', padding: '8px 4px' }}
+                onClick={() => {
+                  setSelectedProposal({ data: proposalData, msgId, isReceiver: !isMine });
+                  setShowViewModal(true);
+                }}
+                style={{ background: '#f59e0b', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '8px', fontWeight: '600', fontSize: '13px', cursor: 'pointer' }}
               >
-                Decline
+                View Proposal
               </button>
             )}
           </div>
@@ -723,13 +777,15 @@ export default function Chat({ standalone = true }) {
         />
       )}
       {showViewModal && (
-        <ViewProposalModal
-          proposalData={selectedProposal.data}
+        <ViewProposalModal 
+          proposalData={selectedProposal.data} 
           onClose={() => setShowViewModal(false)}
           onAccept={() => handleAcceptProposal(selectedProposal.msgId)}
-          onDecline={() => handleDeclineProposal(selectedProposal.msgId)}
+          onDecline={(reason) => handleDeclineProposal(selectedProposal.msgId, reason)}
+          onCounterOffer={(budget, msg) => handleCounterOffer(selectedProposal.msgId, budget, msg)}
           isReceiver={selectedProposal.isReceiver}
           partnerName={partner?.name || partner?.username || 'Creator'}
+          currentUserId={user?._id}
         />
       )}
     </div>

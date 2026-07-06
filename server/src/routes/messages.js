@@ -268,14 +268,14 @@ messagesRouter.patch("/read/:partnerId", async (req, res) => {
   }
 });
 
-// Update Proposal status
+// Update Proposal status and handle negotiations
 messagesRouter.patch("/:id/proposal", async (req, res) => {
   try {
-    const { status } = req.body;
+    const { action, status, newBudget, message } = req.body;
     const msg = await Message.findById(req.params.id);
     if (!msg) return res.status(404).json({ error: "Message not found" });
 
-    // Only receiver can accept/decline. Wait, sender might cancel. We'll allow either sender/receiver.
+    // Only receiver can accept/decline, but either can counter offer or cancel
     if (msg.sender.toString() !== req.userId && msg.receiver.toString() !== req.userId) {
       return res.status(403).json({ error: "Unauthorized" });
     }
@@ -288,11 +288,68 @@ messagesRouter.patch("/:id/proposal", async (req, res) => {
       return res.status(400).json({ error: "Message is not a proposal" });
     }
 
-    parsed.status = status;
+    const partnerId = msg.sender.toString() === req.userId ? msg.receiver.toString() : msg.sender.toString();
+    
+    // Initialize original budget and negotiation history if they don't exist
+    if (!parsed.originalBudget) parsed.originalBudget = parsed.budget;
+    if (!parsed.negotiationHistory) parsed.negotiationHistory = [];
+
+    let timelineMessage = "";
+
+    if (action === "counterOffer") {
+      parsed.status = "Counter Offered";
+      parsed.budget = newBudget;
+      parsed.negotiationHistory.push({
+        sender: req.userId,
+        budget: newBudget,
+        message: message,
+        timestamp: new Date().toISOString()
+      });
+      timelineMessage = `Counter Offer Sent: ${parsed.currency === 'INR' ? '₹' : (parsed.currency === 'USD' ? '$' : '€')}${newBudget}`;
+      if (message) timelineMessage += ` - "${message}"`;
+    } else if (action === "accept") {
+      parsed.status = "Accepted";
+      parsed.acceptedAt = new Date().toISOString();
+      timelineMessage = `Proposal Accepted`;
+    } else if (action === "decline") {
+      parsed.status = "Declined";
+      parsed.declinedAt = new Date().toISOString();
+      if (message) parsed.declineReason = message;
+      timelineMessage = `Proposal Declined`;
+    } else if (status) {
+      parsed.status = status;
+      timelineMessage = `Proposal Status Updated: ${status}`;
+    }
+
     msg.content = JSON.stringify(parsed);
     await msg.save();
     
-    res.json({ ok: true });
+    // Generate an automatic system message in the chat timeline
+    let autoMsg = null;
+    if (timelineMessage) {
+      autoMsg = new Message({
+        sender: req.userId,
+        receiver: partnerId,
+        content: `[System] ${timelineMessage}`,
+      });
+      await autoMsg.save();
+    }
+    
+    // Generate notification
+    try {
+       const { Notification } = await import("../models/Notification.js");
+       await Notification.create({
+         user: partnerId,
+         type: 'PROPOSAL_UPDATE',
+         title: 'Proposal Update',
+         message: timelineMessage,
+         link: '/chat'
+       });
+    } catch (e) {
+       console.error("Failed to create notification", e);
+    }
+
+    res.json({ ok: true, status: parsed.status, autoMsg });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to update proposal" });
