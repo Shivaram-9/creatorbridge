@@ -144,7 +144,7 @@ export default function Chat({ standalone = true }) {
           </div>
 
           <p style={{ fontSize: '14px', lineHeight: '1.5', color: 'var(--text-main)', marginBottom: '16px' }}>
-            {text.replace("👉 ", "")}
+            {text}
           </p>
 
           <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(245, 158, 11, 0.2)', borderBottom: '1px solid rgba(245, 158, 11, 0.2)', padding: '12px 0', marginBottom: '16px' }}>
@@ -582,13 +582,15 @@ export default function Chat({ standalone = true }) {
             onMouseOver={(e) => { e.currentTarget.style.background = 'var(--bg-secondary)'; e.currentTarget.style.borderColor = 'var(--primary)'; }}
             onMouseOut={(e) => { e.currentTarget.style.background = 'var(--bg-card)'; e.currentTarget.style.borderColor = 'var(--border-light)'; }}
           >
-            🤝 Collaboration Request
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+            Collaboration Request
           </button>
           <button 
             type="button" 
             style={{ whiteSpace: 'nowrap', padding: '8px 16px', background: 'var(--bg-card)', border: '1px solid var(--border-light)', borderRadius: '20px', fontSize: '13px', fontWeight: '600', color: 'var(--text-main)', cursor: 'pointer', transition: 'all 0.2s ease', display: 'flex', alignItems: 'center', gap: '6px' }}
           >
-            📁 Send Portfolio
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" /></svg>
+            Send Portfolio
           </button>
         </div>
 
