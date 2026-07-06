@@ -189,7 +189,7 @@ export default function Chat({ standalone = true }) {
               <span style={{ fontSize: '12px', fontWeight: '600', color: '#f59e0b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Proposal</span>
             </div>
             <span style={{ fontSize: '11px', fontWeight: '600', color: proposalData?.status === 'Accepted' ? '#10b981' : '#f59e0b', background: proposalData?.status === 'Accepted' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(245, 158, 11, 0.2)', padding: '2px 8px', borderRadius: '12px' }}>
-              {proposalData.status || 'Pending'}
+              {proposalData?.status || 'Pending'}
             </span>
           </div>
           <h3 style={{ fontSize: '18px', fontWeight: '700', color: 'var(--text-main)', margin: '0 0 8px 0' }}>
