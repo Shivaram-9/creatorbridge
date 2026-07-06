@@ -471,13 +471,21 @@ export default function Chat({ standalone = true }) {
 
           const mediaUrl = getMediaUrl(media);
 
-          const isProposal = m.content && (m.content === "Would you be interested in discussing a potential collaboration?" || m.content.includes("Interested in Collaborating") || m.content.includes("Interested to Collaborate") || m.content.includes("Collaboration Proposal"));
-          const senderRole = isMine ? user?.role : (partner?.role || 'Creator');
-          const isCreator = senderRole?.toLowerCase() === 'creator' || senderRole?.toLowerCase() === 'influencer';
-          const isBrand = senderRole?.toLowerCase() === 'brand';
+          const isProposal = m.content && (m.content.includes("Would you be interested in discussing a potential collaboration?") || m.content.includes("Interested in Collaborating") || m.content.includes("Interested to Collaborate") || m.content.includes("Collaboration Proposal"));
           
-          let bubbleBg = isCreator ? 'rgba(37, 99, 235, 0.1)' : (isBrand ? 'rgba(245, 158, 11, 0.1)' : 'var(--bg-card)');
-          let bubbleBorder = isCreator ? '1px solid rgba(37, 99, 235, 0.2)' : (isBrand ? '1px solid rgba(245, 158, 11, 0.2)' : '1px solid var(--border-light)');
+          let bubbleBg = 'var(--bg-card)';
+          let bubbleBorder = '1px solid var(--border-light)';
+          
+          if (isMine) {
+            const myRole = user?.role?.toLowerCase();
+            if (myRole === 'creator' || myRole === 'influencer') {
+              bubbleBg = 'rgba(37, 99, 235, 0.1)';
+              bubbleBorder = '1px solid rgba(37, 99, 235, 0.2)';
+            } else if (myRole === 'brand') {
+              bubbleBg = 'rgba(245, 158, 11, 0.1)';
+              bubbleBorder = '1px solid rgba(245, 158, 11, 0.2)';
+            }
+          }
           
           if (isProposal) {
             bubbleBg = 'transparent';
