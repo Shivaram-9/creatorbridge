@@ -299,37 +299,70 @@ export default function Chat({ standalone = true }) {
           </div>
 
           <div style={{ display: 'flex', gap: '16px', alignItems: 'center', marginTop: '4px' }}>
-            {!isMine && (!proposalData || proposalData.status === "Pending" || proposalData.status === "Counter Offered") ? (
-              <>
-                <button 
-                  onClick={() => {
-                    setSelectedProposal({ data: proposalData, msgId, isReceiver: true });
-                    setShowViewModal(true);
-                  }}
-                  style={{ background: '#10b981', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '8px', fontWeight: '600', fontSize: '13px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
-                >
-                  <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
-                  Accept Proposal
-                </button>
-                <button 
-                  onClick={() => handleDeclineProposal(msgId)}
-                  style={{ background: 'transparent', color: 'var(--text-muted)', border: 'none', fontWeight: '600', fontSize: '13px', cursor: 'pointer', padding: '8px 4px', display: 'flex', alignItems: 'center', gap: '4px' }}
-                >
-                  <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                  Decline Proposal
-                </button>
-              </>
-            ) : (
-              <button 
-                onClick={() => {
-                  setSelectedProposal({ data: proposalData, msgId, isReceiver: !isMine });
-                  setShowViewModal(true);
-                }}
-                style={{ background: '#f59e0b', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '8px', fontWeight: '600', fontSize: '13px', cursor: 'pointer' }}
-              >
-                View Proposal
-              </button>
-            )}
+            {(() => {
+              const history = proposalData?.negotiationHistory || [];
+              const lastSender = history.length > 0 ? history[history.length - 1].sender : undefined;
+              let canAct = false;
+              
+              if (!proposalData || proposalData.status === "Pending") {
+                canAct = !isMine;
+              } else if (proposalData.status === "Counter Offered") {
+                // The person who received the last offer can act
+                canAct = lastSender ? (lastSender !== user?._id) : !isMine;
+              }
+
+              if (canAct) {
+                return (
+                  <>
+                    <button 
+                      onClick={() => {
+                        setSelectedProposal({ data: proposalData, msgId, isReceiver: true });
+                        setShowViewModal(true);
+                      }}
+                      style={{ background: '#10b981', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '8px', fontWeight: '600', fontSize: '13px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
+                    >
+                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+                      Accept Proposal
+                    </button>
+                    <button 
+                      onClick={() => handleDeclineProposal(msgId)}
+                      style={{ background: 'transparent', color: 'var(--text-muted)', border: 'none', fontWeight: '600', fontSize: '13px', cursor: 'pointer', padding: '8px 4px', display: 'flex', alignItems: 'center', gap: '4px' }}
+                    >
+                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                      Decline Proposal
+                    </button>
+                  </>
+                );
+              }
+              return null;
+            })()}
+            
+            {(() => {
+              const history = proposalData?.negotiationHistory || [];
+              const lastSender = history.length > 0 ? history[history.length - 1].sender : undefined;
+              let canAct = false;
+              
+              if (!proposalData || proposalData.status === "Pending") {
+                canAct = !isMine;
+              } else if (proposalData.status === "Counter Offered") {
+                canAct = lastSender ? (lastSender !== user?._id) : !isMine;
+              }
+              
+              if (!canAct) {
+                return (
+                  <button 
+                    onClick={() => {
+                      setSelectedProposal({ data: proposalData, msgId, isReceiver: !isMine });
+                      setShowViewModal(true);
+                    }}
+                    style={{ background: '#f59e0b', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '8px', fontWeight: '600', fontSize: '13px', cursor: 'pointer' }}
+                  >
+                    View Proposal
+                  </button>
+                );
+              }
+              return null;
+            })()}
           </div>
         </div>
       );
@@ -610,10 +643,21 @@ export default function Chat({ standalone = true }) {
               isProposal = true;
             }
           } catch(e) {}
-          
           // Legacy proposal matching for backward compatibility
           if (!isProposal && m.content && (m.content.includes("Would you be interested in discussing a potential collaboration?") || m.content.includes("Interested in Collaborating") || m.content.includes("Interested to Collaborate") || m.content.includes("Collaboration Proposal"))) {
             isProposal = true;
+          }
+          
+          const isSystem = m.content && m.content.startsWith("[System]");
+          
+          if (isSystem) {
+            return (
+              <div key={m._id || idx} style={{ display: 'flex', justifyContent: 'center', margin: '16px 0', width: '100%' }}>
+                <span style={{ fontSize: '12px', color: '#64748b', background: '#f1f5f9', padding: '6px 16px', borderRadius: '16px', fontWeight: '500', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}>
+                  {m.content.replace("[System] ", "")}
+                </span>
+              </div>
+            );
           }
           
           const senderObj = isMine ? user : partner;
