@@ -12,6 +12,7 @@ import { createRealTimeNotification } from "../utils/notifications.js";
 import bcrypt from "bcryptjs";
 import { SecurityAlert } from "../models/SecurityAlert.js";
 import { EmailService } from "../services/EmailService.js";
+import { Category } from "../models/Category.js";
 
 export const usersRouter = Router();
 
@@ -444,7 +445,17 @@ usersRouter.get("/", async (req, res) => {
     };
     
     if (category && String(category).trim()) {
-      filter.category = new RegExp(String(category).trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
+      const catString = String(category).trim();
+      // Intelligent subcategory mapping
+      const categoryDoc = await Category.findOne({ name: new RegExp('^' + catString.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + '$', 'i') });
+      if (categoryDoc && categoryDoc.parent === null) {
+        // It's a discovery category, fetch all subcategories
+        const subcategories = await Category.find({ parent: categoryDoc.name });
+        const subNames = subcategories.map(c => c.name);
+        filter.category = { $in: [categoryDoc.name, ...subNames] };
+      } else {
+        filter.category = new RegExp(catString.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
+      }
     }
     if (city && String(city).trim()) {
       filter.location = new RegExp(String(city).trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");

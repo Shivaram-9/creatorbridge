@@ -1,11 +1,10 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 import { api } from "../services/api.js";
 import ErrorBanner from "../components/ErrorBanner.jsx";
 import "./Onboarding.css";
 
-import { CATEGORIES } from "../constants/categories.js";
 import { CITIES } from "../constants/cities.js";
 
 export default function Onboarding() {
@@ -25,10 +24,26 @@ export default function Onboarding() {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [showOtherInput, setShowOtherInput] = useState(false);
+  const [dbCategories, setDbCategories] = useState([]);
+
+  useEffect(() => {
+    async function loadCategories() {
+      try {
+        const res = await fetch("/api/categories/onboarding");
+        if (res.ok) {
+          const data = await res.json();
+          setDbCategories(data.map(c => c.name));
+        }
+      } catch (err) {
+        console.error("Failed to load onboarding categories:", err);
+      }
+    }
+    loadCategories();
+  }, []);
 
   const filteredCategories = useMemo(() => {
-    return CATEGORIES.filter(c => c.toLowerCase().includes(searchQuery.toLowerCase()));
-  }, [searchQuery]);
+    return dbCategories.filter(c => c.toLowerCase().includes(searchQuery.toLowerCase()));
+  }, [searchQuery, dbCategories]);
 
   const handleNext = () => setStep(s => s + 1);
   const handleBack = () => setStep(s => s - 1);

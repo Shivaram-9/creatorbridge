@@ -23,6 +23,8 @@ import { moderationRouter } from "./routes/moderation.js";
 import { onboardingRouter } from "./routes/onboarding.js";
 import { discoveryRouter } from "./routes/discovery.js";
 import { dealsRouter } from "./routes/deals.js";
+import { adminRouter } from "./routes/admin.js";
+import { categoriesRouter } from "./routes/categories.js";
 import { aiRouter } from "./routes/ai.js";
 import { verificationRouter } from "./routes/verification.js";
 import { brandRouter } from "./routes/brand.js";
@@ -68,6 +70,7 @@ app.use("/api/users", usersRouter);
 app.use("/api/messages", messagesRouter);
 app.use("/api/notifications", notificationsRouter);
 app.use("/api/posts", postsRouter);
+app.use("/api/categories", categoriesRouter);
 app.use("/api/search", searchRouter);
 app.use("/api/stories", storiesRouter);
 

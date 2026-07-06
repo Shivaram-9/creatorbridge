@@ -5,7 +5,6 @@ import { api } from "../services/api.js";
 import UserCard from "../components/UserCard.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import ErrorBanner from "../components/ErrorBanner.jsx";
-import { INFLUENCER_CATEGORIES, BRAND_CATEGORIES, ALL_CATEGORIES } from "../constants/categories.js";
 import "./Discover.css";
 
 const EXPLORE_PHOTOS = [
@@ -61,6 +60,15 @@ export default function Discover() {
         setLoading(false);
         const all = await api.users.list();
         setAllUsers(Array.isArray(all) ? all : []);
+        
+        try {
+          const res = await fetch("/api/categories/discovery");
+          if (res.ok) {
+            const data = await res.json();
+            setDbCategories(data.map(c => c.name));
+          }
+        } catch (e) {}
+        
         return;
       }
 
@@ -82,6 +90,12 @@ export default function Discover() {
         setDiscovery(data);
         setAllUsers(Array.isArray(all) ? all : []);
 
+        const catRes = await fetch("/api/categories/discovery");
+        if (catRes.ok) {
+          const catData = await catRes.json();
+          setDbCategories(catData.map(c => c.name));
+        }
+
         localStorage.setItem("cb_discovery_cache", JSON.stringify(data));
         localStorage.setItem("cb_discovery_time", Date.now().toString());
       } catch (err) {
@@ -93,24 +107,44 @@ export default function Discover() {
     loadDiscoverData();
   }, []);
 
-  const filteredUsers = allUsers.filter(u => {
-    if (!u) return false;
-    const q = searchQuery.toLowerCase();
-    const name = (u.name || "").toLowerCase();
-    const username = (u.username || "").toLowerCase();
-    const bio = (u.bio || "").toLowerCase();
-    
-    const matchSearch = !q || (name.includes(q) || username.includes(q) || bio.includes(q));
-    const matchCategory = activeCategory === "All" || u.category === activeCategory;
-    const matchRole = activeRole === "all" || u.role === activeRole;
-    return matchSearch && matchCategory && matchRole;
-  });
+  const [dbCategories, setDbCategories] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
 
-  const displayCategories = activeRole === "influencer" 
-    ? INFLUENCER_CATEGORIES 
-    : activeRole === "brand" 
-      ? BRAND_CATEGORIES 
-      : ALL_CATEGORIES;
+  useEffect(() => {
+    async function filterFromBackend() {
+      if (loading && allUsers.length === 0) return;
+      
+      let usersToFilter = allUsers;
+
+      // If a specific category is selected, use the backend $in matching
+      if (activeCategory !== "All") {
+        try {
+          usersToFilter = await api.users.list({ category: activeCategory });
+          if (!Array.isArray(usersToFilter)) usersToFilter = [];
+        } catch (e) {
+          usersToFilter = [];
+        }
+      }
+
+      const filtered = usersToFilter.filter(u => {
+        if (!u) return false;
+        const q = searchQuery.toLowerCase();
+        const name = (u.name || "").toLowerCase();
+        const username = (u.username || "").toLowerCase();
+        const bio = (u.bio || "").toLowerCase();
+        
+        const matchSearch = !q || (name.includes(q) || username.includes(q) || bio.includes(q));
+        const matchRole = activeRole === "all" || u.role === activeRole;
+        return matchSearch && matchRole;
+      });
+
+      setFilteredUsers(filtered);
+    }
+    
+    filterFromBackend();
+  }, [allUsers, activeCategory, activeRole, searchQuery]);
+
+  const displayCategories = dbCategories;
 
   if (loading) return <LoadingSpinner centered />;
 
