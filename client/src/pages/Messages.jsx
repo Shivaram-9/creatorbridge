@@ -87,7 +87,7 @@ export default function Messages() {
   };
 
   return (
-    <div className="messaging-v3-container fade-up">
+    <div className="messaging-v3-container fade-up messages-layout-wrap">
       {/* Sidebar: List of conversations */}
       <aside className={`messages-sidebar-pro ${userId ? 'hidden-mobile' : ''}`}>
         <header className="sidebar-header-pro" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px' }}>
