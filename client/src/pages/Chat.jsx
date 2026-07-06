@@ -6,7 +6,7 @@ import { connectSocket, getSocket } from "../services/socket.js";
 import Avatar from "../components/Avatar.jsx";
 import ErrorBanner from "../components/ErrorBanner.jsx";
 import { MediaIcon } from "../components/Icons.jsx";
-import VerifiedBadge from "../components/VerifiedBadge.jsx";
+import VerifiedUserDisplay from "../components/VerifiedUserDisplay.jsx";
 
 function SharedPostPreview({ url }) {
   const [post, setPost] = useState(null);
@@ -362,10 +362,11 @@ export default function Chat({ standalone = true }) {
         </button>
         <Avatar user={partner} size="sm" />
         <div style={{ marginLeft: '12px', flex: 1 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <h2 style={{ fontSize: '1rem', fontWeight: '700', color: 'var(--text-main)', margin: 0 }}>{partner?.name || partner?.username}</h2>
-            {(partner?.isVerified || partner?.isPremium) && <VerifiedBadge size="sm" tier={partner.premiumTier} role={partner.role} />}
-          </div>
+          <VerifiedUserDisplay 
+            user={partner}
+            showLabel={false}
+            nameComponent={<h2 style={{ fontSize: '1rem', fontWeight: '700', color: 'var(--text-main)', margin: 0 }}>{partner?.name || partner?.username}</h2>}
+          />
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: socketOnline ? '#10b981' : '#cbd5e1' }}></span>
             <p style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: '700', textTransform: 'uppercase', margin: 0 }}>

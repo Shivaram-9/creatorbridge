@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { api } from '../services/api.js';
 import './TrustScore.css';
-import VerifiedBadge from './VerifiedBadge.jsx';
+import VerifiedUserDisplay from './VerifiedUserDisplay.jsx';
 import { ShieldIcon, ProfileIcon, StarIcon } from './Icons.jsx';
 
 const TargetIcon = () => (
@@ -109,10 +109,11 @@ export default function TrustScore({ user, isOwnProfile }) {
             </div>
             <div className="metric-value">
               {isVerified ? (
-                <>
-                  Verified
-                  <VerifiedBadge size="sm" tier={user.premiumTier} role={user.role} />
-                </>
+                  <VerifiedUserDisplay 
+                    user={user}
+                    showLabel={false}
+                    nameComponent={<>Verified</>}
+                  />
               ) : (
                 'Unverified'
               )}

@@ -9,7 +9,7 @@ import ErrorBanner from "../components/ErrorBanner.jsx";
 import PortfolioGrid from "../components/PortfolioGrid.jsx";
 import { SendIcon, HeartIcon, MessageCircleIcon, BookmarkIcon, ShieldIcon } from "../components/Icons.jsx";
 import Avatar from "../components/Avatar.jsx";
-import VerifiedBadge from "../components/VerifiedBadge.jsx";
+import VerifiedUserDisplay from "../components/VerifiedUserDisplay.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import { PostSkeleton } from "../components/Skeleton.jsx";
 import toast from "react-hot-toast";
@@ -313,25 +313,14 @@ export default function UserProfile() {
             </div>
             
             <div className="profile-info-content">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                <h1 className="text-2xl font-bold flex items-center gap-2 text-slate-900 dark:text-white" style={{ margin: 0 }}>
-                  {profile?.name || profile?.username}
-                </h1>
-                {(profile?.isVerified || profile?.isPremium) && <VerifiedBadge role={profile.role} />}
-              </div>
-              {(profile?.isVerified || profile?.isPremium) && (
-                <div style={{ marginTop: '4px', marginBottom: '8px', width: '100%' }}>
-                  <span style={{ 
-                    color: profile.role === 'brand' ? '#F5C024' : '#0095f6', 
-                    fontSize: '13px', 
-                    fontWeight: '600', 
-                    letterSpacing: '0.2px' 
-                  }}>
-                    {profile.role === 'brand' ? 'Verified Brand' : 'Verified Creator'}
-                  </span>
-                  <div className="w-full h-px bg-[#E5E5E5] dark:bg-[#2A2A2A] mt-2"></div>
-                </div>
-              )}
+              <VerifiedUserDisplay 
+                user={profile} 
+                nameComponent={
+                  <h1 className="text-2xl font-bold text-slate-900 dark:text-white" style={{ margin: 0 }}>
+                    {profile?.name || profile?.username}
+                  </h1>
+                } 
+              />
               
               <div className="profile-title-row" style={{ marginTop: '8px', marginBottom: '16px' }}>
                 <span>{profile?.category || "Content Creator"}</span>

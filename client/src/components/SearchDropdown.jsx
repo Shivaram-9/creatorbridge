@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Avatar from "./Avatar.jsx";
-import VerifiedBadge from "./VerifiedBadge.jsx";
+import VerifiedUserDisplay from "./VerifiedUserDisplay.jsx";
 import { api } from "../services/api.js";
 import { BASE_URL } from "../config/api.js";
 
@@ -53,10 +53,11 @@ export default function SearchDropdown({ results, loading, onClose, onItemClick 
                     <Avatar user={u} size="sm" />
                     <div className="search-item-info">
                       <div className="name-row">
-                        <span className={`name text-slate-900 dark:text-white`}>
-                          {u.name || u.username}
-                        </span>
-                        {(u.isVerified || u.isPremium) && <VerifiedBadge size="xs" tier={u.premiumTier} role={u.role} />}
+                        <VerifiedUserDisplay 
+                          user={u} 
+                          showLabel={false} 
+                          nameComponent={<span className="font-semibold text-slate-900 dark:text-white">{u.name || u.username}</span>}
+                        />
                         <span className={`role-badge ${u.role}`}>{u.role}</span>
                       </div>
                       <span className="handle">@{u.username} • {u.category || 'Creator'}</span>
@@ -94,8 +95,11 @@ export default function SearchDropdown({ results, loading, onClose, onItemClick 
                   <Avatar user={u} size="sm" />
                   <div className="search-item-info">
                     <div className="name-row">
-                      <span className="name">{u.username}</span>
-                      {(u.isVerified || u.isPremium) && <VerifiedBadge size="xs" tier={u.premiumTier} role={u.role} />}
+                      <VerifiedUserDisplay 
+                        user={u} 
+                        showLabel={false} 
+                        nameComponent={<span className="name">{u.username}</span>}
+                      />
                     </div>
                     <span className="handle">{u.category}</span>
                   </div>
@@ -112,8 +116,11 @@ export default function SearchDropdown({ results, loading, onClose, onItemClick 
                   <Avatar user={u} size="sm" />
                   <div className="search-item-info">
                     <div className="name-row">
-                      <span className="name">{u.username}</span>
-                      {(u.isVerified || u.isPremium) && <VerifiedBadge size="xs" tier={u.premiumTier} role={u.role} />}
+                      <VerifiedUserDisplay 
+                        user={u} 
+                        showLabel={false} 
+                        nameComponent={<span className="name">{u.username}</span>}
+                      />
                     </div>
                   </div>
                 </Link>

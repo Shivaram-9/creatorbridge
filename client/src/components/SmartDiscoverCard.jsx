@@ -1,8 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { SparklesIcon } from "./Icons.jsx";
-import VerifiedBadge from "./VerifiedBadge.jsx";
-import VerifiedPill from "./VerifiedPill.jsx";
+import VerifiedUserDisplay from "./VerifiedUserDisplay.jsx";
 import { api } from "../services/api.js";
 import "./SmartDiscoverCard.css";
 
@@ -53,18 +52,19 @@ export default function SmartDiscoverCard({ user, onAction }) {
           onError={(e) => { e.target.src = "https://via.placeholder.com/150"; }}
         />
         <div className="smart-card-info">
-          <div className="smart-card-name-row">
-            <h3 className={`smart-card-name text-slate-900 dark:text-white`} title={user.name}>{user.name}</h3>
-            {(user.isVerified || user.isPremium) && (
-              <VerifiedBadge size="sm" tier={user.premiumTier} role={user.role} />
-            )}
-          </div>
-          <div className="smart-card-role" style={{ width: '100%' }}>
-            <VerifiedPill user={user} fallbackText={user.category || (isBrand ? "Brand" : "Creator")} />
-            {(user.isVerified || user.isPremium) && (
-              <div className="w-full h-px bg-[#E5E5E5] dark:bg-[#2A2A2A] mt-2"></div>
-            )}
-          </div>
+          <VerifiedUserDisplay 
+            user={user}
+            nameComponent={
+              <h3 className={`smart-card-name text-slate-900 dark:text-white`} title={user.name}>{user.name}</h3>
+            }
+          />
+          {!(user.isVerified || user.isPremium) && (
+            <div className="smart-card-role" style={{ width: '100%', marginTop: '4px' }}>
+              <span style={{ textTransform: 'capitalize', fontSize: '13px', color: '#64748b' }}>
+                {user.category || (isBrand ? "Brand" : "Creator")}
+              </span>
+            </div>
+          )}
         </div>
       </div>
 

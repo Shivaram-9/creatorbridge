@@ -4,8 +4,7 @@ import { HeartIcon, MessageCircleIcon, SendIcon, BookmarkIcon, MoreHorizontalIco
 import { api } from "../services/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import Avatar from "./Avatar.jsx";
-import VerifiedBadge from "./VerifiedBadge.jsx";
-import VerifiedPill from "./VerifiedPill.jsx";
+import VerifiedUserDisplay from "./VerifiedUserDisplay.jsx";
 import ReportModal from "./ReportModal.jsx";
 import MediaGallery from "./MediaGallery.jsx";
 import "./PostCard.css";
@@ -208,25 +207,30 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
         <div className="flex gap-4">
           <Avatar user={post.user} size="md" onClick={() => navigate(`/user/${post.user?._id}`)} className="cursor-pointer" />
           <div className="ml-3">
-            <h3 
-              className={`font-bold text-[15px] cursor-pointer transition-colors flex items-center gap-1 ${
-                (post.user?.isVerified || post.user?.isPremium) 
-                  ? 'text-slate-900 dark:text-white hover:opacity-80' 
-                  : 'text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400'
-              }`} 
-              onClick={() => navigate(`/user/${post.user?._id}`)}
-            >
-              {post.user?.name || post.username}
-              {(post.user?.isVerified || post.user?.isPremium) && <VerifiedBadge role={post.user?.role} />}
-            </h3>
+             <VerifiedUserDisplay 
+                user={post.user}
+                nameComponent={
+                  <h3 
+                    className={`font-bold text-[15px] cursor-pointer transition-colors ${
+                      (post.user?.isVerified || post.user?.isPremium) 
+                        ? 'text-slate-900 dark:text-white hover:opacity-80' 
+                        : 'text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400'
+                    }`} 
+                    onClick={() => navigate(`/user/${post.user?._id}`)}
+                  >
+                    {post.user?.name || post.username}
+                  </h3>
+                }
+             />
             <div className="text-sm text-slate-500 dark:text-slate-400">
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <VerifiedPill user={post.user} fallbackText={`${post.user?.role === 'brand' ? 'Brand' : 'Creator'}${post.user?.category ? ` / ${post.user.category}` : ''}`} />
+                {!(post.user?.isVerified || post.user?.isPremium) && (
+                  <span style={{ textTransform: 'capitalize' }}>
+                    {`${post.user?.role === 'brand' ? 'Brand' : 'Creator'}${post.user?.category ? ` / ${post.user.category}` : ''}`}
+                  </span>
+                )}
                 <span>• {new Date(post.createdAt).toLocaleDateString()}</span>
               </div>
-              {(post.user?.isVerified || post.user?.isPremium) && (
-                <div className="w-full h-px bg-[#E5E5E5] dark:bg-[#2A2A2A] mt-2 mb-1"></div>
-              )}
             </div>
           </div>
         </div>

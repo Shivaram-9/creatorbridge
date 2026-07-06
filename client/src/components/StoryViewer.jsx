@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { api } from "../services/api.js";
 import { BASE_URL } from "../config/api.js";
 import Avatar from "./Avatar.jsx";
-import VerifiedBadge from "./VerifiedBadge.jsx";
+import VerifiedUserDisplay from "./VerifiedUserDisplay.jsx";
 
 export default function StoryViewer({ groups, initialGroupIndex, onClose }) {
   const [groupIndex, setGroupIndex] = useState(initialGroupIndex);
@@ -89,10 +89,13 @@ export default function StoryViewer({ groups, initialGroupIndex, onClose }) {
 
         {/* Header */}
         <div className="story-header">
-          <div className="story-viewer-user-info">
+          <div className="story-viewer-user-info" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Avatar user={currentGroup.user} size="sm" />
-            <span>{currentGroup.user?.username || "User"}</span>
-            {currentGroup.user?.isVerified && <VerifiedBadge size="xs" role={currentGroup.user?.role} />}
+            <VerifiedUserDisplay 
+              user={currentGroup.user}
+              showLabel={false}
+              nameComponent={<span>{currentGroup.user?.username || "User"}</span>}
+            />
           </div>
         </div>
 

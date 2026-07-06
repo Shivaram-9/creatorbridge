@@ -8,7 +8,7 @@ import CreatePost from "../components/CreatePost.jsx";
 import StoriesBar from "../components/StoriesBar.jsx";
 import EmptyState from "../components/EmptyState.jsx";
 import Avatar from "../components/Avatar.jsx";
-import VerifiedBadge from "../components/VerifiedBadge.jsx";
+import VerifiedUserDisplay from "../components/VerifiedUserDisplay.jsx";
 import VerifiedPill from "../components/VerifiedPill.jsx";
 import { PostSkeleton } from "../components/Skeleton.jsx";
 import { HandshakeIcon } from "../components/Icons.jsx";
@@ -241,16 +241,15 @@ export default function Home() {
           <div className="flex items-center gap-3 mb-4">
             <Avatar user={user} size="sm" />
             <div>
-              <h3 className={`font-bold text-lg cursor-pointer transition-colors flex items-center gap-1 text-slate-900 dark:text-white`}>
-                {user?.name || user?.username}
-                {(user?.isVerified || user?.isPremium) && <VerifiedBadge size="xs" tier={user?.premiumTier} role={user?.role} />}
-              </h3>
-              {(user?.isVerified || user?.isPremium) ? (
-                <div className="mt-1 w-full">
-                  <VerifiedPill user={user} fallbackText={user?.role === 'brand' ? 'Brand' : 'Creator'} />
-                  <div className="w-full h-px bg-[#E5E5E5] dark:bg-[#2A2A2A] mt-2 mb-1"></div>
-                </div>
-              ) : (
+              <VerifiedUserDisplay 
+                user={user}
+                nameComponent={
+                  <h3 className={`font-bold text-lg cursor-pointer transition-colors text-slate-900 dark:text-white`}>
+                    {user?.name || user?.username}
+                  </h3>
+                }
+              />
+              {!(user?.isVerified || user?.isPremium) && (
                 <div className="mt-1">
                   <VerifiedPill user={user} fallbackText={user?.role === 'brand' ? 'Brand' : 'Creator'} />
                 </div>
@@ -277,16 +276,15 @@ export default function Home() {
                     <Avatar user={u} size="sm" />
                   </div>
                   <div className="cursor-pointer" onClick={() => navigate(`/user/${u._id}`)}>
-                    <h4 className={`font-bold cursor-pointer transition-colors flex items-center gap-1 text-slate-900 dark:text-white`}>
-                      {u.name || u.username}
-                      {(u?.isVerified || u?.isPremium) && <VerifiedBadge size="xs" tier={u?.premiumTier} role={u?.role} />}
-                    </h4>
-                    {(u?.isVerified || u?.isPremium) ? (
-                      <div className="mt-1 w-full">
-                        <VerifiedPill user={u} fallbackText={u.role || 'Creator'} />
-                        <div className="w-full h-px bg-[#E5E5E5] dark:bg-[#2A2A2A] mt-2 mb-1"></div>
-                      </div>
-                    ) : (
+                    <VerifiedUserDisplay 
+                      user={u}
+                      nameComponent={
+                        <h4 className={`font-bold transition-colors text-slate-900 dark:text-white`}>
+                          {u.name || u.username}
+                        </h4>
+                      }
+                    />
+                    {!(u?.isVerified || u?.isPremium) && (
                       <div className="mt-1">
                         <VerifiedPill user={u} fallbackText={u.role || 'Creator'} />
                       </div>

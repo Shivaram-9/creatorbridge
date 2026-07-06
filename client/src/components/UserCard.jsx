@@ -1,8 +1,7 @@
 import { memo, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Avatar from "./Avatar.jsx";
-import VerifiedBadge from "./VerifiedBadge.jsx";
-import VerifiedPill from "./VerifiedPill.jsx";
+import VerifiedUserDisplay from "./VerifiedUserDisplay.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
 import { api } from "../services/api.js";
 import { getSocket } from "../services/socket.js";
@@ -113,28 +112,23 @@ const UserCard = memo(({ user, minimal, layout = "card" }) => {
         </div>
         
         <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-          <div className="text-slate-900 dark:text-white" style={{ 
-            fontSize: '15px', 
-            fontWeight: '600', 
-            whiteSpace: 'nowrap', 
-            overflow: 'hidden', 
-            textOverflow: 'ellipsis', 
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: '4px' 
-          }}>
-            {user.name || user.username}
-            {user.isVerified && <VerifiedBadge size="sm" tier={user.premiumTier} role={user.role} />}
-          </div>
+          <VerifiedUserDisplay 
+            user={user}
+            nameComponent={
+              <div className="text-slate-900 dark:text-white" style={{ 
+                fontSize: '15px', 
+                fontWeight: '600', 
+                whiteSpace: 'nowrap', 
+                overflow: 'hidden', 
+                textOverflow: 'ellipsis'
+              }}>
+                {user.name || user.username}
+              </div>
+            }
+          />
           <div style={{ fontSize: '13px', color: 'var(--text-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
             @{user.username}
           </div>
-          {(user.isVerified || user.isPremium) && (
-            <div style={{ marginTop: '4px', width: '100%' }}>
-              <VerifiedPill user={user} />
-              <div className="w-full h-px bg-[#E5E5E5] dark:bg-[#2A2A2A] mt-2 mb-1" />
-            </div>
-          )}
         </div>
 
         <div style={{ flexShrink: 0 }}>
@@ -197,30 +191,25 @@ const UserCard = memo(({ user, minimal, layout = "card" }) => {
       </div>
 
       <div style={{ width: '100%' }}>
-        <h3 className="text-slate-900 dark:text-white" style={{ 
-          margin: 0,
-          fontSize: '16px', 
-          fontWeight: 700, 
-          color: 'var(--text-main)', 
-          marginBottom: '4px',
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '4px'
-        }}>
-          {user.name || user.username}
-          {user.isVerified && <VerifiedBadge size="sm" tier={user.premiumTier} role={user.role} />}
-        </h3>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <VerifiedUserDisplay 
+            user={user}
+            nameComponent={
+              <h3 className="text-slate-900 dark:text-white" style={{ 
+                margin: 0,
+                fontSize: '16px', 
+                fontWeight: 700, 
+                color: 'var(--text-main)', 
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis'
+              }}>
+                {user.name || user.username}
+              </h3>
+            }
+          />
+        </div>
         <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '8px' }}>@{user.username}</p>
-        {(user.isVerified || user.isPremium) && (
-          <div style={{ marginBottom: '12px', width: '100%' }}>
-            <VerifiedPill user={user} />
-            <div className="w-full h-px bg-[#E5E5E5] dark:bg-[#2A2A2A] mt-2" />
-          </div>
-        )}
         
         {!minimal && (
           <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginBottom: '1.25rem' }}>

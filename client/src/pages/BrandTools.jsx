@@ -3,7 +3,7 @@ import { api } from "../services/api.js";
 import Avatar from "../components/Avatar.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import ErrorBanner from "../components/ErrorBanner.jsx";
-import VerifiedBadge from "../components/VerifiedBadge.jsx";
+import VerifiedUserDisplay from "../components/VerifiedUserDisplay.jsx";
 import toast from "react-hot-toast";
 import "./BrandTools.css";
 
@@ -93,7 +93,11 @@ export default function BrandTools() {
                     <div key={c._id} className="creator-tool-card card">
                       <Avatar user={c} size="lg" />
                       <div className="card-info">
-                        <h4>{c.name} {c.isVerified && <VerifiedBadge size="xs" role={c.role} />}</h4>
+                        <VerifiedUserDisplay 
+                          user={c}
+                          showLabel={false}
+                          nameComponent={<h4>{c.name}</h4>}
+                        />
                         <p className="handle">@{c.username}</p>
                         <p className="category-tag">{c.category}</p>
                         <div className="card-stats">
