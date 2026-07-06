@@ -23,7 +23,8 @@
   display: none;
 }
 
-@media (min-width: 1024px) {
+/* Use aspect-ratio to perfectly handle horizontal vs vertical orientation */
+@media (min-aspect-ratio: 1/1) {
   .mobile-video {
     display: none;
   }
