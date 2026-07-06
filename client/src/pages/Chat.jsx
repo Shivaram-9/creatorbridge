@@ -8,6 +8,7 @@ import ErrorBanner from "../components/ErrorBanner.jsx";
 import { MediaIcon } from "../components/Icons.jsx";
 import VerifiedUserDisplay from "../components/VerifiedUserDisplay.jsx";
 import CollaborationProposalModal from "../components/CollaborationProposalModal.jsx";
+import ViewProposalModal from "../components/ViewProposalModal.jsx";
 import { toast } from "react-hot-toast";
 
 function SharedPostPreview({ url }) {
@@ -102,12 +103,15 @@ export default function Chat({ standalone = true }) {
   const [isPartnerTyping, setIsPartnerTyping] = useState(false);
   const [socketOnline, setSocketOnline] = useState(false);
   const [showProposalModal, setShowProposalModal] = useState(false);
+  const [showViewModal, setShowViewModal] = useState(false);
+  const [selectedProposal, setSelectedProposal] = useState({ data: null, msgId: null, isReceiver: false });
 
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState("");
   const fileInputRef = useRef(null);
   const bottomRef = useRef(null);
   const typingTimeoutRef = useRef(null);
+  const messagesEndRef = useRef(null);
 
   const handleAutoReply = async (replyText) => {
     try {
@@ -150,17 +154,42 @@ export default function Chat({ standalone = true }) {
       await api.messages.updateProposalStatus(msgId, "Accepted");
       setMessages(prev => prev.map(m => {
         if (m._id === msgId) {
-          const parsed = JSON.parse(m.content);
-          parsed.status = "Accepted";
-          return { ...m, content: JSON.stringify(parsed) };
+           try {
+             const parsed = JSON.parse(m.content);
+             parsed.status = "Accepted";
+             return { ...m, content: JSON.stringify(parsed) };
+           } catch(e) {}
         }
         return m;
       }));
       toast.success("Collaboration Proposal Accepted!");
       await handleAutoReply("✅ Collaboration Accepted! Let's discuss details.");
+      if (showViewModal) setShowViewModal(false);
     } catch (err) {
       console.error(err);
       toast.error("Failed to accept proposal");
+    }
+  };
+
+  const handleDeclineProposal = async (msgId) => {
+    try {
+      await api.messages.updateProposalStatus(msgId, "Declined");
+      setMessages(prev => prev.map(m => {
+        if (m._id === msgId) {
+           try {
+             const parsed = JSON.parse(m.content);
+             parsed.status = "Declined";
+             return { ...m, content: JSON.stringify(parsed) };
+           } catch(e) {}
+        }
+        return m;
+      }));
+      toast.success("Collaboration Proposal Declined.");
+      await handleAutoReply("❌ Collaboration Declined.");
+      if (showViewModal) setShowViewModal(false);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to decline proposal");
     }
   };
 
@@ -229,17 +258,25 @@ export default function Chat({ standalone = true }) {
             </div>
           </div>
 
-          {!isMine && (!proposalData || proposalData.status === "Pending") ? (
-            <div style={{ display: 'flex', gap: '8px' }}>
+          <div style={{ display: 'flex', gap: '16px', alignItems: 'center', marginTop: '4px' }}>
+            <button 
+              onClick={() => {
+                setSelectedProposal({ data: proposalData, msgId, isReceiver: !isMine });
+                setShowViewModal(true);
+              }}
+              style={{ background: '#f59e0b', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '8px', fontWeight: '600', fontSize: '13px', cursor: 'pointer' }}
+            >
+              View Proposal
+            </button>
+            {!isMine && (!proposalData || proposalData.status === "Pending") && (
               <button 
-                onClick={() => handleAcceptProposal(msgId)}
-                style={{ width: '100%', background: '#10b981', color: '#fff', border: 'none', padding: '10px', borderRadius: '8px', fontWeight: '600', fontSize: '14px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px' }}
+                onClick={() => handleDeclineProposal(msgId)}
+                style={{ background: 'transparent', color: 'var(--text-muted)', border: 'none', fontWeight: '600', fontSize: '13px', cursor: 'pointer', padding: '8px 4px' }}
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                Accept Proposal
+                Decline
               </button>
-            </div>
-          ) : null}
+            )}
+          </div>
         </div>
       );
     }
@@ -438,13 +475,6 @@ export default function Chat({ standalone = true }) {
       <div style={{ textAlign: 'center' }}>
         <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Loading conversation...</p>
       </div>
-      {showProposalModal && (
-        <CollaborationProposalModal
-          onClose={() => setShowProposalModal(false)}
-          onSend={handleSendProposal}
-          partnerName={partner?.name || partner?.username || 'Creator'}
-        />
-      )}
     </div>
   );
 
@@ -684,6 +714,24 @@ export default function Chat({ standalone = true }) {
           </button>
         </div>
       </form>
+
+      {showProposalModal && (
+        <CollaborationProposalModal
+          onClose={() => setShowProposalModal(false)}
+          onSend={handleSendProposal}
+          partnerName={partner?.name || partner?.username || 'Creator'}
+        />
+      )}
+      {showViewModal && (
+        <ViewProposalModal
+          proposalData={selectedProposal.data}
+          onClose={() => setShowViewModal(false)}
+          onAccept={() => handleAcceptProposal(selectedProposal.msgId)}
+          onDecline={() => handleDeclineProposal(selectedProposal.msgId)}
+          isReceiver={selectedProposal.isReceiver}
+          partnerName={partner?.name || partner?.username || 'Creator'}
+        />
+      )}
     </div>
   );
 }

@@ -22,7 +22,7 @@ export default function VerifiedBadge({ role = 'influencer', style = {}, classNa
         flexShrink: 0,
         verticalAlign: 'middle',
         position: 'relative',
-        top: '-1px', // Fine-tune vertical centering
+        top: '2px', // Fine-tune vertical centering for larger badge
         ...style
       }}
     >
@@ -32,8 +32,8 @@ export default function VerifiedBadge({ role = 'influencer', style = {}, classNa
         loading="lazy"
         decoding="async" 
         style={{ 
-          width: '22px', 
-          height: '22px', 
+          width: '24px', 
+          height: '24px', 
           display: 'block', 
           objectFit: 'contain',
           pointerEvents: 'none'
