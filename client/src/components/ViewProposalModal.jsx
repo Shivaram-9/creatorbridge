@@ -39,7 +39,7 @@ export default function ViewProposalModal({ proposalData, onClose, onAccept, onD
 
   return (
     <div className="proposal-modal-overlay" onClick={onClose}>
-      <div className="proposal-modal-content" onClick={e => e.stopPropagation()} style={{ maxHeight: '90vh', overflowY: 'auto' }}>
+      <div className="proposal-modal-content" onClick={e => e.stopPropagation()}>
         <div className="proposal-modal-header">
           <h2>Collaboration Proposal</h2>
           <button className="close-btn" onClick={onClose}>
@@ -173,8 +173,8 @@ export default function ViewProposalModal({ proposalData, onClose, onAccept, onD
               </div>
 
               <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end', marginTop: '16px' }}>
-                <button className="btn btn-outline" onClick={() => setShowCounterForm(false)} style={{ border: 'none', color: 'var(--text-muted)' }}>Cancel</button>
-                <button className="btn btn-primary" onClick={handleCounterSubmit} disabled={!counterBudget}>Send Counter Offer</button>
+                <button className="btn btn-outline" onClick={() => setShowCounterForm(false)} style={{ border: 'none', color: 'var(--text-muted)', padding: '10px 16px', borderRadius: '8px', fontWeight: '500', cursor: 'pointer', background: 'transparent' }}>Cancel</button>
+                <button className="btn btn-primary" onClick={handleCounterSubmit} disabled={!counterBudget} style={{ background: '#f59e0b', color: '#fff', border: 'none', padding: '10px 16px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer' }}>Send Counter Offer</button>
               </div>
             </div>
           )}
@@ -184,15 +184,15 @@ export default function ViewProposalModal({ proposalData, onClose, onAccept, onD
           {canAct ? (
              (!showCounterForm ? (
                 <>
-                  <button className="btn btn-outline" onClick={() => onDecline("")} style={{ color: '#ef4444', borderColor: 'transparent' }}>Decline</button>
+                  <button className="btn btn-outline" onClick={() => onDecline("")} style={{ color: '#ef4444', borderColor: 'transparent', padding: '10px 16px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', background: 'transparent' }}>Decline</button>
                   <div style={{ display: 'flex', gap: '8px' }}>
-                    <button className="btn btn-outline" onClick={() => setShowCounterForm(true)} style={{ borderColor: 'var(--border-color)' }}>Counter Offer</button>
-                    <button className="btn btn-primary" onClick={onAccept} style={{ background: '#10b981', borderColor: '#10b981' }}>Accept</button>
+                    <button className="btn btn-outline" onClick={() => setShowCounterForm(true)} style={{ borderColor: 'var(--border-color)', padding: '10px 16px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', background: 'var(--bg-main)', color: 'var(--text-main)' }}>Counter Offer</button>
+                    <button className="btn btn-primary" onClick={onAccept} style={{ background: '#10b981', borderColor: '#10b981', color: '#fff', padding: '10px 20px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer' }}>Accept</button>
                   </div>
                 </>
              ) : null)
           ) : (
-            <button className="btn btn-outline" onClick={onClose} style={{ width: '100%' }}>Close</button>
+            <button className="btn btn-outline" onClick={onClose} style={{ width: '100%', padding: '10px 16px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', background: 'transparent', color: 'var(--text-main)', border: '1px solid var(--border-light)' }}>Close</button>
           )}
         </div>
       </div>
