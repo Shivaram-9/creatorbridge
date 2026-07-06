@@ -23,7 +23,6 @@ import { moderationRouter } from "./routes/moderation.js";
 import { onboardingRouter } from "./routes/onboarding.js";
 import { discoveryRouter } from "./routes/discovery.js";
 import { dealsRouter } from "./routes/deals.js";
-import { adminRouter } from "./routes/admin.js";
 import { categoriesRouter } from "./routes/categories.js";
 import { aiRouter } from "./routes/ai.js";
 import { verificationRouter } from "./routes/verification.js";
