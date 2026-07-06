@@ -262,6 +262,7 @@ export const api = {
     send: (body) => request("/messages", { method: "POST", body }),
     sendMedia: (formData) => request("/messages/media", { method: "POST", body: formData }),
     markAsRead: (partnerId) => request(`/messages/read/${partnerId}`, { method: "PATCH" }),
+    updateProposalStatus: (id, status) => request(`/messages/${id}/proposal`, { method: "PATCH", body: { status } }),
   },
   notifications: {
     list: () => request("/notifications"),

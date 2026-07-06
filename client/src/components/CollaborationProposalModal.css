@@ -1,0 +1,198 @@
+.proposal-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.proposal-modal-content {
+  background: var(--bg-card);
+  width: 90%;
+  max-width: 900px;
+  height: 90vh;
+  max-height: 800px;
+  border-radius: 16px;
+  border: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.proposal-modal-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.proposal-modal-header h2 {
+  margin: 0;
+  font-size: 20px;
+  color: var(--text-main);
+}
+
+.proposal-close-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.proposal-close-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-main);
+}
+
+.proposal-modal-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.proposal-form-section {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+  border-right: 1px solid var(--border-light);
+}
+
+.proposal-preview-section {
+  flex: 1;
+  padding: 24px;
+  background: var(--bg-main);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.proposal-form-group {
+  margin-bottom: 20px;
+}
+
+.proposal-form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-main);
+  margin-bottom: 8px;
+}
+
+.proposal-form-input {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border-light);
+  background: var(--bg-main);
+  color: var(--text-main);
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+.proposal-form-input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.proposal-deliverables-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.deliverable-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: var(--bg-hover);
+  border: 1px solid var(--border-light);
+  color: var(--text-main);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.deliverable-chip.selected {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+.deliverable-qty-input {
+  width: 40px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255,255,255,0.3);
+  color: inherit;
+  text-align: center;
+  font-size: 13px;
+  outline: none;
+}
+
+.deliverable-qty-input::-webkit-outer-spin-button,
+.deliverable-qty-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.proposal-row {
+  display: flex;
+  gap: 16px;
+}
+.proposal-row > div {
+  flex: 1;
+}
+
+.proposal-modal-footer {
+  padding: 16px 24px;
+  border-top: 1px solid var(--border-light);
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* Custom Checkbox / Radio */
+.proposal-radio-group {
+  display: flex;
+  gap: 16px;
+}
+
+.proposal-radio-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text-main);
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .proposal-modal-body {
+    flex-direction: column;
+  }
+  .proposal-form-section {
+    border-right: none;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .proposal-preview-section {
+    display: none; /* Hide preview on very small screens to save space */
+  }
+}

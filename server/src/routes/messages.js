@@ -268,3 +268,33 @@ messagesRouter.patch("/read/:partnerId", async (req, res) => {
   }
 });
 
+// Update Proposal status
+messagesRouter.patch("/:id/proposal", async (req, res) => {
+  try {
+    const { status } = req.body;
+    const msg = await Message.findById(req.params.id);
+    if (!msg) return res.status(404).json({ error: "Message not found" });
+
+    // Only receiver can accept/decline. Wait, sender might cancel. We'll allow either sender/receiver.
+    if (msg.sender.toString() !== req.userId && msg.receiver.toString() !== req.userId) {
+      return res.status(403).json({ error: "Unauthorized" });
+    }
+
+    let parsed;
+    try {
+      parsed = JSON.parse(msg.content);
+      if (!parsed.isProposal) throw new Error("Not a proposal");
+    } catch(e) {
+      return res.status(400).json({ error: "Message is not a proposal" });
+    }
+
+    parsed.status = status;
+    msg.content = JSON.stringify(parsed);
+    await msg.save();
+    
+    res.json({ ok: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to update proposal" });
+  }
+});
