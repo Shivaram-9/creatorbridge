@@ -47,7 +47,7 @@ export default function ViewProposalModal({ proposalData, onClose, onAccept, onD
           </button>
         </div>
 
-        <div className="proposal-modal-body">
+        <div className="proposal-modal-body" style={{ flexDirection: 'column', padding: '24px', overflowY: 'auto' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', padding: '8px 12px', background: 'rgba(245, 158, 11, 0.1)', borderRadius: '8px' }}>
             <span style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-muted)' }}>Status:</span>
             <span style={{ fontSize: '14px', fontWeight: '700', color: data.status === 'Accepted' ? '#10b981' : (data.status === 'Declined' ? '#ef4444' : '#f59e0b') }}>
@@ -55,21 +55,21 @@ export default function ViewProposalModal({ proposalData, onClose, onAccept, onD
             </span>
           </div>
 
-          <div className="form-group">
+          <div className="proposal-form-group">
             <label>Title</label>
             <p style={{ margin: '4px 0', fontSize: '15px', fontWeight: '500', color: 'var(--text-main)' }}>
               {data.title || 'Content Campaign'}
             </p>
           </div>
 
-          <div className="form-group">
+          <div className="proposal-form-group">
             <label>Description</label>
             <p style={{ margin: '4px 0', fontSize: '14px', lineHeight: '1.6', color: 'var(--text-muted)' }}>
               {data.description || 'No description provided.'}
             </p>
           </div>
 
-          <div className="form-group">
+          <div className="proposal-form-group">
             <label>Deliverables</label>
             <ul style={{ paddingLeft: '20px', margin: '4px 0', fontSize: '14px', color: 'var(--text-main)' }}>
               {data.deliverables && data.deliverables.length > 0 ? (
@@ -84,15 +84,15 @@ export default function ViewProposalModal({ proposalData, onClose, onAccept, onD
             </ul>
           </div>
 
-          <div className="form-row">
-            <div className="form-group">
+          <div className="proposal-row">
+            <div className="proposal-form-group">
               <label>Timeline</label>
               <p style={{ margin: '4px 0', fontSize: '14px', fontWeight: '500', color: 'var(--text-main)' }}>
                 {data.timeline === 'Custom' ? 'Custom Date' : (data.timeline || 'Flexible')}
               </p>
             </div>
             
-            <div className="form-group">
+            <div className="proposal-form-group">
               <label>Budget</label>
               <p style={{ margin: '4px 0', fontSize: '14px', fontWeight: '700', color: 'var(--text-main)' }}>
                 {currentBudget} <span style={{ fontSize: '12px', fontWeight: 'normal', color: 'var(--text-muted)' }}>({data.budgetType || 'Fixed'})</span>
@@ -106,7 +106,7 @@ export default function ViewProposalModal({ proposalData, onClose, onAccept, onD
           </div>
 
           {data.notes && (
-            <div className="form-group">
+            <div className="proposal-form-group">
               <label>Additional Notes</label>
               <p style={{ margin: '4px 0', fontSize: '14px', lineHeight: '1.5', color: 'var(--text-muted)' }}>
                 {data.notes}
@@ -115,7 +115,7 @@ export default function ViewProposalModal({ proposalData, onClose, onAccept, onD
           )}
 
           {data.negotiationHistory && data.negotiationHistory.length > 0 && (
-            <div className="form-group" style={{ marginTop: '24px', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '16px' }}>
+            <div className="proposal-form-group" style={{ marginTop: '24px', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '16px' }}>
               <label style={{ color: '#f59e0b' }}>Negotiation History</label>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '8px' }}>
                 {data.negotiationHistory.map((history, idx) => (
@@ -140,17 +140,17 @@ export default function ViewProposalModal({ proposalData, onClose, onAccept, onD
           )}
           
           {data.declineReason && (
-            <div className="form-group" style={{ marginTop: '16px', padding: '12px', background: 'rgba(239, 68, 68, 0.1)', borderRadius: '8px' }}>
+            <div className="proposal-form-group" style={{ marginTop: '16px', padding: '12px', background: 'rgba(239, 68, 68, 0.1)', borderRadius: '8px' }}>
               <label style={{ color: '#ef4444' }}>Decline Reason</label>
               <p style={{ margin: '4px 0 0', fontSize: '13px', color: 'var(--text-main)' }}>{data.declineReason}</p>
             </div>
           )}
 
           {showCounterForm && (
-            <div className="form-group" style={{ marginTop: '24px', padding: '16px', background: 'var(--bg-secondary)', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+            <div className="proposal-form-group" style={{ marginTop: '24px', padding: '16px', background: 'var(--bg-secondary)', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
               <h3 style={{ margin: '0 0 16px 0', fontSize: '15px', color: 'var(--text-main)' }}>Make a Counter Offer</h3>
               
-              <div className="form-group">
+              <div className="proposal-form-group">
                 <label>New Budget ({currencySymbol})</label>
                 <input 
                   type="number" 
@@ -161,7 +161,7 @@ export default function ViewProposalModal({ proposalData, onClose, onAccept, onD
                 />
               </div>
 
-              <div className="form-group">
+              <div className="proposal-form-group">
                 <label>Message (Optional)</label>
                 <textarea 
                   className="proposal-form-input" 
