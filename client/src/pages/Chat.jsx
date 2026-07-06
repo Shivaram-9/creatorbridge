@@ -174,6 +174,10 @@ export default function Chat({ standalone = true }) {
       }
     } catch (e) {}
 
+    if (!isProposal && (text.includes("Would you be interested in discussing a potential collaboration?") || text.includes("Interested in Collaborating") || text.includes("Interested to Collaborate") || text.includes("Collaboration Proposal"))) {
+      isProposal = true;
+    }
+
     if (isProposal) {
       return (
         <div style={{ background: 'rgba(245, 158, 11, 0.1)', padding: '16px', borderRadius: '12px', border: '1px solid rgba(245, 158, 11, 0.2)', maxWidth: '400px' }}>
