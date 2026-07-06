@@ -170,18 +170,22 @@ export default function Messages() {
               >
                 <div style={{ position: 'relative' }}>
                   <Avatar user={conv.partner} size="md" />
-                  {conv.unreadCount > 0 && (
-                    <span style={{ position: 'absolute', top: '-2px', right: '-2px', width: '12px', height: '12px', background: 'var(--primary)', border: '2px solid white', borderRadius: '50%' }}></span>
-                  )}
                 </div>
-                <div className="chat-item-info">
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '2px' }}>
+                <div className="chat-item-info" style={{ display: 'flex', flexDirection: 'column', flex: 1, gap: '4px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <span className="chat-item-name">{conv.partner?.name || conv.partner?.username || "Unknown User"}</span>
-                    <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{conv.lastMessage?.createdAt ? formatTime(conv.lastMessage.createdAt) : ""}</span>
+                    <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{conv.lastMessage?.createdAt ? formatTime(conv.lastMessage.createdAt) : ""}</span>
                   </div>
-                  <p className="chat-item-preview" style={{ fontWeight: conv.unreadCount > 0 ? '700' : '400', color: conv.unreadCount > 0 ? 'var(--text-main)' : 'var(--text-muted)' }}>
-                    {conv.lastMessage?.content || (conv.lastMessage?.media ? "📷 Photo" : "Media")}
-                  </p>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <p className="chat-item-preview" style={{ fontWeight: conv.unreadCount > 0 ? '600' : '400', color: conv.unreadCount > 0 ? 'var(--text-main)' : 'var(--text-muted)', flex: 1, paddingRight: '8px' }}>
+                      {conv.lastMessage?.content || (conv.lastMessage?.media ? "📷 Photo" : "Media")}
+                    </p>
+                    {conv.unreadCount > 0 && (
+                      <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: '18px', height: '18px', padding: '0 4px', background: 'var(--primary)', color: 'white', fontSize: '10px', fontWeight: 'bold', borderRadius: '9px' }}>
+                        {conv.unreadCount}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
             ))
