@@ -658,7 +658,7 @@ export default function Chat({ standalone = true }) {
         <div style={{ display: 'flex', gap: '10px', overflowX: 'auto', padding: '16px 24px 8px' }} className="hide-scrollbar">
           <button 
             type="button" 
-            onClick={() => handleAutoReply("Would you be interested in discussing a potential collaboration?")}
+            onClick={() => setShowProposalModal(true)}
             style={{ whiteSpace: 'nowrap', padding: '8px 16px', background: 'var(--bg-card)', border: '1px solid var(--border-light)', borderRadius: '20px', fontSize: '13px', fontWeight: '600', color: 'var(--text-main)', cursor: 'pointer', transition: 'all 0.2s ease', display: 'flex', alignItems: 'center', gap: '6px' }}
             onMouseOver={(e) => { e.currentTarget.style.background = 'var(--bg-secondary)'; e.currentTarget.style.borderColor = 'var(--primary)'; }}
             onMouseOut={(e) => { e.currentTarget.style.background = 'var(--bg-card)'; e.currentTarget.style.borderColor = 'var(--border-light)'; }}
