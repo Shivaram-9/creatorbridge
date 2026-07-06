@@ -1,23 +1,35 @@
 .splash-container {
   width: 100%;
   height: 100vh;
-  background: #ffffff;
+  background: var(--bg-main, #ffffff);
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden;
 }
 
-.splash-picture {
+.splash-video {
   width: 100%;
   height: 100%;
+  object-fit: contain;
+  animation: splashZoomFade 2.5s ease-out forwards;
 }
 
-.splash-full-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  animation: splashZoomFade 2.5s ease-out forwards;
+.mobile-video {
+  display: block;
+}
+
+.desktop-video {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .mobile-video {
+    display: none;
+  }
+  .desktop-video {
+    display: block;
+  }
 }
 
 @keyframes splashZoomFade {
