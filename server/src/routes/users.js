@@ -714,8 +714,20 @@ usersRouter.post("/change-password", async (req, res) => {
     if (!currentPassword || !newPassword) {
       return res.status(400).json({ error: "Current password and new password are required" });
     }
-    if (newPassword.length < 6) {
-      return res.status(400).json({ error: "New password must be at least 6 characters" });
+    if (newPassword.length < 8) {
+      return res.status(400).json({ error: "New password must be at least 8 characters" });
+    }
+    if (!/[A-Z]/.test(newPassword)) {
+      return res.status(400).json({ error: "New password must contain at least one uppercase letter" });
+    }
+    if (!/[a-z]/.test(newPassword)) {
+      return res.status(400).json({ error: "New password must contain at least one lowercase letter" });
+    }
+    if (!/[0-9]/.test(newPassword)) {
+      return res.status(400).json({ error: "New password must contain at least one number" });
+    }
+    if (!/[^A-Za-z0-9]/.test(newPassword)) {
+      return res.status(400).json({ error: "New password must contain at least one special character" });
     }
 
     const user = await User.findById(req.userId);

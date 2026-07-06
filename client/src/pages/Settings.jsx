@@ -163,8 +163,24 @@ export default function Settings() {
       setPasswordError("New passwords do not match");
       return;
     }
-    if (newPassword.length < 6) {
-      setPasswordError("New password must be at least 6 characters");
+    if (newPassword.length < 8) {
+      setPasswordError("New password must be at least 8 characters");
+      return;
+    }
+    if (!/[A-Z]/.test(newPassword)) {
+      setPasswordError("New password must contain at least one uppercase letter");
+      return;
+    }
+    if (!/[a-z]/.test(newPassword)) {
+      setPasswordError("New password must contain at least one lowercase letter");
+      return;
+    }
+    if (!/[0-9]/.test(newPassword)) {
+      setPasswordError("New password must contain at least one number");
+      return;
+    }
+    if (!/[^A-Za-z0-9]/.test(newPassword)) {
+      setPasswordError("New password must contain at least one special character");
       return;
     }
     setActionLoading(true);
@@ -697,7 +713,7 @@ export default function Settings() {
                         />
                       </div>
                       <div className="field">
-                        <label>New Password <span>(At least 6 characters)</span></label>
+                        <label>New Password <span>(Min 8 chars, A-Z, a-z, 0-9, special char)</span></label>
                         <input 
                           type="password" 
                           className="input" 

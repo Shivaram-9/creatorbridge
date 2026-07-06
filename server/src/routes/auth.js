@@ -6,6 +6,7 @@ import { User } from "../models/User.js";
 import { Session } from "../models/Session.js";
 import { SecurityAlert } from "../models/SecurityAlert.js";
 import { EmailService } from "../services/EmailService.js";
+import { authLimiter } from "../middleware/security.js";
 
 import crypto from "crypto";
 
@@ -158,6 +159,7 @@ authRouter.post(
 // Forgot Password
 authRouter.post(
   "/forgot-password",
+  authLimiter,
   [body("email").isEmail().withMessage("Valid email is required").normalizeEmail(), validate],
   async (req, res) => {
     try {
@@ -191,7 +193,16 @@ authRouter.post(
 // Reset Password
 authRouter.post(
   "/reset-password/:token",
-  [body("password").isLength({ min: 6 }).withMessage("Password must be at least 6 characters"), validate],
+  authLimiter,
+  [
+    body("password")
+      .isLength({ min: 8 }).withMessage("Password must be at least 8 characters")
+      .matches(/[A-Z]/).withMessage("Password must contain at least one uppercase letter")
+      .matches(/[a-z]/).withMessage("Password must contain at least one lowercase letter")
+      .matches(/[0-9]/).withMessage("Password must contain at least one number")
+      .matches(/[^A-Za-z0-9]/).withMessage("Password must contain at least one special character"),
+    validate
+  ],
   async (req, res) => {
     try {
       const resetPasswordToken = crypto.createHash("sha256").update(req.params.token).digest("hex");
