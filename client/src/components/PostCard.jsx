@@ -209,6 +209,8 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
           <div className="ml-3">
              <VerifiedUserDisplay 
                 user={post.user}
+                appendedLabel={<span>• {new Date(post.createdAt).toLocaleDateString()}</span>}
+                unverifiedLabel={`${post.user?.role === 'brand' ? 'Brand' : 'Creator'}${post.user?.category ? ` / ${post.user.category}` : ''}`}
                 nameComponent={
                   <h3 
                     className={`font-bold text-[15px] cursor-pointer transition-colors ${
@@ -222,16 +224,6 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
                   </h3>
                 }
              />
-            <div className="text-sm text-slate-500 dark:text-slate-400">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                {!(post.user?.isVerified || post.user?.isPremium) && (
-                  <span style={{ textTransform: 'capitalize' }}>
-                    {`${post.user?.role === 'brand' ? 'Brand' : 'Creator'}${post.user?.category ? ` / ${post.user.category}` : ''}`}
-                  </span>
-                )}
-                <span>• {new Date(post.createdAt).toLocaleDateString()}</span>
-              </div>
-            </div>
           </div>
         </div>
 

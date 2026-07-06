@@ -5,7 +5,9 @@ export default function VerifiedUserDisplay({
   user, 
   nameComponent, // For passing in custom H1 or H3 elements if needed
   showLabel = true, 
-  className = ''
+  className = '',
+  appendedLabel = null, // e.g. <span>• 5/25/2026</span>
+  unverifiedLabel = null // Fallback text when unverified
 }) {
   if (!user) return null;
 
@@ -26,16 +28,30 @@ export default function VerifiedUserDisplay({
       {/* Verification Label & Divider */}
       {isVerified && showLabel && (
         <div style={{ marginTop: '4px', marginBottom: '12px', display: 'inline-flex', flexDirection: 'column' }}>
-          <span style={{ 
-            color: textColor, 
-            fontSize: '13px', 
-            fontWeight: '600', 
-            letterSpacing: '0.2px',
-            marginBottom: '6px'
-          }}>
-            {labelText}
-          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
+            <span style={{ 
+              color: textColor, 
+              fontSize: '13px', 
+              fontWeight: '600', 
+              letterSpacing: '0.2px'
+            }}>
+              {labelText}
+            </span>
+            {appendedLabel && <div className="text-sm text-slate-500 dark:text-slate-400">{appendedLabel}</div>}
+          </div>
           <div className="bg-[#E5E5E5] dark:bg-[#2A2A2A]" style={{ height: '1px', width: '100%' }}></div>
+        </div>
+      )}
+
+      {/* Unverified Fallback */}
+      {!isVerified && (unverifiedLabel || appendedLabel) && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px', marginBottom: '12px' }}>
+          {unverifiedLabel && (
+            <span className="text-sm text-slate-500 dark:text-slate-400" style={{ textTransform: 'capitalize' }}>
+              {unverifiedLabel}
+            </span>
+          )}
+          {appendedLabel && <div className="text-sm text-slate-500 dark:text-slate-400">{appendedLabel}</div>}
         </div>
       )}
     </div>
