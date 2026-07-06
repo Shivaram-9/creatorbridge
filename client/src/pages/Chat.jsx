@@ -471,6 +471,19 @@ export default function Chat({ standalone = true }) {
 
           const mediaUrl = getMediaUrl(media);
 
+          const isProposal = m.content && (m.content.includes("Collaboration Proposal") || m.content.includes("Interested to Collaborate"));
+          const senderRole = isMine ? user?.role : (partner?.role || 'Creator');
+          const isCreator = senderRole?.toLowerCase() === 'creator';
+          const isBrand = senderRole?.toLowerCase() === 'brand';
+          
+          let bubbleBg = isCreator ? 'rgba(37, 99, 235, 0.1)' : (isBrand ? 'rgba(245, 158, 11, 0.1)' : 'var(--bg-card)');
+          let bubbleBorder = isCreator ? '1px solid rgba(37, 99, 235, 0.2)' : (isBrand ? '1px solid rgba(245, 158, 11, 0.2)' : '1px solid var(--border-light)');
+          
+          if (isProposal) {
+            bubbleBg = 'transparent';
+            bubbleBorder = 'none';
+          }
+
           return (
             <div key={m._id || idx} style={{ display: 'flex', justifyContent: isMine ? 'flex-end' : 'flex-start', marginBottom: '16px', padding: '0 16px' }}>
               <div style={{ 
@@ -479,10 +492,10 @@ export default function Chat({ standalone = true }) {
                 borderRadius: '16px', 
                 borderBottomRightRadius: isMine ? '4px' : '16px', 
                 borderBottomLeftRadius: isMine ? '16px' : '4px', 
-                background: (m.content && (m.content.includes("Collaboration Proposal") || m.content.includes("Interested to Collaborate"))) ? 'transparent' : (isMine ? 'rgba(37, 99, 235, 0.1)' : 'var(--bg-card)'), 
+                background: bubbleBg, 
                 color: 'var(--text-main)',
-                border: (m.content && (m.content.includes("Collaboration Proposal") || m.content.includes("Interested to Collaborate"))) ? 'none' : (isMine ? '1px solid rgba(37, 99, 235, 0.2)' : '1px solid var(--border-light)'),
-                boxShadow: (m.content && (m.content.includes("Collaboration Proposal") || m.content.includes("Interested to Collaborate"))) ? 'none' : '0 1px 2px rgba(0,0,0,0.02)',
+                border: bubbleBorder,
+                boxShadow: isProposal ? 'none' : '0 1px 2px rgba(0,0,0,0.02)',
                 display: 'flex',
                 flexDirection: 'column',
                 position: 'relative',
