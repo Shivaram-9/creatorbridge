@@ -1,6 +1,6 @@
 import React from 'react';
-import creatorBadge from '../assets/creator_badge_v2.jpeg';
-import brandBadge from '../assets/brand_badge_v2.jpeg';
+import creatorBadge from '../assets/creator_badge.png';
+import brandBadge from '../assets/brand_badge.png';
 
 /**
  * VerifiedBadge - A clean, modern Instagram/X style verified tick
@@ -22,7 +22,7 @@ export default function VerifiedBadge({ role = 'influencer', style = {}, classNa
         flexShrink: 0,
         verticalAlign: 'middle',
         position: 'relative',
-        top: '2px', // Fine-tune vertical centering for larger badge
+        top: '-1px', // Return to original vertical centering
         ...style
       }}
     >
@@ -32,8 +32,8 @@ export default function VerifiedBadge({ role = 'influencer', style = {}, classNa
         loading="lazy"
         decoding="async" 
         style={{ 
-          width: '28px', 
-          height: '28px', 
+          width: '18px', 
+          height: '18px', 
           display: 'block', 
           objectFit: 'contain',
           pointerEvents: 'none'
