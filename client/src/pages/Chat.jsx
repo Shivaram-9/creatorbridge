@@ -127,38 +127,38 @@ export default function Chat({ standalone = true }) {
   const renderMessageContent = (text, isMine) => {
     if (text === "Would you be interested in discussing a potential collaboration?" || text.includes("Interested in Collaborating") || text.includes("Interested to Collaborate") || text.includes("Collaboration Proposal")) {
       return (
-        <div style={{ display: 'flex', flexDirection: 'column', width: '100%', minWidth: '320px', background: isMine ? 'rgba(255,255,255,0.1)' : '#fffbf2', borderRadius: '12px', padding: '16px', border: isMine ? '1px solid rgba(255,255,255,0.2)' : '1px solid #fef3c7' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', width: '100%', minWidth: '320px', background: 'rgba(245, 158, 11, 0.1)', borderRadius: '12px', padding: '16px', border: '1px solid rgba(245, 158, 11, 0.2)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <div style={{ padding: '8px', background: isMine ? 'rgba(255,255,255,0.2)' : '#fcd34d', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke={isMine ? 'white' : '#b45309'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              <div style={{ padding: '8px', background: 'rgba(245, 158, 11, 0.2)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#d97706" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <span style={{ fontWeight: '600', fontSize: '12px', color: isMine ? 'rgba(255,255,255,0.8)' : '#92400e', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Collaboration Proposal</span>
-                <span style={{ fontWeight: '700', fontSize: '15px', color: isMine ? 'white' : '#1e293b' }}>Content Campaign</span>
+                <span style={{ fontWeight: '600', fontSize: '12px', color: '#b45309', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Collaboration Proposal</span>
+                <span style={{ fontWeight: '700', fontSize: '15px', color: 'var(--text-main)' }}>Content Campaign</span>
               </div>
             </div>
-            <span style={{ padding: '4px 10px', background: isMine ? 'rgba(255,255,255,0.2)' : '#fef3c7', color: isMine ? 'white' : '#d97706', borderRadius: '12px', fontSize: '11px', fontWeight: '700', textTransform: 'uppercase' }}>
+            <span style={{ padding: '4px 10px', background: 'rgba(245, 158, 11, 0.2)', color: '#d97706', borderRadius: '12px', fontSize: '11px', fontWeight: '700', textTransform: 'uppercase' }}>
               Pending
             </span>
           </div>
 
-          <p style={{ fontSize: '14px', lineHeight: '1.5', color: isMine ? 'rgba(255,255,255,0.9)' : '#475569', marginBottom: '16px' }}>
+          <p style={{ fontSize: '14px', lineHeight: '1.5', color: 'var(--text-main)', marginBottom: '16px' }}>
             {text.replace("👉 ", "")}
           </p>
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: isMine ? '1px solid rgba(255,255,255,0.1)' : '1px solid #fde68a', borderBottom: isMine ? '1px solid rgba(255,255,255,0.1)' : '1px solid #fde68a', padding: '12px 0', marginBottom: '16px' }}>
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', borderRight: isMine ? '1px solid rgba(255,255,255,0.1)' : '1px solid #fde68a' }}>
-              <span style={{ fontSize: '11px', color: isMine ? 'rgba(255,255,255,0.7)' : '#94a3b8', fontWeight: '600', marginBottom: '4px' }}>Deliverables</span>
-              <span style={{ fontSize: '13px', color: isMine ? 'white' : '#1e293b', fontWeight: '500' }}>To Be Discussed</span>
+          <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(245, 158, 11, 0.2)', borderBottom: '1px solid rgba(245, 158, 11, 0.2)', padding: '12px 0', marginBottom: '16px' }}>
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', borderRight: '1px solid rgba(245, 158, 11, 0.2)' }}>
+              <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: '600', marginBottom: '4px' }}>Deliverables</span>
+              <span style={{ fontSize: '13px', color: 'var(--text-main)', fontWeight: '500' }}>To Be Discussed</span>
             </div>
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', paddingLeft: '16px', borderRight: isMine ? '1px solid rgba(255,255,255,0.1)' : '1px solid #fde68a' }}>
-              <span style={{ fontSize: '11px', color: isMine ? 'rgba(255,255,255,0.7)' : '#94a3b8', fontWeight: '600', marginBottom: '4px' }}>Timeline</span>
-              <span style={{ fontSize: '13px', color: isMine ? 'white' : '#1e293b', fontWeight: '500' }}>Flexible</span>
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', paddingLeft: '16px', borderRight: '1px solid rgba(245, 158, 11, 0.2)' }}>
+              <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: '600', marginBottom: '4px' }}>Timeline</span>
+              <span style={{ fontSize: '13px', color: 'var(--text-main)', fontWeight: '500' }}>Flexible</span>
             </div>
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', paddingLeft: '16px' }}>
-              <span style={{ fontSize: '11px', color: isMine ? 'rgba(255,255,255,0.7)' : '#94a3b8', fontWeight: '600', marginBottom: '4px' }}>Budget</span>
-              <span style={{ fontSize: '13px', color: isMine ? 'white' : '#1e293b', fontWeight: '500' }}>Negotiable</span>
+              <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: '600', marginBottom: '4px' }}>Budget</span>
+              <span style={{ fontSize: '13px', color: 'var(--text-main)', fontWeight: '500' }}>Negotiable</span>
             </div>
           </div>
 
@@ -166,7 +166,7 @@ export default function Chat({ standalone = true }) {
             <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
               <button 
                 onClick={() => handleAutoReply("Thank you for the proposal! I'm interested. Let's discuss the details.")}
-                style={{ padding: '10px 20px', background: 'var(--primary)', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: '600', transition: 'all 0.2s', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}
+                style={{ padding: '10px 20px', background: '#f59e0b', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: '600', transition: 'all 0.2s', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}
                 onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-1px)'}
                 onMouseOut={(e) => e.currentTarget.style.transform = 'none'}
               >
@@ -479,10 +479,10 @@ export default function Chat({ standalone = true }) {
                 borderRadius: '16px', 
                 borderBottomRightRadius: isMine ? '4px' : '16px', 
                 borderBottomLeftRadius: isMine ? '16px' : '4px', 
-                background: isMine ? 'var(--primary)' : '#f8fafc', 
-                color: isMine ? '#ffffff' : 'var(--text-main)',
-                border: isMine ? 'none' : '1px solid #e2e8f0',
-                boxShadow: isMine ? '0 2px 8px rgba(0,0,0,0.1)' : '0 1px 2px rgba(0,0,0,0.02)',
+                background: (m.content && (m.content.includes("Collaboration Proposal") || m.content.includes("Interested to Collaborate"))) ? 'transparent' : (isMine ? 'var(--primary)' : 'var(--bg-card)'), 
+                color: (m.content && (m.content.includes("Collaboration Proposal") || m.content.includes("Interested to Collaborate"))) ? 'var(--text-main)' : (isMine ? '#ffffff' : 'var(--text-main)'),
+                border: (m.content && (m.content.includes("Collaboration Proposal") || m.content.includes("Interested to Collaborate"))) ? 'none' : (isMine ? 'none' : '1px solid var(--border-light)'),
+                boxShadow: (m.content && (m.content.includes("Collaboration Proposal") || m.content.includes("Interested to Collaborate"))) ? 'none' : (isMine ? '0 2px 8px rgba(0,0,0,0.1)' : '0 1px 2px rgba(0,0,0,0.02)'),
                 display: 'flex',
                 flexDirection: 'column',
                 position: 'relative',
@@ -575,19 +575,6 @@ export default function Chat({ standalone = true }) {
             style={{ whiteSpace: 'nowrap', padding: '8px 16px', background: 'var(--bg-card)', border: '1px solid var(--border-light)', borderRadius: '20px', fontSize: '13px', fontWeight: '600', color: 'var(--text-main)', cursor: 'pointer', transition: 'all 0.2s ease', display: 'flex', alignItems: 'center', gap: '6px' }}
           >
             📁 Send Portfolio
-          </button>
-          <button 
-            type="button" 
-            style={{ whiteSpace: 'nowrap', padding: '8px 16px', background: 'var(--bg-card)', border: '1px solid var(--border-light)', borderRadius: '20px', fontSize: '13px', fontWeight: '600', color: 'var(--text-main)', cursor: 'pointer', transition: 'all 0.2s ease', display: 'flex', alignItems: 'center', gap: '6px' }}
-          >
-            👤 Share Profile
-          </button>
-          <button 
-            type="button" 
-            onClick={() => fileInputRef.current?.click()}
-            style={{ whiteSpace: 'nowrap', padding: '8px 16px', background: 'var(--bg-card)', border: '1px solid var(--border-light)', borderRadius: '20px', fontSize: '13px', fontWeight: '600', color: 'var(--text-main)', cursor: 'pointer', transition: 'all 0.2s ease', display: 'flex', alignItems: 'center', gap: '6px' }}
-          >
-            🖼️ Media
           </button>
         </div>
 
