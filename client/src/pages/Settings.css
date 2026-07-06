@@ -797,14 +797,14 @@
 }
 
 .btn-group .btn-primary {
-  background: var(--bg-secondary);
-  color: var(--bg-card);
-  border: 1px solid var(--border-light);
+  background: var(--primary, #0095f6);
+  color: #ffffff;
+  border: 1px solid transparent;
 }
 
 .btn-group .btn-primary:hover {
-  background: var(--bg-secondary);
-  border-color: var(--text-main);
+  background: var(--primary-dark, #007bb5);
+  opacity: 0.9;
 }
 
 .btn-group .btn-outline {
