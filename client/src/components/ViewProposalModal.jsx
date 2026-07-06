@@ -2,7 +2,14 @@ import React from 'react';
 import './CollaborationProposalModal.css';
 
 export default function ViewProposalModal({ proposalData, onClose, onAccept, onDecline, isReceiver, partnerName }) {
-  if (!proposalData) return null;
+  const data = proposalData || {
+    title: 'Content Campaign',
+    description: 'Would you be interested in discussing a potential collaboration?',
+    deliverables: [],
+    timeline: 'Flexible',
+    budget: null,
+    notes: 'This is a legacy text-based proposal.'
+  };
 
   return (
     <div className="proposal-modal-overlay" onClick={onClose}>
@@ -18,22 +25,22 @@ export default function ViewProposalModal({ proposalData, onClose, onAccept, onD
           <div className="form-group">
             <label>Title</label>
             <p style={{ margin: '4px 0', fontSize: '15px', fontWeight: '500', color: 'var(--text-main)' }}>
-              {proposalData.title || 'Content Campaign'}
+              {data.title || 'Content Campaign'}
             </p>
           </div>
 
           <div className="form-group">
             <label>Description</label>
             <p style={{ margin: '4px 0', fontSize: '14px', lineHeight: '1.6', color: 'var(--text-muted)' }}>
-              {proposalData.description || 'No description provided.'}
+              {data.description || 'No description provided.'}
             </p>
           </div>
 
           <div className="form-group">
             <label>Deliverables</label>
             <ul style={{ paddingLeft: '20px', margin: '4px 0', fontSize: '14px', color: 'var(--text-main)' }}>
-              {proposalData.deliverables && proposalData.deliverables.length > 0 ? (
-                proposalData.deliverables.map((d, idx) => (
+              {data.deliverables && data.deliverables.length > 0 ? (
+                data.deliverables.map((d, idx) => (
                   <li key={idx} style={{ marginBottom: '4px' }}>
                     <strong>{d.quantity}x</strong> {d.name}
                   </li>
@@ -48,32 +55,32 @@ export default function ViewProposalModal({ proposalData, onClose, onAccept, onD
             <div className="form-group">
               <label>Timeline</label>
               <p style={{ margin: '4px 0', fontSize: '14px', fontWeight: '500', color: 'var(--text-main)' }}>
-                {proposalData.timeline === 'Custom' ? 'Custom Date' : (proposalData.timeline || 'Flexible')}
+                {data.timeline === 'Custom' ? 'Custom Date' : (data.timeline || 'Flexible')}
               </p>
             </div>
             
             <div className="form-group">
               <label>Budget</label>
               <p style={{ margin: '4px 0', fontSize: '14px', fontWeight: '500', color: 'var(--text-main)' }}>
-                {proposalData.budget 
-                  ? `${proposalData.currency === 'INR' ? '₹' : (proposalData.currency === 'USD' ? '$' : '€')}${proposalData.budget} (${proposalData.budgetType || 'Fixed'})`
+                {data.budget 
+                  ? `${data.currency === 'INR' ? '₹' : (data.currency === 'USD' ? '$' : '€')}${data.budget} (${data.budgetType || 'Fixed'})`
                   : 'Negotiable'}
               </p>
             </div>
           </div>
 
-          {proposalData.notes && (
+          {data.notes && (
             <div className="form-group">
               <label>Additional Notes</label>
               <p style={{ margin: '4px 0', fontSize: '14px', lineHeight: '1.5', color: 'var(--text-muted)' }}>
-                {proposalData.notes}
+                {data.notes}
               </p>
             </div>
           )}
         </div>
 
         <div className="proposal-modal-footer">
-          {isReceiver && proposalData.status === "Pending" ? (
+          {isReceiver && data.status === "Pending" ? (
             <>
               <button className="btn btn-outline" onClick={onDecline} style={{ color: 'var(--text-muted)', border: 'none' }}>Decline</button>
               <button className="btn btn-primary" onClick={onAccept} style={{ background: '#10b981', borderColor: '#10b981' }}>Accept Proposal</button>
