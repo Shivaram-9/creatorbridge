@@ -644,7 +644,6 @@ usersRouter.get("/discover/related-suggestions", async (req, res) => {
 
     // 2. Related Categories
     if (me.category && userMap.size < 5) {
-      const Category = require("../models/Category");
       const myCatDoc = await Category.findOne({ name: new RegExp('^' + me.category.replace(/[.*+?^${}()|[\\]\\\\]/g, "\\\\$&") + '$', 'i') });
       if (myCatDoc) {
         let relatedNames = [];

@@ -315,7 +315,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="border-t border-slate-100 dark:border-[#262626]/50 my-4"></div>
+          <div className="border-t border-slate-100 dark:border-[#262626]/50 my-3"></div>
 
           {/* Related Suggestions Section */}
           <div className="pt-2">
@@ -356,7 +356,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="border-t border-slate-100 dark:border-[#262626]/50 my-4"></div>
+          <div className="border-t border-slate-100 dark:border-[#262626]/50 my-3"></div>
 
           <button onClick={() => navigate('/discover')} className="w-full text-center text-sm font-semibold text-slate-700 dark:text-slate-400 hover:text-slate-900 dark:text-white dark:hover:text-slate-200 transition-colors">
             View all recommendations
