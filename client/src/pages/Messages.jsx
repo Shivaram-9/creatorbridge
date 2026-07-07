@@ -178,7 +178,7 @@ export default function Messages() {
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <p className="chat-item-preview" style={{ fontWeight: conv.unreadCount > 0 ? '600' : '400', color: conv.unreadCount > 0 ? 'var(--text-main)' : 'var(--text-muted)', flex: 1, paddingRight: '8px' }}>
-                      {conv.lastMessage?.content || (conv.lastMessage?.media ? "📷 Photo" : "Media")}
+                      {conv.lastMessage?.content ? conv.lastMessage.content.replace(/❌|✅/g, '').replace(/^\[System\]\s*/, '') : (conv.lastMessage?.media ? "📷 Photo" : "Media")}
                     </p>
                     {conv.unreadCount > 0 && (
                       <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: '18px', height: '18px', padding: '0 4px', background: 'var(--primary)', color: 'white', fontSize: '10px', fontWeight: 'bold', borderRadius: '9px' }}>

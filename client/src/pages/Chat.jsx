@@ -234,6 +234,11 @@ export default function Chat({ standalone = true }) {
   };
 
   const renderMessageContent = (text, isMine, msgId) => {
+    if (!text) return null;
+    
+    // Clean up any legacy emojis from old system messages in the database
+    text = text.replace(/❌/g, '').replace(/✅/g, '').trim();
+
     let isProposal = false;
     let proposalData = null;
     try {
