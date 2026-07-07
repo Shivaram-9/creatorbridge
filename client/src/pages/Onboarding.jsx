@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 import { api } from "../services/api.js";
+import { BASE_URL } from "../config/api.js";
 import ErrorBanner from "../components/ErrorBanner.jsx";
 import "./Onboarding.css";
 
@@ -29,7 +30,7 @@ export default function Onboarding() {
   useEffect(() => {
     async function loadCategories() {
       try {
-        const res = await fetch("/api/categories/onboarding");
+        const res = await fetch(`${BASE_URL}/api/categories/onboarding`);
         if (res.ok) {
           const data = await res.json();
           setDbCategories(data.map(c => c.name));

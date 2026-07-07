@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, useRef } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 import { api } from "../services/api.js";
+import { BASE_URL } from "../config/api.js";
 import UserCard from "../components/UserCard.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import ErrorBanner from "../components/ErrorBanner.jsx";
@@ -37,7 +38,7 @@ export default function CategorySearch() {
     // Fetch all categories (master + subcategories) to support search
     async function loadCategories() {
       try {
-        const res = await fetch("/api/categories/onboarding");
+        const res = await fetch(`${BASE_URL}/api/categories/onboarding`);
         const data = await res.json();
         // Robust fallback in case data is array of strings (legacy) or objects
         const parsed = data.map(c => typeof c === 'string' ? { name: c, parent: null } : c);

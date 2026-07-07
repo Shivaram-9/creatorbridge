@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../services/api.js";
+import { BASE_URL } from "../config/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import { CITIES } from "../constants/cities.js";
 import Avatar from "../components/Avatar.jsx";
@@ -22,7 +23,7 @@ export default function EditProfile() {
   useEffect(() => {
     async function fetchCategories() {
       try {
-        const res = await fetch("/api/categories/onboarding");
+        const res = await fetch(`${BASE_URL}/api/categories/onboarding`);
         const data = await res.json();
         setDbCategories(data.map(c => c.name));
       } catch (err) {

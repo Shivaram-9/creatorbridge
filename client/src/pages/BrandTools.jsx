@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { api } from "../services/api.js";
+import { BASE_URL } from "../config/api.js";
 import Avatar from "../components/Avatar.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import ErrorBanner from "../components/ErrorBanner.jsx";
@@ -24,7 +25,7 @@ export default function BrandTools() {
   useEffect(() => {
     async function loadCategories() {
       try {
-        const res = await fetch("/api/categories/discovery");
+        const res = await fetch(`${BASE_URL}/api/categories/discovery`);
         const data = await res.json();
         setDbCategories(data.map(c => c.name));
       } catch (err) {

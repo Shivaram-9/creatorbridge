@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 import { api } from "../services/api.js";
+import { BASE_URL } from "../config/api.js";
 import UserCard from "../components/UserCard.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import ErrorBanner from "../components/ErrorBanner.jsx";
@@ -62,7 +63,7 @@ export default function Discover() {
         setAllUsers(Array.isArray(all) ? all : []);
         
         try {
-          const res = await fetch("/api/categories/discovery");
+          const res = await fetch(`${BASE_URL}/api/categories/discovery`);
           if (res.ok) {
             const data = await res.json();
             setDbCategories(data.map(c => c.name));
@@ -90,7 +91,7 @@ export default function Discover() {
         setDiscovery(data);
         setAllUsers(Array.isArray(all) ? all : []);
 
-        const catRes = await fetch("/api/categories/discovery");
+        const catRes = await fetch(`${BASE_URL}/api/categories/discovery`);
         if (catRes.ok) {
           const catData = await catRes.json();
           setDbCategories(catData.map(c => c.name));
