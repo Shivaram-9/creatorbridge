@@ -121,7 +121,7 @@ export default function Chat({ standalone = true }) {
       });
       if (msg && msg._id) {
         setMessages(prev => {
-          if (prev.some(m => m._id === msg._id)) return prev;
+          if (prev.some(m => String(m._id) === String(msg._id))) return prev;
           return [...prev, msg];
         });
         scrollToBottom("smooth");
@@ -140,7 +140,10 @@ export default function Chat({ standalone = true }) {
         content: contentString,
       });
       if (msg && msg._id) {
-        setMessages(prev => [...prev, msg]);
+        setMessages(prev => {
+          if (msg._id && prev.some(m => String(m._id) === String(msg._id))) return prev;
+          return [...prev, msg];
+        });
         scrollToBottom("smooth");
       }
     } catch (err) {
@@ -163,7 +166,10 @@ export default function Chat({ standalone = true }) {
         return m;
       }));
       if (res.autoMsg) {
-         setMessages(prev => [...prev, res.autoMsg]);
+         setMessages(prev => {
+           if (res.autoMsg._id && prev.some(m => String(m._id) === String(res.autoMsg._id))) return prev;
+           return [...prev, res.autoMsg];
+         });
          scrollToBottom("smooth");
       }
       toast.success("Collaboration Proposal Accepted!");
@@ -189,7 +195,10 @@ export default function Chat({ standalone = true }) {
         return m;
       }));
       if (res.autoMsg) {
-         setMessages(prev => [...prev, res.autoMsg]);
+         setMessages(prev => {
+           if (res.autoMsg._id && prev.some(m => String(m._id) === String(res.autoMsg._id))) return prev;
+           return [...prev, res.autoMsg];
+         });
          scrollToBottom("smooth");
       }
       toast.success("Collaboration Proposal Declined.");
@@ -222,7 +231,10 @@ export default function Chat({ standalone = true }) {
         return m;
       }));
       if (res.autoMsg) {
-         setMessages(prev => [...prev, res.autoMsg]);
+         setMessages(prev => {
+           if (res.autoMsg._id && prev.some(m => String(m._id) === String(res.autoMsg._id))) return prev;
+           return [...prev, res.autoMsg];
+         });
          scrollToBottom("smooth");
       }
       toast.success("Counter Offer Sent!");
@@ -449,8 +461,8 @@ export default function Chat({ standalone = true }) {
       const rid = msg.receiver?._id || msg.receiver;
       if ((sid === partnerId || rid === partnerId) && (sid === user?._id || rid === user?._id)) {
         setMessages(prev => {
-          // Prevent duplicates by checking ID
-          if (msg._id && prev.some(m => m._id === msg._id)) return prev;
+          // Prevent duplicates by checking ID robustly
+          if (msg._id && prev.some(m => String(m._id) === String(msg._id))) return prev;
           return [...prev, msg];
         });
         setIsPartnerTyping(false);
@@ -539,7 +551,7 @@ export default function Chat({ standalone = true }) {
 
       if (msg && msg._id) {
         setMessages(prev => {
-          if (prev.some(m => m._id === msg._id)) return prev;
+          if (prev.some(m => String(m._id) === String(msg._id))) return prev;
           return [...prev, msg];
         });
         scrollToBottom("smooth");
