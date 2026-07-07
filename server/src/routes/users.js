@@ -611,6 +611,82 @@ usersRouter.get("/discover/suggested", async (req, res) => {
   }
 });
 
+usersRouter.get("/discover/related-suggestions", async (req, res) => {
+  try {
+    const me = await User.findById(req.userId);
+    if (!me) return res.status(404).json({ error: "User not found" });
+
+    const baseFilter = {
+      _id: { $ne: req.userId },
+      isBanned: { $ne: true },
+      isDiscoverable: true,
+      blockedBy: { $ne: req.userId },
+      blockedUsers: { $ne: req.userId }
+    };
+    
+    // We want unique users
+    const userMap = new Map();
+
+    const addUsers = (users) => {
+      users.forEach(u => {
+        if (!userMap.has(u._id.toString())) {
+          userMap.set(u._id.toString(), u);
+        }
+      });
+    };
+
+    // 1. Same Category
+    if (me.category) {
+      const sameCategory = await User.find({ ...baseFilter, category: me.category })
+        .select("-password").sort({ followers: -1 }).limit(10).lean();
+      addUsers(sameCategory);
+    }
+
+    // 2. Related Categories
+    if (me.category && userMap.size < 5) {
+      const Category = require("../models/Category");
+      const myCatDoc = await Category.findOne({ name: new RegExp('^' + me.category.replace(/[.*+?^${}()|[\\]\\\\]/g, "\\\\$&") + '$', 'i') });
+      if (myCatDoc) {
+        let relatedNames = [];
+        if (myCatDoc.parent === null) {
+          // If I am a master category, find all children
+          const children = await Category.find({ parent: myCatDoc.name });
+          relatedNames = children.map(c => c.name);
+        } else {
+          // If I am a child category, find siblings and parent
+          relatedNames.push(myCatDoc.parent);
+          const siblings = await Category.find({ parent: myCatDoc.parent });
+          relatedNames.push(...siblings.map(c => c.name));
+        }
+        if (relatedNames.length > 0) {
+          const relatedCatUsers = await User.find({ ...baseFilter, category: { $in: relatedNames } })
+            .select("-password").sort({ followers: -1 }).limit(10).lean();
+          addUsers(relatedCatUsers);
+        }
+      }
+    }
+
+    // 3. Same City
+    if (me.location && userMap.size < 5) {
+      const sameCity = await User.find({ ...baseFilter, location: me.location })
+        .select("-password").sort({ followers: -1 }).limit(10).lean();
+      addUsers(sameCity);
+    }
+
+    // 4. Popular Profiles
+    if (userMap.size < 5) {
+      const popular = await User.find({ ...baseFilter, isVerified: true })
+        .select("-password").sort({ profileViews: -1, followers: -1 }).limit(10).lean();
+      addUsers(popular);
+    }
+
+    let finalUsers = Array.from(userMap.values()).slice(0, 5);
+    res.json(await attachAlignmentStatus(req, finalUsers));
+  } catch (err) {
+    console.error("Related suggestions error:", err);
+    res.status(500).json({ error: "Failed to load related suggestions" });
+  }
+});
 
 usersRouter.get("/:id", async (req, res) => {
   try {

@@ -56,6 +56,7 @@ export default function Home() {
   const [showVerificationBanner, setShowVerificationBanner] = useState(true);
   const [showFeedDropdown, setShowFeedDropdown] = useState(false);
   const [suggestedVerifiedUsers, setSuggestedVerifiedUsers] = useState([]);
+  const [relatedSuggestions, setRelatedSuggestions] = useState([]);
 
   const loadVerifiedUsers = useCallback(async () => {
     try {
@@ -76,6 +77,15 @@ export default function Home() {
       }
     } catch { /* silent */ }
   }, [user]);
+
+  const loadRelatedSuggestions = useCallback(async () => {
+    try {
+      const data = await api.users.getRelatedSuggestions();
+      if (!data?.error && Array.isArray(data)) {
+        setRelatedSuggestions(data);
+      }
+    } catch { /* silent */ }
+  }, []);
 
   const loadPosts = useCallback(async () => {
     setLoading(true);
@@ -98,9 +108,10 @@ export default function Home() {
   useEffect(() => {
     loadPosts();
     loadVerifiedUsers();
+    loadRelatedSuggestions();
     const interval = setInterval(loadPosts, 120000);
     return () => clearInterval(interval);
-  }, [loadPosts, loadVerifiedUsers]);
+  }, [loadPosts, loadVerifiedUsers, loadRelatedSuggestions]);
 
   const handleAddPost = async (formData) => {
     try {
@@ -236,8 +247,10 @@ export default function Home() {
 
       {/* Right Sidebar Column */}
       <div className="home-sidebar-col">
-        {/* Profile Stats Widget */}
+        {/* Unified Profile & Suggestions Widget */}
         <div className="bg-white dark:bg-[#171717] rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-[#262626]">
+          
+          {/* Profile Section */}
           <div className="flex items-center gap-3 mb-4">
             <Avatar user={user} size="sm" />
             <div>
@@ -260,49 +273,92 @@ export default function Home() {
             <span className="text-slate-500 dark:text-slate-400">Profile Views</span>
             <span className="font-bold text-slate-900 dark:text-white">{user?.profileViews || 0}</span>
           </div>
-          <button onClick={() => navigate('/profile')} className="mt-2 w-full text-center text-sm font-semibold text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-[#262626] hover:bg-slate-100 dark:hover:bg-[#333333] py-2 rounded-lg transition-colors">
-            View My Profile
-          </button>
-        </div>
 
-        {/* Suggested Connections Widget */}
-        <div className="bg-white dark:bg-[#171717] rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-[#262626]">
-          <h3 className="font-bold text-slate-900 dark:text-white mb-4">Suggested Connections</h3>
-          <div className="flex flex-col gap-4">
-            {suggestedVerifiedUsers.length > 0 ? suggestedVerifiedUsers.map(u => (
-              <div key={u._id} className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div onClick={() => navigate(`/user/${u._id}`)} className="cursor-pointer">
-                    <Avatar user={u} size="sm" />
+          <div className="border-t border-slate-100 dark:border-[#262626]/50 my-2"></div>
+
+          {/* Suggested Connections Section */}
+          <div className="pt-2">
+            <h3 className="font-bold text-slate-900 dark:text-white mb-4">Suggested Connections</h3>
+            <div className="flex flex-col gap-4">
+              {suggestedVerifiedUsers.length > 0 ? suggestedVerifiedUsers.map(u => (
+                <div key={u._id} className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div onClick={() => navigate(`/user/${u._id}`)} className="cursor-pointer">
+                      <Avatar user={u} size="sm" />
+                    </div>
+                    <div className="cursor-pointer" onClick={() => navigate(`/user/${u._id}`)}>
+                      <VerifiedUserDisplay 
+                        user={u}
+                        nameComponent={
+                          <h4 className={`font-bold transition-colors text-slate-900 dark:text-white`}>
+                            {u.name || u.username}
+                          </h4>
+                        }
+                      />
+                      {!(u?.isVerified || u?.isPremium) && (
+                        <div className="mt-1">
+                          <VerifiedPill user={u} fallbackText={u.role || 'Creator'} />
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  <div className="cursor-pointer" onClick={() => navigate(`/user/${u._id}`)}>
-                    <VerifiedUserDisplay 
-                      user={u}
-                      nameComponent={
-                        <h4 className={`font-bold transition-colors text-slate-900 dark:text-white`}>
-                          {u.name || u.username}
-                        </h4>
-                      }
-                    />
-                    {!(u?.isVerified || u?.isPremium) && (
-                      <div className="mt-1">
-                        <VerifiedPill user={u} fallbackText={u.role || 'Creator'} />
-                      </div>
-                    )}
-                  </div>
+                  <button 
+                    onClick={() => navigate(`/user/${u._id}`)}
+                    className="text-xs font-bold border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-full hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+                  >
+                    View
+                  </button>
                 </div>
-                <button 
-                  onClick={() => navigate(`/user/${u._id}`)}
-                  className="text-xs font-bold border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-full hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
-                >
-                  View
-                </button>
-              </div>
-            )) : (
-              <div className="text-sm text-slate-500 dark:text-slate-400 text-center py-2">No verified users found.</div>
-            )}
+              )) : (
+                <div className="text-sm text-slate-500 dark:text-slate-400 text-center py-2">No verified users found.</div>
+              )}
+            </div>
           </div>
-          <button onClick={() => navigate('/discover')} className="mt-4 w-full text-center text-sm font-semibold text-slate-700 dark:text-slate-400 hover:text-slate-900 dark:text-white dark:hover:text-slate-200 transition-colors">
+
+          <div className="border-t border-slate-100 dark:border-[#262626]/50 my-4"></div>
+
+          {/* Related Suggestions Section */}
+          <div className="pt-2">
+            <h3 className="font-bold text-slate-900 dark:text-white mb-4">Related Suggestions</h3>
+            <div className="flex flex-col gap-4">
+              {relatedSuggestions.length > 0 ? relatedSuggestions.map(u => (
+                <div key={u._id} className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div onClick={() => navigate(`/user/${u._id}`)} className="cursor-pointer">
+                      <Avatar user={u} size="sm" />
+                    </div>
+                    <div className="cursor-pointer" onClick={() => navigate(`/user/${u._id}`)}>
+                      <VerifiedUserDisplay 
+                        user={u}
+                        nameComponent={
+                          <h4 className={`font-bold transition-colors text-slate-900 dark:text-white`}>
+                            {u.name || u.username}
+                          </h4>
+                        }
+                      />
+                      {!(u?.isVerified || u?.isPremium) && (
+                        <div className="mt-1">
+                          <VerifiedPill user={u} fallbackText={u.role || 'Creator'} />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <button 
+                    onClick={() => navigate(`/user/${u._id}`)}
+                    className="text-xs font-bold border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-full hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+                  >
+                    View
+                  </button>
+                </div>
+              )) : (
+                <div className="text-sm text-slate-500 dark:text-slate-400 text-center py-2">No related suggestions found.</div>
+              )}
+            </div>
+          </div>
+
+          <div className="border-t border-slate-100 dark:border-[#262626]/50 my-4"></div>
+
+          <button onClick={() => navigate('/discover')} className="w-full text-center text-sm font-semibold text-slate-700 dark:text-slate-400 hover:text-slate-900 dark:text-white dark:hover:text-slate-200 transition-colors">
             View all recommendations
           </button>
         </div>
