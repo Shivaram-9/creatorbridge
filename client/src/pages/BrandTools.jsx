@@ -19,6 +19,21 @@ export default function BrandTools() {
     verifiedOnly: false
   });
 
+  const [dbCategories, setDbCategories] = useState([]);
+
+  useEffect(() => {
+    async function loadCategories() {
+      try {
+        const res = await fetch("/api/categories/discovery");
+        const data = await res.json();
+        setDbCategories(data.map(c => c.name));
+      } catch (err) {
+        console.error("Failed to fetch discovery categories:", err);
+      }
+    }
+    loadCategories();
+  }, []);
+
   const handleSearch = async () => {
     setLoading(true);
     try {
@@ -68,9 +83,9 @@ export default function BrandTools() {
                 <label>Category</label>
                 <select value={filters.category} onChange={e => setFilters({...filters, category: e.target.value})}>
                   <option value="">All Categories</option>
-                  <option value="Fashion">Fashion</option>
-                  <option value="Tech">Tech</option>
-                  <option value="Lifestyle">Lifestyle</option>
+                  {dbCategories.map(cat => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
                 </select>
               </div>
               <div className="field">

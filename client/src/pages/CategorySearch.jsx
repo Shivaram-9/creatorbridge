@@ -1,11 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 import { api } from "../services/api.js";
 import UserCard from "../components/UserCard.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import ErrorBanner from "../components/ErrorBanner.jsx";
-import { INFLUENCER_CATEGORIES, BRAND_CATEGORIES, ALL_CATEGORIES, getRelatedCategories } from "../constants/categories.js";
 import { CITIES } from "../constants/cities.js";
 import EmptyState from "../components/EmptyState.jsx";
 import { SearchIcon, SparklesIcon } from "../components/Icons.jsx";
@@ -21,11 +20,54 @@ export default function CategorySearch() {
   
   const [exactMatches, setExactMatches] = useState([]);
   const [relatedMatches, setRelatedMatches] = useState([]);
+  const [nearbyMatches, setNearbyMatches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   const targetRole = user?.role === "brand" ? "influencer" : "brand";
   const targetText = targetRole === "brand" ? "brands" : "Creators";
+
+  // Category Dropdown State
+  const [dbCategories, setDbCategories] = useState([]);
+  const [categorySearchQuery, setCategorySearchQuery] = useState(selectedCategory);
+  const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    // Fetch all categories (master + subcategories) to support search
+    async function loadCategories() {
+      try {
+        const res = await fetch("/api/categories/onboarding");
+        const data = await res.json();
+        setDbCategories(data);
+      } catch (err) {
+        console.error("Failed to load categories:", err);
+      }
+    }
+    loadCategories();
+  }, []);
+
+  const filteredCategories = useMemo(() => {
+    if (!categorySearchQuery || categorySearchQuery === selectedCategory) {
+      // Show ONLY Master Categories when not searching
+      return dbCategories.filter(c => c.parent === null).map(c => c.name);
+    }
+    // Show ALL matching categories when searching
+    return dbCategories
+      .filter(c => c.name.toLowerCase().includes(categorySearchQuery.toLowerCase()))
+      .map(c => c.name);
+  }, [categorySearchQuery, dbCategories, selectedCategory]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowCategoryDropdown(false);
+        setCategorySearchQuery(selectedCategory); // Reset search text to selected
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [selectedCategory]);
 
   // Backend-driven filtering
   useEffect(() => {
@@ -37,19 +79,19 @@ export default function CategorySearch() {
         const exact = await api.users.list({ category: selectedCategory, city: selectedCity, role: targetRole });
         setExactMatches(Array.isArray(exact) ? exact : []);
 
-        // If a category is selected and we want related matches
-        if (selectedCategory) {
-          const relatedCats = getRelatedCategories(selectedCategory);
-          if (relatedCats.length > 0) {
-            // We can't easily fetch ALL related categories in one request with the current API unless we loop or modify backend.
-            // For now, if exact matches are 0, we can show a hint, or we can fetch them.
-            // We'll fetch them individually or let the empty state handle the suggestions visually.
-            setRelatedMatches([]);
-          } else {
-            setRelatedMatches([]);
+        // Fetch intelligent related/nearby suggestions if exact is empty
+        if ((!exact || exact.length === 0) && (selectedCategory || selectedCity)) {
+          if (selectedCategory) {
+            const related = await api.users.list({ category: selectedCategory, role: targetRole });
+            setRelatedMatches(Array.isArray(related) ? related.filter(r => r.location !== selectedCity) : []);
+          }
+          if (selectedCity && !selectedCategory) {
+            const nearby = await api.users.list({ city: selectedCity, role: targetRole });
+            setNearbyMatches(Array.isArray(nearby) ? nearby : []);
           }
         } else {
           setRelatedMatches([]);
+          setNearbyMatches([]);
         }
       } catch (err) {
         setError("Failed to load users");
@@ -70,10 +112,6 @@ export default function CategorySearch() {
 
   if (loading) return <LoadingSpinner centered />;
 
-  // Categories available for filtering
-  const categoriesToSelect = targetRole === "brand" ? BRAND_CATEGORIES : INFLUENCER_CATEGORIES;
-  const activeCategory = selectedCategory;
-
   return (
     <div className="discover-container fade-in" style={{ maxWidth: '1000px', margin: '0 auto', padding: '24px' }}>
       <div style={{ marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '16px' }}>
@@ -91,30 +129,75 @@ export default function CategorySearch() {
       <ErrorBanner message={error} onDismiss={() => setError("")} />
 
       <div style={{ position: 'sticky', top: '70px', background: 'var(--bg-main)', zIndex: 10, paddingBottom: '16px', borderBottom: '1px solid var(--border-light)', marginBottom: '24px' }}>
-        <div className="discover-filters" style={{ padding: '8px 0', display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <select 
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            style={{
-              padding: '12px 16px',
-              borderRadius: '8px',
-              border: '1px solid var(--border-light)',
-              background: 'var(--bg-secondary)',
-              color: 'var(--text-main)',
-              fontSize: '15px',
-              fontFamily: 'inherit',
-              cursor: 'pointer',
-              width: '100%',
-              maxWidth: '300px',
-              outline: 'none',
-              appearance: 'auto'
-            }}
-          >
-            <option value="">All Categories {user?.category ? `(${user.category})` : ''}</option>
-            {categoriesToSelect.map(cat => (
-              <option key={cat} value={cat}>{cat}</option>
-            ))}
-          </select>
+        <div className="discover-filters" style={{ padding: '8px 0', display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
+          
+          <div ref={dropdownRef} style={{ position: 'relative', width: '100%', maxWidth: '300px' }}>
+            <input 
+              type="text" 
+              placeholder="Search Category..."
+              value={categorySearchQuery}
+              onFocus={() => {
+                setShowCategoryDropdown(true);
+                setCategorySearchQuery(""); // Clear on focus for easy searching
+              }}
+              onChange={(e) => setCategorySearchQuery(e.target.value)}
+              style={{
+                padding: '12px 16px',
+                borderRadius: '8px',
+                border: '1px solid var(--border-light)',
+                background: 'var(--bg-secondary)',
+                color: 'var(--text-main)',
+                fontSize: '15px',
+                fontFamily: 'inherit',
+                width: '100%',
+                outline: 'none',
+              }}
+            />
+            
+            {showCategoryDropdown && (
+              <div style={{
+                position: 'absolute',
+                top: '100%',
+                left: 0,
+                right: 0,
+                background: 'var(--bg-secondary)',
+                border: '1px solid var(--border-light)',
+                borderRadius: '8px',
+                marginTop: '4px',
+                maxHeight: '300px',
+                overflowY: 'auto',
+                zIndex: 1000,
+                boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+              }}>
+                <div 
+                  onClick={() => {
+                    setSelectedCategory("");
+                    setCategorySearchQuery("");
+                    setShowCategoryDropdown(false);
+                  }}
+                  style={{ padding: '10px 16px', cursor: 'pointer', borderBottom: '1px solid var(--border-light)', color: selectedCategory === "" ? 'var(--primary-color)' : 'var(--text-main)', background: selectedCategory === "" ? 'var(--hover-bg)' : 'transparent' }}
+                >
+                  All Categories
+                </div>
+                {filteredCategories.map(cat => (
+                  <div 
+                    key={cat} 
+                    onClick={() => {
+                      setSelectedCategory(cat);
+                      setCategorySearchQuery(cat);
+                      setShowCategoryDropdown(false);
+                    }}
+                    style={{ padding: '10px 16px', cursor: 'pointer', borderBottom: '1px solid var(--border-light)', color: selectedCategory === cat ? 'var(--primary-color)' : 'var(--text-main)', background: selectedCategory === cat ? 'var(--hover-bg)' : 'transparent' }}
+                  >
+                    {cat}
+                  </div>
+                ))}
+                {filteredCategories.length === 0 && (
+                   <div style={{ padding: '10px 16px', color: 'var(--text-muted)', fontSize: '14px' }}>No matching categories found.</div>
+                )}
+              </div>
+            )}
+          </div>
 
           <select 
             value={selectedCity}
@@ -156,33 +239,45 @@ export default function CategorySearch() {
             </div>
           )}
 
-        {exactMatches.length === 0 ? (
+        {exactMatches.length === 0 && relatedMatches.length === 0 && nearbyMatches.length === 0 ? (
           <EmptyState 
             icon={<SearchIcon />} 
             title={`No ${targetText} found`} 
-            description={activeCategory ? `We couldn't find any exact matches for ${activeCategory}${selectedCity ? ` in ${selectedCity}` : ''}. You might want to try related categories like ${getRelatedCategories(activeCategory).slice(0, 3).join(', ')} or clear your city filter.` : "We couldn't find any matches. Try clearing your filters!"}
+            description={`We couldn't find any exact matches for your filters. Try clearing your search and exploring different categories.`}
             actionText={selectedCategory || selectedCity ? "Clear Filters" : null}
-            onAction={() => { setSelectedCategory(""); setSelectedCity(""); }}
+            onAction={() => { setSelectedCategory(""); setSelectedCity(""); setCategorySearchQuery(""); }}
           />
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
             {exactMatches.length > 0 && (
               <div>
-                {activeCategory && <h3 style={{ marginBottom: '16px', color: 'var(--text-main)', fontSize: '18px' }}>Exact Matches</h3>}
+                {(selectedCategory || selectedCity) && <h3 style={{ marginBottom: '16px', color: 'var(--text-main)', fontSize: '18px' }}>Exact Matches</h3>}
                 <div className="discover-user-grid">
                   {exactMatches.map(u => <UserCard key={u._id} user={u} layout="list" />)}
                 </div>
               </div>
             )}
 
-            {relatedMatches.length > 0 && (
+            {exactMatches.length === 0 && relatedMatches.length > 0 && (
               <div>
                 <h3 style={{ marginBottom: '16px', color: 'var(--text-muted)', fontSize: '18px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <SparklesIcon /> 
-                  Related Suggestions (Categories like {getRelatedCategories(activeCategory).slice(0, 3).join(', ')}...)
+                  Related {targetText === "brands" ? "Brands" : "Creators"} in {selectedCategory}
                 </h3>
                 <div className="discover-user-grid">
                   {relatedMatches.map(u => <UserCard key={u._id} user={u} layout="list" />)}
+                </div>
+              </div>
+            )}
+
+            {exactMatches.length === 0 && relatedMatches.length === 0 && nearbyMatches.length > 0 && (
+              <div>
+                <h3 style={{ marginBottom: '16px', color: 'var(--text-muted)', fontSize: '18px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <SparklesIcon /> 
+                  Nearby {targetText === "brands" ? "Brands" : "Creators"} in {selectedCity}
+                </h3>
+                <div className="discover-user-grid">
+                  {nearbyMatches.map(u => <UserCard key={u._id} user={u} layout="list" />)}
                 </div>
               </div>
             )}
@@ -192,3 +287,4 @@ export default function CategorySearch() {
     </div>
   );
 }
+

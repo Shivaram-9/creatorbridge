@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../services/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
-import { CATEGORIES } from "../constants/categories.js";
 import { CITIES } from "../constants/cities.js";
 import Avatar from "../components/Avatar.jsx";
 import toast from "react-hot-toast";
@@ -17,6 +16,21 @@ export default function EditProfile() {
   const [zoom, setZoom] = useState(1);
   const [showAdjuster, setShowAdjuster] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
+
+  const [dbCategories, setDbCategories] = useState([]);
+
+  useEffect(() => {
+    async function fetchCategories() {
+      try {
+        const res = await fetch("/api/categories/onboarding");
+        const data = await res.json();
+        setDbCategories(data.map(c => c.name));
+      } catch (err) {
+        console.error("Failed to load categories:", err);
+      }
+    }
+    fetchCategories();
+  }, []);
 
   const [form, setForm] = useState({
     name: "",
@@ -262,8 +276,8 @@ export default function EditProfile() {
               value={form.category}
               onChange={handleChange}
             >
-              <option value="">Select category</option>
-              {CATEGORIES.map((c) => (
+              <option value="" disabled>Select Category</option>
+              {dbCategories.map((c) => (
                 <option key={c} value={c}>{c}</option>
               ))}
             </select>
