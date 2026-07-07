@@ -51,9 +51,8 @@ export default function CategorySearch() {
 
   const filteredCategories = useMemo(() => {
     if (!categorySearchQuery || categorySearchQuery === selectedCategory) {
-      // Show ONLY Master Categories when not searching (or fallback to all if no parents exist)
-      const masters = dbCategories.filter(c => c.parent === null).map(c => c.name);
-      return masters.length > 0 ? masters : dbCategories.map(c => c.name);
+      // Show ALL categories (matching onboarding)
+      return dbCategories.map(c => c.name);
     }
     // Show ALL matching categories when searching
     const query = categorySearchQuery.toLowerCase();
