@@ -39,7 +39,9 @@ export default function CategorySearch() {
       try {
         const res = await fetch("/api/categories/onboarding");
         const data = await res.json();
-        setDbCategories(data);
+        // Robust fallback in case data is array of strings (legacy) or objects
+        const parsed = data.map(c => typeof c === 'string' ? { name: c, parent: null } : c);
+        setDbCategories(parsed);
       } catch (err) {
         console.error("Failed to load categories:", err);
       }
@@ -49,13 +51,24 @@ export default function CategorySearch() {
 
   const filteredCategories = useMemo(() => {
     if (!categorySearchQuery || categorySearchQuery === selectedCategory) {
-      // Show ONLY Master Categories when not searching
-      return dbCategories.filter(c => c.parent === null).map(c => c.name);
+      // Show ONLY Master Categories when not searching (or fallback to all if no parents exist)
+      const masters = dbCategories.filter(c => c.parent === null).map(c => c.name);
+      return masters.length > 0 ? masters : dbCategories.map(c => c.name);
     }
     // Show ALL matching categories when searching
-    return dbCategories
-      .filter(c => c.name.toLowerCase().includes(categorySearchQuery.toLowerCase()))
+    const query = categorySearchQuery.toLowerCase();
+    const matched = dbCategories
+      .filter(c => c.name.toLowerCase().includes(query))
       .map(c => c.name);
+      
+    // Sort so categories starting with the query appear first
+    return matched.sort((a, b) => {
+      const aStarts = a.toLowerCase().startsWith(query);
+      const bStarts = b.toLowerCase().startsWith(query);
+      if (aStarts && !bStarts) return -1;
+      if (!aStarts && bStarts) return 1;
+      return a.localeCompare(b);
+    });
   }, [categorySearchQuery, dbCategories, selectedCategory]);
 
   useEffect(() => {
@@ -132,27 +145,45 @@ export default function CategorySearch() {
         <div className="discover-filters" style={{ padding: '8px 0', display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
           
           <div ref={dropdownRef} style={{ position: 'relative', width: '100%', maxWidth: '300px' }}>
-            <input 
-              type="text" 
-              placeholder="Search Category..."
-              value={categorySearchQuery}
-              onFocus={() => {
-                setShowCategoryDropdown(true);
-                setCategorySearchQuery(""); // Clear on focus for easy searching
-              }}
-              onChange={(e) => setCategorySearchQuery(e.target.value)}
-              style={{
-                padding: '12px 16px',
-                borderRadius: '8px',
-                border: '1px solid var(--border-light)',
-                background: 'var(--bg-secondary)',
-                color: 'var(--text-main)',
-                fontSize: '15px',
-                fontFamily: 'inherit',
-                width: '100%',
-                outline: 'none',
-              }}
-            />
+            <div style={{ position: 'relative' }}>
+              <input 
+                type="text" 
+                placeholder="Search Category..."
+                value={categorySearchQuery}
+                onFocus={() => {
+                  setShowCategoryDropdown(true);
+                  setCategorySearchQuery(""); // Clear on focus for easy searching
+                }}
+                onChange={(e) => {
+                  setCategorySearchQuery(e.target.value);
+                  setShowCategoryDropdown(true);
+                }}
+                style={{
+                  padding: '12px 36px 12px 16px', // Extra right padding for chevron
+                  borderRadius: '8px',
+                  border: '1px solid var(--border-light)',
+                  background: 'var(--bg-secondary)',
+                  color: 'var(--text-main)',
+                  fontSize: '15px',
+                  fontFamily: 'inherit',
+                  width: '100%',
+                  outline: 'none',
+                  cursor: 'text'
+                }}
+              />
+              {/* Native-looking dropdown chevron */}
+              <div 
+                style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', color: 'var(--text-muted)' }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowCategoryDropdown(prev => !prev);
+                }}
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
+            </div>
             
             {showCategoryDropdown && (
               <div style={{
