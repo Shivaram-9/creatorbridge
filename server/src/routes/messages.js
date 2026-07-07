@@ -70,6 +70,8 @@ messagesRouter.get("/", async (req, res) => {
             username: 1,
             avatar: 1,
             role: 1,
+            isVerified: 1,
+            isPremium: 1,
           },
           lastMessage: 1,
           unreadCount: 1,
@@ -115,7 +117,7 @@ messagesRouter.get("/conversation/:otherUserId", async (req, res) => {
 
     const msgs = await Message.find(filter)
       .sort({ createdAt: 1 })
-      .populate("sender", "name email role")
+      .populate("sender", "name email role avatar isVerified isPremium")
       .lean();
     res.json(msgs);
   } catch (err) {
@@ -149,8 +151,8 @@ messagesRouter.post("/", async (req, res) => {
       mediaType: media ? mediaType : undefined,
       deal: dealId && mongoose.isValidObjectId(dealId) ? dealId : undefined,
     });
-    await msg.populate("sender", "name email role");
-    await msg.populate("receiver", "name email role");
+    await msg.populate("sender", "name email role avatar isVerified isPremium");
+    await msg.populate("receiver", "name email role avatar isVerified isPremium");
     
     const plain = msg.toObject();
     const io = req.app.get("io");
@@ -234,8 +236,8 @@ messagesRouter.post("/media", chatUpload.single("media"), async (req, res) => {
       mediaUrl: mediaPath,
       mediaType: mediaType,
     });
-    await msg.populate("sender", "name email role");
-    await msg.populate("receiver", "name email role");
+    await msg.populate("sender", "name email role avatar isVerified isPremium");
+    await msg.populate("receiver", "name email role avatar isVerified isPremium");
 
     const plain = msg.toObject();
     const io = req.app.get("io");
