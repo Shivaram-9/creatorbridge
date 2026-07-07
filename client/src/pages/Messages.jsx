@@ -5,6 +5,7 @@ import ErrorBanner from "../components/ErrorBanner.jsx";
 import Avatar from "../components/Avatar.jsx";
 import Chat from "./Chat.jsx";
 import { MessageIcon, SearchIcon } from "../components/Icons.jsx";
+import VerifiedBadge from "../components/VerifiedBadge.jsx";
 import "./Messages.css";
 
 export default function Messages() {
@@ -140,7 +141,10 @@ export default function Messages() {
                   >
                     <Avatar user={user} size="sm" />
                     <div className="chat-item-info" style={{ marginLeft: '12px' }}>
-                      <span style={{ fontWeight: '600', fontSize: '14px', color: 'var(--text-main)' }}>{user.name || user.username}</span>
+                      <span style={{ fontWeight: '600', fontSize: '14px', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                        <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%' }}>{user.name || user.username}</span>
+                        {(user.isVerified || user.isPremium) && <VerifiedBadge role={user.role} />}
+                      </span>
                       <p style={{ fontSize: '12px', color: 'var(--text-muted)', margin: 0 }}>@{user.username}</p>
                     </div>
                   </div>
@@ -173,7 +177,10 @@ export default function Messages() {
                 </div>
                 <div className="chat-item-info" style={{ display: 'flex', flexDirection: 'column', flex: 1, gap: '4px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span className="chat-item-name">{conv.partner?.name || conv.partner?.username || "Unknown User"}</span>
+                    <span className="chat-item-name" style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                      <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%' }}>{conv.partner?.name || conv.partner?.username || "Unknown User"}</span>
+                      {(conv.partner?.isVerified || conv.partner?.isPremium) && <VerifiedBadge role={conv.partner?.role} />}
+                    </span>
                     <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{conv.lastMessage?.createdAt ? formatTime(conv.lastMessage.createdAt) : ""}</span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
