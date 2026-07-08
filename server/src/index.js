@@ -50,13 +50,31 @@ if (smtpCheck.length > 0) {
 const app = express();
 
 // 1. Priority Middlewares (MUST BE FIRST)
-app.use(cors({ origin: true, credentials: true }));
+const allowedOrigins = [
+  "https://pactogram.com",
+  "https://www.pactogram.com",
+  "https://pactogram.onrender.com",
+  "http://localhost:5173",
+  "http://localhost:3000"
+];
+
+app.use(cors({ 
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }, 
+  credentials: true 
+}));
 app.use(express.json({ limit: "5mb" }));
 app.use(express.urlencoded({ extended: true }));
 
-// 2. Security (Disabled for debug)
-// app.use(helmet());
-// app.use("/api", apiLimiter);
+// 2. Security
+app.use(helmet());
+app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" })); // Allow serving uploads across origins
+app.use("/api", apiLimiter);
 
 app.get("/api/health", (_, res) => {
   // Health check - triggered at 2026-05-11
@@ -205,23 +223,6 @@ mongoose
   })
   .then(async () => {
     console.log("Connected to MongoDB");
-    
-    // --- TEMPORARY MIGRATION TO FIX BRAND ROLE ---
-    try {
-      const { User } = await import("./models/User.js");
-      const result1 = await User.updateMany(
-        { name: /SAIBALAJI/i },
-        { $set: { role: "brand", premiumTier: "gold", category: "Creative Studio" } }
-      );
-      const result2 = await User.updateMany(
-        { username: "shivaram" },
-        { $set: { role: "influencer", category: "Creator / Builder" } }
-      );
-      console.log("Migration complete:", { saibalaji: result1.modifiedCount, shivaram: result2.modifiedCount });
-    } catch (err) {
-      console.error("Migration failed:", err);
-    }
-    // ---------------------------------------------
     
     server.listen(PORT, "0.0.0.0", () => {
       console.log(`Pactogram API listening on http://localhost:${PORT}`);
