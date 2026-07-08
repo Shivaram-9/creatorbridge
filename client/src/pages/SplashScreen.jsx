@@ -12,11 +12,9 @@ export default function SplashScreen() {
   const mountTimeRef = useRef(Date.now());
 
   useEffect(() => {
-    // Force muted and programmatic play to bypass mobile webview restrictions
+    // Force programmatic play (WebView is configured to allow audio autoplay via MediaPlaybackRequiresUserAction: false)
     const forcePlay = (videoEl) => {
       if (videoEl) {
-        videoEl.defaultMuted = true;
-        videoEl.muted = true;
         videoEl.play().catch((e) => console.log("Video autoplay failed:", e));
       }
     };
@@ -55,7 +53,6 @@ export default function SplashScreen() {
         src="/mobile_splash.mp4"
         className="splash-video mobile-video"
         autoPlay
-        muted
         playsInline
         controls={false}
         preload="auto"
@@ -65,7 +62,6 @@ export default function SplashScreen() {
         src="/desktop_splash.mp4"
         className="splash-video desktop-video"
         autoPlay
-        muted
         playsInline
         controls={false}
         preload="auto"
