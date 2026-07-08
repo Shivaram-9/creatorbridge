@@ -590,19 +590,19 @@ export default function Chat({ standalone = true }) {
             <svg style={{ width: '20px', height: '20px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
           </button>
           <Avatar user={partner} size="sm" />
-          <div style={{ marginLeft: '12px' }}>
+          <div style={{ marginLeft: '12px', minWidth: 0, flex: 1 }}>
             <VerifiedUserDisplay 
               user={partner}
               showLabel={false}
-              nameComponent={<h2 style={{ fontSize: '16px', fontWeight: '700', color: 'var(--text-main)', margin: 0 }}>{partner?.name || partner?.username}</h2>}
+              nameComponent={<h2 style={{ fontSize: '16px', fontWeight: '700', color: 'var(--text-main)', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '200px' }}>{partner?.name || partner?.username}</h2>}
             />
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '2px' }}>
-              <span style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'capitalize' }}>
+              <span style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'capitalize', whiteSpace: 'nowrap' }}>
                 {partner?.role || 'Creator'}
               </span>
-              <span style={{ width: '4px', height: '4px', borderRadius: '50%', background: '#cbd5e1' }}></span>
-              <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: socketOnline ? '#10b981' : '#cbd5e1' }}></span>
-              <p style={{ fontSize: '12px', color: 'var(--text-muted)', margin: 0 }}>
+              <span style={{ width: '4px', height: '4px', borderRadius: '50%', background: '#cbd5e1', flexShrink: 0 }}></span>
+              <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: socketOnline ? '#10b981' : '#cbd5e1', flexShrink: 0 }}></span>
+              <p style={{ fontSize: '12px', color: 'var(--text-muted)', margin: 0, whiteSpace: 'nowrap' }}>
                 {socketOnline ? "Active now" : "Offline"}
               </p>
             </div>
@@ -610,7 +610,7 @@ export default function Chat({ standalone = true }) {
         </div>
       </header>
 
-      <div style={{ flex: 1, overflowY: 'auto', padding: '24px' }}>
+      <div style={{ flex: 1, overflowY: 'auto', padding: '24px', overflowX: 'hidden' }}>
         <ErrorBanner message={error} onDismiss={() => setError("")} />
         {messages.map((m, idx) => {
           if (!m) return null;

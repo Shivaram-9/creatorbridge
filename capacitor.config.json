@@ -5,11 +5,34 @@
   "server": {
     "cleartext": true,
     "androidScheme": "http",
-    "allowNavigation": ["10.0.2.2"]
+    "allowNavigation": [
+      "10.0.2.2"
+    ]
   },
   "plugins": {
     "StatusBar": {
       "overlaysWebView": false
+    },
+    "SplashScreen": {
+      "launchShowDuration": 3000,
+      "launchAutoHide": true,
+      "launchFadeOutDuration": 100,
+      "backgroundColor": "#171717",
+      "androidSplashResourceName": "splash",
+      "androidScaleType": "CENTER_CROP",
+      "showSpinner": true,
+      "androidSpinnerStyle": "large",
+      "iosSpinnerStyle": "small",
+      "spinnerColor": "#999999",
+      "splashFullScreen": true,
+      "splashImmersive": true,
+      "layoutName": "launch_screen",
+      "useDialog": false
+    }
+  },
+  "cordova": {
+    "preferences": {
+      "MediaPlaybackRequiresUserAction": "false"
     }
   }
 }
