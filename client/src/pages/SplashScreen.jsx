@@ -12,10 +12,16 @@ export default function SplashScreen() {
   const mountTimeRef = useRef(Date.now());
 
   useEffect(() => {
-    // Force programmatic play (WebView is configured to allow audio autoplay via MediaPlaybackRequiresUserAction: false)
-    const forcePlay = (videoEl) => {
-      if (videoEl) {
-        videoEl.play().catch((e) => console.log("Video autoplay failed:", e));
+    // Try to play with sound first. If browser blocks it, fallback to muted so the animation still plays.
+    const forcePlay = async (videoEl) => {
+      if (!videoEl) return;
+      try {
+        videoEl.muted = false;
+        await videoEl.play();
+      } catch (err) {
+        console.log("Unmuted autoplay blocked, falling back to muted:", err);
+        videoEl.muted = true;
+        videoEl.play().catch((e) => console.log("Muted autoplay also failed:", e));
       }
     };
     forcePlay(mobileVideoRef.current);
@@ -53,6 +59,7 @@ export default function SplashScreen() {
         src="/mobile_splash.mp4"
         className="splash-video mobile-video"
         autoPlay
+        muted
         playsInline
         controls={false}
         preload="auto"
@@ -62,6 +69,7 @@ export default function SplashScreen() {
         src="/desktop_splash.mp4"
         className="splash-video desktop-video"
         autoPlay
+        muted
         playsInline
         controls={false}
         preload="auto"
