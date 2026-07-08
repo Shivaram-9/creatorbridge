@@ -60,6 +60,12 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
+html, body, #root {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+}
+
 body {
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   background-color: var(--bg-main);

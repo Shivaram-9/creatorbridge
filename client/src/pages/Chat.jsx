@@ -741,7 +741,7 @@ export default function Chat({ standalone = true }) {
                 
                 <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-end', justifyContent: 'flex-end', gap: '8px' }}>
                   {m.content && (
-                    <p style={{ fontSize: '15px', margin: 0, wordBreak: 'break-word', whiteSpace: 'pre-wrap', flex: '1 1 auto', alignSelf: 'flex-start', paddingBottom: '2px', lineHeight: '1.4' }}>
+                    <p style={{ fontSize: '15px', margin: 0, wordBreak: 'break-word', overflowWrap: 'anywhere', whiteSpace: 'pre-wrap', flex: '1 1 auto', alignSelf: 'flex-start', paddingBottom: '2px', lineHeight: '1.4' }}>
                       {renderMessageContent(m.content, isMine)}
                     </p>
                   )}
@@ -779,7 +779,7 @@ export default function Chat({ standalone = true }) {
           </div>
         )}
         
-        <div style={{ display: 'flex', gap: '10px', overflowX: 'auto', padding: '16px 24px 8px' }} className="hide-scrollbar">
+        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', padding: '16px 24px 8px' }} className="hide-scrollbar">
           <button 
             type="button" 
             onClick={() => setShowProposalModal(true)}

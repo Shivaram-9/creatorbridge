@@ -23,6 +23,7 @@
   flex-direction: column;
   gap: 20px;
   width: 100%;
+  min-width: 0;
 }
 
 .home-sidebar-col {
