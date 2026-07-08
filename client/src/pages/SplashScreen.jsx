@@ -6,8 +6,23 @@ import "./SplashScreen.css";
 export default function SplashScreen() {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
-
+  
+  const mobileVideoRef = useRef(null);
+  const desktopVideoRef = useRef(null);
   const mountTimeRef = useRef(Date.now());
+
+  useEffect(() => {
+    // Force muted and programmatic play to bypass mobile webview restrictions
+    const forcePlay = (videoEl) => {
+      if (videoEl) {
+        videoEl.defaultMuted = true;
+        videoEl.muted = true;
+        videoEl.play().catch((e) => console.log("Video autoplay failed:", e));
+      }
+    };
+    forcePlay(mobileVideoRef.current);
+    forcePlay(desktopVideoRef.current);
+  }, []);
 
   useEffect(() => {
     // We only proceed once AuthContext finishes loading
@@ -36,18 +51,24 @@ export default function SplashScreen() {
   return (
     <div className="splash-container">
       <video
+        ref={mobileVideoRef}
         src="/mobile_splash.mp4"
         className="splash-video mobile-video"
         autoPlay
         muted
         playsInline
+        controls={false}
+        preload="auto"
       />
       <video
+        ref={desktopVideoRef}
         src="/desktop_splash.mp4"
         className="splash-video desktop-video"
         autoPlay
         muted
         playsInline
+        controls={false}
+        preload="auto"
       />
     </div>
   );
