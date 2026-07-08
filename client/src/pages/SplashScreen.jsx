@@ -30,10 +30,10 @@ export default function SplashScreen() {
 
     // Calculate how much time has passed since mount
     const elapsed = Date.now() - mountTimeRef.current;
-    const minDisplayTime = 2500;
+    const minDisplayTime = 4000;
     
-    // If loading was fast, wait the remaining time up to 2.5s
-    // If loading was slow (e.g. 3s), delay will be 0 (redirect immediately)
+    // If loading was fast, wait the remaining time up to 4s
+    // If loading was slow (e.g. 5s), delay will be 0 (redirect immediately)
     const delay = Math.max(0, minDisplayTime - elapsed);
 
     const timer = setTimeout(() => {
