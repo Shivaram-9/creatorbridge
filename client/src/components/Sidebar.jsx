@@ -13,6 +13,9 @@ import {
   ShieldIcon
 } from "./Icons.jsx";
 import "./Sidebar.css";
+import CreatePost from "./CreatePost.jsx";
+import { api } from "../services/api.js";
+import toast from "react-hot-toast";
 
 export default function Sidebar({ user, msgUnreadCount = 0, logout, openHelpCenter }) {
   const location = useLocation();
@@ -24,6 +27,21 @@ export default function Sidebar({ user, msgUnreadCount = 0, logout, openHelpCent
     { name: "Find Your Collab", path: "/search", icon: <UsersIcon /> },
     { name: "Profile", path: "/profile", icon: <ProfileIcon /> },
   ];
+
+  const handleSidebarPost = async (formData) => {
+    try {
+      const res = await api.posts.create(formData);
+      if (res?.error) {
+        toast.error(res.error);
+      } else {
+        toast.success("Post published!");
+        window.dispatchEvent(new Event("postCreated"));
+      }
+    } catch (err) {
+      console.error("Post error:", err);
+      toast.error("Failed to create post");
+    }
+  };
 
   return (
     <aside className="sidebar">
@@ -50,6 +68,10 @@ export default function Sidebar({ user, msgUnreadCount = 0, logout, openHelpCent
             </Link>
           );
         })}
+
+        <div className="mt-6 mb-2 hidden md:block">
+          <CreatePost onPost={handleSidebarPost} user={user} />
+        </div>
       </nav>
 
       <div className="sidebar-footer">

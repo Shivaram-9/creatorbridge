@@ -109,8 +109,16 @@ export default function Home() {
     loadPosts();
     loadVerifiedUsers();
     loadRelatedSuggestions();
+    
+    // Refresh posts when a post is created from the sidebar
+    const handlePostCreated = () => loadPosts();
+    window.addEventListener("postCreated", handlePostCreated);
+    
     const interval = setInterval(loadPosts, 120000);
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("postCreated", handlePostCreated);
+    };
   }, [loadPosts, loadVerifiedUsers, loadRelatedSuggestions]);
 
   const handleAddPost = async (formData) => {
@@ -168,8 +176,10 @@ export default function Home() {
 
         <HeroBanner user={user} />
 
-        {/* New Post Box */}
-        <CreatePost onPost={handleAddPost} user={user} />
+        {/* New Post Box (Mobile Only) */}
+        <div className="md:hidden">
+          <CreatePost onPost={handleAddPost} user={user} />
+        </div>
 
         {/* Feed Tabs */}
         {/* Feed Tabs Dropdown */}
