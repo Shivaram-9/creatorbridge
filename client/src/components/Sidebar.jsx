@@ -13,12 +13,10 @@ import {
   ShieldIcon
 } from "./Icons.jsx";
 import "./Sidebar.css";
-import CreatePost from "./CreatePost.jsx";
-import { api } from "../services/api.js";
-import toast from "react-hot-toast";
 
 export default function Sidebar({ user, msgUnreadCount = 0, logout, openHelpCenter }) {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const menuItems = [
     { name: "Home", path: "/home", icon: <HomeIcon /> },
@@ -28,19 +26,10 @@ export default function Sidebar({ user, msgUnreadCount = 0, logout, openHelpCent
     { name: "Profile", path: "/profile", icon: <ProfileIcon /> },
   ];
 
-  const handleSidebarPost = async (formData) => {
-    try {
-      const res = await api.posts.create(formData);
-      if (res?.error) {
-        toast.error(res.error);
-      } else {
-        toast.success("Post published!");
-        window.dispatchEvent(new Event("postCreated"));
-      }
-    } catch (err) {
-      console.error("Post error:", err);
-      toast.error("Failed to create post");
-    }
+  const handleOpenPostModal = () => {
+    const params = new URLSearchParams(location.search);
+    params.set('create', 'true');
+    navigate(location.pathname + '?' + params.toString());
   };
 
   return (
@@ -69,8 +58,14 @@ export default function Sidebar({ user, msgUnreadCount = 0, logout, openHelpCent
           );
         })}
 
-        <div className="mt-6 mb-2 hidden md:block">
-          <CreatePost onPost={handleSidebarPost} user={user} />
+        <div className="mt-6 mb-2 hidden md:block px-4">
+          <button 
+            onClick={handleOpenPostModal}
+            className="w-full bg-blue-600 dark:bg-blue-600 text-white font-bold py-3.5 rounded-full hover:bg-blue-700 transition-colors shadow-sm flex items-center justify-center gap-2"
+            style={{ backgroundColor: 'var(--primary)' }}
+          >
+            <span className="text-xl leading-none -mt-0.5">+</span> Post
+          </button>
         </div>
       </nav>
 
