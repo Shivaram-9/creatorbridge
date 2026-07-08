@@ -315,7 +315,7 @@ export default function Chat({ standalone = true }) {
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '16px', alignItems: 'center', marginTop: '4px' }}>
+          <div style={{ display: 'flex', gap: '16px', alignItems: 'center', marginTop: '4px', flexWrap: 'wrap' }}>
             {(() => {
               const history = proposalData?.negotiationHistory || [];
               const lastSender = history.length > 0 ? history[history.length - 1].sender : undefined;

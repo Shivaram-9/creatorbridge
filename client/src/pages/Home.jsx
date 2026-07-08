@@ -248,7 +248,7 @@ export default function Home() {
       {/* Right Sidebar Column */}
       <div className="home-sidebar-col">
         {/* Unified Profile & Suggestions Widget */}
-        <div className="bg-white dark:bg-[#171717] rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-[#262626]">
+        <div className="bg-white dark:bg-[#171717] rounded-2xl p-4 md:p-6 shadow-sm border border-slate-200 dark:border-[#262626] overflow-hidden w-full max-w-full">
           
           {/* Profile Section */}
           <div className="flex items-center gap-3 mb-4">

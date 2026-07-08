@@ -15,6 +15,16 @@
   animation: splashZoomFade 2.5s ease-out forwards;
 }
 
+.splash-video::-webkit-media-controls {
+  display: none !important;
+}
+
+.splash-video::-webkit-media-controls-play-button,
+.splash-video::-webkit-media-controls-start-playback-button {
+  display: none !important;
+  -webkit-appearance: none;
+}
+
 .mobile-video {
   display: block;
 }
