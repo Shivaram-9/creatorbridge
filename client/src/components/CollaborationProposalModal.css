@@ -189,6 +189,15 @@
 }
 
 @media (max-width: 768px) {
+  .proposal-modal-content {
+    width: 100%;
+    height: 100dvh;
+    max-height: none;
+    border-radius: 0;
+  }
+  .proposal-modal-footer {
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+  }
   .proposal-modal-body {
     flex-direction: column;
   }

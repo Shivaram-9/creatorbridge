@@ -199,7 +199,7 @@ export default function PortfolioBuilder() {
             ))}
           </div>
           
-          <div className="p-8">
+          <div className="p-8 pb-32">
             {activeTab === 'personal' && (
               <div className="space-y-6 fade-in">
                 <div>
