@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './ProposalWorkflow.css';
 
 const DELIVERABLE_OPTIONS = [
   "Instagram Reel", "Instagram Story", "Instagram Post",
@@ -16,12 +17,7 @@ const TIMELINE_OPTIONS = [
   { label: "Custom", value: "Custom" }
 ];
 
-export default function CounterOfferModal({ 
-  proposalData, 
-  partnerName, 
-  onClose, 
-  onSubmit 
-}) {
+export default function CounterOfferModal({ proposalData, partnerName, onClose, onSubmit }) {
   const data = proposalData || {};
 
   const [counterBudget, setCounterBudget] = useState(data.budget || '');
@@ -68,38 +64,38 @@ export default function CounterOfferModal({
   };
 
   return (
-    <div className="proposal-modal-overlay global-modal-overlay" onClick={onClose}>
-      <div className="proposal-modal-content mobile-responsive-modal global-modal-dialog" onClick={e => e.stopPropagation()}>
-        <div className="proposal-modal-header global-modal-header">
+    <div className="pw-overlay" onClick={onClose}>
+      <div className="pw-container" onClick={e => e.stopPropagation()}>
+        <div className="pw-header">
           <h2>Counter Offer</h2>
-          <button className="close-btn" onClick={onClose}>
+          <button className="pw-close-btn" onClick={onClose}>
             <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
           </button>
         </div>
 
-        <div className="proposal-modal-body global-modal-body" style={{ flexDirection: 'column', padding: '16px', overflowY: 'auto' }}>
-          <div style={{ background: 'rgba(245, 158, 11, 0.1)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(245, 158, 11, 0.2)', marginBottom: '20px' }}>
-            <p style={{ fontSize: '13px', color: 'var(--text-main)', margin: 0 }}>
+        <div className="pw-body">
+          <div className="pw-card" style={{ background: 'rgba(245, 158, 11, 0.1)', borderColor: 'rgba(245, 158, 11, 0.2)' }}>
+            <p style={{ margin: 0, fontSize: '13px', color: 'var(--pw-text-main)' }}>
               Adjust the terms below to propose a Counter Offer to {partnerName}.
             </p>
           </div>
 
-          <div className="proposal-form-group">
-            <label>Budget ({currencySymbol})</label>
+          <div>
+            <label className="pw-label">Budget ({currencySymbol})</label>
             <input 
               type="number" 
-              className="proposal-form-input" 
+              className="pw-input" 
               placeholder="Enter counter budget" 
               value={counterBudget}
               onChange={(e) => setCounterBudget(e.target.value)}
-              style={{ fontSize: '16px', fontWeight: 'bold' }}
+              style={{ fontWeight: 'bold' }}
             />
           </div>
 
-          <div className="proposal-form-group">
-            <label>Timeline</label>
+          <div>
+            <label className="pw-label">Timeline</label>
             <select
-              className="proposal-form-input"
+              className="pw-input"
               value={counterTimelineMode}
               onChange={(e) => setCounterTimelineMode(e.target.value)}
             >
@@ -110,7 +106,7 @@ export default function CounterOfferModal({
             {counterTimelineMode === "Custom" && (
               <input 
                 type="text" 
-                className="proposal-form-input" 
+                className="pw-input" 
                 style={{ marginTop: '8px' }}
                 placeholder="e.g. Oct 10 to Oct 20"
                 value={counterCustomTimeline} 
@@ -119,22 +115,22 @@ export default function CounterOfferModal({
             )}
           </div>
 
-          <div className="proposal-form-group">
-            <label>Deliverables</label>
-            <div className="proposal-deliverables-grid">
+          <div>
+            <label className="pw-label">Deliverables</label>
+            <div className="pw-deliverables-grid">
               {DELIVERABLE_OPTIONS.map((opt) => {
                 const selected = counterDeliverables.find((d) => d.name === opt);
                 return (
                   <div
                     key={opt}
-                    className={`deliverable-chip ${selected ? 'selected' : ''}`}
+                    className={`pw-chip ${selected ? 'selected' : ''}`}
                     onClick={() => toggleDeliverable(opt)}
                   >
                     {opt}
                     {selected && (
                       <input
                         type="number"
-                        className="deliverable-qty-input"
+                        className="pw-chip-input"
                         min="1"
                         value={selected.quantity}
                         onClick={(e) => e.stopPropagation()}
@@ -147,10 +143,10 @@ export default function CounterOfferModal({
             </div>
           </div>
 
-          <div className="proposal-form-group">
-            <label>Message / Additional Notes</label>
+          <div>
+            <label className="pw-label">Message / Additional Notes</label>
             <textarea 
-              className="proposal-form-input" 
+              className="pw-input" 
               placeholder="Explain your counter offer..." 
               rows="3"
               value={counterNotes}
@@ -159,13 +155,16 @@ export default function CounterOfferModal({
           </div>
         </div>
 
-        <div className="proposal-modal-footer global-modal-footer" style={{ flexDirection: 'column', gap: '12px', padding: '16px', background: 'var(--bg-card)' }}>
-          <div style={{ display: 'flex', gap: '8px', width: '100%' }}>
-            <button className="btn btn-outline" onClick={onClose} style={{ flex: 1, color: 'var(--text-muted)', border: '1px solid var(--border-light)', padding: '14px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', background: 'transparent' }}>
-              Cancel
-            </button>
-            <button className="btn btn-primary" onClick={handleCounterSubmit} disabled={!counterBudget} style={{ flex: 2, background: '#f59e0b', color: '#fff', border: 'none', padding: '14px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', opacity: !counterBudget ? 0.6 : 1 }}>
-              Send Counter Offer
+        <div className="pw-footer">
+          <div className="pw-footer-row">
+            <button className="pw-btn pw-btn-outline" onClick={onClose}>Cancel</button>
+            <button 
+              className="pw-btn pw-btn-counter" 
+              onClick={handleCounterSubmit} 
+              disabled={!counterBudget}
+              style={{ background: 'var(--pw-warning)', color: '#fff', opacity: !counterBudget ? 0.6 : 1 }}
+            >
+              Submit Counter Offer
             </button>
           </div>
         </div>

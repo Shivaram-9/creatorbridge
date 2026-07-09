@@ -8,7 +8,7 @@ import ErrorBanner from "../components/ErrorBanner.jsx";
 import { MediaIcon } from "../components/Icons.jsx";
 import VerifiedUserDisplay from "../components/VerifiedUserDisplay.jsx";
 import CollaborationProposalModal from "../components/CollaborationProposalModal.jsx";
-import ViewProposalModal from "../components/ViewProposalModal.jsx";
+import ProposalDetails from "../components/ProposalWorkflow/ProposalDetails.jsx";
 import { toast } from "react-hot-toast";
 
 function SharedPostPreview({ url }) {
@@ -861,7 +861,7 @@ export default function Chat({ standalone = true }) {
         />
       )}
       {showViewModal && selectedProposal?.data && (
-        <ViewProposalModal 
+        <ProposalDetails 
           proposalData={selectedProposal.data}
           currentUserId={user?._id}
           isReceiver={selectedProposal.isReceiver}
