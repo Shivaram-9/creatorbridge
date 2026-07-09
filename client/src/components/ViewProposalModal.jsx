@@ -300,11 +300,11 @@ export default function ViewProposalModal({
               <button className="btn btn-primary" onClick={onAccept} style={{ width: '100%', background: '#10b981', color: '#fff', border: 'none', padding: '12px 16px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', fontSize: '15px' }}>
                 Accept Proposal
               </button>
-              <div style={{ display: 'flex', gap: '8px', width: '100%' }}>
-                <button className="btn btn-outline" onClick={() => setShowCounterForm(true)} style={{ flex: 1, borderColor: '#f59e0b', color: '#f59e0b', padding: '12px 16px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', background: 'transparent' }}>
+              <div style={{ display: 'flex', gap: '8px', width: '100%', flexWrap: 'wrap' }}>
+                <button className="btn btn-outline" onClick={() => setShowCounterForm(true)} style={{ flex: '1 1 120px', borderColor: '#f59e0b', color: '#f59e0b', padding: '12px 16px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', background: 'transparent', textAlign: 'center' }}>
                   Counter Offer
                 </button>
-                <button className="btn btn-outline" onClick={() => onDecline("")} style={{ flex: 1, borderColor: '#ef4444', color: '#ef4444', padding: '12px 16px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', background: 'transparent' }}>
+                <button className="btn btn-outline" onClick={() => onDecline("")} style={{ flex: '1 1 120px', borderColor: '#ef4444', color: '#ef4444', padding: '12px 16px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', background: 'transparent', textAlign: 'center' }}>
                   Decline
                 </button>
               </div>
