@@ -716,7 +716,7 @@ export default function Chat({ standalone = true }) {
                 <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-end', justifyContent: 'flex-end', gap: '8px' }}>
                   {m.content && (
                     <p style={{ fontSize: '15px', margin: 0, wordBreak: 'break-word', overflowWrap: 'anywhere', whiteSpace: 'pre-wrap', flex: '1 1 auto', alignSelf: 'flex-start', paddingBottom: '2px', lineHeight: '1.4' }}>
-                      {renderMessageContent(m.content, isMine)}
+                      {renderMessageContent(m.content, isMine, m._id)}
                     </p>
                   )}
                   <div style={{ display: 'flex', alignItems: 'center', gap: '4px', opacity: isMine ? 0.7 : 0.6, flexShrink: 0, marginTop: m.content ? '0' : '4px' }}>
