@@ -63,6 +63,7 @@
   display: flex;
   flex: 1;
   overflow: hidden;
+  min-height: 0;
 }
 
 .proposal-form-section {
@@ -190,6 +191,12 @@
 }
 
 @media (max-width: 768px) {
+  .proposal-modal-overlay {
+    height: 100dvh !important;
+    align-items: flex-end !important;
+    padding: 0 !important;
+  }
+
   .proposal-modal-content {
     width: 100%;
     height: 100dvh;
@@ -201,22 +208,31 @@
   .mobile-responsive-modal {
     max-width: 100%;
     width: 100%;
-    height: 95dvh;
-    max-height: 95dvh;
+    height: 90dvh;
+    max-height: 90dvh;
     border-radius: 16px 16px 0 0;
-    margin-top: auto;
-    margin-bottom: 0;
+    margin: 0;
     border-bottom: none;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
+  }
+
+  .proposal-modal-header {
+    flex-shrink: 0;
   }
 
   .proposal-modal-footer {
-    padding-bottom: max(16px, env(safe-area-inset-bottom));
+    flex-shrink: 0;
+    padding-bottom: max(16px, env(safe-area-inset-bottom)) !important;
+    background: var(--bg-card);
   }
   .proposal-modal-body {
+    flex: 1;
+    overflow-y: auto;
     flex-direction: column;
     padding: 16px;
+    min-height: 0; /* Critical for flex scrolling */
   }
   .proposal-form-section {
     border-right: none;
