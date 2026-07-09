@@ -320,7 +320,7 @@ export default function Chat({ standalone = true }) {
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '16px', alignItems: 'center', marginTop: '4px', flexWrap: 'wrap' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', marginTop: '12px' }}>
             {(() => {
               const history = proposalData?.negotiationHistory || [];
               const lastSender = history.length > 0 ? history[history.length - 1].sender : undefined;
@@ -341,9 +341,9 @@ export default function Chat({ standalone = true }) {
                         setSelectedProposal({ data: proposalData, msgId, isReceiver: !isMine });
                         setShowViewModal(true);
                       }}
-                      style={{ background: '#10b981', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '8px', fontWeight: '600', fontSize: '13px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', flex: '1', justifyContent: 'center' }}
+                      style={{ background: '#28C76F', color: '#fff', border: 'none', padding: '12px 4px', borderRadius: '8px', fontWeight: '600', fontSize: '13px', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', width: '100%' }}
                     >
-                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+                      <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
                       Accept
                     </button>
                     <button 
@@ -351,15 +351,16 @@ export default function Chat({ standalone = true }) {
                         setSelectedProposal({ data: proposalData, msgId, isReceiver: !isMine, openCounterForm: true });
                         setShowViewModal(true);
                       }}
-                      style={{ background: 'transparent', color: '#f59e0b', border: '1px solid #f59e0b', padding: '8px 16px', borderRadius: '8px', fontWeight: '600', fontSize: '13px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', flex: '1', justifyContent: 'center' }}
+                      style={{ background: 'transparent', color: '#FF9F1C', border: '1px solid #FF9F1C', padding: '12px 4px', borderRadius: '8px', fontWeight: '600', fontSize: '13px', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', width: '100%' }}
                     >
-                      💰 Counter
+                      <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                      Counter Offer
                     </button>
                     <button 
                       onClick={() => handleDeclineProposal(msgId)}
-                      style={{ background: 'transparent', color: 'var(--text-muted)', border: 'none', fontWeight: '600', fontSize: '13px', cursor: 'pointer', padding: '8px 16px', display: 'flex', alignItems: 'center', gap: '4px', flex: '1', justifyContent: 'center' }}
+                      style={{ background: '#EA5455', color: '#fff', border: 'none', padding: '12px 4px', borderRadius: '8px', fontWeight: '600', fontSize: '13px', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', width: '100%' }}
                     >
-                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                      <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                       Decline
                     </button>
                   </>

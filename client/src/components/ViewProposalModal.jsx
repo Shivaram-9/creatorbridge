@@ -296,18 +296,19 @@ export default function ViewProposalModal({
 
         <div className="proposal-modal-footer" style={{ flexDirection: 'column', gap: '8px' }}>
           {canAct && !showCounterForm ? (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
-              <button className="btn btn-primary" onClick={onAccept} style={{ width: '100%', background: '#10b981', color: '#fff', border: 'none', padding: '12px 16px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', fontSize: '15px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' }}>
+              <button onClick={onAccept} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%', background: '#28C76F', color: '#fff', border: 'none', padding: '14px 16px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', fontSize: '15px' }}>
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
                 Accept Proposal
               </button>
-              <div style={{ display: 'flex', gap: '8px', width: '100%', flexWrap: 'wrap' }}>
-                <button className="btn btn-outline" onClick={() => setShowCounterForm(true)} style={{ flex: '1 1 120px', borderColor: '#f59e0b', color: '#f59e0b', padding: '12px 16px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', background: 'transparent', textAlign: 'center' }}>
-                  Counter Offer
-                </button>
-                <button className="btn btn-outline" onClick={() => onDecline("")} style={{ flex: '1 1 120px', borderColor: '#ef4444', color: '#ef4444', padding: '12px 16px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', background: 'transparent', textAlign: 'center' }}>
-                  Decline
-                </button>
-              </div>
+              <button onClick={() => setShowCounterForm(true)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%', border: '1px solid #FF9F1C', color: '#FF9F1C', padding: '14px 16px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', background: 'transparent', fontSize: '15px' }}>
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Counter Offer
+              </button>
+              <button onClick={() => onDecline("")} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%', background: '#EA5455', color: '#fff', border: 'none', padding: '14px 16px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', fontSize: '15px' }}>
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                Decline Proposal
+              </button>
             </div>
           ) : showCounterForm ? (
             <div style={{ display: 'flex', gap: '8px', width: '100%' }}>
