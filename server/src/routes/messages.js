@@ -337,6 +337,18 @@ messagesRouter.patch("/:id/proposal", async (req, res) => {
       await autoMsg.save();
     }
     
+    // Emit real-time events
+    const io = req.app.get("io");
+    if (io) {
+      io.to(`user:${partnerId}`).emit("proposal_updated", msg);
+      io.to(`user:${req.userId}`).emit("proposal_updated", msg);
+      
+      if (autoMsg) {
+        io.to(`user:${partnerId}`).emit("message", autoMsg);
+        io.to(`user:${req.userId}`).emit("message", autoMsg);
+      }
+    }
+    
     // Generate notification
     try {
        const { Notification } = await import("../models/Notification.js");

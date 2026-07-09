@@ -487,12 +487,21 @@ export default function Chat({ standalone = true }) {
         }
       }
     };
+    const onProposalUpdated = (updatedMsg) => {
+      setMessages(prev => prev.map(m => {
+        if (m._id === updatedMsg._id) return updatedMsg;
+        return m;
+      }));
+    };
+
     socket.on("message", onMessage);
+    socket.on("proposal_updated", onProposalUpdated);
 
     return () => {
       socket.off("connect", syncStatus);
       socket.off("disconnect", syncStatus);
       socket.off("message", onMessage);
+      socket.off("proposal_updated", onProposalUpdated);
       socket.off("typing");
       socket.off("stop_typing");
     };

@@ -4,6 +4,7 @@ import { api } from "../services/api.js";
 import ErrorBanner from "../components/ErrorBanner.jsx";
 import Avatar from "../components/Avatar.jsx";
 import Chat from "./Chat.jsx";
+import { connectSocket } from "../services/socket.js";
 import { MessageIcon, SearchIcon } from "../components/Icons.jsx";
 import VerifiedBadge from "../components/VerifiedBadge.jsx";
 import "./Messages.css";
@@ -42,6 +43,51 @@ export default function Messages() {
       }
     }
     fetchConversations();
+  }, [userId]);
+
+  useEffect(() => {
+    const socket = connectSocket();
+    if (!socket) return;
+
+    const handleNewMessage = (msg) => {
+      setConversations(prev => {
+        let exists = false;
+        const updated = prev.map(conv => {
+          if (conv.partner?._id === msg.sender?._id || conv.partner?._id === msg.receiver?._id || conv.partner?._id === msg.sender || conv.partner?._id === msg.receiver) {
+            exists = true;
+            return {
+              ...conv,
+              lastMessage: msg,
+              unreadCount: (msg.sender !== userId && msg.sender?._id !== userId) ? conv.unreadCount + 1 : conv.unreadCount
+            };
+          }
+          return conv;
+        });
+
+        if (!exists) {
+           api.messages.list().then(data => {
+             if (!data?.error) setConversations(Array.isArray(data) ? data : []);
+           });
+           return prev;
+        }
+
+        return updated.sort((a, b) => {
+          if ((a.unreadCount > 0) && (b.unreadCount === 0)) return -1;
+          if ((a.unreadCount === 0) && (b.unreadCount > 0)) return 1;
+          const timeA = a.lastMessage?.createdAt ? new Date(a.lastMessage.createdAt) : 0;
+          const timeB = b.lastMessage?.createdAt ? new Date(b.lastMessage.createdAt) : 0;
+          return timeB - timeA;
+        });
+      });
+    };
+
+    socket.on("message", handleNewMessage);
+    socket.on("proposal_updated", handleNewMessage);
+
+    return () => {
+      socket.off("message", handleNewMessage);
+      socket.off("proposal_updated", handleNewMessage);
+    };
   }, [userId]);
 
   useEffect(() => {
@@ -85,6 +131,25 @@ export default function Messages() {
     const hours = Math.floor(mins / 60);
     if (hours < 24) return `${hours}h`;
     return then.toLocaleDateString();
+  };
+
+  const getPreviewText = (msg) => {
+    if (!msg) return "";
+    if (msg.content) {
+      try {
+        const parsed = JSON.parse(msg.content);
+        if (parsed.isProposal) {
+          if (parsed.status === "Pending") return "Collaboration Proposal Sent";
+          if (parsed.status === "Accepted") return "Collaboration Proposal Accepted";
+          if (parsed.status === "Declined") return "Collaboration Proposal Declined";
+          if (parsed.status === "Counter Offered") return "Counter Offer Sent";
+          return `Proposal: ${parsed.status}`;
+        }
+      } catch(e) {}
+      return msg.content.replace(/❌|✅/g, '').replace(/^\[System\]\s*/, '');
+    }
+    if (msg.media) return "📷 Photo";
+    return "Media";
   };
 
   return (
@@ -185,7 +250,7 @@ export default function Messages() {
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <p className="chat-item-preview" style={{ fontWeight: conv.unreadCount > 0 ? '600' : '400', color: conv.unreadCount > 0 ? 'var(--text-main)' : 'var(--text-muted)', flex: 1, paddingRight: '8px' }}>
-                      {conv.lastMessage?.content ? conv.lastMessage.content.replace(/❌|✅/g, '').replace(/^\[System\]\s*/, '') : (conv.lastMessage?.media ? "📷 Photo" : "Media")}
+                      {getPreviewText(conv.lastMessage)}
                     </p>
                     {conv.unreadCount > 0 && (
                       <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: '18px', height: '18px', padding: '0 4px', background: 'var(--primary)', color: 'white', fontSize: '10px', fontWeight: 'bold', borderRadius: '9px' }}>
