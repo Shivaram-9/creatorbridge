@@ -4,7 +4,7 @@ import { useAuth } from "../context/AuthContext.jsx";
 import { api } from "../services/api.js";
 import { BASE_URL } from "../config/api.js";
 import PostCard from "../components/PostCard.jsx";
-import CreatePost from "../components/CreatePost.jsx";
+
 import StoriesBar from "../components/StoriesBar.jsx";
 import EmptyState from "../components/EmptyState.jsx";
 import Avatar from "../components/Avatar.jsx";
