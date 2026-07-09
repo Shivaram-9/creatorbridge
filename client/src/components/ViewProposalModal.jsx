@@ -103,16 +103,16 @@ export default function ViewProposalModal({
   }
 
   return (
-    <div className="proposal-modal-overlay" onClick={onClose}>
-      <div className="proposal-modal-content mobile-responsive-modal" onClick={e => e.stopPropagation()}>
-        <div className="proposal-modal-header">
+    <div className="proposal-modal-overlay global-modal-overlay" onClick={onClose}>
+      <div className="proposal-modal-content mobile-responsive-modal global-modal-dialog" onClick={e => e.stopPropagation()}>
+        <div className="proposal-modal-header global-modal-header">
           <h2>{showCounterForm ? 'Counter Offer' : 'Collaboration Proposal'}</h2>
           <button className="close-btn" onClick={onClose}>
             <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
           </button>
         </div>
 
-        <div className="proposal-modal-body" style={{ flexDirection: 'column', padding: '16px', overflowY: 'auto' }}>
+        <div className="proposal-modal-body global-modal-body" style={{ flexDirection: 'column', padding: '16px', overflowY: 'auto' }}>
           
           {!showCounterForm ? (
             <>
@@ -306,7 +306,7 @@ export default function ViewProposalModal({
           )}
         </div>
 
-        <div className="proposal-modal-footer" style={{ flexDirection: 'column', gap: '12px', padding: '16px', background: 'var(--bg-card)' }}>
+        <div className="proposal-modal-footer global-modal-footer" style={{ flexDirection: 'column', gap: '12px', padding: '16px', background: 'var(--bg-card)' }}>
           {canAct && !showCounterForm ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' }}>
               <button onClick={onAccept} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%', background: '#28C76F', color: '#fff', border: 'none', padding: '14px 16px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', fontSize: '15px' }}>

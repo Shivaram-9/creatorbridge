@@ -52,20 +52,20 @@ export default function CollectionModal({ postId, onClose }) {
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="collection-modal slide-in" onClick={e => e.stopPropagation()}>
-        <div className="modal-header">
+    <div className="modal-overlay global-modal-overlay" onClick={onClose}>
+      <div className="collection-modal slide-in global-modal-dialog" onClick={e => e.stopPropagation()}>
+        <div className="modal-header global-modal-header">
           <h3>Save to Collection</h3>
           <button className="btn-close" onClick={onClose}>&times;</button>
         </div>
 
         {success ? (
-          <div className="success-state">
+          <div className="success-state global-modal-body">
             <span className="success-icon" style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px' }}><CheckCircleIcon /></span>
             <p>Saved to Collection!</p>
           </div>
         ) : (
-          <div className="modal-body">
+          <div className="modal-body global-modal-body">
             <div className="new-collection-row">
               <input 
                 type="text" 

@@ -71,9 +71,9 @@ export default function CollaborationProposalModal({ onClose, onSend, partnerNam
   };
 
   return (
-    <div className="proposal-modal-overlay">
-      <div className="proposal-modal-content">
-        <div className="proposal-modal-header">
+    <div className="proposal-modal-overlay global-modal-overlay">
+      <div className="proposal-modal-content global-modal-dialog">
+        <div className="proposal-modal-header global-modal-header">
           <h2>Create Collaboration Proposal</h2>
           <button className="proposal-close-btn" onClick={onClose}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -82,7 +82,7 @@ export default function CollaborationProposalModal({ onClose, onSend, partnerNam
           </button>
         </div>
 
-        <div className="proposal-modal-body">
+        <div className="proposal-modal-body global-modal-body">
           {/* FORM SECTION */}
           <div className="proposal-form-section">
             <div className="proposal-form-group">
@@ -260,7 +260,7 @@ export default function CollaborationProposalModal({ onClose, onSend, partnerNam
           </div>
         </div>
 
-        <div className="proposal-modal-footer">
+        <div className="proposal-modal-footer global-modal-footer">
           <button className="btn btn-outline" onClick={onClose}>Cancel</button>
           <button className="btn btn-primary" onClick={handleSend}>Send Proposal</button>
         </div>

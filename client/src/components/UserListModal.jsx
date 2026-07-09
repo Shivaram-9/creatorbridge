@@ -45,11 +45,11 @@ export default function UserListModal({ userId, type = "following", onClose, onS
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000 }}>
-      <div className="modal-content" onClick={e => e.stopPropagation()} style={{ background: 'white', color: 'var(--text-main)', borderRadius: '16px', width: '90%', maxWidth: '400px', maxHeight: '80vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }}>
+    <div className="modal-overlay global-modal-overlay" onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000 }}>
+      <div className="modal-content global-modal-dialog" onClick={e => e.stopPropagation()} style={{ background: 'white', color: 'var(--text-main)', borderRadius: '16px', width: '90%', maxWidth: '400px', maxHeight: '80vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }}>
         
         {/* Header */}
-        <div style={{ padding: '16px', borderBottom: '1px solid #eee', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="global-modal-header" style={{ padding: '16px', borderBottom: '1px solid #eee', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h2 style={{ fontSize: '1rem', fontWeight: 600, margin: 0 }}>Share</h2>
           <button style={{ background: 'none', border: 'none', color: 'var(--text-main)', fontSize: '1.2rem', cursor: 'pointer' }} onClick={onClose}>✕</button>
         </div>
@@ -69,7 +69,7 @@ export default function UserListModal({ userId, type = "following", onClose, onS
         </div>
 
         {/* Body */}
-        <div style={{ flex: 1, overflowY: 'auto', padding: '16px' }}>
+        <div className="global-modal-body" style={{ flex: 1, overflowY: 'auto', padding: '16px' }}>
           {loading ? (
             <LoadingSpinner centered />
           ) : error ? (
@@ -104,7 +104,7 @@ export default function UserListModal({ userId, type = "following", onClose, onS
         </div>
 
         {/* Footer with Send Button */}
-        <div style={{ padding: '16px', borderTop: '1px solid #eee', display: 'flex', justifyContent: 'center' }}>
+        <div className="global-modal-footer" style={{ padding: '16px', borderTop: '1px solid #eee', display: 'flex', justifyContent: 'center' }}>
           <button 
             style={{ 
               width: '100%', 

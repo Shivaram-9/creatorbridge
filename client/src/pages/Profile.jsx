@@ -666,11 +666,14 @@ export default function Profile() {
 
       {/* Experience Modal */}
       {showExperienceModal && (
-        <div className="modal-overlay slide-in" onClick={() => setShowExperienceModal(false)}>
-          <div className="modal-content fade-in" onClick={e => e.stopPropagation()} style={{ maxWidth: '500px', padding: '32px' }}>
-            <h3 style={{ marginBottom: '16px', fontSize: '20px', fontWeight: 'bold' }} className="dark:text-white">Work Experience</h3>
-            <div className="text-slate-700 dark:text-slate-300" style={{ whiteSpace: 'pre-line', fontSize: '15px', lineHeight: '1.6', maxHeight: '60vh', overflowY: 'auto' }}>
+        <div className="modal-overlay slide-in global-modal-overlay" onClick={() => setShowExperienceModal(false)}>
+          <div className="modal-content fade-in global-modal-dialog" onClick={e => e.stopPropagation()} style={{ maxWidth: '500px' }}>
+            <h3 className="global-modal-header" style={{ margin: 0, padding: '24px', fontSize: '20px', fontWeight: 'bold', borderBottom: '1px solid var(--border-light)' }}>Work Experience</h3>
+            <div className="text-slate-700 dark:text-slate-300 global-modal-body" style={{ whiteSpace: 'pre-line', fontSize: '15px', lineHeight: '1.6', padding: '24px' }}>
               {user?.experience}
+            </div>
+            <div className="global-modal-footer" style={{ padding: '16px', borderTop: '1px solid var(--border-light)', display: 'flex', justifyContent: 'flex-end' }}>
+              <button className="btn btn-outline" onClick={() => setShowExperienceModal(false)}>Close</button>
             </div>
           </div>
         </div>

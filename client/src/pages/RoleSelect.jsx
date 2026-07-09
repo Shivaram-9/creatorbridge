@@ -103,14 +103,14 @@ export default function RoleSelect() {
         </button>
 
         {showTerms && (
-          <div className="terms-modal-overlay">
-            <div className="terms-modal-card fade-up">
-              <div className="terms-modal-header">
+          <div className="terms-modal-overlay global-modal-overlay">
+            <div className="terms-modal-card fade-up global-modal-dialog">
+              <div className="terms-modal-header global-modal-header">
                 <h2>Privacy Policy</h2>
                 <button className="terms-close" onClick={() => setShowTerms(false)}>✕</button>
               </div>
               
-              <div className="terms-modal-body" style={{ padding: '32px', textAlign: 'center' }}>
+              <div className="terms-modal-body global-modal-body" style={{ padding: '32px', textAlign: 'center' }}>
                 <p style={{ marginBottom: '24px', fontSize: '16px', color: '#475569' }}>
                   Please review our Privacy Policy to understand how we collect, use, and protect your data before completing registration.
                 </p>

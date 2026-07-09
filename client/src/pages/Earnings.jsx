@@ -84,39 +84,41 @@ export default function Earnings() {
       </div>
 
       {showWithdraw && (
-        <div className="modal-overlay">
-          <div className="withdraw-modal card slide-up">
-            <h3>Request Withdrawal</h3>
-            <p>Funds will be transferred within 2-3 business days.</p>
-            <form onSubmit={handleWithdraw}>
-              <div className="form-group">
-                <label>Amount (Min ₹500)</label>
-                <input 
-                  type="number" 
-                  min="500" 
-                  value={withdrawAmount} 
-                  onChange={(e) => setWithdrawAmount(e.target.value)}
-                  required 
-                />
+        <div className="modal-overlay global-modal-overlay">
+          <div className="withdraw-modal card slide-up global-modal-dialog">
+            <h3 className="global-modal-header" style={{ margin: 0, padding: '16px', borderBottom: '1px solid var(--border-light)' }}>Request Withdrawal</h3>
+            <form onSubmit={handleWithdraw} style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, overflow: 'hidden' }}>
+              <div className="global-modal-body" style={{ padding: '16px' }}>
+                <p>Funds will be transferred within 2-3 business days.</p>
+                <div className="form-group">
+                  <label>Amount (Min ₹500)</label>
+                  <input 
+                    type="number" 
+                    min="500" 
+                    value={withdrawAmount} 
+                    onChange={(e) => setWithdrawAmount(e.target.value)}
+                    required 
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Method</label>
+                  <select value={payoutMethod} onChange={(e) => setPayoutMethod(e.target.value)}>
+                    <option value="UPI">UPI</option>
+                    <option value="Bank">Bank Transfer</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label>{payoutMethod} Details</label>
+                  <input 
+                    type="text" 
+                    placeholder={payoutMethod === 'UPI' ? 'Enter VPA (e.g. user@okaxis)' : 'Account No & IFSC'}
+                    value={payoutDetails}
+                    onChange={(e) => setPayoutDetails(e.target.value)}
+                    required 
+                  />
+                </div>
               </div>
-              <div className="form-group">
-                <label>Method</label>
-                <select value={payoutMethod} onChange={(e) => setPayoutMethod(e.target.value)}>
-                  <option value="UPI">UPI</option>
-                  <option value="Bank">Bank Transfer</option>
-                </select>
-              </div>
-              <div className="form-group">
-                <label>{payoutMethod} Details</label>
-                <input 
-                  type="text" 
-                  placeholder={payoutMethod === 'UPI' ? 'Enter VPA (e.g. user@okaxis)' : 'Account No & IFSC'}
-                  value={payoutDetails}
-                  onChange={(e) => setPayoutDetails(e.target.value)}
-                  required 
-                />
-              </div>
-              <div className="modal-actions">
+              <div className="modal-actions global-modal-footer" style={{ padding: '16px', borderTop: '1px solid var(--border-light)' }}>
                 <button type="button" className="btn btn-ghost" onClick={() => setShowWithdraw(false)}>Cancel</button>
                 <button type="submit" className="btn btn-primary">Submit Request</button>
               </div>
