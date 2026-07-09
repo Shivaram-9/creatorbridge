@@ -176,10 +176,6 @@ export default function Home() {
 
         <HeroBanner user={user} />
 
-        {/* New Post Box (Mobile Only) */}
-        <div className="md:hidden">
-          <CreatePost onPost={handleAddPost} user={user} />
-        </div>
 
         {/* Feed Tabs */}
         {/* Feed Tabs Dropdown */}

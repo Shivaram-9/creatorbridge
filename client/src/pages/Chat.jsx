@@ -293,34 +293,34 @@ export default function Chat({ standalone = true }) {
             </p>
           )}
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px', borderTop: '1px solid rgba(245, 158, 11, 0.2)', paddingTop: '16px' }}>
-            <div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px', marginBottom: '16px', borderTop: '1px solid rgba(245, 158, 11, 0.2)', paddingTop: '16px' }}>
+            <div style={{ overflow: 'hidden' }}>
               <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: '0 0 4px 0', fontWeight: '500' }}>Deliverables</p>
-              <p style={{ fontSize: '13px', color: 'var(--text-main)', margin: 0, fontWeight: '600' }}>
+              <div style={{ fontSize: '13px', color: 'var(--text-main)', margin: 0, fontWeight: '600', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {proposalData && proposalData.deliverables 
                   ? (proposalData.deliverables.length > 0 
                       ? proposalData.deliverables.slice(0,2).map(d => `${d.quantity} ${d.name.split(' ')[1] || d.name}`).join(' + ') + (proposalData.deliverables.length > 2 ? '...' : '')
                       : 'None')
                   : 'To Be Discussed'}
-              </p>
+              </div>
             </div>
-            <div style={{ textAlign: 'center' }}>
+            <div style={{ overflow: 'hidden' }}>
               <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: '0 0 4px 0', fontWeight: '500' }}>Timeline</p>
-              <p style={{ fontSize: '13px', color: 'var(--text-main)', margin: 0, fontWeight: '600' }}>
+              <div style={{ fontSize: '13px', color: 'var(--text-main)', margin: 0, fontWeight: '600', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {proposalData ? (proposalData.timeline === 'Custom' ? 'Custom Date' : proposalData.timeline) : 'Flexible'}
-              </p>
+              </div>
             </div>
-            <div style={{ textAlign: 'right' }}>
+            <div style={{ overflow: 'hidden' }}>
               <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: '0 0 4px 0', fontWeight: '500' }}>Budget</p>
-              <p style={{ fontSize: '13px', color: 'var(--text-main)', margin: 0, fontWeight: '600' }}>
+              <div style={{ fontSize: '13px', color: 'var(--text-main)', margin: 0, fontWeight: '600', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {proposalData && proposalData.budget 
                   ? `${proposalData.currency === 'INR' ? '₹' : (proposalData.currency === 'USD' ? '$' : '€')}${proposalData.budget}`
                   : 'Negotiable'}
-              </p>
+              </div>
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', marginTop: '12px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px', marginTop: '12px' }}>
             {(() => {
               const history = proposalData?.negotiationHistory || [];
               const lastSender = history.length > 0 ? history[history.length - 1].sender : undefined;
@@ -341,27 +341,27 @@ export default function Chat({ standalone = true }) {
                         setSelectedProposal({ data: proposalData, msgId, isReceiver: !isMine });
                         setShowViewModal(true);
                       }}
-                      style={{ background: '#28C76F', color: '#fff', border: 'none', padding: '12px 4px', borderRadius: '8px', fontWeight: '600', fontSize: '13px', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', width: '100%' }}
+                      style={{ background: '#28C76F', color: '#fff', border: 'none', padding: '12px 0', borderRadius: '8px', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '6px', width: '100%', overflow: 'hidden' }}
                     >
                       <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
-                      Accept
+                      <span style={{ fontSize: '12px', fontWeight: '600', whiteSpace: 'nowrap' }}>Accept</span>
                     </button>
                     <button 
                       onClick={() => {
                         setSelectedProposal({ data: proposalData, msgId, isReceiver: !isMine, openCounterForm: true });
                         setShowViewModal(true);
                       }}
-                      style={{ background: 'transparent', color: '#FF9F1C', border: '1px solid #FF9F1C', padding: '12px 4px', borderRadius: '8px', fontWeight: '600', fontSize: '13px', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', width: '100%' }}
+                      style={{ background: 'transparent', color: '#FF9F1C', border: '1px solid #FF9F1C', padding: '12px 0', borderRadius: '8px', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '6px', width: '100%', overflow: 'hidden' }}
                     >
                       <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                      Counter Offer
+                      <span style={{ fontSize: '12px', fontWeight: '600', whiteSpace: 'pre-line', textAlign: 'center', lineHeight: '1.1' }}>Counter{'\n'}Offer</span>
                     </button>
                     <button 
                       onClick={() => handleDeclineProposal(msgId)}
-                      style={{ background: '#EA5455', color: '#fff', border: 'none', padding: '12px 4px', borderRadius: '8px', fontWeight: '600', fontSize: '13px', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', width: '100%' }}
+                      style={{ background: '#EA5455', color: '#fff', border: 'none', padding: '12px 0', borderRadius: '8px', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '6px', width: '100%', overflow: 'hidden' }}
                     >
                       <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                      Decline
+                      <span style={{ fontSize: '12px', fontWeight: '600', whiteSpace: 'nowrap' }}>Decline</span>
                     </button>
                   </>
                 );
@@ -379,7 +379,6 @@ export default function Chat({ standalone = true }) {
               } else if (proposalData.status === "Counter Offered") {
                 canAct = lastSender ? (lastSender !== user?._id) : !isMine;
               }
-              
               if (!canAct) {
                 return (
                   <button 
@@ -387,7 +386,7 @@ export default function Chat({ standalone = true }) {
                       setSelectedProposal({ data: proposalData, msgId, isReceiver: !isMine });
                       setShowViewModal(true);
                     }}
-                    style={{ background: '#f59e0b', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '8px', fontWeight: '600', fontSize: '13px', cursor: 'pointer' }}
+                    style={{ background: '#f59e0b', color: '#fff', border: 'none', padding: '12px 16px', borderRadius: '8px', fontWeight: '600', fontSize: '13px', cursor: 'pointer', gridColumn: '1 / -1', width: '100%' }}
                   >
                     View Proposal
                   </button>

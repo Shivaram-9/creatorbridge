@@ -174,11 +174,23 @@ export default function ViewProposalModal({
                 </div>
               </div>
 
-              {data.notes && (
+          {data.notes && (
                 <div className="proposal-form-group" style={{ marginTop: '16px' }}>
                   <label>Additional Notes</label>
                   <p style={{ margin: '4px 0', fontSize: '14px', lineHeight: '1.5', color: 'var(--text-muted)', fontStyle: 'italic', background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '8px' }}>
                     "{data.notes}"
+                  </p>
+                </div>
+              )}
+
+              {canAct && !showCounterForm && (
+                <div style={{ marginTop: '24px', background: 'rgba(245, 158, 11, 0.1)', padding: '16px', borderRadius: '8px', border: '1px solid rgba(245, 158, 11, 0.2)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                    <svg width="18" height="18" fill="none" stroke="#f59e0b" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span style={{ color: '#f59e0b', fontSize: '14px', fontWeight: '600' }}>How it works?</span>
+                  </div>
+                  <p style={{ fontSize: '13px', color: 'var(--text-muted)', margin: 0, paddingLeft: '26px' }}>
+                    Accept, Counter or Decline this proposal to continue.
                   </p>
                 </div>
               )}
@@ -294,7 +306,7 @@ export default function ViewProposalModal({
           )}
         </div>
 
-        <div className="proposal-modal-footer" style={{ flexDirection: 'column', gap: '8px' }}>
+        <div className="proposal-modal-footer" style={{ flexDirection: 'column', gap: '12px', padding: '16px', background: 'var(--bg-card)' }}>
           {canAct && !showCounterForm ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' }}>
               <button onClick={onAccept} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%', background: '#28C76F', color: '#fff', border: 'none', padding: '14px 16px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', fontSize: '15px' }}>
@@ -312,15 +324,15 @@ export default function ViewProposalModal({
             </div>
           ) : showCounterForm ? (
             <div style={{ display: 'flex', gap: '8px', width: '100%' }}>
-              <button className="btn btn-outline" onClick={() => setShowCounterForm(false)} style={{ flex: 1, color: 'var(--text-muted)', border: '1px solid var(--border-light)', padding: '12px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', background: 'transparent' }}>
+              <button className="btn btn-outline" onClick={() => setShowCounterForm(false)} style={{ flex: 1, color: 'var(--text-muted)', border: '1px solid var(--border-light)', padding: '14px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', background: 'transparent' }}>
                 Cancel
               </button>
-              <button className="btn btn-primary" onClick={handleCounterSubmit} disabled={!counterBudget} style={{ flex: 2, background: '#f59e0b', color: '#fff', border: 'none', padding: '12px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', opacity: !counterBudget ? 0.6 : 1 }}>
+              <button className="btn btn-primary" onClick={handleCounterSubmit} disabled={!counterBudget} style={{ flex: 2, background: '#f59e0b', color: '#fff', border: 'none', padding: '14px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', opacity: !counterBudget ? 0.6 : 1 }}>
                 Send Counter Offer
               </button>
             </div>
           ) : (
-            <button className="btn btn-outline" onClick={onClose} style={{ width: '100%', padding: '12px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', background: 'var(--bg-secondary)', color: 'var(--text-main)', border: '1px solid var(--border-light)' }}>
+            <button className="btn btn-outline" onClick={onClose} style={{ width: '100%', padding: '14px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', background: 'var(--bg-secondary)', color: 'var(--text-main)', border: '1px solid var(--border-light)' }}>
               Close
             </button>
           )}
