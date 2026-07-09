@@ -96,6 +96,7 @@
 
 .proposal-form-input {
   width: 100%;
+  box-sizing: border-box;
   padding: 10px 14px;
   border-radius: 8px;
   border: 1px solid var(--border-light);
@@ -192,20 +193,37 @@
   .proposal-modal-content {
     width: 100%;
     height: 100dvh;
-    max-height: none;
+    max-height: 100dvh;
     border-radius: 0;
+    margin: 0;
   }
+  
+  .mobile-responsive-modal {
+    max-width: 100%;
+    height: auto;
+    max-height: 90vh;
+    border-radius: 16px 16px 0 0;
+    margin-top: auto;
+    border-bottom: none;
+  }
+
   .proposal-modal-footer {
     padding-bottom: max(16px, env(safe-area-inset-bottom));
   }
   .proposal-modal-body {
     flex-direction: column;
+    padding: 16px;
   }
   .proposal-form-section {
     border-right: none;
-    border-bottom: 1px solid var(--border-light);
+    border-bottom: none;
+    padding: 0;
   }
   .proposal-preview-section {
-    display: none; /* Hide preview on very small screens to save space */
+    display: none;
+  }
+  .proposal-row {
+    flex-direction: column;
+    gap: 16px;
   }
 }

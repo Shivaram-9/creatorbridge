@@ -1,19 +1,72 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './CollaborationProposalModal.css';
 
-export default function ViewProposalModal({ proposalData, onClose, onAccept, onDecline, onCounterOffer, isReceiver, partnerName, currentUserId }) {
-  const [showCounterForm, setShowCounterForm] = useState(false);
-  const [counterBudget, setCounterBudget] = useState('');
-  const [counterMessage, setCounterMessage] = useState('');
+const DELIVERABLE_OPTIONS = [
+  "Instagram Reel", "Instagram Story", "Instagram Post",
+  "YouTube Video", "YouTube Shorts", "Facebook Post",
+  "LinkedIn Post", "X (Twitter) Post", "Product Review",
+  "Unboxing", "Event Coverage", "Brand Mention",
+  "Giveaway", "Live Session", "Podcast", "Blog Article"
+];
 
+const TIMELINE_OPTIONS = [
+  { label: "3 Days", value: "3 Days" },
+  { label: "7 Days", value: "7 Days" },
+  { label: "15 Days", value: "15 Days" },
+  { label: "30 Days", value: "30 Days" },
+  { label: "Custom", value: "Custom" }
+];
+
+export default function ViewProposalModal({ 
+  proposalData, 
+  onClose, 
+  onAccept, 
+  onDecline, 
+  onCounterOffer, 
+  isReceiver, 
+  partnerName, 
+  currentUserId,
+  initialShowCounterForm = false
+}) {
+  const [showCounterForm, setShowCounterForm] = useState(initialShowCounterForm);
+  
   const data = proposalData || {
     title: 'Content Campaign',
     description: 'Would you be interested in discussing a potential collaboration?',
     deliverables: [],
     timeline: 'Flexible',
     budget: null,
-    notes: 'This is a legacy text-based proposal.',
+    notes: '',
     status: 'Pending'
+  };
+
+  // State for Counter Offer
+  const [counterBudget, setCounterBudget] = useState(data.budget || '');
+  const [counterDeliverables, setCounterDeliverables] = useState(data.deliverables || []);
+  const [counterTimelineMode, setCounterTimelineMode] = useState(
+    (data.timeline && TIMELINE_OPTIONS.some(o => o.value === data.timeline)) 
+      ? data.timeline 
+      : (data.timeline ? 'Custom' : '15 Days')
+  );
+  const [counterCustomTimeline, setCounterCustomTimeline] = useState(data.timeline || '');
+  const [counterNotes, setCounterNotes] = useState('');
+
+  useEffect(() => {
+    if (initialShowCounterForm) setShowCounterForm(true);
+  }, [initialShowCounterForm]);
+
+  const toggleDeliverable = (item) => {
+    if (counterDeliverables.find((d) => d.name === item)) {
+      setCounterDeliverables(counterDeliverables.filter((d) => d.name !== item));
+    } else {
+      setCounterDeliverables([...counterDeliverables, { name: item, quantity: 1 }]);
+    }
+  };
+
+  const updateQuantity = (item, qty) => {
+    setCounterDeliverables(
+      counterDeliverables.map((d) => (d.name === item ? { ...d, quantity: qty } : d))
+    );
   };
 
   const currencySymbol = data.currency === 'INR' ? '₹' : (data.currency === 'USD' ? '$' : '€');
@@ -22,7 +75,19 @@ export default function ViewProposalModal({ proposalData, onClose, onAccept, onD
 
   const handleCounterSubmit = () => {
     if (!counterBudget) return;
-    onCounterOffer(Number(counterBudget), counterMessage);
+    
+    let finalTimeline = counterTimelineMode;
+    if (counterTimelineMode === 'Custom' && counterCustomTimeline) {
+      finalTimeline = counterCustomTimeline;
+    }
+
+    onCounterOffer({
+      budget: Number(counterBudget),
+      deliverables: counterDeliverables,
+      timeline: finalTimeline,
+      message: counterNotes,
+      notes: counterNotes || data.notes
+    });
     setShowCounterForm(false);
   };
 
@@ -39,160 +104,224 @@ export default function ViewProposalModal({ proposalData, onClose, onAccept, onD
 
   return (
     <div className="proposal-modal-overlay" onClick={onClose}>
-      <div className="proposal-modal-content" onClick={e => e.stopPropagation()}>
+      <div className="proposal-modal-content mobile-responsive-modal" onClick={e => e.stopPropagation()}>
         <div className="proposal-modal-header">
-          <h2>Collaboration Proposal</h2>
+          <h2>{showCounterForm ? 'Counter Offer' : 'Collaboration Proposal'}</h2>
           <button className="close-btn" onClick={onClose}>
             <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
           </button>
         </div>
 
-        <div className="proposal-modal-body" style={{ flexDirection: 'column', padding: '24px', overflowY: 'auto' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', padding: '8px 12px', background: 'rgba(245, 158, 11, 0.1)', borderRadius: '8px' }}>
-            <span style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-muted)' }}>Status:</span>
-            <span style={{ fontSize: '14px', fontWeight: '700', color: data.status === 'Accepted' ? '#10b981' : (data.status === 'Declined' ? '#ef4444' : '#f59e0b') }}>
-              {data.status || 'Pending'}
-            </span>
-          </div>
-
-          <div className="proposal-form-group">
-            <label>Title</label>
-            <p style={{ margin: '4px 0', fontSize: '15px', fontWeight: '500', color: 'var(--text-main)' }}>
-              {data.title || 'Content Campaign'}
-            </p>
-          </div>
-
-          <div className="proposal-form-group">
-            <label>Description</label>
-            <p style={{ margin: '4px 0', fontSize: '14px', lineHeight: '1.6', color: 'var(--text-muted)' }}>
-              {data.description || 'No description provided.'}
-            </p>
-          </div>
-
-          <div className="proposal-form-group">
-            <label>Deliverables</label>
-            <ul style={{ paddingLeft: '20px', margin: '4px 0', fontSize: '14px', color: 'var(--text-main)' }}>
-              {data.deliverables && data.deliverables.length > 0 ? (
-                data.deliverables.map((d, idx) => (
-                  <li key={idx} style={{ marginBottom: '4px' }}>
-                    <strong>{d.quantity}x</strong> {d.name}
-                  </li>
-                ))
-              ) : (
-                <li>To Be Discussed</li>
-              )}
-            </ul>
-          </div>
-
-          <div className="proposal-row">
-            <div className="proposal-form-group">
-              <label>Timeline</label>
-              <p style={{ margin: '4px 0', fontSize: '14px', fontWeight: '500', color: 'var(--text-main)' }}>
-                {data.timeline === 'Custom' ? 'Custom Date' : (data.timeline || 'Flexible')}
-              </p>
-            </div>
-            
-            <div className="proposal-form-group">
-              <label>Budget</label>
-              <p style={{ margin: '4px 0', fontSize: '14px', fontWeight: '700', color: 'var(--text-main)' }}>
-                {currentBudget} <span style={{ fontSize: '12px', fontWeight: 'normal', color: 'var(--text-muted)' }}>({data.budgetType || 'Fixed'})</span>
-              </p>
-              {data.originalBudget && data.originalBudget !== data.budget && (
-                <p style={{ margin: '2px 0 0', fontSize: '12px', color: 'var(--text-muted)' }}>
-                  Original: <span style={{ textDecoration: 'line-through' }}>{originalBudget}</span>
-                </p>
-              )}
-            </div>
-          </div>
-
-          {data.notes && (
-            <div className="proposal-form-group">
-              <label>Additional Notes</label>
-              <p style={{ margin: '4px 0', fontSize: '14px', lineHeight: '1.5', color: 'var(--text-muted)' }}>
-                {data.notes}
-              </p>
-            </div>
-          )}
-
-          {data.negotiationHistory && data.negotiationHistory.length > 0 && (
-            <div className="proposal-form-group" style={{ marginTop: '24px', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '16px' }}>
-              <label style={{ color: '#f59e0b' }}>Negotiation History</label>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '8px' }}>
-                {data.negotiationHistory.map((history, idx) => (
-                  <div key={idx} style={{ padding: '12px', background: 'var(--bg-secondary)', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                      <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
-                        {new Date(history.timestamp).toLocaleString()}
-                      </span>
-                      <span style={{ fontSize: '13px', fontWeight: 'bold', color: 'var(--text-main)' }}>
-                        Offer: {currencySymbol}{history.budget}
-                      </span>
-                    </div>
-                    {history.message && (
-                      <p style={{ margin: '4px 0 0', fontSize: '13px', color: 'var(--text-muted)', fontStyle: 'italic' }}>
-                        "{history.message}"
-                      </p>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+        <div className="proposal-modal-body" style={{ flexDirection: 'column', padding: '16px', overflowY: 'auto' }}>
           
-          {data.declineReason && (
-            <div className="proposal-form-group" style={{ marginTop: '16px', padding: '12px', background: 'rgba(239, 68, 68, 0.1)', borderRadius: '8px' }}>
-              <label style={{ color: '#ef4444' }}>Decline Reason</label>
-              <p style={{ margin: '4px 0 0', fontSize: '13px', color: 'var(--text-main)' }}>{data.declineReason}</p>
-            </div>
-          )}
+          {!showCounterForm ? (
+            <>
+              {/* VIEW PROPOSAL MODE */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', padding: '8px 12px', background: 'rgba(245, 158, 11, 0.1)', borderRadius: '8px' }}>
+                <span style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-muted)' }}>Status:</span>
+                <span style={{ fontSize: '14px', fontWeight: '700', color: data.status === 'Accepted' ? '#10b981' : (data.status === 'Declined' ? '#ef4444' : '#f59e0b') }}>
+                  {data.status || 'Pending'}
+                </span>
+              </div>
 
-          {showCounterForm && (
-            <div className="proposal-form-group" style={{ marginTop: '24px', padding: '16px', background: 'var(--bg-secondary)', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
-              <h3 style={{ margin: '0 0 16px 0', fontSize: '15px', color: 'var(--text-main)' }}>Make a Counter Offer</h3>
-              
               <div className="proposal-form-group">
-                <label>New Budget ({currencySymbol})</label>
+                <label>Campaign Title</label>
+                <p style={{ margin: '4px 0', fontSize: '16px', fontWeight: '700', color: 'var(--text-main)' }}>
+                  {data.title || 'Content Campaign'}
+                </p>
+              </div>
+
+              <div className="proposal-form-group">
+                <label>Description</label>
+                <p style={{ margin: '4px 0', fontSize: '14px', lineHeight: '1.6', color: 'var(--text-muted)' }}>
+                  {data.description || 'No description provided.'}
+                </p>
+              </div>
+
+              <div className="proposal-form-group" style={{ background: 'var(--bg-secondary)', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-light)' }}>
+                <label>Deliverables</label>
+                <ul style={{ paddingLeft: '20px', margin: '8px 0 0', fontSize: '14px', color: 'var(--text-main)' }}>
+                  {data.deliverables && data.deliverables.length > 0 ? (
+                    data.deliverables.map((d, idx) => (
+                      <li key={idx} style={{ marginBottom: '6px' }}>
+                        <strong style={{ color: '#f59e0b' }}>{d.quantity}x</strong> {d.name}
+                      </li>
+                    ))
+                  ) : (
+                    <li>To Be Discussed</li>
+                  )}
+                </ul>
+              </div>
+
+              <div className="proposal-row" style={{ marginTop: '16px' }}>
+                <div className="proposal-form-group" style={{ background: 'var(--bg-secondary)', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-light)', flex: 1 }}>
+                  <label>Timeline</label>
+                  <p style={{ margin: '4px 0 0', fontSize: '14px', fontWeight: '600', color: 'var(--text-main)' }}>
+                    {data.timeline || 'Flexible'}
+                  </p>
+                </div>
+                
+                <div className="proposal-form-group" style={{ background: 'var(--bg-secondary)', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-light)', flex: 1 }}>
+                  <label>Budget</label>
+                  <p style={{ margin: '4px 0 0', fontSize: '16px', fontWeight: '700', color: '#10b981' }}>
+                    {currentBudget}
+                  </p>
+                  {data.originalBudget && data.originalBudget !== data.budget && (
+                    <p style={{ margin: '2px 0 0', fontSize: '11px', color: 'var(--text-muted)' }}>
+                      Original: <span style={{ textDecoration: 'line-through' }}>{originalBudget}</span>
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {data.notes && (
+                <div className="proposal-form-group" style={{ marginTop: '16px' }}>
+                  <label>Additional Notes</label>
+                  <p style={{ margin: '4px 0', fontSize: '14px', lineHeight: '1.5', color: 'var(--text-muted)', fontStyle: 'italic', background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '8px' }}>
+                    "{data.notes}"
+                  </p>
+                </div>
+              )}
+
+              {data.negotiationHistory && data.negotiationHistory.length > 0 && (
+                <div className="proposal-form-group" style={{ marginTop: '24px', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '16px' }}>
+                  <label style={{ color: '#f59e0b', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>Negotiation History</label>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '12px' }}>
+                    {data.negotiationHistory.map((history, idx) => (
+                      <div key={idx} style={{ padding: '12px', background: 'var(--bg-secondary)', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                          <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                            {new Date(history.timestamp).toLocaleString()}
+                          </span>
+                          <span style={{ fontSize: '13px', fontWeight: 'bold', color: 'var(--text-main)' }}>
+                            Offer: {currencySymbol}{history.budget}
+                          </span>
+                        </div>
+                        {history.message && (
+                          <p style={{ margin: '6px 0 0', fontSize: '13px', color: 'var(--text-muted)', fontStyle: 'italic' }}>
+                            "{history.message}"
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </>
+          ) : (
+            <>
+              {/* COUNTER OFFER FORM MODE */}
+              <div style={{ background: 'rgba(245, 158, 11, 0.1)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(245, 158, 11, 0.2)', marginBottom: '20px' }}>
+                <p style={{ fontSize: '13px', color: 'var(--text-main)', margin: 0 }}>
+                  Adjust the terms below to propose a Counter Offer to {partnerName}.
+                </p>
+              </div>
+
+              <div className="proposal-form-group">
+                <label>Budget ({currencySymbol})</label>
                 <input 
                   type="number" 
                   className="proposal-form-input" 
-                  placeholder="e.g. 25000" 
+                  placeholder="Enter counter budget" 
                   value={counterBudget}
                   onChange={(e) => setCounterBudget(e.target.value)}
+                  style={{ fontSize: '16px', fontWeight: 'bold' }}
                 />
               </div>
 
               <div className="proposal-form-group">
-                <label>Message (Optional)</label>
+                <label>Timeline</label>
+                <select
+                  className="proposal-form-input"
+                  value={counterTimelineMode}
+                  onChange={(e) => setCounterTimelineMode(e.target.value)}
+                >
+                  {TIMELINE_OPTIONS.map(o => (
+                    <option key={o.value} value={o.value}>{o.label}</option>
+                  ))}
+                </select>
+                {counterTimelineMode === "Custom" && (
+                  <input 
+                    type="text" 
+                    className="proposal-form-input" 
+                    style={{ marginTop: '8px' }}
+                    placeholder="e.g. Oct 10 to Oct 20"
+                    value={counterCustomTimeline} 
+                    onChange={e => setCounterCustomTimeline(e.target.value)} 
+                  />
+                )}
+              </div>
+
+              <div className="proposal-form-group">
+                <label>Deliverables</label>
+                <div className="proposal-deliverables-grid">
+                  {DELIVERABLE_OPTIONS.map((opt) => {
+                    const selected = counterDeliverables.find((d) => d.name === opt);
+                    return (
+                      <div
+                        key={opt}
+                        className={`deliverable-chip ${selected ? 'selected' : ''}`}
+                        onClick={() => toggleDeliverable(opt)}
+                      >
+                        {opt}
+                        {selected && (
+                          <input
+                            type="number"
+                            className="deliverable-qty-input"
+                            min="1"
+                            value={selected.quantity}
+                            onClick={(e) => e.stopPropagation()}
+                            onChange={(e) => updateQuantity(opt, parseInt(e.target.value) || 1)}
+                          />
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="proposal-form-group">
+                <label>Message / Additional Notes</label>
                 <textarea 
                   className="proposal-form-input" 
                   placeholder="Explain your counter offer..." 
-                  rows="2"
-                  value={counterMessage}
-                  onChange={(e) => setCounterMessage(e.target.value)}
+                  rows="3"
+                  value={counterNotes}
+                  onChange={(e) => setCounterNotes(e.target.value)}
                 ></textarea>
               </div>
-
-              <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end', marginTop: '16px' }}>
-                <button className="btn btn-outline" onClick={() => setShowCounterForm(false)} style={{ border: 'none', color: 'var(--text-muted)', padding: '10px 16px', borderRadius: '8px', fontWeight: '500', cursor: 'pointer', background: 'transparent' }}>Cancel</button>
-                <button className="btn btn-primary" onClick={handleCounterSubmit} disabled={!counterBudget} style={{ background: '#f59e0b', color: '#fff', border: 'none', padding: '10px 16px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer' }}>Send Counter Offer</button>
-              </div>
-            </div>
+            </>
           )}
         </div>
 
-        <div className="proposal-modal-footer">
-          {canAct ? (
-             (!showCounterForm ? (
-                <>
-                  <button className="btn btn-outline" onClick={() => onDecline("")} style={{ color: '#ef4444', borderColor: 'transparent', padding: '10px 16px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', background: 'transparent' }}>Decline</button>
-                  <div style={{ display: 'flex', gap: '8px' }}>
-                    <button className="btn btn-outline" onClick={() => setShowCounterForm(true)} style={{ borderColor: 'var(--border-color)', padding: '10px 16px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', background: 'var(--bg-main)', color: 'var(--text-main)' }}>Counter Offer</button>
-                    <button className="btn btn-primary" onClick={onAccept} style={{ background: '#10b981', borderColor: '#10b981', color: '#fff', padding: '10px 20px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer' }}>Accept</button>
-                  </div>
-                </>
-             ) : null)
+        <div className="proposal-modal-footer" style={{ flexDirection: 'column', gap: '8px' }}>
+          {canAct && !showCounterForm ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
+              <button className="btn btn-primary" onClick={onAccept} style={{ width: '100%', background: '#10b981', color: '#fff', border: 'none', padding: '12px 16px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', fontSize: '15px' }}>
+                Accept Proposal
+              </button>
+              <div style={{ display: 'flex', gap: '8px', width: '100%' }}>
+                <button className="btn btn-outline" onClick={() => setShowCounterForm(true)} style={{ flex: 1, borderColor: '#f59e0b', color: '#f59e0b', padding: '12px 16px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', background: 'transparent' }}>
+                  Counter Offer
+                </button>
+                <button className="btn btn-outline" onClick={() => onDecline("")} style={{ flex: 1, borderColor: '#ef4444', color: '#ef4444', padding: '12px 16px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', background: 'transparent' }}>
+                  Decline
+                </button>
+              </div>
+            </div>
+          ) : showCounterForm ? (
+            <div style={{ display: 'flex', gap: '8px', width: '100%' }}>
+              <button className="btn btn-outline" onClick={() => setShowCounterForm(false)} style={{ flex: 1, color: 'var(--text-muted)', border: '1px solid var(--border-light)', padding: '12px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', background: 'transparent' }}>
+                Cancel
+              </button>
+              <button className="btn btn-primary" onClick={handleCounterSubmit} disabled={!counterBudget} style={{ flex: 2, background: '#f59e0b', color: '#fff', border: 'none', padding: '12px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', opacity: !counterBudget ? 0.6 : 1 }}>
+                Send Counter Offer
+              </button>
+            </div>
           ) : (
-            <button className="btn btn-outline" onClick={onClose} style={{ width: '100%', padding: '10px 16px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', background: 'transparent', color: 'var(--text-main)', border: '1px solid var(--border-light)' }}>Close</button>
+            <button className="btn btn-outline" onClick={onClose} style={{ width: '100%', padding: '12px', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', background: 'var(--bg-secondary)', color: 'var(--text-main)', border: '1px solid var(--border-light)' }}>
+              Close
+            </button>
           )}
         </div>
       </div>

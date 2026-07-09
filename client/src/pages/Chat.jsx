@@ -204,25 +204,225 @@ export default function Chat({ standalone = true }) {
       toast.success("Collaboration Proposal Declined.");
       if (showViewModal) setShowViewModal(false);
     } catch (err) {
+import { toast } from "react-hot-toast";
+
+function SharedPostPreview({ url }) {
+  const [post, setPost] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const match = url.match(/\/post\/([a-zA-Z0-9_-]+)/);
+    if (match && match[1]) {
+      api.posts.get(match[1]).then(data => {
+        if (!data.error) setPost(data);
+      }).catch(() => {});
+    }
+  }, [url]);
+
+  if (!post) {
+    return (
+      <div style={{ 
+        marginTop: '8px', 
+        marginBottom: '8px', 
+        padding: '12px 16px', 
+        background: 'var(--bg-card)', 
+        borderRadius: '12px', 
+        border: '1px solid rgba(0,0,0,0.1)', 
+        width: '240px', 
+        fontSize: '12px', 
+        color: 'var(--text-muted)' 
+      }}>
+        Loading preview...
+      </div>
+    );
+  }
+
+  const getMediaUrl = (url) => {
+    if (!url) return null;
+    if (url.startsWith("http")) return url;
+    const cleanPath = url.startsWith("/") ? url.substring(1) : url;
+    const baseUrl = api.BASE_URL.endsWith("/") ? api.BASE_URL : `${api.BASE_URL}/`;
+    return `${baseUrl}${cleanPath}`;
+  };
+
+  const mediaList = post.media?.length ? post.media : (post.image ? [post.image] : []);
+  const mediaUrl = mediaList[0] ? getMediaUrl(mediaList[0]) : null;
+
+  return (
+    <div 
+      onClick={() => navigate(`/post/${post._id}`)}
+      style={{
+        marginTop: '8px',
+        marginBottom: '8px',
+        borderRadius: '12px',
+        overflow: 'hidden',
+        background: 'var(--bg-card)',
+        cursor: 'pointer',
+        border: '1px solid rgba(0,0,0,0.1)',
+        width: '240px',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+      }}
+    >
+      <div style={{ padding: '8px 12px', display: 'flex', alignItems: 'center', gap: '8px', borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
+        <Avatar user={post.user} size="sm" />
+        <span style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-main)' }}>{post.user?.name || post.user?.username || post.username || 'User'}</span>
+      </div>
+      {mediaUrl ? (
+        mediaUrl.toLowerCase().split('?')[0].match(/\.(mp4|mov|webm)$/) ? (
+          <video src={mediaUrl} autoPlay muted loop playsInline style={{ width: '100%', height: '200px', objectFit: 'cover', display: 'block' }} />
+        ) : (
+          <img src={mediaUrl} style={{ width: '100%', height: '200px', objectFit: 'cover', display: 'block' }} alt="Post preview" />
+        )
+      ) : (
+        <div style={{ padding: '12px 16px', fontSize: '13px', color: '#334155', background: '#f8fafc', minHeight: '60px', display: 'flex', alignItems: 'center', justifyContent: 'flex-start', wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}>
+          {post.content || "Shared a post"}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default function Chat({ standalone = true }) {
+  const { userId: partnerId } = useParams();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const context = useOutletContext();
+  const refreshUnreadMessages = context?.refreshUnreadMessages;
+
+  const [partner, setPartner] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [sending, setSending] = useState(false);
+  const [isPartnerTyping, setIsPartnerTyping] = useState(false);
+  const [socketOnline, setSocketOnline] = useState(false);
+  const [showProposalModal, setShowProposalModal] = useState(false);
+  const [showViewModal, setShowViewModal] = useState(false);
+  const [selectedProposal, setSelectedProposal] = useState({ data: null, msgId: null, isReceiver: false });
+
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState("");
+  const fileInputRef = useRef(null);
+  const bottomRef = useRef(null);
+  const typingTimeoutRef = useRef(null);
+  const messagesEndRef = useRef(null);
+
+  const handleAutoReply = async (replyText) => {
+    try {
+      const msg = await api.messages.send({
+        receiverId: partnerId,
+        content: replyText
+      });
+      if (msg && msg._id) {
+        setMessages(prev => {
+          if (prev.some(m => String(m._id) === String(msg._id))) return prev;
+          return [...prev, msg];
+        });
+        scrollToBottom("smooth");
+      }
+    } catch (err) {
+      setError("Failed to send reply");
+    }
+  };
+
+  const handleSendProposal = async (proposalData) => {
+    setShowProposalModal(false);
+    try {
+      const contentString = JSON.stringify(proposalData);
+      const msg = await api.messages.send({
+        receiverId: partnerId,
+        content: contentString,
+      });
+      if (msg && msg._id) {
+        setMessages(prev => {
+          if (msg._id && prev.some(m => String(m._id) === String(msg._id))) return prev;
+          return [...prev, msg];
+        });
+        scrollToBottom("smooth");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to send proposal");
+    }
+  };
+
+  const handleAcceptProposal = async (msgId) => {
+    try {
+      const res = await api.messages.updateProposalStatus(msgId, { action: "accept" });
+      setMessages(prev => prev.map(m => {
+        if (m._id === msgId) {
+           try {
+             const parsed = JSON.parse(m.content);
+             parsed.status = "Accepted";
+             return { ...m, content: JSON.stringify(parsed) };
+           } catch(e) {}
+        }
+        return m;
+      }));
+      if (res.autoMsg) {
+         setMessages(prev => {
+           if (res.autoMsg._id && prev.some(m => String(m._id) === String(res.autoMsg._id))) return prev;
+           return [...prev, res.autoMsg];
+         });
+         scrollToBottom("smooth");
+      }
+      toast.success("Collaboration Proposal Accepted!");
+      if (showViewModal) setShowViewModal(false);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to accept proposal");
+    }
+  };
+
+  const handleDeclineProposal = async (msgId, reason = "") => {
+    try {
+      const res = await api.messages.updateProposalStatus(msgId, { action: "decline", message: reason });
+      setMessages(prev => prev.map(m => {
+        if (m._id === msgId) {
+           try {
+             const parsed = JSON.parse(m.content);
+             parsed.status = "Declined";
+             if (reason) parsed.declineReason = reason;
+             return { ...m, content: JSON.stringify(parsed) };
+           } catch(e) {}
+        }
+        return m;
+      }));
+      if (res.autoMsg) {
+         setMessages(prev => {
+           if (res.autoMsg._id && prev.some(m => String(m._id) === String(res.autoMsg._id))) return prev;
+           return [...prev, res.autoMsg];
+         });
+         scrollToBottom("smooth");
+      }
+      toast.success("Collaboration Proposal Declined.");
+      if (showViewModal) setShowViewModal(false);
+    } catch (err) {
       console.error(err);
       toast.error("Failed to decline proposal");
     }
   };
 
-  const handleCounterOffer = async (msgId, newBudget, message) => {
+  const handleCounterOffer = async (msgId, updatedFields) => {
     try {
-      const res = await api.messages.updateProposalStatus(msgId, { action: "counterOffer", newBudget, message });
+      const res = await api.messages.updateProposalStatus(msgId, { action: "counterOffer", ...updatedFields });
       setMessages(prev => prev.map(m => {
         if (m._id === msgId) {
            try {
              const parsed = JSON.parse(m.content);
              parsed.status = "Counter Offered";
-             parsed.budget = newBudget;
+             
+             if (updatedFields.budget) parsed.budget = updatedFields.budget;
+             if (updatedFields.deliverables) parsed.deliverables = updatedFields.deliverables;
+             if (updatedFields.timeline) parsed.timeline = updatedFields.timeline;
+             if (updatedFields.notes) parsed.notes = updatedFields.notes;
+
              if (!parsed.negotiationHistory) parsed.negotiationHistory = [];
              parsed.negotiationHistory.push({
                sender: user?._id,
-               budget: newBudget,
-               message: message,
+               budget: updatedFields.budget || parsed.budget,
+               message: updatedFields.message || "Updated proposal terms",
                timestamp: new Date().toISOString()
              });
              return { ...m, content: JSON.stringify(parsed) };
@@ -266,7 +466,7 @@ export default function Chat({ standalone = true }) {
 
     if (isProposal) {
       return (
-        <div style={{ background: 'rgba(245, 158, 11, 0.1)', padding: '16px', borderRadius: '12px', border: '1px solid rgba(245, 158, 11, 0.2)', maxWidth: '400px' }}>
+        <div style={{ background: 'rgba(245, 158, 11, 0.1)', padding: '16px', borderRadius: '12px', border: '1px solid rgba(245, 158, 11, 0.2)', width: '100%', maxWidth: '400px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <div style={{ background: '#f59e0b', padding: '6px', borderRadius: '6px', display: 'flex' }}>
@@ -330,25 +530,34 @@ export default function Chat({ standalone = true }) {
 
               if (canAct) {
                 return (
-                  <>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%', marginTop: '12px' }}>
                     <button 
                       onClick={() => {
                         setSelectedProposal({ data: proposalData, msgId, isReceiver: true });
                         setShowViewModal(true);
                       }}
-                      style={{ background: '#10b981', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '8px', fontWeight: '600', fontSize: '13px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
+                      style={{ background: 'transparent', color: '#10b981', border: '1px solid #10b981', padding: '10px 16px', borderRadius: '8px', fontWeight: '600', fontSize: '14px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', width: '100%' }}
                     >
-                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+                      <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
                       Accept Proposal
                     </button>
                     <button 
-                      onClick={() => handleDeclineProposal(msgId)}
-                      style={{ background: 'transparent', color: 'var(--text-muted)', border: 'none', fontWeight: '600', fontSize: '13px', cursor: 'pointer', padding: '8px 4px', display: 'flex', alignItems: 'center', gap: '4px' }}
+                      onClick={() => {
+                        setSelectedProposal({ data: proposalData, msgId, isReceiver: true, openCounterForm: true });
+                        setShowViewModal(true);
+                      }}
+                      style={{ background: 'transparent', color: '#f59e0b', border: '1px solid #f59e0b', padding: '10px 16px', borderRadius: '8px', fontWeight: '600', fontSize: '14px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', width: '100%' }}
                     >
-                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                      💰 Counter Offer
+                    </button>
+                    <button 
+                      onClick={() => handleDeclineProposal(msgId)}
+                      style={{ background: 'transparent', color: '#ef4444', border: '1px solid #ef4444', padding: '10px 16px', borderRadius: '8px', fontWeight: '600', fontSize: '14px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', width: '100%' }}
+                    >
+                      <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                       Decline Proposal
                     </button>
-                  </>
+                  </div>
                 );
               }
               return null;
@@ -839,14 +1048,18 @@ export default function Chat({ standalone = true }) {
       )}
       {showViewModal && (
         <ViewProposalModal 
-          proposalData={selectedProposal.data} 
-          onClose={() => setShowViewModal(false)}
-          onAccept={() => handleAcceptProposal(selectedProposal.msgId)}
-          onDecline={(reason) => handleDeclineProposal(selectedProposal.msgId, reason)}
-          onCounterOffer={(budget, msg) => handleCounterOffer(selectedProposal.msgId, budget, msg)}
+          proposalData={selectedProposal.data}
+          currentUserId={user?._id}
           isReceiver={selectedProposal.isReceiver}
           partnerName={partner?.name || partner?.username || 'Creator'}
-          currentUserId={user?._id}
+          initialShowCounterForm={selectedProposal.openCounterForm}
+          onClose={() => {
+            setShowViewModal(false);
+            setSelectedProposal(null);
+          }}
+          onAccept={() => handleAcceptProposal(selectedProposal.msgId)}
+          onDecline={(reason) => handleDeclineProposal(selectedProposal.msgId, reason)}
+          onCounterOffer={(updatedFields) => handleCounterOffer(selectedProposal.msgId, updatedFields)}
         />
       )}
     </div>
