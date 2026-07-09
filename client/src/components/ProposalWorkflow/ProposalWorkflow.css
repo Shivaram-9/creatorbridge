@@ -26,9 +26,6 @@
   left: 0;
   right: 0;
   bottom: 0;
-  width: 100%;
-  height: 100dvh;
-  max-height: 100dvh;
   background: var(--pw-bg-overlay);
   display: flex;
   align-items: flex-end;
@@ -43,7 +40,7 @@
 .pw-container {
   width: 100%;
   max-width: 600px;
-  max-height: 90dvh;
+  max-height: calc(100% - 20px);
   background: var(--pw-bg-card);
   border-radius: 16px 16px 0 0;
   display: flex;
@@ -55,15 +52,14 @@
 /* AUTO CONTAINER: For smaller confirmation dialogs */
 .pw-container-auto {
   width: 100%;
-  max-width: 600px;
-  height: auto;
-  max-height: 90dvh;
+  max-width: 400px;
+  max-height: calc(100% - 40px);
   background: var(--pw-bg-card);
-  border-radius: 16px 16px 0 0;
+  border-radius: 16px;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-  box-shadow: 0 -4px 12px rgba(0,0,0,0.15);
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
+  margin-bottom: 20px;
 }
 
 /* HEADER: Fixed at top */
