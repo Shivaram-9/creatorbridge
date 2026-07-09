@@ -5,6 +5,7 @@ export default function AcceptConfirmation({ proposalData, onClose, onConfirm })
   const data = proposalData || {};
   const currencySymbol = data.currency === 'INR' ? '₹' : (data.currency === 'USD' ? '$' : '€');
   const budget = data.budget ? `${currencySymbol}${data.budget}` : 'Negotiable';
+  const deliverables = Array.isArray(data.deliverables) ? data.deliverables : (data.deliverables ? [data.deliverables] : ['1x Instagram Reel', '1x Instagram Story', '1x Instagram Post']);
 
   return (
     <div className="pw-overlay" onClick={onClose}>
@@ -18,37 +19,49 @@ export default function AcceptConfirmation({ proposalData, onClose, onConfirm })
 
         <div className="pw-body" style={{ textAlign: 'center' }}>
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px' }}>
-            <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(16, 185, 129, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <svg width="32" height="32" fill="none" stroke="var(--pw-primary)" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
+            <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'var(--pw-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <svg width="32" height="32" fill="none" stroke="#fff" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
             </div>
           </div>
-          <h3 style={{ margin: '0 0 8px 0', fontSize: '18px', color: 'var(--pw-text-main)' }}>Confirm Acceptance</h3>
+          <h3 style={{ margin: '0 0 8px 0', fontSize: '18px', color: 'var(--pw-text-main)' }}>Accept this proposal?</h3>
           <p style={{ margin: '0 0 16px 0', fontSize: '14px', color: 'var(--pw-text-muted)' }}>
-            Are you sure you want to accept this collaboration proposal?
+            You are about to accept this collaboration proposal.
           </p>
 
           <div className="pw-card" style={{ textAlign: 'left' }}>
-            <div style={{ marginBottom: '8px' }}>
-              <span className="pw-label">Campaign</span>
-              <p className="pw-value">{data.title || 'Content Campaign'}</p>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', borderBottom: '1px solid var(--pw-border)', paddingBottom: '12px' }}>
+              <span className="pw-label" style={{ marginBottom: 0 }}>Campaign</span>
+              <span className="pw-value" style={{ fontWeight: '400' }}>{data.title || 'Content Campaign'}</span>
             </div>
-            <div className="pw-row">
-              <div className="pw-col">
-                <span className="pw-label">Timeline</span>
-                <p className="pw-value">{data.timeline || 'Flexible'}</p>
-              </div>
-              <div className="pw-col" style={{ textAlign: 'right' }}>
-                <span className="pw-label">Budget</span>
-                <p className="pw-value" style={{ color: 'var(--pw-primary)' }}>{budget}</p>
-              </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', borderBottom: '1px solid var(--pw-border)', paddingBottom: '12px' }}>
+              <span className="pw-label" style={{ marginBottom: 0 }}>Budget</span>
+              <span className="pw-value" style={{ color: 'var(--pw-primary)' }}>{budget}</span>
             </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
+              <span className="pw-label" style={{ marginBottom: 0 }}>Timeline</span>
+              <span className="pw-value" style={{ fontWeight: '400' }}>{data.timeline || '3 Days'}</span>
+            </div>
+            
+            <div>
+              <span className="pw-label">Deliverables</span>
+              <ul className="pw-list">
+                {deliverables.map((item, i) => (
+                  <li key={i}>{typeof item === 'string' ? item : `${item.qty || 1}x ${item.type || 'Deliverable'}`}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <div className="pw-warning-box" style={{ textAlign: 'left' }}>
+            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ flexShrink: 0 }}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <span style={{ lineHeight: '1.4' }}>Once accepted, both you and the brand can start working together.</span>
           </div>
         </div>
 
         <div className="pw-footer">
           <div className="pw-footer-row">
             <button className="pw-btn pw-btn-outline" onClick={onClose}>Cancel</button>
-            <button className="pw-btn pw-btn-accept" onClick={onConfirm}>Confirm Accept</button>
+            <button className="pw-btn pw-btn-accept" onClick={onConfirm}>Yes, Accept</button>
           </div>
         </div>
       </div>
