@@ -779,8 +779,6 @@ button:disabled {
 @media (max-width: 768px) {
   /* Overlay - Forces to bottom on mobile, full true height */
   .global-modal-overlay {
-    height: 100dvh !important;
-    max-height: 100dvh !important;
     align-items: flex-end !important;
     padding: 0 !important;
     position: fixed !important;
@@ -794,12 +792,11 @@ button:disabled {
     z-index: 10000;
   }
 
-  /* Dialog Container - Max 90% height, bounds defined */
+  /* Dialog Container - Flexible height, max-height bounds defined */
   .global-modal-dialog {
     width: 100% !important;
     max-width: 100% !important;
-    height: 90dvh !important;
-    max-height: 90dvh !important;
+    max-height: calc(100% - 20px) !important;
     border-radius: 16px 16px 0 0 !important;
     margin: 0 !important;
     display: flex !important;
