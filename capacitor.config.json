@@ -14,13 +14,13 @@
       "overlaysWebView": false
     },
     "SplashScreen": {
-      "launchShowDuration": 3000,
+      "launchShowDuration": 0,
       "launchAutoHide": true,
       "launchFadeOutDuration": 100,
       "backgroundColor": "#171717",
       "androidSplashResourceName": "splash",
       "androidScaleType": "CENTER_CROP",
-      "showSpinner": true,
+      "showSpinner": false,
       "androidSpinnerStyle": "large",
       "iosSpinnerStyle": "small",
       "spinnerColor": "#999999",
