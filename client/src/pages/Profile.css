@@ -591,7 +591,7 @@
   line-height: 1.4;
 }
 .profile-ig-lightbox-footer {
-  border-top: 1px solid #E2E8F0;
+  border-top: 1px solid var(--border-light);
   padding: 16px;
 }
 .profile-ig-lightbox-actions {
@@ -617,13 +617,15 @@
 .profile-ig-lightbox-comment-form {
   display: flex;
   gap: 8px;
-  border-top: 1px solid #E2E8F0;
+  border-top: 1px solid var(--border-light);
   padding-top: 16px;
 }
 .profile-ig-lightbox-comment-form input {
   flex: 1;
   border: none;
   outline: none;
+  background: transparent;
+  color: var(--text-main);
   font-size: 14px;
 }
 .profile-ig-lightbox-comment-form button {

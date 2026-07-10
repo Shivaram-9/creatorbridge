@@ -699,17 +699,20 @@ export default function UserProfile() {
               <div className="profile-ig-lightbox-footer">
                 <div className="profile-ig-lightbox-actions">
                   <div className="actions-left">
-                    <button className="action-btn icon-only" onClick={(e) => handleLike(e, lightboxPost)} style={{ background: 'transparent' }}>
+                    <button style={{ background: 'transparent', border: 'none', display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-main)', cursor: 'pointer', padding: '8px' }} onClick={(e) => handleLike(e, lightboxPost)}>
                       <HeartIcon filled={lightboxPost.likes?.some(l => (l._id || l) === me?._id)} />
+                      <span style={{ fontSize: '14px', fontWeight: '600' }}>{lightboxPost.likes?.length || 0}</span>
                     </button>
-                    <button className="action-btn icon-only" style={{ background: 'transparent' }}>
+                    <button style={{ background: 'transparent', border: 'none', display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-main)', cursor: 'pointer', padding: '8px' }}>
                       <MessageCircleIcon />
+                      <span style={{ fontSize: '14px', fontWeight: '600' }}>{lightboxPost.comments?.length || 0}</span>
                     </button>
-                    <button className="action-btn icon-only" onClick={(e) => handleSharePost(e, lightboxPost)} style={{ background: 'transparent' }}>
+                    <button style={{ background: 'transparent', border: 'none', display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-main)', cursor: 'pointer', padding: '8px' }} onClick={(e) => handleSharePost(e, lightboxPost)}>
                       <SendIcon />
+                      <span style={{ fontSize: '14px', fontWeight: '600' }}>{lightboxPost.shares || 0}</span>
                     </button>
                   </div>
-                  <button className="action-btn icon-only" onClick={(e) => handleSave(e, lightboxPost)} style={{ background: 'transparent' }}>
+                  <button style={{ background: 'transparent', border: 'none', display: 'flex', alignItems: 'center', color: 'var(--text-main)', cursor: 'pointer', padding: '8px' }} onClick={(e) => handleSave(e, lightboxPost)}>
                     <BookmarkIcon filled={me?.savedPosts?.some(id => id.toString() === lightboxPost._id)} />
                   </button>
                 </div>
