@@ -46,10 +46,10 @@ export default function UserListModal({ userId, type = "following", onClose, onS
 
   return (
     <div className="modal-overlay global-modal-overlay" onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000 }}>
-      <div className="modal-content global-modal-dialog" onClick={e => e.stopPropagation()} style={{ background: 'white', color: 'var(--text-main)', borderRadius: '16px', width: '90%', maxWidth: '400px', maxHeight: '80vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }}>
+      <div className="modal-content global-modal-dialog" onClick={e => e.stopPropagation()} style={{ background: 'var(--bg-card)', color: 'var(--text-main)', borderRadius: '16px', width: '90%', maxWidth: '400px', maxHeight: '80vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }}>
         
         {/* Header */}
-        <div className="global-modal-header" style={{ padding: '16px', borderBottom: '1px solid #eee', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="global-modal-header" style={{ padding: '16px', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h2 style={{ fontSize: '1rem', fontWeight: 600, margin: 0 }}>Share</h2>
           <button style={{ background: 'none', border: 'none', color: 'var(--text-main)', fontSize: '1.2rem', cursor: 'pointer' }} onClick={onClose}>✕</button>
         </div>
@@ -57,11 +57,11 @@ export default function UserListModal({ userId, type = "following", onClose, onS
         {/* Search */}
         <div style={{ padding: '12px 16px' }}>
           <div style={{ position: 'relative' }}>
-            <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#8e8e8e' }}>🔍</span>
+            <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}>🔍</span>
             <input 
               type="text" 
               placeholder="Search" 
-              style={{ width: '100%', background: '#f5f5f5', border: 'none', borderRadius: '8px', padding: '10px 10px 10px 36px', color: 'var(--text-main)', fontSize: '14px', outline: 'none' }}
+              style={{ width: '100%', background: 'var(--bg-main)', border: '1px solid var(--border-color)', borderRadius: '8px', padding: '10px 10px 10px 36px', color: 'var(--text-main)', fontSize: '14px', outline: 'none' }}
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
             />

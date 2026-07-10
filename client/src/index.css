@@ -217,8 +217,8 @@ button:disabled {
 }
 
 .dark .navbar-fixed {
-  background: #000000; /* Pure black to match inverted logo's black background */
-  border-bottom: none; /* Remove border in dark mode */
+  background: var(--bg-main);
+  border-bottom: 1px solid var(--border-color);
 }
 
 @media (min-width: 768px) {
@@ -283,6 +283,7 @@ button:disabled {
 
 .dark .navbar-logo-img {
   filter: invert(1);
+  mix-blend-mode: screen;
 }
 
 @media (min-width: 768px) {
