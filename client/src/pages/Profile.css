@@ -545,7 +545,7 @@
   padding: 40px;
 }
 .profile-ig-lightbox-inner {
-  background: #fff;
+  background: var(--bg-card);
   border-radius: 16px;
   display: flex;
   max-width: 1000px;
@@ -556,7 +556,7 @@
 }
 .profile-ig-lightbox-media {
   flex: 1.5;
-  background: #f8fafc;
+  background: var(--bg-main);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -821,6 +821,7 @@
   .profile-ig-lightbox-inner {
     flex-direction: column;
     height: 90vh;
+    background: var(--bg-card);
   }
   .profile-ig-lightbox-media {
     flex: 1;

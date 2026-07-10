@@ -532,7 +532,7 @@
   padding: 40px;
 }
 .profile-ig-lightbox-inner {
-  background: #fff;
+  background: var(--bg-card);
   border-radius: 16px;
   display: flex;
   max-width: 1000px;
@@ -543,7 +543,7 @@
 }
 .profile-ig-lightbox-media {
   flex: 1.5;
-  background: #f8fafc;
+  background: var(--bg-main);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -557,12 +557,12 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  background: #fff;
+  background: var(--bg-card);
   min-width: 320px;
 }
 .profile-ig-lightbox-header {
   padding: 16px;
-  border-bottom: 1px solid #E2E8F0;
+  border-bottom: 1px solid var(--border-light);
   display: flex;
   align-items: center;
   gap: 12px;

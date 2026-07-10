@@ -217,7 +217,7 @@ button:disabled {
 }
 
 .dark .navbar-fixed {
-  background: var(--bg-main);
+  background: var(--bg-card);
   border-bottom: 1px solid var(--border-light);
 }
 
