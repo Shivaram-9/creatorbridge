@@ -26,7 +26,7 @@ function fmtCount(n) {
 
 export default function UserProfile() {
   const { userId } = useParams();
-  const { user: me } = useAuth();
+  const { user: me, setUser: setMe } = useAuth();
 
   const [profile, setProfile] = useState(null);
   const [isFollowing, setIsFollowing] = useState(false);
@@ -41,6 +41,7 @@ export default function UserProfile() {
   const [showShareModal, setShowShareModal] = useState(false);
   const [activeTab, setActiveTab] = useState("posts");
   const [lightboxPost, setLightboxPost] = useState(null);
+  const [postToShare, setPostToShare] = useState(null);
   const [incomingRequest, setIncomingRequest] = useState(null);
   const [showAlignMenu, setShowAlignMenu] = useState(false);
   const [ratingHover, setRatingHover] = useState(0);
@@ -54,6 +55,84 @@ export default function UserProfile() {
       navigate("/profile", { replace: true });
     }
   }, [isOwn, navigate]);
+
+  const handleLike = async (e, post) => {
+    e.stopPropagation();
+    try {
+      const isLiked = post.likes?.some(l => (l._id || l) === me?._id);
+      const res = await api.posts[isLiked ? "unlike" : "like"](post._id);
+      if (!res.error) {
+        setUserPosts(prev => prev.map(p => {
+          if (p._id === post._id) return { ...p, likes: res.likes };
+          return p;
+        }));
+        if (lightboxPost?._id === post._id) setLightboxPost({ ...lightboxPost, likes: res.likes });
+      }
+    } catch (err) {
+      toast.error("Failed to like post");
+    }
+  };
+
+  const handleSave = async (e, post) => {
+    e.stopPropagation();
+    try {
+      const res = await api.posts.save(post._id);
+      if (!res.error) {
+        setMe(res);
+        toast.success(me?.savedPosts?.some(id => id.toString() === post._id) ? "Post unsaved" : "Post saved");
+      }
+    } catch (err) {
+      toast.error("Failed to save post");
+    }
+  };
+
+  const handleCommentSubmit = async (e, postId, text) => {
+    e.preventDefault();
+    if (!text?.trim() || !me) return;
+    try {
+      const res = await api.posts.comment(postId, text);
+      if (!res.error) {
+        setUserPosts(prev => prev.map(p => {
+          if (p._id === postId) {
+            return { ...p, comments: [...(p.comments || []), res] };
+          }
+          return p;
+        }));
+        if (lightboxPost?._id === postId) {
+          setLightboxPost(prev => ({
+            ...prev,
+            comments: [...(prev.comments || []), res]
+          }));
+        }
+        toast.success("Comment posted!");
+      }
+    } catch (err) {
+      toast.error("Failed to post comment");
+    }
+  };
+
+  const handleSharePost = (e, post) => {
+    e.stopPropagation();
+    setPostToShare(post);
+  };
+
+  const handleSharePostToUser = async (targetUser) => {
+    try {
+      if (!postToShare) return;
+      const postUrl = `${window.location.origin}/post/${postToShare._id}`;
+      const res = await api.messages.send({
+        receiverId: targetUser._id,
+        content: `Check out this post: ${postUrl}`
+      });
+      if (res.error) toast.error(res.error);
+      else {
+        toast.success(`Shared with @${targetUser.username}!`);
+        setPostToShare(null);
+      }
+    } catch (err) {
+      toast.error("Failed to share post");
+    }
+  };
 
   const loadPosts = useCallback(async () => {
     setLoadingPosts(true);
@@ -617,6 +696,39 @@ export default function UserProfile() {
                   ))}
                 </div>
               </div>
+              <div className="profile-ig-lightbox-footer">
+                <div className="profile-ig-lightbox-actions">
+                  <div className="actions-left">
+                    <button className="action-btn icon-only" onClick={(e) => handleLike(e, lightboxPost)} style={{ background: 'transparent' }}>
+                      <HeartIcon filled={lightboxPost.likes?.some(l => (l._id || l) === me?._id)} />
+                    </button>
+                    <button className="action-btn icon-only" style={{ background: 'transparent' }}>
+                      <MessageCircleIcon />
+                    </button>
+                    <button className="action-btn icon-only" onClick={(e) => handleSharePost(e, lightboxPost)} style={{ background: 'transparent' }}>
+                      <SendIcon />
+                    </button>
+                  </div>
+                  <button className="action-btn icon-only" onClick={(e) => handleSave(e, lightboxPost)} style={{ background: 'transparent' }}>
+                    <BookmarkIcon filled={me?.savedPosts?.some(id => id.toString() === lightboxPost._id)} />
+                  </button>
+                </div>
+                <div className="profile-ig-lightbox-counts">
+                  <strong>{lightboxPost.likes?.length || 0} likes</strong>
+                  <span className="post-date">{new Date(lightboxPost.createdAt).toLocaleDateString()}</span>
+                </div>
+                <form 
+                  className="profile-ig-lightbox-comment-form"
+                  onSubmit={(e) => {
+                    const text = e.target.comment.value;
+                    handleCommentSubmit(e, lightboxPost._id, text);
+                    e.target.reset();
+                  }}
+                >
+                  <input name="comment" placeholder="Add a comment..." autoComplete="off" />
+                  <button type="submit">Post</button>
+                </form>
+              </div>
             </div>
           </div>
         </div>
@@ -628,6 +740,14 @@ export default function UserProfile() {
           type="following" 
           onClose={() => setShowShareModal(false)} 
           onSelect={handleShareToUser}
+        />
+      )}
+      {postToShare && (
+        <UserListModal 
+          userId={me?._id} 
+          type="following" 
+          onClose={() => setPostToShare(null)} 
+          onSelect={handleSharePostToUser}
         />
       )}
     </div>
