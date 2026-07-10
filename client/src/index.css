@@ -146,7 +146,7 @@ button:disabled {
 
 .main-viewport {
   flex: 1;
-  margin-top: calc(var(--header-height) - 1px); /* -1px to prevent any sub-pixel rendering gaps on mobile */
+  margin-top: calc(var(--header-height) + env(safe-area-inset-top, 0px) - 1px); /* -1px prevents sub-pixel gaps, safe-area-inset prevents cutting off content on mobile */
   padding-bottom: var(--bottom-nav-height);
   background-color: var(--bg-main);
   display: flex;
