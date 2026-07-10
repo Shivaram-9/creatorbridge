@@ -218,7 +218,7 @@ button:disabled {
 
 .dark .navbar-fixed {
   background: var(--bg-main);
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-light);
 }
 
 @media (min-width: 768px) {
