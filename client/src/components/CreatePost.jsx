@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import Avatar from "./Avatar.jsx";
 import { MediaIcon } from "./Icons.jsx";
+import ImageCropperModal from "./ImageCropperModal.jsx";
 import "./CreatePost.css";
 
 export default function CreatePost({ onPost, user }) {
@@ -11,17 +12,72 @@ export default function CreatePost({ onPost, user }) {
   const [previews, setPreviews] = useState([]);
   const fileInputRef = useRef(null);
 
+  const [cropQueue, setCropQueue] = useState([]);
+  const [currentCropIndex, setCurrentCropIndex] = useState(0);
+
   const handleMediaChange = (e) => {
     const files = Array.from(e.target.files);
     if (files.length > 0) {
-      setMediaFiles((prev) => [...prev, ...files].slice(0, 10));
+      // Split into images and non-images (videos)
+      const images = files.filter(f => f.type.startsWith('image/'));
+      const others = files.filter(f => !f.type.startsWith('image/'));
       
-      const newPreviews = files.map(file => ({
-        url: URL.createObjectURL(file),
-        type: file.type
-      }));
-      setPreviews((prev) => [...prev, ...newPreviews].slice(0, 10));
+      // Directly add non-images
+      if (others.length > 0) {
+        setMediaFiles((prev) => [...prev, ...others].slice(0, 10));
+        const newPreviews = others.map(file => ({
+          url: URL.createObjectURL(file),
+          type: file.type
+        }));
+        setPreviews((prev) => [...prev, ...newPreviews].slice(0, 10));
+      }
+
+      // Queue images for cropping
+      if (images.length > 0) {
+        const queueItems = images.map(file => ({
+          file,
+          src: URL.createObjectURL(file)
+        }));
+        setCropQueue(prev => [...prev, ...queueItems]);
+      }
     }
+  };
+
+  const handleCropComplete = (croppedBlob) => {
+    // Add cropped blob to media files
+    // Convert blob to File object to maintain compatibility with FormData
+    const originalFile = cropQueue[currentCropIndex].file;
+    const newFile = new File([croppedBlob], originalFile.name || 'image.jpg', { type: 'image/jpeg' });
+    
+    setMediaFiles(prev => [...prev, newFile].slice(0, 10));
+    setPreviews(prev => [...prev, {
+      url: URL.createObjectURL(newFile),
+      type: 'image/jpeg'
+    }].slice(0, 10));
+
+    handleNextCrop();
+  };
+
+  const handleNextCrop = () => {
+    if (currentCropIndex < cropQueue.length - 1) {
+      setCurrentCropIndex(prev => prev + 1);
+    } else {
+      // Finished cropping queue
+      setCropQueue([]);
+      setCurrentCropIndex(0);
+    }
+  };
+
+  const handleCropCancel = () => {
+    // If canceled, just add the original uncropped image
+    const originalFile = cropQueue[currentCropIndex].file;
+    setMediaFiles(prev => [...prev, originalFile].slice(0, 10));
+    setPreviews(prev => [...prev, {
+      url: cropQueue[currentCropIndex].src,
+      type: originalFile.type
+    }].slice(0, 10));
+
+    handleNextCrop();
   };
 
   const removeMedia = (index) => {
@@ -109,6 +165,14 @@ export default function CreatePost({ onPost, user }) {
           </button>
         </div>
       </form>
+
+      {cropQueue.length > 0 && currentCropIndex < cropQueue.length && (
+        <ImageCropperModal
+          imageSrc={cropQueue[currentCropIndex].src}
+          onComplete={handleCropComplete}
+          onCancel={handleCropCancel}
+        />
+      )}
     </div>
   );
 }

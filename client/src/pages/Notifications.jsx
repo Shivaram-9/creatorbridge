@@ -25,7 +25,7 @@ export default function Notifications() {
   const [pendingRequests, setPendingRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [filter, setFilter] = useState("all");
+  const [filter, setFilter] = useState("interactions");
   const navigate = useNavigate();
 
   const loadData = useCallback(async () => {
@@ -77,10 +77,9 @@ export default function Notifications() {
   };
 
   const filteredItems = items.filter(n => {
-    if (filter === "all") return true;
     if (filter === "interactions") return ["like", "comment"].includes(n.type);
     if (filter === "connections") return ["follow", "align_request"].includes(n.type);
-    return true;
+    return false;
   });
 
   const getIcon = (type) => {
@@ -108,7 +107,6 @@ export default function Notifications() {
         </div>
         
         <div className="notif-filters">
-          <button className={filter === 'all' ? 'active' : ''} onClick={() => setFilter('all')}>All</button>
           <button className={filter === 'interactions' ? 'active' : ''} onClick={() => setFilter('interactions')}>Likes & Comments</button>
           <button className={filter === 'connections' ? 'active' : ''} onClick={() => setFilter('connections')}>Connections</button>
         </div>
@@ -116,7 +114,7 @@ export default function Notifications() {
 
       <ErrorBanner message={error} onDismiss={() => setError("")} />
 
-      {Array.isArray(pendingRequests) && pendingRequests.length > 0 && filter === "all" && (
+      {Array.isArray(pendingRequests) && pendingRequests.length > 0 && filter === "connections" && (
         <div className="requests-preview-notif" onClick={() => navigate('/requests')}>
           <div className="requests-avatar-stack">
             {pendingRequests.slice(0, 3).map((r, i) => (
