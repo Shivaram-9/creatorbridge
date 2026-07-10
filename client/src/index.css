@@ -146,7 +146,7 @@ button:disabled {
 
 .main-viewport {
   flex: 1;
-  margin-top: var(--header-height);
+  margin-top: calc(var(--header-height) - 1px); /* -1px to prevent any sub-pixel rendering gaps on mobile */
   padding-bottom: var(--bottom-nav-height);
   background-color: var(--bg-main);
   display: flex;
@@ -209,7 +209,10 @@ button:disabled {
   height: calc(var(--header-height) + env(safe-area-inset-top, 0px));
   padding-top: env(safe-area-inset-top, 0px);
   background: #FFFFFF; /* Pure white to match logo's white background */
-  border-bottom: none;
+  border: 0px !important;
+  border-bottom: 0px !important;
+  outline: none !important;
+  box-shadow: none !important;
   z-index: 1000;
   display: flex;
   justify-content: center;
@@ -217,8 +220,10 @@ button:disabled {
 }
 
 .dark .navbar-fixed {
-  background: var(--bg-card);
-  border-bottom: none !important;
+  background: var(--bg-card) !important;
+  border: 0px !important;
+  border-bottom: 0px !important;
+  outline: none !important;
   box-shadow: none !important;
 }
 
@@ -234,9 +239,6 @@ button:disabled {
 }
 
 @media (max-width: 767px) {
-  .navbar-fixed {
-    height: var(--header-height);
-  }
   .desktop-search-container {
     display: none !important;
   }
@@ -280,6 +282,7 @@ button:disabled {
   width: auto;
   flex-shrink: 0;
   transform: translateZ(0); /* Hardware acceleration fix for mobile */
+  clip-path: inset(0 0 2px 0); /* Cut off any baked-in border/line in the image */
 }
 
 .dark .navbar-logo-img {
