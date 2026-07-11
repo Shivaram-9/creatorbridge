@@ -20,9 +20,24 @@ export default function VerifiedUserDisplay({
   return (
     <div className={`verified-user-display flex flex-col items-start ${className}`}>
       {/* Username + Badge */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-        {nameComponent ? nameComponent : <span className="font-bold text-slate-900 dark:text-white">{displayName}</span>}
-        {isVerified && <VerifiedBadge role={user.role} />}
+      <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '4px' }}>
+        {nameComponent 
+          ? React.cloneElement(nameComponent, {
+              style: { ...nameComponent.props.style, display: 'inline-flex', alignItems: 'center', flexWrap: 'wrap', gap: '4px' },
+              children: (
+                <React.Fragment>
+                  {nameComponent.props.children}
+                  {isVerified && <VerifiedBadge role={user.role} />}
+                </React.Fragment>
+              )
+            })
+          : (
+            <span className="font-bold text-slate-900 dark:text-white" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
+              {displayName}
+              {isVerified && <VerifiedBadge role={user.role} />}
+            </span>
+          )
+        }
       </div>
 
       {/* Verification Label & Divider */}
