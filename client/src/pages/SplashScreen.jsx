@@ -32,19 +32,7 @@ export default function SplashScreen() {
     // We only proceed once AuthContext finishes loading
     if (loading) return;
 
-    // Check if we are on native Android/iOS. If so, BYPASS the video splash screen completely.
-    // The native OS already shows a splash screen, so showing a video here causes double-splashes
-    // and autoplay-blocking play icons.
-    const isNative = window.Capacitor && window.Capacitor.isNativePlatform();
-
-    if (isNative) {
-      if (user) {
-        navigate("/home", { replace: true });
-      } else {
-        navigate("/login", { replace: true });
-      }
-      return;
-    }
+    // Removed native bypass so the splash screen image shows for 4 seconds
 
     // Calculate how much time has passed since mount
     const elapsed = Date.now() - mountTimeRef.current;
@@ -66,32 +54,41 @@ export default function SplashScreen() {
   }, [navigate, user, loading]);
 
 
-  if (window.Capacitor && window.Capacitor.isNativePlatform()) {
-    return null;
-  }
+  const isNative = window.Capacitor && window.Capacitor.isNativePlatform();
 
   return (
     <div className="splash-container">
-      <video
-        ref={mobileVideoRef}
-        src="/mobile_splash.mp4"
-        className="splash-video mobile-video"
-        autoPlay
-        muted
-        playsInline
-        controls={false}
-        preload="auto"
-      />
-      <video
-        ref={desktopVideoRef}
-        src="/desktop_splash.mp4"
-        className="splash-video desktop-video"
-        autoPlay
-        muted
-        playsInline
-        controls={false}
-        preload="auto"
-      />
+      {isNative ? (
+        <img
+          src="/mobile_splash.jpeg"
+          className="splash-video mobile-video"
+          alt="Pactogram Splash"
+          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+        />
+      ) : (
+        <>
+          <video
+            ref={mobileVideoRef}
+            src="/mobile_splash.mp4"
+            className="splash-video mobile-video"
+            autoPlay
+            muted
+            playsInline
+            controls={false}
+            preload="auto"
+          />
+          <video
+            ref={desktopVideoRef}
+            src="/desktop_splash.mp4"
+            className="splash-video desktop-video"
+            autoPlay
+            muted
+            playsInline
+            controls={false}
+            preload="auto"
+          />
+        </>
+      )}
     </div>
   );
 }
