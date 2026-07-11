@@ -52,23 +52,31 @@ export default function SplashScreen() {
         ref={mobileVideoRef}
         src="/mobile_splash.mp4"
         className="splash-video mobile-video"
+        poster="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
         autoPlay
         muted
         playsInline
         loop
         controls={false}
         preload="auto"
+        disablePictureInPicture
+        controlsList="nodownload nofullscreen noremoteplayback"
+        style={{ pointerEvents: 'none' }}
       />
       <video
         ref={desktopVideoRef}
         src="/desktop_splash.mp4"
         className="splash-video desktop-video"
+        poster="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
         autoPlay
         muted
         playsInline
         loop
         controls={false}
         preload="auto"
+        disablePictureInPicture
+        controlsList="nodownload nofullscreen noremoteplayback"
+        style={{ pointerEvents: 'none' }}
       />
     </div>
   );
