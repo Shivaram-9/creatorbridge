@@ -16,7 +16,7 @@ searchRouter.get("/users", async (req, res) => {
   try {
     const { q } = req.query;
     const keyword = typeof q === "string" ? q.trim() : "";
-    const regex = keyword ? new RegExp(keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i") : null;
+    const regex = keyword ? new RegExp("\\b" + keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i") : null;
     
     const query = regex ? {
       $or: [

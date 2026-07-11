@@ -56,7 +56,6 @@ export default function SplashScreen() {
         autoPlay
         muted
         playsInline
-        loop
         controls={false}
         preload="auto"
         disablePictureInPicture
@@ -71,7 +70,6 @@ export default function SplashScreen() {
         autoPlay
         muted
         playsInline
-        loop
         controls={false}
         preload="auto"
         disablePictureInPicture
