@@ -32,6 +32,20 @@ export default function SplashScreen() {
     // We only proceed once AuthContext finishes loading
     if (loading) return;
 
+    // Check if we are on native Android/iOS. If so, BYPASS the video splash screen completely.
+    // The native OS already shows a splash screen, so showing a video here causes double-splashes
+    // and autoplay-blocking play icons.
+    const isNative = window.Capacitor && window.Capacitor.isNativePlatform();
+
+    if (isNative) {
+      if (user) {
+        navigate("/home", { replace: true });
+      } else {
+        navigate("/login", { replace: true });
+      }
+      return;
+    }
+
     // Calculate how much time has passed since mount
     const elapsed = Date.now() - mountTimeRef.current;
     const minDisplayTime = 4000;
@@ -51,6 +65,10 @@ export default function SplashScreen() {
     return () => clearTimeout(timer);
   }, [navigate, user, loading]);
 
+
+  if (window.Capacitor && window.Capacitor.isNativePlatform()) {
+    return null;
+  }
 
   return (
     <div className="splash-container">
