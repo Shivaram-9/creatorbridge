@@ -48,3 +48,8 @@
   75% { transform: scale(1.0); opacity: 1; filter: brightness(1); }
   100% { transform: scale(1.0); opacity: 1; filter: brightness(1); }
 }
+
+video::-webkit-media-controls { display: none !important; }
+video::-webkit-media-controls-enclosure { display: none !important; }
+video::-webkit-media-controls-start-playback-button { display: none !important; -webkit-appearance: none; }
+

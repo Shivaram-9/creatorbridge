@@ -12,6 +12,18 @@ export default function SplashScreen() {
   const mountTimeRef = useRef(Date.now());
 
   useEffect(() => {
+    // Strictly enforce muted state on the DOM nodes and force play to bypass WebView blocking
+    const forceSilentPlay = (videoEl) => {
+      if (!videoEl) return;
+      videoEl.defaultMuted = true;
+      videoEl.muted = true;
+      videoEl.play().catch((e) => console.log("Silent autoplay failed:", e));
+    };
+    forceSilentPlay(mobileVideoRef.current);
+    forceSilentPlay(desktopVideoRef.current);
+  }, []);
+
+  useEffect(() => {
     // We only proceed once AuthContext finishes loading
     if (loading) return;
 
