@@ -30,12 +30,14 @@ function TrendingCampaigns({ user }) {
 
   return (
     <div className="trending-campaigns-section" style={{ width: '100%', overflow: 'hidden', padding: '16px 0' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-        <h3 className="trending-campaigns-header" style={{ margin: 0, fontSize: '18px', fontWeight: 700 }}>
-          🔥 Trending Campaigns
-        </h3>
-        <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Top opportunities brands are offering right now.</span>
-        <a href="#" style={{ color: '#3b82f6', fontSize: '14px', textDecoration: 'none', fontWeight: 600, marginLeft: 'auto' }}>View all &gt;</a>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+          <h3 className="trending-campaigns-header" style={{ margin: 0, fontSize: '18px', fontWeight: 700 }}>
+            🔥 Trending Campaigns
+          </h3>
+          <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Top opportunities brands are offering right now.</span>
+        </div>
+        <a href="#" style={{ color: '#3b82f6', fontSize: '14px', textDecoration: 'none', fontWeight: 600, marginTop: '2px' }}>View all &gt;</a>
       </div>
       <div className="trending-scroll-container">
         {campaigns.map(camp => (
