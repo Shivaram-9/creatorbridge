@@ -16,13 +16,15 @@ import { HandshakeIcon } from "../components/Icons.jsx";
 import toast from "react-hot-toast";
 import "./Home.css";
 
+import { Users, Clock, CheckCircle2 } from 'lucide-react';
+
 function TrendingCampaigns({ user }) {
   const [selectedCampaign, setSelectedCampaign] = useState(null);
 
   const campaigns = [
-    { id: 1, logo: 'N', name: 'Nike', title: 'Instagram Reel for Nike', budget: '₹40,000 Budget', daysLeft: '3 Days Left' },
-    { id: 2, logo: 'M', name: 'Myntra', title: 'Fashion Week Haul', budget: '₹25,000 Budget', daysLeft: '5 Days Left' },
-    { id: 3, logo: 'Z', name: 'Zomato', title: 'Food Vloggers Needed', budget: '₹15,000 Budget', daysLeft: '2 Days Left' },
+    { id: 1, logo: 'N', logoBg: '#000', name: 'Nike', type: 'Instagram Reel', budget: '₹40,000', creators: '15 Creators', daysLeft: '2 Days Left', btnColor: '#0f172a' },
+    { id: 2, logo: 'boAt', logoBg: '#000', name: 'boAt', type: 'Lifestyle Post', budget: '₹20,000', creators: '10 Creators', daysLeft: '4 Days Left', btnColor: '#dc2626' },
+    { id: 3, logo: 'Minimalist', logoBg: '#f8fafc', logoColor: '#000', name: 'Minimalist', type: 'UGC Video', budget: '₹15,000', creators: '10 Creators', daysLeft: '5 Days Left', btnColor: '#0f172a' },
   ];
 
   return (
@@ -31,22 +33,46 @@ function TrendingCampaigns({ user }) {
         <h3 className="trending-campaigns-header" style={{ margin: 0, fontSize: '18px', fontWeight: 700 }}>
           🔥 Trending Opportunities
         </h3>
-        <a href="#" style={{ color: 'var(--text-muted)', fontSize: '14px', textDecoration: 'none', fontWeight: 500 }}>View all &gt;</a>
+        <a href="#" style={{ color: '#3b82f6', fontSize: '14px', textDecoration: 'none', fontWeight: 600 }}>View all &gt;</a>
       </div>
       <div className="trending-scroll-container">
         {campaigns.map(camp => (
-          <div key={camp.id} className="trending-card">
-            <div className="trending-card-header">
-              <div className="trending-card-logo">{camp.logo}</div>
-              <div className="trending-card-title">{camp.name}</div>
+          <div key={camp.id} className="trending-card new-trending-layout">
+            <div className="trending-card-header" style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
+              <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: camp.logoBg, color: camp.logoColor || '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '10px', overflow: 'hidden' }}>
+                {camp.logo}
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 700, fontSize: '15px' }}>
+                {camp.name}
+                <CheckCircle2 size={14} fill="#3b82f6" color="#fff" />
+              </div>
             </div>
-            <div style={{ fontWeight: 600, fontSize: '15px', color: 'var(--text-main)' }}>{camp.title}</div>
-            <div className="trending-card-details">
-              <span>{camp.budget}</span>
-              <span>{camp.daysLeft}</span>
+            
+            <div style={{ display: 'inline-block', padding: '4px 10px', background: 'var(--bg-secondary)', borderRadius: '12px', fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '16px' }}>
+              {camp.type}
             </div>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
+              <div style={{ display: 'inline-block', padding: '4px 8px', background: '#dcfce7', color: '#166534', borderRadius: '6px', fontSize: '13px', fontWeight: 700, alignSelf: 'flex-start' }}>
+                {camp.budget}
+              </div>
+              
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-secondary)', fontSize: '13px', fontWeight: 500 }}>
+                <Users size={14} /> {camp.creators}
+              </div>
+              
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#dc2626', fontSize: '13px', fontWeight: 600 }}>
+                <Clock size={14} /> {camp.daysLeft}
+              </div>
+            </div>
+
             {user?.role === 'creator' && (
-              <button className="trending-card-apply-btn" onClick={(e) => { e.preventDefault(); setSelectedCampaign(camp); }}>Apply Now</button>
+              <button 
+                style={{ width: '100%', padding: '10px', background: camp.btnColor, color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 600, cursor: 'pointer' }}
+                onClick={(e) => { e.preventDefault(); setSelectedCampaign({ ...camp, title: `${camp.type} for ${camp.name}`, budget: `${camp.budget} Budget` }); }}
+              >
+                Apply Now
+              </button>
             )}
           </div>
         ))}
@@ -60,7 +86,7 @@ function TrendingCampaigns({ user }) {
           onSubmit={(data) => {
             console.log('Application submitted:', data);
             setSelectedCampaign(null);
-            // Here you would typically show a success toast or dispatch an API call
+            toast.success("Application submitted!");
           }}
         />
       )}
