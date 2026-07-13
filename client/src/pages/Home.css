@@ -887,14 +887,14 @@
 
 .trending-card {
   flex: 0 0 280px;
-  background: transparent;
-  border: none;
-  border-right: 1px solid var(--border-light);
-  border-radius: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
   padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .trending-card-header {
