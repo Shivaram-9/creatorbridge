@@ -43,12 +43,19 @@ function HeroBanner({ user }) {
         </div>
         
         <div className="hero-right">
-          {/* PACTOGRAM Handshake Infinity Logo */}
-          <img 
-            src="/generated_handshake_infinity.png" 
-            alt="Pactogram Handshake" 
-            className="hero-logo-img"
-            style={{ width: '100%', maxWidth: '380px', height: 'auto', objectFit: 'contain', animation: 'floatLogo 5s infinite ease-in-out' }} 
+          {/* Cropped Logo from Full Banner */}
+          <div 
+            className="hero-logo-crop"
+            style={{ 
+              width: '100%', 
+              height: '240px', 
+              backgroundImage: 'url(/hero_banner_full.png)',
+              backgroundSize: '180%',
+              backgroundPosition: '100% 40%',
+              backgroundRepeat: 'no-repeat',
+              borderRadius: '20px',
+              animation: 'floatLogo 5s infinite ease-in-out'
+            }}
           />
           
           {/* Floating Icons */}
