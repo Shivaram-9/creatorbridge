@@ -599,12 +599,14 @@ export default function UserProfile() {
       <div className="profile-bottom-wrapper">
       <div className="profile-tabs-wide">
         <div className={`tab-item-wide ${activeTab === 'posts' ? 'active' : ''}`} onClick={() => setActiveTab('posts')}>
-          <span className="tab-icon"><GridIcon /></span> Posts
+          <span className="tab-icon"><GridIcon /></span> Overview
         </div>
         <div className={`tab-item-wide ${activeTab === 'portfolio' ? 'active' : ''}`} onClick={() => setActiveTab('portfolio')}>
           <span className="tab-icon"><BriefcaseIcon /></span> Portfolio
         </div>
-
+        <div className={`tab-item-wide ${activeTab === 'campaigns' ? 'active' : ''}`} onClick={() => setActiveTab('campaigns')}>
+          <span className="tab-icon"><RocketIcon /></span> Campaigns
+        </div>
         <div className={`tab-item-wide ${activeTab === 'about' ? 'active' : ''}`} onClick={() => setActiveTab('about')}>
           <span className="tab-icon"><ProfileIcon /></span> About
         </div>
@@ -654,7 +656,17 @@ export default function UserProfile() {
             )}
             {activeTab === "portfolio" && <PortfolioGrid items={profile?.portfolio || []} />}
 
-            {activeTab === "about" && <div style={{ textAlign: 'center', padding: '40px', background: 'var(--bg-card)', borderRadius: '16px', color: 'var(--text-muted)' }}>{profile?.bio || "No bio yet."}</div>}
+            {activeTab === "campaigns" && (
+              <div className="profile-campaigns-section" style={{ padding: '20px 0' }}>
+                <div style={{ textAlign: 'center', padding: '40px', background: 'var(--bg-card)', borderRadius: '16px' }}>
+                  <span style={{ fontSize: '40px' }}>🚀</span>
+                  <h3 style={{ marginTop: '16px' }}>No Campaigns Yet</h3>
+                  <p style={{ color: 'var(--text-muted)' }}>This user hasn't posted any campaigns.</p>
+                </div>
+              </div>
+            )}
+
+            {activeTab === "about" && (<div style={{ textAlign: 'center', padding: '40px', background: 'var(--bg-card)', borderRadius: '16px', color: 'var(--text-muted)' }}>{profile?.bio || "No bio yet."}</div>)}
 
             {activeTab === "trust" && (
               <div style={{ marginTop: '24px' }}>
