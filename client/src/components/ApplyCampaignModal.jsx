@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { X, CheckCircle, Instagram, Briefcase, Send } from 'lucide-react';
+import { X, CheckCircle, Briefcase, Send } from 'lucide-react';
+import { CameraIcon } from './Icons.jsx';
 import './ApplyCampaignModal.css';
 
 export default function ApplyCampaignModal({ campaign, onClose, onSubmit, user }) {
@@ -115,7 +116,7 @@ export default function ApplyCampaignModal({ campaign, onClose, onSubmit, user }
 
             <div className="auto-attachment-item">
               <div className="attachment-icon-wrapper social-icon">
-                <Instagram size={18} />
+                <CameraIcon />
               </div>
               <div className="attachment-details">
                 <div className="attachment-title">Connected Account</div>
