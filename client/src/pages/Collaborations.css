@@ -44,11 +44,8 @@
   text-align: center;
   padding: 60px 20px;
   color: #666;
-  background: #f9fafb;
-  border-radius: 12px;
 }
 .dark .empty-state {
-  background: #171717;
   color: #a3a3a3;
 }
 .dark .empty-state h3 {
