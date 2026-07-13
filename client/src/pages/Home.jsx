@@ -43,13 +43,20 @@ function HeroBanner({ user }) {
         </div>
         
         <div className="hero-right">
-          {/* PACTOGRAM Handshake Infinity Logo Placeholder */}
-          <div className="hero-logo-placeholder" style={{ width: '100%', maxWidth: '320px', height: '140px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F8FAFC', borderRadius: '16px', border: '2px dashed #CBD5E1', color: '#94A3B8', fontWeight: 600, fontSize: '12px', animation: 'floatLogo 5s infinite ease-in-out' }}>
-            <div style={{ textAlign: 'center' }}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ margin: '0 auto 4px', opacity: 0.5 }}><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-              <div>Upload `handshake_infinity`<br/>to replace</div>
-            </div>
-          </div>
+          {/* PACTOGRAM Handshake Infinity Logo */}
+          <img 
+            src="/splash_logo.png" 
+            alt="Pactogram Handshake" 
+            className="hero-logo-img"
+            onError={(e) => {
+              if (e.target.src.includes('splash_logo.png')) {
+                e.target.src = '/LOGOAPP1.png';
+              } else if (e.target.src.includes('LOGOAPP1.png')) {
+                e.target.src = '/pactogram-logo.png';
+              }
+            }}
+            style={{ width: '100%', maxWidth: '320px', height: 'auto', objectFit: 'contain', animation: 'floatLogo 5s infinite ease-in-out' }} 
+          />
           
           {/* Floating Icons */}
           <div className="hero-floating-icon" title="Verified">
