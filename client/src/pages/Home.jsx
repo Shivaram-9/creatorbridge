@@ -19,71 +19,78 @@ function HeroBanner({ user }) {
   const navigate = useNavigate();
   return (
     <div className="new-hero-banner">
-      <div className="hero-left">
-        <div className="hero-greeting">👋 Welcome back, {user?.name || user?.username || "Guest"}!</div>
-        <h1 className="hero-heading">
-          Build Your Next <br />
-          <span className="hero-gradient-text">Collabo</span><span className="hero-gradient-text" style={{ color: '#0EA5FF' }}>ration.</span>
-        </h1>
-        <p className="hero-subtitle">
-          Connect with verified brands and creators.<br />
-          Create. Collaborate. Grow Together.
-        </p>
-        <div className="hero-cta-group">
-          <button className="hero-btn hero-btn-creators" onClick={() => navigate('/search')}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: '8px'}}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-            Find Creators
-          </button>
-          <button className="hero-btn hero-btn-brands" onClick={() => navigate('/search')}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: '8px'}}><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><path d="M9 22v-4h6v4"></path><path d="M8 6h.01"></path><path d="M16 6h.01"></path><path d="M12 6h.01"></path><path d="M12 10h.01"></path><path d="M12 14h.01"></path><path d="M16 10h.01"></path><path d="M16 14h.01"></path><path d="M8 10h.01"></path><path d="M8 14h.01"></path></svg>
-            Find Brands
-          </button>
+      <div className="hero-content-wrapper" style={{ display: 'flex', width: '100%', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="hero-left">
+          <div className="hero-greeting">👋 Welcome back, {user?.name || user?.username || "Guest"}!</div>
+          <h1 className="hero-heading">
+            Build Your Next <br />
+            <span className="hero-gradient-text">Collabo</span><span className="hero-gradient-text" style={{ color: '#0EA5FF' }}>ration.</span>
+          </h1>
+          <p className="hero-subtitle">
+            Connect with verified brands and creators.<br />
+            Create. Collaborate. Grow Together.
+          </p>
+          <div className="hero-cta-group">
+            <button className="hero-btn hero-btn-creators" onClick={() => navigate('/search')}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: '8px'}}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+              Find Creators
+            </button>
+            <button className="hero-btn hero-btn-brands" onClick={() => navigate('/search')}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: '8px'}}><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><path d="M9 22v-4h6v4"></path><path d="M8 6h.01"></path><path d="M16 6h.01"></path><path d="M12 6h.01"></path><path d="M12 10h.01"></path><path d="M12 14h.01"></path><path d="M16 10h.01"></path><path d="M16 14h.01"></path><path d="M8 10h.01"></path><path d="M8 14h.01"></path></svg>
+              Find Brands
+            </button>
+          </div>
         </div>
         
-        <div className="hero-stats-row">
-          <div className="hero-stat-col">
-            <div className="hero-stat-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-            </div>
-            <div className="hero-stat-info">
-              <span className="hero-stat-number">12,000+</span>
-              <span className="hero-stat-label">Creators</span>
+        <div className="hero-right">
+          {/* PACTOGRAM Handshake Infinity Logo Placeholder */}
+          <div className="hero-logo-placeholder" style={{ width: '100%', maxWidth: '320px', height: '140px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F8FAFC', borderRadius: '16px', border: '2px dashed #CBD5E1', color: '#94A3B8', fontWeight: 600, fontSize: '12px', animation: 'floatLogo 5s infinite ease-in-out' }}>
+            <div style={{ textAlign: 'center' }}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ margin: '0 auto 4px', opacity: 0.5 }}><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+              <div>Upload `handshake_infinity`<br/>to replace</div>
             </div>
           </div>
-          <div className="hero-stat-col">
-            <div className="hero-stat-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><path d="M9 22v-4h6v4"></path></svg>
-            </div>
-            <div className="hero-stat-info">
-              <span className="hero-stat-number">3,400+</span>
-              <span className="hero-stat-label">Brands</span>
-            </div>
+          
+          {/* Floating Icons */}
+          <div className="hero-floating-icon" title="Verified">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
           </div>
-          <div className="hero-stat-col">
-            <div className="hero-stat-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
-            </div>
-            <div className="hero-stat-info">
-              <span className="hero-stat-number">1,800+</span>
-              <span className="hero-stat-label">Active Collaborations</span>
-            </div>
+          <div className="hero-floating-icon" title="Community">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FDB813" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+          </div>
+          <div className="hero-floating-icon" title="Analytics">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0EA5FF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
           </div>
         </div>
       </div>
       
-      <div className="hero-right">
-        {/* Placeholder for PACTOGRAM Handshake Infinity Logo */}
-        <img src="/handshake_infinity_placeholder.png" alt="Handshake Infinity Logo" className="hero-logo-img" onError={(e) => e.target.src='https://via.placeholder.com/400x250/F8FAFC/0EA5FF?text=Handshake+Logo'} />
-        
-        {/* Floating Icons */}
-        <div className="hero-floating-icon" title="Verified">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
+      <div className="hero-stats-row">
+        <div className="hero-stat-col">
+          <div className="hero-stat-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          </div>
+          <div className="hero-stat-info">
+            <span className="hero-stat-number">12,000+</span>
+            <span className="hero-stat-label">Creators</span>
+          </div>
         </div>
-        <div className="hero-floating-icon" title="Community">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FDB813" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+        <div className="hero-stat-col">
+          <div className="hero-stat-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><path d="M9 22v-4h6v4"></path></svg>
+          </div>
+          <div className="hero-stat-info">
+            <span className="hero-stat-number">3,400+</span>
+            <span className="hero-stat-label">Brands</span>
+          </div>
         </div>
-        <div className="hero-floating-icon" title="Analytics">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0EA5FF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+        <div className="hero-stat-col">
+          <div className="hero-stat-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+          </div>
+          <div className="hero-stat-info">
+            <span className="hero-stat-number">1,800+</span>
+            <span className="hero-stat-label">Active Collaborations</span>
+          </div>
         </div>
       </div>
     </div>
@@ -98,8 +105,8 @@ function TrendingCampaigns() {
   ];
 
   return (
-    <div className="trending-campaigns-section">
-      <h3 className="trending-campaigns-header">
+    <div className="trending-campaigns-section" style={{ width: '100%', overflow: 'hidden' }}>
+      <h3 className="trending-campaigns-header" style={{ marginBottom: '16px', fontSize: '18px', fontWeight: 700 }}>
         🔥 Trending Campaigns
       </h3>
       <div className="trending-scroll-container">
@@ -109,7 +116,7 @@ function TrendingCampaigns() {
               <div className="trending-card-logo">{camp.logo}</div>
               <div className="trending-card-title">{camp.name}</div>
             </div>
-            <div style={{ fontWeight: 600, fontSize: '15px' }}>{camp.title}</div>
+            <div style={{ fontWeight: 600, fontSize: '15px', color: 'var(--text-main)' }}>{camp.title}</div>
             <div className="trending-card-details">
               <span>{camp.budget}</span>
               <span>{camp.daysLeft}</span>
@@ -270,6 +277,8 @@ export default function Home() {
         <HeroBanner user={user} />
 
 
+        <TrendingCampaigns />
+        
         {/* Feed Tabs Pills */}
         <div className="feed-tabs-pills">
           {["For You", "Latest", "Brands", "Creators", "Trending", "Nearby"].map(tab => (
@@ -282,8 +291,6 @@ export default function Home() {
             </button>
           ))}
         </div>
-        
-        <TrendingCampaigns />
 
         {/* Feed Posts */}
         {loading ? (
