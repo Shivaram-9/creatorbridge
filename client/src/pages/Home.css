@@ -667,6 +667,12 @@
   animation: heroFadeIn 400ms ease-out forwards;
 }
 
+.dark .new-hero-banner {
+  background: #171717;
+  border-color: #262626;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
 .hero-left {
   flex: 0 0 55%;
   display: flex;
@@ -678,6 +684,10 @@
   font-size: 13px;
   font-weight: 600;
   color: #5B6474;
+}
+
+.dark .hero-greeting {
+  color: #9CA3AF;
 }
 
 .hero-heading {
