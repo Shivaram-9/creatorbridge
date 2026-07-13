@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { GridIcon, BriefcaseIcon, ProfileIcon, ShieldIcon, CheckCircleIcon, MapPinIcon, LinkIcon, SendIcon, MessageCircleIcon, TrendingDownIcon, UsersIcon, MenuIcon, MoreHorizontalIcon, RocketIcon } from "../components/Icons.jsx";
+import { GridIcon, BriefcaseIcon, ProfileIcon, ShieldIcon, CheckCircleIcon, MapPinIcon, LinkIcon, SendIcon, MessageCircleIcon, TrendingDownIcon, UsersIcon, MenuIcon, MoreHorizontalIcon, RocketIcon, PaletteIcon } from "../components/Icons.jsx";
 import { api } from "../services/api.js";
 import { BASE_URL } from "../config/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
