@@ -45,17 +45,10 @@ function HeroBanner({ user }) {
         <div className="hero-right">
           {/* PACTOGRAM Handshake Infinity Logo */}
           <img 
-            src="/splash_logo.png" 
+            src="/generated_handshake_infinity.png" 
             alt="Pactogram Handshake" 
             className="hero-logo-img"
-            onError={(e) => {
-              if (e.target.src.includes('splash_logo.png')) {
-                e.target.src = '/LOGOAPP1.png';
-              } else if (e.target.src.includes('LOGOAPP1.png')) {
-                e.target.src = '/pactogram-logo.png';
-              }
-            }}
-            style={{ width: '100%', maxWidth: '320px', height: 'auto', objectFit: 'contain', animation: 'floatLogo 5s infinite ease-in-out' }} 
+            style={{ width: '100%', maxWidth: '380px', height: 'auto', objectFit: 'contain', animation: 'floatLogo 5s infinite ease-in-out' }} 
           />
           
           {/* Floating Icons */}
