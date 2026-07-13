@@ -19,12 +19,11 @@ function HeroBanner({ user }) {
   const navigate = useNavigate();
   return (
     <div className="new-hero-banner">
-      <div className="hero-content-wrapper" style={{ display: 'flex', width: '100%', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className="hero-content-wrapper" style={{ display: 'flex', width: '100%', alignItems: 'center' }}>
         <div className="hero-left">
           <div className="hero-greeting">👋 Welcome back, {user?.name || user?.username || "Guest"}!</div>
           <h1 className="hero-heading">
-            Build Your Next <br />
-            <span className="hero-gradient-text">Collabo</span><span className="hero-gradient-text" style={{ color: '#0EA5FF' }}>ration.</span>
+            Build Your Next <span className="hero-gradient-text">Collaboration.</span>
           </h1>
           <p className="hero-subtitle">
             Connect with verified brands and creators.<br />
@@ -32,44 +31,13 @@ function HeroBanner({ user }) {
           </p>
           <div className="hero-cta-group">
             <button className="hero-btn hero-btn-creators" onClick={() => navigate('/search')}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: '8px'}}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: '8px'}}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
               Find Creators
             </button>
             <button className="hero-btn hero-btn-brands" onClick={() => navigate('/search')}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: '8px'}}><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><path d="M9 22v-4h6v4"></path><path d="M8 6h.01"></path><path d="M16 6h.01"></path><path d="M12 6h.01"></path><path d="M12 10h.01"></path><path d="M12 14h.01"></path><path d="M16 10h.01"></path><path d="M16 14h.01"></path><path d="M8 10h.01"></path><path d="M8 14h.01"></path></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: '8px'}}><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><path d="M9 22v-4h6v4"></path><path d="M8 6h.01"></path><path d="M16 6h.01"></path><path d="M12 6h.01"></path><path d="M12 10h.01"></path><path d="M12 14h.01"></path><path d="M16 10h.01"></path><path d="M16 14h.01"></path><path d="M8 10h.01"></path><path d="M8 14h.01"></path></svg>
               Find Brands
             </button>
-          </div>
-        </div>
-
-      </div>
-      
-      <div className="hero-stats-row">
-        <div className="hero-stat-col">
-          <div className="hero-stat-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-          </div>
-          <div className="hero-stat-info">
-            <span className="hero-stat-number">12,000+</span>
-            <span className="hero-stat-label">Creators</span>
-          </div>
-        </div>
-        <div className="hero-stat-col">
-          <div className="hero-stat-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><path d="M9 22v-4h6v4"></path></svg>
-          </div>
-          <div className="hero-stat-info">
-            <span className="hero-stat-number">3,400+</span>
-            <span className="hero-stat-label">Brands</span>
-          </div>
-        </div>
-        <div className="hero-stat-col">
-          <div className="hero-stat-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
-          </div>
-          <div className="hero-stat-info">
-            <span className="hero-stat-number">1,800+</span>
-            <span className="hero-stat-label">Active Collaborations</span>
           </div>
         </div>
       </div>

@@ -658,12 +658,12 @@
   width: 100%;
   background: #FFFFFF;
   border: 1px solid #EEF2F7;
-  border-radius: 20px;
+  border-radius: 16px;
   box-shadow: 0 4px 20px rgba(15,23,42,0.04);
-  padding: 24px 32px 16px 32px;
+  padding: 16px 24px;
   display: flex;
   flex-direction: column;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
   animation: heroFadeIn 400ms ease-out forwards;
 }
 
@@ -677,9 +677,9 @@
   flex: 1 1 100%;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  align-items: center;
-  text-align: center;
+  gap: 4px;
+  align-items: flex-start;
+  text-align: left;
 }
 
 .hero-greeting {
@@ -693,11 +693,12 @@
 }
 
 .hero-heading {
-  font-size: 38px;
+  font-size: 28px;
   font-weight: 800;
   color: #111827;
-  line-height: 1.15;
+  line-height: 1.2;
   margin: 0;
+  white-space: nowrap;
 }
 
 .dark .hero-heading {
@@ -711,9 +712,9 @@
 }
 
 .hero-subtitle {
-  font-size: 16px;
+  font-size: 14px;
   color: #667085;
-  margin: 4px 0 16px 0;
+  margin: 2px 0 10px 0;
   line-height: 1.4;
 }
 
@@ -723,23 +724,24 @@
 
 .hero-cta-group {
   display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-  justify-content: center;
+  gap: 12px;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
 }
 
 .hero-btn {
-  height: 52px;
-  border-radius: 14px;
+  height: 44px;
+  border-radius: 12px;
   font-weight: 600;
-  font-size: 16px;
+  font-size: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 24px;
+  padding: 0 20px;
   border: none;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  white-space: nowrap;
 }
 
 .hero-btn:hover {
