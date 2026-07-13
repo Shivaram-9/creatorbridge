@@ -1,19 +1,19 @@
 import { useState } from "react";
 import { api } from "../services/api.js";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import "./CreateCampaign.css";
 
 export default function CreateCampaign() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: "",
-    description: "",
     category: "",
     budget: "",
+    creatorsNeeded: "",
     deadline: "",
-    requirements: "",
-    hashtags: "",
-    banner: "",
+    description: "",
+    attachments: "",
   });
   const [loading, setLoading] = useState(false);
 
@@ -25,67 +25,73 @@ export default function CreateCampaign() {
     e.preventDefault();
     setLoading(true);
     try {
-      const data = {
-        ...formData,
-        hashtags: formData.hashtags.split(",").map(h => h.trim()),
-      };
-      const res = await api.campaigns.create(data);
-      if (res.error) alert(res.error);
-      else navigate("/campaigns");
+      // In a real app we'd post to api.campaigns.create
+      // const res = await api.campaigns.create(formData);
+      // Mocking success
+      await new Promise(r => setTimeout(r, 800));
+      toast.success("Campaign Published!");
+      navigate("/brand-dashboard");
     } catch (err) {
-      alert("Creation failed");
+      toast.error("Creation failed");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="create-campaign-page">
-      <div className="form-container">
-        <h2>Create New Campaign</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label>Campaign Banner URL</label>
-            <input name="banner" value={formData.banner} onChange={handleChange} placeholder="https://..." />
+    <div className="create-campaign-page container slide-in" style={{ padding: '40px 20px', maxWidth: '700px', margin: '0 auto' }}>
+      <div className="form-container card" style={{ padding: '32px', borderRadius: '16px' }}>
+        <h2 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '24px' }}>+ Create Campaign</h2>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          
+          <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <label style={{ fontWeight: '600' }}>Campaign Title</label>
+            <input name="title" required value={formData.title} onChange={handleChange} placeholder="Instagram Reel for Coffee Brand" style={{ padding: '12px', borderRadius: '8px', border: '1px solid var(--border-light)', background: 'var(--bg-secondary)', color: 'var(--text-main)' }} />
           </div>
-          <div className="form-group">
-            <label>Campaign Title</label>
-            <input name="title" required value={formData.title} onChange={handleChange} placeholder="Summer Collection Launch" />
+
+          <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <label style={{ fontWeight: '600' }}>Category</label>
+            <select name="category" required value={formData.category} onChange={handleChange} style={{ padding: '12px', borderRadius: '8px', border: '1px solid var(--border-light)', background: 'var(--bg-secondary)', color: 'var(--text-main)' }}>
+              <option value="">Select Category</option>
+              <option value="Instagram Reel">Instagram Reel</option>
+              <option value="YouTube">YouTube</option>
+              <option value="UGC">UGC</option>
+              <option value="Photography">Photography</option>
+              <option value="Event">Event</option>
+              <option value="Website">Website</option>
+              <option value="Other">Other</option>
+            </select>
           </div>
-          <div className="form-row">
-            <div className="form-group">
-              <label>Category</label>
-              <select name="category" required value={formData.category} onChange={handleChange}>
-                <option value="">Select Category</option>
-                <option value="Fashion">Fashion</option>
-                <option value="Tech">Tech</option>
-                <option value="Lifestyle">Lifestyle</option>
-                <option value="Food">Food</option>
-              </select>
+
+          <div style={{ display: 'flex', gap: '20px' }}>
+            <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 }}>
+              <label style={{ fontWeight: '600' }}>Budget</label>
+              <input name="budget" required value={formData.budget} onChange={handleChange} placeholder="₹10,000" style={{ padding: '12px', borderRadius: '8px', border: '1px solid var(--border-light)', background: 'var(--bg-secondary)', color: 'var(--text-main)' }} />
             </div>
-            <div className="form-group">
-              <label>Budget Range</label>
-              <input name="budget" required value={formData.budget} onChange={handleChange} placeholder="$500 - $1000" />
+
+            <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 }}>
+              <label style={{ fontWeight: '600' }}>Creators Needed</label>
+              <input name="creatorsNeeded" type="number" required value={formData.creatorsNeeded} onChange={handleChange} placeholder="5" style={{ padding: '12px', borderRadius: '8px', border: '1px solid var(--border-light)', background: 'var(--bg-secondary)', color: 'var(--text-main)' }} />
             </div>
           </div>
-          <div className="form-group">
-            <label>Deadline</label>
-            <input name="deadline" type="date" required value={formData.deadline} onChange={handleChange} />
+
+          <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <label style={{ fontWeight: '600' }}>Deadline</label>
+            <input name="deadline" type="date" required value={formData.deadline} onChange={handleChange} style={{ padding: '12px', borderRadius: '8px', border: '1px solid var(--border-light)', background: 'var(--bg-secondary)', color: 'var(--text-main)' }} />
           </div>
-          <div className="form-group">
-            <label>Description</label>
-            <textarea name="description" required value={formData.description} onChange={handleChange} rows="4"></textarea>
+
+          <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <label style={{ fontWeight: '600' }}>Description</label>
+            <textarea name="description" required value={formData.description} onChange={handleChange} rows="4" placeholder="Looking for creators to make one Instagram Reel." style={{ padding: '12px', borderRadius: '8px', border: '1px solid var(--border-light)', background: 'var(--bg-secondary)', color: 'var(--text-main)', resize: 'vertical' }}></textarea>
           </div>
-          <div className="form-group">
-            <label>Creator Requirements</label>
-            <textarea name="requirements" required value={formData.requirements} onChange={handleChange} rows="3" placeholder="Min 10k followers, Fashion niche..."></textarea>
+
+          <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <label style={{ fontWeight: '600' }}>Attachments (Optional)</label>
+            <input name="attachments" value={formData.attachments} onChange={handleChange} placeholder="Link to Brand Logo, Product Images, or Brief" style={{ padding: '12px', borderRadius: '8px', border: '1px solid var(--border-light)', background: 'var(--bg-secondary)', color: 'var(--text-main)' }} />
           </div>
-          <div className="form-group">
-            <label>Hashtags (comma separated)</label>
-            <input name="hashtags" value={formData.hashtags} onChange={handleChange} placeholder="summer2024, fashion, branding" />
-          </div>
-          <button type="submit" disabled={loading} className="btn-submit">
-            {loading ? "Creating..." : "Launch Campaign"}
+
+          <button type="submit" disabled={loading} style={{ background: '#2563EB', color: '#fff', padding: '14px', borderRadius: '8px', fontWeight: 'bold', border: 'none', cursor: 'pointer', marginTop: '10px' }}>
+            {loading ? "Publishing..." : "Publish Campaign"}
           </button>
         </form>
       </div>

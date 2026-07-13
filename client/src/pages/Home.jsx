@@ -22,9 +22,9 @@ function TrendingCampaigns({ user }) {
   const [selectedCampaign, setSelectedCampaign] = useState(null);
 
   const campaigns = [
-    { id: 1, logo: 'N', logoBg: '#000', name: 'Nike', type: 'Instagram Reel', budget: '₹40,000', creators: '15 Creators', daysLeft: '2 Days Left', btnColor: '#0f172a' },
-    { id: 2, logo: 'boAt', logoBg: '#000', name: 'boAt', type: 'Lifestyle Post', budget: '₹20,000', creators: '10 Creators', daysLeft: '4 Days Left', btnColor: '#dc2626' },
-    { id: 3, logo: 'Minimalist', logoBg: '#f8fafc', logoColor: '#000', name: 'Minimalist', type: 'UGC Video', budget: '₹15,000', creators: '10 Creators', daysLeft: '5 Days Left', btnColor: '#0f172a' },
+    { id: 1, logo: 'N', logoBg: '#000', name: 'Nike', type: 'Instagram Reel', budget: '₹40,000', creators: '15 Creators', daysLeft: '2 Days Left', btnColor: '#0f172a', matchScore: 96 },
+    { id: 2, logo: 'boAt', logoBg: '#000', name: 'boAt', type: 'Lifestyle Post', budget: '₹20,000', creators: '10 Creators', daysLeft: '4 Days Left', btnColor: '#dc2626', matchScore: 88 },
+    { id: 3, logo: 'Minimalist', logoBg: '#f8fafc', logoColor: '#000', name: 'Minimalist', type: 'UGC Video', budget: '₹15,000', creators: '10 Creators', daysLeft: '5 Days Left', btnColor: '#0f172a', matchScore: 92 },
   ];
 
   return (
@@ -37,14 +37,19 @@ function TrendingCampaigns({ user }) {
       </div>
       <div className="trending-scroll-container">
         {campaigns.map(camp => (
-          <div key={camp.id} className="trending-card new-trending-layout">
-            <div className="trending-card-header" style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
-              <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: camp.logoBg, color: camp.logoColor || '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '10px', overflow: 'hidden' }}>
-                {camp.logo}
+          <div key={camp.id} className="trending-card new-trending-layout" style={{ position: 'relative' }}>
+            <div className="trending-card-header" style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: camp.logoBg, color: camp.logoColor || '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '10px', overflow: 'hidden' }}>
+                  {camp.logo}
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 700, fontSize: '15px' }}>
+                  {camp.name}
+                  <CheckCircle2 size={14} fill="#3b82f6" color="#fff" />
+                </div>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 700, fontSize: '15px' }}>
-                {camp.name}
-                <CheckCircle2 size={14} fill="#3b82f6" color="#fff" />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '4px', background: 'var(--bg-secondary)', padding: '4px 8px', borderRadius: '20px', fontSize: '11px', fontWeight: 800, color: '#3b82f6', border: '1px solid #bfdbfe' }}>
+                ✨ {camp.matchScore}% Match
               </div>
             </div>
             
