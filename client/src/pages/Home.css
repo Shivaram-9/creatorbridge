@@ -887,14 +887,14 @@
 
 .trending-card {
   flex: 0 0 280px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-md);
+  background: transparent;
+  border: none;
+  border-right: 1px solid var(--border-light);
+  border-radius: 0;
   padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .trending-card-header {
@@ -927,15 +927,21 @@
   color: #64748b;
 }
 
-.trending-card-apply {
+.trending-card-apply-btn {
   align-self: flex-start;
-  color: #2563EB;
+  background-color: #2563EB;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
   font-weight: 600;
   font-size: 14px;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  gap: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.trending-card-apply-btn:hover {
+  background-color: #1D4ED8;
 }
 
 /* Feed Tabs Pills */

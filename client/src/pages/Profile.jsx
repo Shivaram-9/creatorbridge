@@ -8,7 +8,7 @@ import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import Avatar from "../components/Avatar.jsx";
 import VerifiedUserDisplay from "../components/VerifiedUserDisplay.jsx";
 import PortfolioGrid from "../components/PortfolioGrid.jsx";
-import { HeartIcon, BookmarkIcon } from "../components/Icons.jsx";
+import { HeartIcon, MessageCircleIcon, SendIcon, BookmarkIcon, ShieldIcon } from "../components/Icons.jsx";
 import toast from "react-hot-toast";
 import "./Profile.css";
 import UserListModal from "../components/UserListModal.jsx";
