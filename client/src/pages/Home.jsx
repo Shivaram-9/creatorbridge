@@ -213,9 +213,6 @@ export default function Home() {
 
 
 
-        <HeroBanner user={user} />
-
-
         <TrendingCampaigns user={user} />
         
         {/* Feed Tabs Pills */}
