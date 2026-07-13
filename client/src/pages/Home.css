@@ -656,11 +656,11 @@
 
 .new-hero-banner {
   width: 100%;
-  background: transparent;
-  border: none;
+  background: #FFFFFF;
+  border: 1px solid #EEF2F7;
   border-radius: 20px;
-  box-shadow: none;
-  padding: 0;
+  box-shadow: 0 4px 20px rgba(15,23,42,0.04);
+  padding: 24px 32px 16px 32px;
   display: flex;
   flex-direction: column;
   margin-bottom: 20px;
@@ -688,6 +688,10 @@
   margin: 0;
 }
 
+.dark .hero-heading {
+  color: #F8FAFC;
+}
+
 .hero-gradient-text {
   background: linear-gradient(90deg, #FDB813 0%, #0EA5FF 100%);
   -webkit-background-clip: text;
@@ -699,6 +703,10 @@
   color: #667085;
   margin: 4px 0 16px 0;
   line-height: 1.4;
+}
+
+.dark .hero-subtitle {
+  color: #9CA3AF;
 }
 
 .hero-cta-group {
@@ -776,6 +784,10 @@
   margin-top: 16px;
 }
 
+.dark .hero-stats-row {
+  border-top-color: #262626;
+}
+
 .hero-stat-col {
   flex: 1;
   display: flex;
@@ -783,6 +795,10 @@
   justify-content: center;
   gap: 12px;
   border-right: 1px solid #EEF2F7;
+}
+
+.dark .hero-stat-col {
+  border-right-color: #262626;
 }
 
 .hero-stat-col:last-child {
@@ -811,9 +827,17 @@
   color: #111827;
 }
 
+.dark .hero-stat-number {
+  color: #F8FAFC;
+}
+
 .hero-stat-label {
   font-size: 14px;
   color: #667085;
+}
+
+.dark .hero-stat-label {
+  color: #9CA3AF;
 }
 
 /* Trending Campaigns Horizontal Scroll */
