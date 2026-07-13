@@ -18,11 +18,11 @@ import "./Home.css";
 function HeroBanner({ user }) {
   const navigate = useNavigate();
   return (
-    <div className="new-hero-banner" style={{ padding: 0, overflow: 'hidden', position: 'relative' }}>
+    <div className="new-hero-banner" style={{ padding: 0, overflow: 'hidden', position: 'relative', borderRadius: '24px' }}>
       <img 
         src="/hero_banner_full.png" 
         alt="Build Your Next Collaboration" 
-        style={{ width: '100%', height: 'auto', display: 'block' }} 
+        style={{ width: '100%', height: 'auto', display: 'block', transform: 'scale(1.10)' }} 
       />
       
       {/* Invisible Clickable Area for "Find Creators" */}
