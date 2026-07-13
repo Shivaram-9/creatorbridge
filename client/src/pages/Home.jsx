@@ -18,15 +18,105 @@ import "./Home.css";
 function HeroBanner({ user }) {
   const navigate = useNavigate();
   return (
-    <div className="mb-8 pt-4 px-2 md:px-0">
-      <div className="max-w-2xl">
-        <h1 className="text-2xl md:text-3xl font-extrabold mb-3 tracking-tight" style={{ color: 'var(--text-main)' }}>Discover Top Creators & Brands</h1>
-
-        <div className="flex gap-4">
-          <button onClick={() => navigate('/search')} className="px-6 py-2.5 rounded-lg font-bold shadow-sm transition-colors w-full md:w-auto flex justify-center items-center" style={{ background: 'var(--bg-card)', color: 'var(--text-main)', border: '1px solid var(--border-light)' }}>
-            Find Your Collab
+    <div className="new-hero-banner">
+      <div className="hero-left">
+        <div className="hero-greeting">👋 Welcome back, {user?.name || user?.username || "Guest"}!</div>
+        <h1 className="hero-heading">
+          Build Your Next <br />
+          <span className="hero-gradient-text">Collabo</span><span className="hero-gradient-text" style={{ color: '#0EA5FF' }}>ration.</span>
+        </h1>
+        <p className="hero-subtitle">
+          Connect with verified brands and creators.<br />
+          Create. Collaborate. Grow Together.
+        </p>
+        <div className="hero-cta-group">
+          <button className="hero-btn hero-btn-creators" onClick={() => navigate('/search')}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: '8px'}}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            Find Creators
+          </button>
+          <button className="hero-btn hero-btn-brands" onClick={() => navigate('/search')}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: '8px'}}><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><path d="M9 22v-4h6v4"></path><path d="M8 6h.01"></path><path d="M16 6h.01"></path><path d="M12 6h.01"></path><path d="M12 10h.01"></path><path d="M12 14h.01"></path><path d="M16 10h.01"></path><path d="M16 14h.01"></path><path d="M8 10h.01"></path><path d="M8 14h.01"></path></svg>
+            Find Brands
           </button>
         </div>
+        
+        <div className="hero-stats-row">
+          <div className="hero-stat-col">
+            <div className="hero-stat-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            </div>
+            <div className="hero-stat-info">
+              <span className="hero-stat-number">12,000+</span>
+              <span className="hero-stat-label">Creators</span>
+            </div>
+          </div>
+          <div className="hero-stat-col">
+            <div className="hero-stat-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><path d="M9 22v-4h6v4"></path></svg>
+            </div>
+            <div className="hero-stat-info">
+              <span className="hero-stat-number">3,400+</span>
+              <span className="hero-stat-label">Brands</span>
+            </div>
+          </div>
+          <div className="hero-stat-col">
+            <div className="hero-stat-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+            </div>
+            <div className="hero-stat-info">
+              <span className="hero-stat-number">1,800+</span>
+              <span className="hero-stat-label">Active Collaborations</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div className="hero-right">
+        {/* Placeholder for PACTOGRAM Handshake Infinity Logo */}
+        <img src="/handshake_infinity_placeholder.png" alt="Handshake Infinity Logo" className="hero-logo-img" onError={(e) => e.target.src='https://via.placeholder.com/400x250/F8FAFC/0EA5FF?text=Handshake+Logo'} />
+        
+        {/* Floating Icons */}
+        <div className="hero-floating-icon" title="Verified">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
+        </div>
+        <div className="hero-floating-icon" title="Community">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FDB813" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+        </div>
+        <div className="hero-floating-icon" title="Analytics">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0EA5FF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TrendingCampaigns() {
+  const campaigns = [
+    { id: 1, logo: 'N', name: 'Nike', title: 'Looking for Fitness Creators', budget: '₹40,000 Budget', daysLeft: '3 Days Left' },
+    { id: 2, logo: 'M', name: 'Myntra', title: 'Fashion Week Haul', budget: '₹25,000 Budget', daysLeft: '5 Days Left' },
+    { id: 3, logo: 'Z', name: 'Zomato', title: 'Food Vloggers Needed', budget: '₹15,000 Budget', daysLeft: '2 Days Left' },
+  ];
+
+  return (
+    <div className="trending-campaigns-section">
+      <h3 className="trending-campaigns-header">
+        🔥 Trending Campaigns
+      </h3>
+      <div className="trending-scroll-container">
+        {campaigns.map(camp => (
+          <div key={camp.id} className="trending-card">
+            <div className="trending-card-header">
+              <div className="trending-card-logo">{camp.logo}</div>
+              <div className="trending-card-title">{camp.name}</div>
+            </div>
+            <div style={{ fontWeight: 600, fontSize: '15px' }}>{camp.title}</div>
+            <div className="trending-card-details">
+              <span>{camp.budget}</span>
+              <span>{camp.daysLeft}</span>
+            </div>
+            <a href="#" className="trending-card-apply">Apply &rarr;</a>
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -52,7 +142,7 @@ export default function Home() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [activeTab, setActiveTab] = useState("All Feed");
+  const [activeTab, setActiveTab] = useState("For You");
   const [showVerificationBanner, setShowVerificationBanner] = useState(true);
   const [showFeedDropdown, setShowFeedDropdown] = useState(false);
   const [suggestedVerifiedUsers, setSuggestedVerifiedUsers] = useState([]);
@@ -153,9 +243,12 @@ export default function Home() {
       if (!user?.following) return true; // fallback
       return user.following.includes(post.user?._id || post.user);
     }
-    if (activeTab === "For You") return true; // maybe sort by likes? fallback to all
-    if (activeTab === "Projects") return post.content?.toLowerCase().includes("project");
-    if (activeTab === "Announcements") return post.content?.toLowerCase().includes("announce");
+    if (activeTab === "For You") return true;
+    if (activeTab === "Latest") return true;
+    if (activeTab === "Brands") return post.user?.role === "brand";
+    if (activeTab === "Creators") return post.user?.role === "creator";
+    if (activeTab === "Trending") return (post.likes?.length || 0) > 0;
+    if (activeTab === "Nearby") return true;
     return true;
   });
 
@@ -177,44 +270,20 @@ export default function Home() {
         <HeroBanner user={user} />
 
 
-        {/* Feed Tabs */}
-        {/* Feed Tabs Dropdown */}
-        <div className="feed-tabs-container">
-          <div className="feed-dropdown-wrapper">
+        {/* Feed Tabs Pills */}
+        <div className="feed-tabs-pills">
+          {["For You", "Latest", "Brands", "Creators", "Trending", "Nearby"].map(tab => (
             <button 
-              className="feed-dropdown-toggle"
-              onClick={() => setShowFeedDropdown(!showFeedDropdown)}
+              key={tab}
+              className={`feed-tab-pill ${activeTab === tab ? "active" : ""}`}
+              onClick={() => setActiveTab(tab)}
             >
-              <span className="active-tab-label">{activeTab}</span>
-              <svg className="dropdown-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="6 9 12 15 18 9"></polyline>
-              </svg>
+              {tab}
             </button>
-            
-            {showFeedDropdown && (
-              <>
-                <div className="dropdown-overlay" onClick={() => setShowFeedDropdown(false)} style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 10 }} />
-                <div className="feed-dropdown-menu">
-                  {["All Feed", "Trending", "Recently Launched", "Following"].map(tab => (
-                    <button 
-                      key={tab}
-                      className={`feed-dropdown-item ${activeTab === tab ? "active" : ""}`}
-                      onClick={() => {
-                        setActiveTab(tab);
-                        setShowFeedDropdown(false);
-                      }}
-                    >
-                      {tab}
-                    </button>
-                  ))}
-                </div>
-              </>
-            )}
-          </div>
-          <button className="feed-filter-btn" onClick={loadPosts} disabled={loading}>
-            <span className="icon">≡</span> Latest
-          </button>
+          ))}
         </div>
+        
+        <TrendingCampaigns />
 
         {/* Feed Posts */}
         {loading ? (
