@@ -177,12 +177,11 @@
 }
 
 .sidebar-card {
-  background: var(--bg-card, rgba(255,255,255,0.72));
-  backdrop-filter: blur(10px);
-  padding: 20px;
-  border-radius: 20px;
-  border: 1px solid var(--border-light, #f1f5f9);
-  box-shadow: var(--shadow-premium, 0 8px 30px rgba(0,0,0,0.08));
+  background: transparent;
+  padding: 10px 0;
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
 }
 
 .card-title {
@@ -656,11 +655,11 @@
 
 .new-hero-banner {
   width: 100%;
-  background: #FFFFFF;
-  border: 1px solid #EEF2F7;
-  border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(15,23,42,0.04);
-  padding: 16px 24px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 16px 0;
   display: flex;
   flex-direction: column;
   margin-bottom: 16px;
@@ -668,9 +667,9 @@
 }
 
 .dark .new-hero-banner {
-  background: #171717;
-  border-color: #262626;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
 }
 
 .hero-left {
@@ -888,9 +887,10 @@
 
 .trending-card {
   flex: 0 0 280px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-light);
-  border-radius: 16px;
+  background: transparent;
+  border: none;
+  border-right: 1px solid var(--border-light);
+  border-radius: 0;
   padding: 16px;
   display: flex;
   flex-direction: column;

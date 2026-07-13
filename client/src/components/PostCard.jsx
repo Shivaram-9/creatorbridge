@@ -201,7 +201,7 @@ const PostCard = memo(function PostCard({ post, onDelete, onUpdate }) {
   }, [post.media, post.image]);
 
   return (
-    <div ref={cardRef} className={`border rounded-xl p-6 transition-all hover:shadow-md animate-fade-in`} style={{ background: 'var(--bg-card)', borderColor: post.isPinned ? 'var(--primary-action)' : 'var(--border-light)' }}>
+    <div ref={cardRef} className={`border-b py-6 transition-all animate-fade-in`} style={{ borderColor: post.isPinned ? 'var(--primary-action)' : 'var(--border-light)' }}>
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex gap-4">
