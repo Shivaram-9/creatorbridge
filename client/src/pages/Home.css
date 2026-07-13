@@ -4,17 +4,19 @@
 .home-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 24px;
+  gap: 20px;
   width: 100%;
-  max-width: 1040px;
-  margin: 0 auto;
+  max-width: 100%;
+  margin: 0;
 }
 
 @media (min-width: 1024px) {
   .home-grid {
-    grid-template-columns: minmax(0, 680px) 320px;
+    grid-template-columns: minmax(0, 800px) 280px;
     align-items: start;
-    justify-content: center;
+    justify-content: flex-start;
+    gap: 32px;
+    padding-right: 16px;
   }
 }
 
@@ -29,14 +31,17 @@
 .home-sidebar-col {
   display: none;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
   position: sticky;
   top: 24px;
+  padding: 0;
+  margin-left: 0;
 }
 
 @media (min-width: 1024px) {
   .home-sidebar-col {
     display: flex;
+    align-items: flex-start;
   }
 }
 
