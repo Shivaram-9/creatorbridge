@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext.jsx";
 import { api } from "../services/api.js";
 import { BASE_URL } from "../config/api.js";
 import PostCard from "../components/PostCard.jsx";
+import ApplyCampaignModal from "../components/ApplyCampaignModal.jsx";
 
 import StoriesBar from "../components/StoriesBar.jsx";
 import EmptyState from "../components/EmptyState.jsx";
@@ -46,8 +47,10 @@ function HeroBanner({ user }) {
 }
 
 function TrendingCampaigns({ user }) {
+  const [selectedCampaign, setSelectedCampaign] = useState(null);
+
   const campaigns = [
-    { id: 1, logo: 'N', name: 'Nike', title: 'Looking for Fitness Creators', budget: '₹40,000 Budget', daysLeft: '3 Days Left' },
+    { id: 1, logo: 'N', name: 'Nike', title: 'Instagram Reel for Nike', budget: '₹40,000 Budget', daysLeft: '3 Days Left' },
     { id: 2, logo: 'M', name: 'Myntra', title: 'Fashion Week Haul', budget: '₹25,000 Budget', daysLeft: '5 Days Left' },
     { id: 3, logo: 'Z', name: 'Zomato', title: 'Food Vloggers Needed', budget: '₹15,000 Budget', daysLeft: '2 Days Left' },
   ];
@@ -70,11 +73,24 @@ function TrendingCampaigns({ user }) {
               <span>{camp.daysLeft}</span>
             </div>
             {user?.role === 'creator' && (
-              <a href="#" className="trending-card-apply">Apply &rarr;</a>
+              <a href="#" className="trending-card-apply" onClick={(e) => { e.preventDefault(); setSelectedCampaign(camp); }}>Apply &rarr;</a>
             )}
           </div>
         ))}
       </div>
+      
+      {selectedCampaign && (
+        <ApplyCampaignModal 
+          user={user}
+          campaign={selectedCampaign}
+          onClose={() => setSelectedCampaign(null)}
+          onSubmit={(data) => {
+            console.log('Application submitted:', data);
+            setSelectedCampaign(null);
+            // Here you would typically show a success toast or dispatch an API call
+          }}
+        />
+      )}
     </div>
   );
 }
