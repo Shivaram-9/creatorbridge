@@ -13,7 +13,7 @@ export const authLimiter = rateLimit({
 export const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 1000,
-  skip: (req) => !!req.headers.authorization, // Skip if user is logged in
+  skip: (req) => req.method === "OPTIONS" || !!req.headers.authorization, // Skip if user is logged in
   message: { error: "Too many requests from this IP, please try again later." },
   standardHeaders: true,
   legacyHeaders: false,
@@ -23,7 +23,7 @@ export const apiLimiter = rateLimit({
 export const contentLimiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes
   max: 500,
-  skip: (req) => !!req.headers.authorization, // Skip if user is logged in
+  skip: (req) => req.method === "OPTIONS" || !!req.headers.authorization, // Skip if user is logged in
   message: { error: "Slow down! You're creating content too quickly." },
   standardHeaders: true,
   legacyHeaders: false,

@@ -48,6 +48,7 @@ if (smtpCheck.length > 0) {
 }
 
 const app = express();
+app.set("trust proxy", 1);
 
 // 1. Priority Middlewares (MUST BE FIRST)
 const allowedOrigins = [
