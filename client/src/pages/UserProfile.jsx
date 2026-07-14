@@ -16,6 +16,7 @@ import toast from "react-hot-toast";
 import "./UserProfile.css";
 import UserListModal from "../components/UserListModal.jsx";
 import TrustScore from "../components/TrustScore.jsx";
+import CampaignCard from "../components/CampaignCard.jsx";
 
 function fmtCount(n) {
   if (!n || n <= 0) return "0";
@@ -37,6 +38,7 @@ export default function UserProfile() {
   const [copyStatus, setCopyStatus] = useState(false);
   
   const [userPosts, setUserPosts] = useState([]);
+  const [campaigns, setCampaigns] = useState([]);
   const [loadingPosts, setLoadingPosts] = useState(true);
   const [showShareModal, setShowShareModal] = useState(false);
   const [activeTab, setActiveTab] = useState("posts");
@@ -198,8 +200,15 @@ export default function UserProfile() {
       } else {
         setLoadingPosts(false);
       }
-    } catch {
-      setError("Something went wrong");
+
+      // Fetch user's campaigns
+      const campaignsData = await api.campaigns.list();
+      if (!campaignsData.error && Array.isArray(campaignsData)) {
+        setCampaigns(campaignsData.filter(c => c.createdBy?._id === userId));
+      }
+      
+    } catch (err) {
+      setError("Failed to load profile");
     } finally {
       setLoading(false);
     }
@@ -658,11 +667,32 @@ export default function UserProfile() {
 
             {activeTab === "campaigns" && (
               <div className="profile-campaigns-section" style={{ padding: '20px 0' }}>
-                <div style={{ textAlign: 'center', padding: '40px', background: 'var(--bg-card)', borderRadius: '16px' }}>
-                  <span style={{ fontSize: '40px' }}>🚀</span>
-                  <h3 style={{ marginTop: '16px' }}>No Campaigns Yet</h3>
-                  <p style={{ color: 'var(--text-muted)' }}>This user hasn't posted any campaigns.</p>
-                </div>
+                {campaigns.length > 0 ? (
+                  <div className="campaign-grid">
+                    {campaigns.map(c => (
+                      <CampaignCard 
+                        key={c._id} 
+                        campaign={c} 
+                        isInfluencer={me?.role === "influencer"} 
+                        onApply={async (id) => {
+                          try {
+                            const res = await api.campaigns.apply(id);
+                            if (res.error) toast.error(res.error);
+                            else toast.success("Application sent!");
+                          } catch (err) {
+                            toast.error("Application failed");
+                          }
+                        }}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <div style={{ textAlign: 'center', padding: '40px', background: 'var(--bg-card)', borderRadius: '16px' }}>
+                    <span style={{ fontSize: '40px' }}>🚀</span>
+                    <h3 style={{ marginTop: '16px' }}>No Campaigns Yet</h3>
+                    <p style={{ color: 'var(--text-muted)' }}>This user hasn't posted any campaigns.</p>
+                  </div>
+                )}
               </div>
             )}
 
