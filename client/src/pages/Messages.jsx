@@ -171,7 +171,6 @@ export default function Messages() {
 
         <div style={{ padding: '0 20px 16px' }}>
           <div style={{ background: 'var(--bg-main)', borderRadius: '8px', padding: '8px 12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ color: 'var(--text-muted)' }}>🔍</span>
             <input 
               id="message-search-input"
               type="text" 
