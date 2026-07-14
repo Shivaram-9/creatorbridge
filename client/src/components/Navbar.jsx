@@ -142,31 +142,36 @@ export default function Navbar({
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           {user && (
             <>
-              <button className="nav-icon-btn relative" onClick={handleBellClick}>
-                <BellIcon filled={false} />
-                {unreadCount > 0 && (
-                  <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[10px] flex items-center justify-center rounded-full font-bold">
-                    {unreadCount > 9 ? "9+" : unreadCount}
-                  </span>
-                )}
+              <button className="nav-icon-btn relative flex flex-col items-center justify-center !h-auto !py-1" onClick={handleBellClick}>
+                <div className="relative flex items-center justify-center">
+                  <BellIcon filled={false} />
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[10px] flex items-center justify-center rounded-full font-bold">
+                      {unreadCount > 9 ? "9+" : unreadCount}
+                    </span>
+                  )}
+                </div>
+                <span className="md:hidden mt-1 text-[10px] font-medium text-black dark:text-white text-center leading-none tracking-normal">Notifications</span>
               </button>
 
               {["brand", "admin"].includes(user?.role) && (
                 <Link
                   to="/campaigns"
-                  className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors border-none bg-transparent cursor-pointer flex items-center justify-center text-slate-700 dark:text-slate-300 md:hidden"
+                  className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors border-none bg-transparent cursor-pointer flex flex-col items-center justify-center text-slate-700 dark:text-slate-300 md:hidden"
                   title="Campaigns"
                 >
                   <BriefcaseIcon />
+                  <span className="mt-1 text-[10px] font-medium text-black dark:text-white text-center leading-none tracking-normal">Campaigns</span>
                 </Link>
               )}
 
               <Link 
                 to="/search" 
-                className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors border-none bg-transparent cursor-pointer flex items-center justify-center text-slate-700 dark:text-slate-300 md:hidden"
+                className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors border-none bg-transparent cursor-pointer flex flex-col items-center justify-center text-slate-700 dark:text-slate-300 md:hidden"
                 title="Find Your Collab"
               >
                 <UsersIcon />
+                <span className="mt-1 text-[10px] font-medium text-black dark:text-white text-center leading-none tracking-normal">Collabs</span>
               </Link>
 
               <div className="relative hidden md:block" ref={menuRef}>
