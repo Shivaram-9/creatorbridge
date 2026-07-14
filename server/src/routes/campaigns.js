@@ -2,6 +2,7 @@ import express from "express";
 import { Campaign } from "../models/Campaign.js";
 import { Collaboration } from "../models/Collaboration.js";
 import { Notification } from "../models/Notification.js";
+import { Application } from "../models/Application.js";
 import { authMiddleware } from "../middleware/auth.js";
 import { brandOnly, influencerOnly } from "../middleware/role.js";
 
@@ -68,6 +69,19 @@ router.post("/apply/:id", authMiddleware, influencerOnly, async (req, res) => {
     if (campaign.applicants.includes(req.userId)) {
       return res.status(400).json({ error: "Already applied" });
     }
+    
+    // Check if Application already exists
+    const existingApp = await Application.findOne({ campaign: campaign._id, influencer: req.userId });
+    if (existingApp) {
+      return res.status(400).json({ error: "Already applied" });
+    }
+
+    const application = await Application.create({
+      ...req.body,
+      campaign: campaign._id,
+      influencer: req.userId
+    });
+
     campaign.applicants.push(req.userId);
     await campaign.save();
 
@@ -84,7 +98,55 @@ router.post("/apply/:id", authMiddleware, influencerOnly, async (req, res) => {
       io.to(`user:${campaign.createdBy}`).emit("notification", notif);
     }
 
-    res.json({ message: "Application submitted" });
+    res.json({ message: "Application submitted", application });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get My Applications (Influencer Only)
+router.get("/applications/me", authMiddleware, influencerOnly, async (req, res) => {
+  try {
+    const applications = await Application.find({ influencer: req.userId })
+      .populate("campaign")
+      .sort("-createdAt");
+    res.json(applications);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get Campaign Applicants (Brand Only)
+router.get("/applicants/:campaignId", authMiddleware, brandOnly, async (req, res) => {
+  try {
+    const campaign = await Campaign.findById(req.params.campaignId);
+    if (!campaign) return res.status(404).json({ error: "Campaign not found" });
+    if (campaign.createdBy.toString() !== req.userId && req.userRole !== "admin") {
+      return res.status(403).json({ error: "Unauthorized" });
+    }
+    
+    const applications = await Application.find({ campaign: req.params.campaignId })
+      .populate("influencer", "name avatar bio role")
+      .populate("campaign", "title")
+      .sort("-createdAt");
+    res.json(applications);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get All Applicants for a Brand's Campaigns
+router.get("/applications/brand", authMiddleware, brandOnly, async (req, res) => {
+  try {
+    const campaigns = await Campaign.find({ createdBy: req.userId }).select("_id title");
+    const campaignIds = campaigns.map(c => c._id);
+    
+    const applications = await Application.find({ campaign: { $in: campaignIds } })
+      .populate("influencer", "name avatar bio role")
+      .populate("campaign", "title")
+      .sort("-createdAt");
+      
+    res.json(applications);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

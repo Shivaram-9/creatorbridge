@@ -3,6 +3,7 @@ import { api } from "../services/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import CampaignCard from "../components/CampaignCard.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
+import ApplyCampaignModal from "../components/ApplyCampaignModal.jsx";
 import { Link } from "react-router-dom";
 import "./Campaigns.css";
 
@@ -11,6 +12,7 @@ export default function Campaigns() {
   const [campaigns, setCampaigns] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [selectedCampaign, setSelectedCampaign] = useState(null);
 
   useEffect(() => {
     fetchCampaigns();
@@ -26,16 +28,6 @@ export default function Campaigns() {
       setLoading(false);
     }
   }
-
-  const handleApply = async (id) => {
-    try {
-      const res = await api.campaigns.apply(id);
-      if (res.error) alert(res.error);
-      else alert("Application sent!");
-    } catch (err) {
-      alert("Application failed");
-    }
-  };
 
   if (loading) return <LoadingSpinner centered />;
 
@@ -57,13 +49,32 @@ export default function Campaigns() {
               key={c._id} 
               campaign={c} 
               isInfluencer={user?.role === "influencer"} 
-              onApply={handleApply}
+              user={user}
+              onApply={() => setSelectedCampaign(c)}
             />
           ))
         ) : (
           <div className="empty-state">No campaigns available yet.</div>
         )}
       </div>
+
+      {selectedCampaign && (
+        <ApplyCampaignModal 
+          campaign={selectedCampaign} 
+          onClose={() => setSelectedCampaign(null)} 
+          onSubmit={async (data) => {
+            try {
+              await api.campaigns.apply(selectedCampaign._id, data);
+              setSelectedCampaign(null);
+              // Need to import toast
+              alert("Application submitted!");
+              fetchCampaigns();
+            } catch (err) {
+              alert(err.message || "Failed to apply");
+            }
+          }}
+        />
+      )}
     </div>
   );
 }

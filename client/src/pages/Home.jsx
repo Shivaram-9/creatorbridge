@@ -84,13 +84,23 @@ function TrendingCampaigns({ user }) {
               </div>
             </div>
 
-            <button 
-              className="btn-apply"
-              style={{ width: '100%' }}
-              onClick={() => setSelectedCampaign(camp)}
-            >
-              Apply Now &rarr;
-            </button>
+            {camp.applicants?.includes(user?._id) ? (
+              <button 
+                className="btn-apply"
+                style={{ width: '100%', opacity: 0.6, cursor: 'not-allowed', background: 'var(--bg-secondary)', color: 'var(--text-muted)' }}
+                disabled
+              >
+                Applied ✓
+              </button>
+            ) : (
+              <button 
+                className="btn-apply"
+                style={{ width: '100%' }}
+                onClick={() => setSelectedCampaign(camp)}
+              >
+                Apply Now &rarr;
+              </button>
+            )}
           </div>
         ))}
       </div>
@@ -100,10 +110,15 @@ function TrendingCampaigns({ user }) {
         <ApplyCampaignModal 
           campaign={selectedCampaign} 
           onClose={() => setSelectedCampaign(null)} 
-          onApply={async (data) => {
-            await api.campaigns.apply(selectedCampaign._id);
-            setSelectedCampaign(null);
-            toast.success("Application submitted!");
+          onSubmit={async (data) => {
+            try {
+              await api.campaigns.apply(selectedCampaign._id, data);
+              setSelectedCampaign(null);
+              toast.success("Application submitted!");
+              fetchTrending(); // Refresh data to show Applied status
+            } catch (err) {
+              toast.error(err.message || "Failed to apply");
+            }
           }}
         />
       )}
