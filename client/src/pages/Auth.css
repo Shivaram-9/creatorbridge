@@ -18,7 +18,7 @@
 }
 
 .dark .auth-stabilized-wrapper {
-  background: radial-gradient(circle at 40% 40%, #1e293b 0%, #0f172a 60%, #0f172a 100%);
+  background: var(--bg-main, #0a0a0a);
 }
 
 /* ── Decorative floating background text ── */
@@ -81,11 +81,11 @@
 }
 
 .dark .auth-card-stabilized {
-  background: rgba(30, 41, 59, 0.95);
+  background: var(--bg-card, #171717);
   box-shadow:
-    0 4px 6px -1px rgba(0, 0, 0, 0.2),
-    0 20px 40px -8px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.1);
+    0 4px 6px -1px rgba(0, 0, 0, 0.4),
+    0 20px 40px -8px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
 }
 
 /* ── Icon box ── */
@@ -162,7 +162,7 @@
 }
 
 .dark .auth-input-field {
-  background: rgba(15, 23, 42, 0.6);
+  background: rgba(255, 255, 255, 0.05);
   border-color: rgba(255, 255, 255, 0.1);
   color: #f8fafc;
 }
@@ -365,13 +365,13 @@
 }
 
 .dark .auth-social-btn {
-  background: rgba(15, 23, 42, 0.6);
+  background: rgba(255, 255, 255, 0.05);
   border-color: rgba(255, 255, 255, 0.1);
   color: #f8fafc;
 }
 
 .dark .auth-social-btn:hover:not(:disabled) {
-  background: rgba(30, 41, 59, 0.8);
+  background: rgba(255, 255, 255, 0.1);
   border-color: rgba(255, 255, 255, 0.2);
 }
 
