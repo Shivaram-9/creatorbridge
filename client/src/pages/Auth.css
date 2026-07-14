@@ -5,7 +5,8 @@
 
 /* ── Outer wrapper: full-screen centered ── */
 .auth-stabilized-wrapper {
-  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh;
   width: 100%;
   display: flex;
   align-items: center;
@@ -14,7 +15,8 @@
   padding: clamp(12px, 4vw, 32px);
   box-sizing: border-box;
   position: relative;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .dark .auth-stabilized-wrapper {
