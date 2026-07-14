@@ -584,31 +584,6 @@ export default function Chat({ standalone = true }) {
         </div>
       </header>
 
-      {/* Campaign Context Mode Injection */}
-      <div style={{ background: '#f8fafc', padding: '16px 24px', borderBottom: '1px solid var(--border-light)', display: 'flex', gap: '20px', alignItems: 'center', overflowX: 'auto', flexShrink: 0 }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', minWidth: '150px' }}>
-          <span style={{ fontSize: '11px', fontWeight: 700, color: '#64748b', textTransform: 'uppercase' }}>Campaign Status</span>
-          <span style={{ fontSize: '14px', fontWeight: 700, color: '#166534', background: '#dcfce7', padding: '4px 8px', borderRadius: '4px', alignSelf: 'flex-start' }}>Open - In Progress</span>
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', minWidth: '120px' }}>
-          <span style={{ fontSize: '11px', fontWeight: 700, color: '#64748b', textTransform: 'uppercase' }}>Timeline</span>
-          <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-main)' }}>Due in 5 Days</span>
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', minWidth: '120px' }}>
-          <span style={{ fontSize: '11px', fontWeight: 700, color: '#64748b', textTransform: 'uppercase' }}>Payment</span>
-          <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-main)' }}>₹5,000 (Escrow)</span>
-        </div>
-        <div style={{ marginLeft: 'auto', display: 'flex', gap: '12px' }}>
-          {user?.role === 'creator' ? (
-            <button style={{ padding: '8px 16px', background: '#2563EB', color: '#fff', border: 'none', borderRadius: '6px', fontSize: '13px', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}>Submit Deliverables</button>
-          ) : (
-            <>
-              <button style={{ padding: '8px 16px', background: '#10b981', color: '#fff', border: 'none', borderRadius: '6px', fontSize: '13px', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}>Approve Delivery</button>
-              <button style={{ padding: '8px 16px', background: 'transparent', color: '#dc2626', border: '1px solid #dc2626', borderRadius: '6px', fontSize: '13px', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}>Request Changes</button>
-            </>
-          )}
-        </div>
-      </div>
 
       <div style={{ flex: 1, overflowY: 'auto', padding: '24px', overflowX: 'hidden' }}>
         <ErrorBanner message={error} onDismiss={() => setError("")} />
