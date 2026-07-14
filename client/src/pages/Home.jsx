@@ -37,7 +37,7 @@ function TrendingCampaigns({ user }) {
           </h3>
           <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Top opportunities brands are offering right now.</span>
         </div>
-        <a href="#" style={{ color: '#3b82f6', fontSize: '14px', textDecoration: 'none', fontWeight: 600, marginTop: '2px' }}>View all &gt;</a>
+        <a href="#" style={{ color: '#3b82f6', fontSize: '14px', textDecoration: 'none', fontWeight: 600, marginTop: '2px', whiteSpace: 'nowrap' }}>View all <span className="hidden md:inline">&gt;</span></a>
       </div>
       <div className="trending-scroll-container">
         {campaigns.map(camp => (
