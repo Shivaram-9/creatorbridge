@@ -54,11 +54,8 @@ export default function Messages() {
         let exists = false;
         const updated = prev.map(conv => {
           const partnerMatch = conv.partner?._id === msg.sender?._id || conv.partner?._id === msg.receiver?._id || conv.partner?._id === msg.sender || conv.partner?._id === msg.receiver;
-          const msgAppId = msg.application?._id || msg.application;
-          const convAppId = conv.application?._id || conv.application;
-          const appMatch = String(convAppId) === String(msgAppId);
 
-          if (partnerMatch && appMatch) {
+          if (partnerMatch) {
             exists = true;
             return {
               ...conv,
@@ -237,16 +234,15 @@ export default function Messages() {
           ) : (
             filteredConversations.map(conv => {
               if (!conv || !conv.partner) return null;
-              const chatId = `${conv.partner._id}-${conv.application?._id || 'direct'}`;
-              const isActive = userId === conv.partner._id && (!conv.application || new URLSearchParams(window.location.search).get('applicationId') === conv.application._id);
+              const chatId = `${conv.partner._id}`;
+              const isActive = userId === conv.partner._id;
               
               return (
               <div 
                 key={chatId} 
                 className={`chat-item-v3 ${isActive ? 'active' : ''}`}
                 onClick={() => {
-                  const url = `/messages/${conv.partner._id}${conv.application ? `?applicationId=${conv.application._id}` : ''}`;
-                  navigate(url);
+                  navigate(`/messages/${conv.partner._id}`);
                 }}
               >
                 <div style={{ position: 'relative' }}>

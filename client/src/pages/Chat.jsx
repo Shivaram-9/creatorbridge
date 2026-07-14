@@ -136,11 +136,9 @@ export default function Chat({ standalone = true }) {
     setShowProposalModal(false);
     try {
       const contentString = JSON.stringify(proposalData);
-      const applicationId = new URLSearchParams(window.location.search).get('applicationId');
       const msg = await api.messages.send({
         receiverId: partnerId,
-        content: contentString,
-        applicationId
+        content: contentString
       });
       if (msg && msg._id) {
         setMessages(prev => {
@@ -391,10 +389,9 @@ export default function Chat({ standalone = true }) {
     if (!partnerId) return;
     setLoading(true);
     try {
-      const applicationId = new URLSearchParams(window.location.search).get('applicationId');
       const [p, msgs] = await Promise.all([
         api.users.get(partnerId),
-        api.messages.getConversation(partnerId, { applicationId }),
+        api.messages.getConversation(partnerId),
       ]);
       setPartner(p);
       setMessages(Array.isArray(msgs) ? msgs : []);
@@ -493,12 +490,9 @@ export default function Chat({ standalone = true }) {
       let msg;
       if (selectedFile) {
         const formData = new FormData();
-        formData.append("media", selectedFile);
         formData.append("receiverId", partnerId);
+        formData.append("media", selectedFile);
         if (input.trim()) formData.append("content", input.trim());
-        
-        const applicationId = new URLSearchParams(window.location.search).get('applicationId');
-        if (applicationId) formData.append("applicationId", applicationId);
         
         // Clear preview immediately to feel responsive
         const currentFile = selectedFile;
@@ -518,13 +512,11 @@ export default function Chat({ standalone = true }) {
           return;
         }
       } else {
-        const applicationId = new URLSearchParams(window.location.search).get('applicationId');
         const currentInput = input;
         setInput("");
         msg = await api.messages.send({ 
           receiverId: partnerId, 
-          content: currentInput.trim(),
-          applicationId 
+          content: currentInput.trim()
         });
         if (msg?.error) {
           setInput(currentInput);

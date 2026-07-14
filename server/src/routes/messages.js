@@ -146,13 +146,7 @@ messagesRouter.get("/conversation/:otherUserId", async (req, res) => {
         { sender: oid, receiver: uid },
       ],
     };
-
-    if (applicationId && mongoose.isValidObjectId(applicationId)) {
-      filter.application = applicationId;
-    } else if (dealId && mongoose.isValidObjectId(dealId)) {
-      filter.deal = dealId;
-    }
-    // Otherwise load ALL messages between the two users (no filter by application/deal)
+    // Load ALL messages between the two users regardless of application/deal
 
     const msgs = await Message.find(filter)
       .sort({ createdAt: 1 })
