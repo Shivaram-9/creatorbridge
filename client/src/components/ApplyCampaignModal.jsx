@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, CheckCircle, Briefcase, Send } from 'lucide-react';
 import { CameraIcon } from './Icons.jsx';
+import { formatCurrency } from "../utils/formatters";
 import './ApplyCampaignModal.css';
 
 export default function ApplyCampaignModal({ campaign, onClose, onSubmit, user }) {
@@ -46,7 +47,7 @@ export default function ApplyCampaignModal({ campaign, onClose, onSubmit, user }
               {campaign?.title || 'Instagram Reel for Nike'}
             </div>
             <div className="apply-modal-campaign-budget text-budget-value">
-              {campaign?.budget || '₹40,000 Budget'}
+              {campaign?.budget ? formatCurrency(campaign.budget) : '₹40,000 Budget'}
             </div>
           </div>
         </div>

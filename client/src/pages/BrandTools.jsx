@@ -6,6 +6,7 @@ import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import ErrorBanner from "../components/ErrorBanner.jsx";
 import VerifiedUserDisplay from "../components/VerifiedUserDisplay.jsx";
 import toast from "react-hot-toast";
+import { formatCurrency } from "../utils/formatters";
 import "./BrandTools.css";
 
 export default function BrandTools() {
@@ -168,14 +169,14 @@ export default function BrandTools() {
                     </tr>
                     <tr>
                       <td>Estimated Budget</td>
-                      {comparison.map(c => <td key={c._id}>₹{(500 + (c.followers?.length * 0.5)).toFixed(0)}</td>)}
+                      {comparison.map(c => <td key={c._id}>{formatCurrency((500 + (c.followers?.length * 0.5)).toFixed(0))}</td>)}
                     </tr>
                   </tbody>
                 </table>
                 <div className="comparison-footer">
                   <div className="total-est">
                     <span>Total Campaign Estimate:</span>
-                    <strong className="text-budget-value">₹{getBudgetEstimate(comparison)}</strong>
+                    <strong className="text-budget-value">{formatCurrency(getBudgetEstimate(comparison))}</strong>
                   </div>
                   <button className="btn btn-primary">Send Bulk Proposal</button>
                   <button className="btn btn-ghost" onClick={() => setComparison([])}>Clear</button>

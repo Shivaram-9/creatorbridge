@@ -1,4 +1,5 @@
 import React from 'react';
+import { formatCurrency } from "../../utils/formatters";
 import './ProposalWorkflow.css';
 
 export default function AcceptConfirmation({ proposalData, onClose, onConfirm }) {
@@ -35,7 +36,7 @@ export default function AcceptConfirmation({ proposalData, onClose, onConfirm })
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', borderBottom: '1px solid var(--pw-border)', paddingBottom: '12px' }}>
               <span className="pw-label" style={{ marginBottom: 0 }}>Budget</span>
-              <span className="pw-value text-budget-value">{budget}</span>
+              <span className="pw-value text-budget-value">{formatCurrency(budget)}</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
               <span className="pw-label" style={{ marginBottom: 0 }}>Timeline</span>

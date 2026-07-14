@@ -16,7 +16,8 @@ import { HandshakeIcon } from "../components/Icons.jsx";
 import toast from "react-hot-toast";
 import "./Home.css";
 
-import { Users, Clock, CheckCircle2 } from 'lucide-react';
+import { Flame, Clock, Users, CheckCircle2 } from "lucide-react";
+import { formatCurrency } from "../utils/formatters";
 
 function TrendingCampaigns({ user }) {
   const [selectedCampaign, setSelectedCampaign] = useState(null);
@@ -73,7 +74,7 @@ function TrendingCampaigns({ user }) {
 
             <div className="campaign-badges" style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px' }}>
               <span className="text-budget-value" style={{ display: 'inline-block', background: 'rgba(16, 185, 129, 0.15)', padding: '4px 10px', borderRadius: '4px', fontSize: '12px', width: 'fit-content' }}>
-                {camp.budget}
+                {formatCurrency(camp.budget)}
               </span>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-secondary)', fontSize: '12px', fontWeight: 500 }}>
                 <Users size={14} /> <span>{camp.category}</span>

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams, useNavigate, useOutletContext } from "react-router-dom";
 import { api } from "../services/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
+import { formatCurrency } from "../utils/formatters.js";
 import { connectSocket, getSocket } from "../services/socket.js";
 import Avatar from "../components/Avatar.jsx";
 import ErrorBanner from "../components/ErrorBanner.jsx";
@@ -314,7 +315,7 @@ export default function Chat({ standalone = true }) {
               <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: '0 0 4px 0', fontWeight: '500' }}>Budget</p>
               <div style={{ fontSize: '13px', color: 'var(--text-main)', margin: 0, fontWeight: '600', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {proposalData && proposalData.budget 
-                  ? `${proposalData.currency === 'INR' ? '₹' : (proposalData.currency === 'USD' ? '$' : '€')}${proposalData.budget}`
+                  ? formatCurrency(proposalData.budget, proposalData.currency)
                   : 'Negotiable'}
               </div>
             </div>

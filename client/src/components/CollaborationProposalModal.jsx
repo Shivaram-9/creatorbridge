@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { formatCurrency } from "../utils/formatters";
+import { Plus, X, Upload } from 'lucide-react';
 import './CollaborationProposalModal.css';
 
 const DELIVERABLE_OPTIONS = [
@@ -249,7 +251,7 @@ export default function CollaborationProposalModal({ onClose, onSend, partnerNam
                   <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: '0 0 4px 0', fontWeight: '500' }}>Budget</p>
                   <p style={{ fontSize: '13px', color: 'var(--text-main)', margin: 0, fontWeight: '600' }}>
                     <span className="text-budget-value">
-                      {budgetAmount ? `${budgetCurrency === 'INR' ? '₹' : (budgetCurrency === 'USD' ? '$' : '€')}${budgetAmount}` : '---'}
+                      {budgetAmount ? formatCurrency(budgetAmount, budgetCurrency) : '---'}
                     </span>
                   </p>
                 </div>

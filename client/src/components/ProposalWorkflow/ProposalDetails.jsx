@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { formatCurrency } from "../../utils/formatters";
 import './ProposalWorkflow.css';
 import CounterOfferModal from './CounterOfferModal';
 import AcceptConfirmation from './AcceptConfirmation';
@@ -27,9 +28,8 @@ export default function ProposalDetails({
     status: 'Pending'
   };
 
-  const currencySymbol = data.currency === 'INR' ? '₹' : (data.currency === 'USD' ? '$' : '€');
-  const currentBudget = data.budget ? `${currencySymbol}${data.budget}` : 'Negotiable';
-  const originalBudget = data.originalBudget ? `${currencySymbol}${data.originalBudget}` : currentBudget;
+  const currentBudget = data.budget ? formatCurrency(data.budget, data.currency) : 'Negotiable';
+  const originalBudget = data.originalBudget ? formatCurrency(data.originalBudget, data.currency) : currentBudget;
 
   let canAct = false;
   if (data.status === "Pending" && isReceiver) {
@@ -163,7 +163,7 @@ export default function ProposalDetails({
                         {new Date(history.timestamp).toLocaleString()}
                       </span>
                       <span style={{ fontSize: '13px', fontWeight: 'bold', color: 'var(--pw-text-main)' }}>
-                        Offer: <span className="text-budget-value">{currencySymbol}{history.budget}</span>
+                        Offer: <span className="text-budget-value">{formatCurrency(history.budget, data.currency)}</span>
                       </span>
                     </div>
                     {history.message && (
