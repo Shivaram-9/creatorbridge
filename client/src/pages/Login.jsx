@@ -67,7 +67,7 @@ export default function Login() {
         <div className="floating-text">Pactogram</div>
       </div>
 
-      <div className="auth-card-stabilized fade-up" style={{ maxWidth: '440px' }}>
+      <div className="auth-card-stabilized fade-up">
         <div className="auth-icon-box" style={{ background: 'linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%)', boxShadow: 'inset 0 2px 4px rgba(255,255,255,0.5)' }}>
           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="url(#blue-gradient-login)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <defs>
@@ -133,15 +133,12 @@ export default function Login() {
             </Link>
           </div>
 
-          <button 
-            type="submit" 
-            className="w-full h-[52px] bg-slate-900 text-white rounded-xl text-[15px] font-bold flex items-center justify-center gap-2 mt-2 shadow-md hover:translate-y-[-1px] hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed transition-all" 
+          <button
+            type="submit"
+            className="auth-submit-btn"
             disabled={loading}
           >
-            {loading ? "Signing in..." : "Login"}
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M5 12H19M19 12L12 5M19 12L12 19" />
-            </svg>
+            {loading ? "Signing in..." : "Login →"}
           </button>
         </form>
 
