@@ -23,7 +23,13 @@ export default function CampaignCard({ campaign, onApply, isInfluencer, user }) 
         <p className="campaign-deadline">Deadline: {new Date(deadline).toLocaleDateString()}</p>
         <div className="campaign-actions">
           <Link to={`/campaign/${_id}`} className="btn-secondary">View Details</Link>
-          {isInfluencer && (
+          {user?.role === 'brand' && user?._id === createdBy?._id && (
+            <Link to="/brand-dashboard" className="btn-secondary" style={{ width: '100%', textAlign: 'center' }}>
+              View Applicants
+            </Link>
+          )}
+
+          {user?.role !== 'brand' && (
             campaign.applicants?.includes(user?._id) ? (
               <button 
                 className="btn-apply" 

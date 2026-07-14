@@ -84,7 +84,7 @@ function TrendingCampaigns({ user }) {
               </div>
             </div>
 
-            {user?.role === 'influencer' && (
+            {user?.role !== 'brand' && (
               camp.applicants?.includes(user?._id) ? (
                 <button 
                   className="btn-apply"

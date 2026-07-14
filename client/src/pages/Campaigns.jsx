@@ -48,7 +48,6 @@ export default function Campaigns() {
             <CampaignCard 
               key={c._id} 
               campaign={c} 
-              isInfluencer={user?.role === "influencer"} 
               user={user}
               onApply={() => setSelectedCampaign(c)}
             />
