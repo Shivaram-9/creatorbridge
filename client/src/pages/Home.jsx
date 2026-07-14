@@ -37,8 +37,6 @@ function TrendingCampaigns({ user }) {
     fetchTrending();
   }, []);
 
-  if (campaigns.length === 0) return null;
-
   return (
     <div className="trending-campaigns-section" style={{ width: '100%', overflow: 'hidden', padding: '16px 0', boxSizing: 'border-box' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
@@ -50,6 +48,12 @@ function TrendingCampaigns({ user }) {
         </div>
         <a href="/campaigns" style={{ color: '#3b82f6', fontSize: '14px', textDecoration: 'none', fontWeight: 600, marginTop: '2px', whiteSpace: 'nowrap' }}>View all <span className="hidden md:inline">&gt;</span></a>
       </div>
+      
+      {campaigns.length === 0 ? (
+        <div style={{ padding: '24px', textAlign: 'center', background: 'var(--bg-secondary)', borderRadius: '16px', color: 'var(--text-muted)', fontSize: '14px' }}>
+          No trending campaigns right now. Create one to get started!
+        </div>
+      ) : (
       <div className="trending-scroll-container">
         {campaigns.map(camp => (
           <div key={camp._id} className="trending-card new-trending-layout" style={{ position: 'relative', background: 'var(--bg-secondary)', border: 'none', borderRadius: '16px', padding: '16px' }}>
@@ -89,6 +93,7 @@ function TrendingCampaigns({ user }) {
           </div>
         ))}
       </div>
+      )}
 
       {selectedCampaign && (
         <ApplyCampaignModal 
