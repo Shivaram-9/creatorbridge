@@ -9,10 +9,11 @@ export const authLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-// General API protection
+// General API protection - skip for authenticated users (they have JWT token)
 export const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 1000, // Increased from 300 to prevent blocking active users
+  max: 1000,
+  skip: (req) => !!req.headers.authorization, // Skip if user is logged in
   message: { error: "Too many requests from this IP, please try again later." },
   standardHeaders: true,
   legacyHeaders: false,
@@ -21,7 +22,8 @@ export const apiLimiter = rateLimit({
 // Content creation protection (posts, stories, messages)
 export const contentLimiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes
-  max: 200, // Increased from 50
+  max: 500,
+  skip: (req) => !!req.headers.authorization, // Skip if user is logged in
   message: { error: "Slow down! You're creating content too quickly." },
   standardHeaders: true,
   legacyHeaders: false,
