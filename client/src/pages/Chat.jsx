@@ -264,7 +264,7 @@ export default function Chat({ standalone = true }) {
     try {
       if (text.startsWith('{') && text.endsWith('}')) {
         proposalData = JSON.parse(text);
-        isProposal = !!proposalData.title;
+        isProposal = !!(proposalData.isProposal || proposalData.title);
       }
     } catch (e) {}
 
@@ -280,19 +280,20 @@ export default function Chat({ standalone = true }) {
               <div style={{ background: '#f59e0b', padding: '6px', borderRadius: '6px', display: 'flex' }}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
               </div>
-              <span style={{ fontSize: '12px', fontWeight: '600', color: '#f59e0b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Proposal</span>
+              <span style={{ fontSize: '12px', fontWeight: '600', color: '#f59e0b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                {proposalData?.applicationId ? 'Campaign Application' : 'Proposal'}
+              </span>
             </div>
             <span style={{ fontSize: '11px', fontWeight: '600', color: proposalData?.status === 'Accepted' ? '#10b981' : '#f59e0b', background: proposalData?.status === 'Accepted' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(245, 158, 11, 0.2)', padding: '2px 8px', borderRadius: '12px' }}>
               {proposalData?.status || 'Pending'}
             </span>
           </div>
           <h3 style={{ fontSize: '18px', fontWeight: '700', color: 'var(--text-main)', margin: '0 0 8px 0' }}>
-            {proposalData ? proposalData.title : 'Content Campaign'}
+            {proposalData ? (proposalData.title || proposalData.campaignTitle || 'Campaign Application') : 'Content Campaign'}
           </h3>
-          
-          {!proposalData && (
-            <p style={{ fontSize: '14px', lineHeight: '1.5', color: 'var(--text-main)', margin: '0 0 16px 0' }}>
-              {text}
+          {proposalData?.message && (
+            <p style={{ fontSize: '13px', color: 'var(--text-secondary)', margin: '0 0 8px 0', fontStyle: 'italic' }}>
+              "{proposalData.message}"
             </p>
           )}
 

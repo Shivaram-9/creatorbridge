@@ -105,6 +105,8 @@ router.post("/apply/:id", authMiddleware, influencerOnly, async (req, res) => {
     
     const proposalContent = JSON.stringify({
       isProposal: true,
+      title: campaign.title,
+      campaignTitle: campaign.title,
       status: 'Pending',
       budget: expectedPayment,
       message: message,
@@ -113,12 +115,19 @@ router.post("/apply/:id", authMiddleware, influencerOnly, async (req, res) => {
       currency: "INR"
     });
 
-    const initialMsg = await Message.create({
-      sender: req.userId,
-      receiver: campaign.createdBy,
-      application: application._id,
-      content: proposalContent
-    });
+    // Check if a message already exists for this application to prevent duplicates
+    const existingMsg = await Message.findOne({ application: application._id });
+    let initialMsg;
+    if (!existingMsg) {
+      initialMsg = await Message.create({
+        sender: req.userId,
+        receiver: campaign.createdBy,
+        application: application._id,
+        content: proposalContent
+      });
+    } else {
+      initialMsg = existingMsg;
+    }
 
     if (io) {
       await initialMsg.populate("sender", "name email role avatar isVerified isPremium");
