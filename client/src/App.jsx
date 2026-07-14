@@ -40,6 +40,7 @@ const Onboarding = lazy(() => import("./pages/Onboarding.jsx"));
 const ApplyVerification = lazy(() => import("./pages/ApplyVerification.jsx"));
 const EditProfile = lazy(() => import("./pages/EditProfile.jsx"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy.jsx"));
+const ChildSafety = lazy(() => import("./pages/ChildSafety.jsx"));
 
 
 export default function App() {
@@ -53,6 +54,8 @@ export default function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/child-safety" element={<ChildSafety />} />
 
         {/* Protected outside Layout */}
         <Route
