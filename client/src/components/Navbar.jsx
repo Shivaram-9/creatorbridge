@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { BellIcon, SearchIcon, MessageIcon, ShieldIcon, UsersIcon } from "./Icons.jsx";
+import { BellIcon, SearchIcon, MessageIcon, ShieldIcon, UsersIcon, BriefcaseIcon } from "./Icons.jsx";
 import { getSocket } from "../services/socket.js";
 import Avatar from "./Avatar.jsx";
 import SearchDropdown from "./SearchDropdown.jsx";
