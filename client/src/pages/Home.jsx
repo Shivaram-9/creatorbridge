@@ -20,13 +20,24 @@ import { Users, Clock, CheckCircle2 } from 'lucide-react';
 
 function TrendingCampaigns({ user }) {
   const [selectedCampaign, setSelectedCampaign] = useState(null);
+  const [campaigns, setCampaigns] = useState([]);
 
-  const campaigns = [
-    { id: 1, logo: 'N', logoBg: '#000', name: 'Nike', type: 'Fitness Challenge Campaign', budget: '₹40,000 Budget', creators: '15 Creators Needed', daysLeft: '2 Days Left', btnColor: '#eab308' },
-    { id: 2, logo: 'Samsung', logoBg: '#1d4ed8', logoColor: '#fff', name: 'Samsung', type: 'UGC Product Review Campaign', budget: '₹12,000 Budget', creators: '10 Creators Needed', daysLeft: '5 Days Left', btnColor: '#2563EB' },
-    { id: 3, logo: 'Minimalist', logoBg: '#f8fafc', logoColor: '#000', name: 'Minimalist', type: 'Skincare Awareness Campaign', budget: '₹20,000 Budget', creators: '8 Creators Needed', daysLeft: '4 Days Left', btnColor: '#16a34a' },
-    { id: 4, logo: 'boAt', logoBg: '#000', logoColor: '#fff', name: 'boAt', type: 'Lifestyle Product Campaign', budget: '₹15,000 Budget', creators: '12 Creators Needed', daysLeft: '6 Days Left', btnColor: '#7c3aed' },
-  ];
+  useEffect(() => {
+    async function fetchTrending() {
+      try {
+        const data = await api.campaigns.list();
+        if (Array.isArray(data)) {
+          // Take the newest/top 4 campaigns
+          setCampaigns(data.slice(0, 4));
+        }
+      } catch (err) {
+        console.error("Failed to load trending campaigns");
+      }
+    }
+    fetchTrending();
+  }, []);
+
+  if (campaigns.length === 0) return null;
 
   return (
     <div className="trending-campaigns-section" style={{ width: '100%', overflow: 'hidden', padding: '16px 0', boxSizing: 'border-box' }}>
@@ -37,56 +48,54 @@ function TrendingCampaigns({ user }) {
           </h3>
           <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Top opportunities brands are offering right now.</span>
         </div>
-        <a href="#" style={{ color: '#3b82f6', fontSize: '14px', textDecoration: 'none', fontWeight: 600, marginTop: '2px', whiteSpace: 'nowrap' }}>View all <span className="hidden md:inline">&gt;</span></a>
+        <a href="/campaigns" style={{ color: '#3b82f6', fontSize: '14px', textDecoration: 'none', fontWeight: 600, marginTop: '2px', whiteSpace: 'nowrap' }}>View all <span className="hidden md:inline">&gt;</span></a>
       </div>
       <div className="trending-scroll-container">
         {campaigns.map(camp => (
-          <div key={camp.id} className="trending-card new-trending-layout" style={{ position: 'relative', background: 'var(--bg-secondary)', border: 'none', borderRadius: '16px', padding: '16px' }}>
+          <div key={camp._id} className="trending-card new-trending-layout" style={{ position: 'relative', background: 'var(--bg-secondary)', border: 'none', borderRadius: '16px', padding: '16px' }}>
             <div className="trending-card-header" style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-              <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: camp.logoBg, color: camp.logoColor || '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '11px', overflow: 'hidden' }}>
-                {camp.logo === 'Samsung' ? 'S' : (camp.logo === 'Minimalist' ? 'M' : camp.logo)}
+              <div className="brand-logo-circle" style={{ background: '#000', color: '#fff', width: '32px', height: '32px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '14px', flexShrink: 0, overflow: 'hidden' }}>
+                {camp.createdBy?.avatar ? <img src={camp.createdBy.avatar} alt={camp.createdBy.name} style={{width: '100%', height: '100%', objectFit: 'cover'}} /> : (camp.createdBy?.name?.charAt(0) || 'B')}
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 700, fontSize: '15px' }}>
-                {camp.name}
-                <CheckCircle2 size={14} fill="#3b82f6" color="#fff" />
+              <div className="brand-info" style={{ flex: 1, minWidth: 0, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <span style={{ fontWeight: 600, fontSize: '14px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{camp.createdBy?.name || 'Brand'}</span>
+                <CheckCircle2 size={12} color="#3b82f6" style={{flexShrink: 0}} />
               </div>
             </div>
             
-            <div style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text-main)', marginBottom: '16px', minHeight: '40px' }}>
-              {camp.type}
-            </div>
-            
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
-              <div style={{ display: 'inline-block', padding: '4px 8px', background: 'rgba(234, 179, 8, 0.15)', color: '#ca8a04', borderRadius: '6px', fontSize: '12px', fontWeight: 700, alignSelf: 'flex-start' }}>
+            <h4 style={{ margin: '0 0 16px 0', fontSize: '15px', fontWeight: 600, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+              {camp.title}
+            </h4>
+
+            <div className="campaign-badges" style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px' }}>
+              <span style={{ display: 'inline-block', background: 'rgba(234, 179, 8, 0.15)', color: '#eab308', padding: '4px 10px', borderRadius: '4px', fontSize: '12px', fontWeight: 600, width: 'fit-content' }}>
                 {camp.budget}
+              </span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-secondary)', fontSize: '12px', fontWeight: 500 }}>
+                <Users size={14} /> <span>{camp.category}</span>
               </div>
-              
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-secondary)', fontSize: '13px', fontWeight: 600 }}>
-                <Users size={14} /> {camp.creators}
-              </div>
-              
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-secondary)', fontSize: '13px', fontWeight: 600 }}>
-                <Clock size={14} /> {camp.daysLeft}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-secondary)', fontSize: '12px', fontWeight: 500 }}>
+                <Clock size={14} /> <span>Deadline: {new Date(camp.deadline).toLocaleDateString()}</span>
               </div>
             </div>
 
             <button 
-              style={{ width: '100%', padding: '10px', background: camp.btnColor, color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 600, cursor: 'pointer' }}
-              onClick={(e) => { e.preventDefault(); setSelectedCampaign({ ...camp, title: camp.type }); }}
+              className="apply-btn-trending"
+              style={{ width: '100%', background: '#3b82f6', color: '#fff', border: 'none', padding: '10px', borderRadius: '8px', fontWeight: 600, cursor: 'pointer', transition: 'opacity 0.2s' }}
+              onClick={() => setSelectedCampaign(camp)}
             >
-              Apply Now →
+              Apply Now &rarr;
             </button>
           </div>
         ))}
       </div>
-      
+
       {selectedCampaign && (
         <ApplyCampaignModal 
-          user={user}
-          campaign={selectedCampaign}
-          onClose={() => setSelectedCampaign(null)}
-          onSubmit={(data) => {
-            console.log('Application submitted:', data);
+          campaign={selectedCampaign} 
+          onClose={() => setSelectedCampaign(null)} 
+          onApply={async (data) => {
+            await api.campaigns.apply(selectedCampaign._id);
             setSelectedCampaign(null);
             toast.success("Application submitted!");
           }}

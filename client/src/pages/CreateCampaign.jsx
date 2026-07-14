@@ -25,14 +25,23 @@ export default function CreateCampaign() {
     e.preventDefault();
     setLoading(true);
     try {
-      // In a real app we'd post to api.campaigns.create
-      // const res = await api.campaigns.create(formData);
-      // Mocking success
-      await new Promise(r => setTimeout(r, 800));
+      const payload = {
+        title: formData.title,
+        category: formData.category,
+        budget: formData.budget,
+        deadline: formData.deadline,
+        description: formData.description,
+        requirements: formData.description, // Requirements is required by backend, map description to it for now
+        banner: formData.attachments || ""
+      };
+      
+      const res = await api.campaigns.create(payload);
+      if (res.error) throw new Error(res.error);
+      
       toast.success("Campaign Published!");
-      navigate("/brand-dashboard");
+      navigate("/campaigns"); // Navigate to campaigns list instead of dashboard to see the new campaign
     } catch (err) {
-      toast.error("Creation failed");
+      toast.error(err.message || "Creation failed");
     } finally {
       setLoading(false);
     }
