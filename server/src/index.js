@@ -78,7 +78,7 @@ app.use(express.urlencoded({ extended: true }));
 // 2. Security
 app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" })); // Allow serving uploads across origins
-app.use("/api", apiLimiter);
+// app.use("/api", apiLimiter); // Temporarily disabled due to proxy IP pooling blocking legitimate users
 
 app.get("/api/health", (_, res) => {
   // Health check - triggered at 2026-05-11
