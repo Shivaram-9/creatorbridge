@@ -64,7 +64,7 @@ function TrendingCampaigns({ user }) {
               </div>
               <div className="brand-info" style={{ flex: 1, minWidth: 0, display: 'flex', alignItems: 'center', gap: '4px' }}>
                 <span style={{ fontWeight: 600, fontSize: '14px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{camp.createdBy?.name || 'Brand'}</span>
-                <CheckCircle2 size={12} color="#3b82f6" style={{flexShrink: 0}} />
+                <CheckCircle2 size={12} color="#eab308" style={{flexShrink: 0}} />
               </div>
             </div>
             
