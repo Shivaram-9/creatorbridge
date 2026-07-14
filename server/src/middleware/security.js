@@ -12,7 +12,7 @@ export const authLimiter = rateLimit({
 // General API protection
 export const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 300, 
+  max: 1000, // Increased from 300 to prevent blocking active users
   message: { error: "Too many requests from this IP, please try again later." },
   standardHeaders: true,
   legacyHeaders: false,
@@ -21,7 +21,7 @@ export const apiLimiter = rateLimit({
 // Content creation protection (posts, stories, messages)
 export const contentLimiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes
-  max: 50,
+  max: 200, // Increased from 50
   message: { error: "Slow down! You're creating content too quickly." },
   standardHeaders: true,
   legacyHeaders: false,
