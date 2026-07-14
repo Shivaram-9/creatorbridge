@@ -29,7 +29,7 @@ function TrendingCampaigns({ user }) {
   ];
 
   return (
-    <div className="trending-campaigns-section" style={{ width: '100%', overflow: 'hidden', padding: '16px 0' }}>
+    <div className="trending-campaigns-section" style={{ width: '100%', overflow: 'hidden', padding: '16px 0', boxSizing: 'border-box' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
           <h3 className="trending-campaigns-header" style={{ margin: 0, fontSize: '18px', fontWeight: 700 }}>
