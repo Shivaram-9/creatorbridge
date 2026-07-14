@@ -45,7 +45,7 @@ export default function ApplyCampaignModal({ campaign, onClose, onSubmit, user }
             <div className="apply-modal-campaign-title">
               {campaign?.title || 'Instagram Reel for Nike'}
             </div>
-            <div className="apply-modal-campaign-budget">
+            <div className="apply-modal-campaign-budget text-budget-value">
               {campaign?.budget || '₹40,000 Budget'}
             </div>
           </div>

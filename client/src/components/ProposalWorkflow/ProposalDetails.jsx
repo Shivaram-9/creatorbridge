@@ -134,7 +134,7 @@ export default function ProposalDetails({
             
             <div className="pw-col pw-card">
               <label className="pw-label">Budget</label>
-              <p className="pw-value" style={{ color: 'var(--pw-primary)' }}>{currentBudget}</p>
+              <p className="pw-value text-budget-value">{currentBudget}</p>
               {data.originalBudget && data.originalBudget !== data.budget && (
                 <p style={{ margin: '2px 0 0', fontSize: '11px', color: 'var(--pw-text-muted)' }}>
                   Original: <span style={{ textDecoration: 'line-through' }}>{originalBudget}</span>
@@ -163,7 +163,7 @@ export default function ProposalDetails({
                         {new Date(history.timestamp).toLocaleString()}
                       </span>
                       <span style={{ fontSize: '13px', fontWeight: 'bold', color: 'var(--pw-text-main)' }}>
-                        Offer: {currencySymbol}{history.budget}
+                        Offer: <span className="text-budget-value">{currencySymbol}{history.budget}</span>
                       </span>
                     </div>
                     {history.message && (

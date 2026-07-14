@@ -248,7 +248,9 @@ export default function CollaborationProposalModal({ onClose, onSend, partnerNam
                 <div style={{ textAlign: 'right' }}>
                   <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: '0 0 4px 0', fontWeight: '500' }}>Budget</p>
                   <p style={{ fontSize: '13px', color: 'var(--text-main)', margin: 0, fontWeight: '600' }}>
-                    {budgetAmount ? `${budgetCurrency === 'INR' ? '₹' : (budgetCurrency === 'USD' ? '$' : '€')}${budgetAmount}` : '---'}
+                    <span className="text-budget-value">
+                      {budgetAmount ? `${budgetCurrency === 'INR' ? '₹' : (budgetCurrency === 'USD' ? '$' : '€')}${budgetAmount}` : '---'}
+                    </span>
                   </p>
                 </div>
               </div>

@@ -72,7 +72,7 @@ function TrendingCampaigns({ user }) {
             </h4>
 
             <div className="campaign-badges" style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px' }}>
-              <span style={{ display: 'inline-block', background: 'rgba(234, 179, 8, 0.15)', color: '#eab308', padding: '4px 10px', borderRadius: '4px', fontSize: '12px', fontWeight: 600, width: 'fit-content' }}>
+              <span className="text-budget-value" style={{ display: 'inline-block', background: 'rgba(16, 185, 129, 0.15)', padding: '4px 10px', borderRadius: '4px', fontSize: '12px', width: 'fit-content' }}>
                 {camp.budget}
               </span>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-secondary)', fontSize: '12px', fontWeight: 500 }}>

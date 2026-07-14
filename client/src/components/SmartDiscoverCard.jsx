@@ -77,7 +77,7 @@ export default function SmartDiscoverCard({ user, onAction }) {
             </div>
             <div className="smart-metric">
               <span className="smart-metric-label">Budget</span>
-              <span className="smart-metric-val">Premium</span>
+              <span className="smart-metric-val text-budget-value">Premium</span>
             </div>
           </>
         ) : (

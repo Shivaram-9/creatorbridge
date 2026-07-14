@@ -16,7 +16,7 @@ export default function CampaignCard({ campaign, onApply, isInfluencer }) {
             <img src={createdBy?.avatar || "/default-avatar.png"} alt={createdBy?.name} />
             <span>{createdBy?.name}</span>
           </Link>
-          <div className="campaign-budget">{budget}</div>
+          <div className="campaign-budget text-budget-value">{budget}</div>
         </div>
         <h3 className="campaign-title">{title}</h3>
         <p className="campaign-deadline">Deadline: {new Date(deadline).toLocaleDateString()}</p>

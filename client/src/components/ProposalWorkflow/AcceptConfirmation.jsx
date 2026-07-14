@@ -35,7 +35,7 @@ export default function AcceptConfirmation({ proposalData, onClose, onConfirm })
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', borderBottom: '1px solid var(--pw-border)', paddingBottom: '12px' }}>
               <span className="pw-label" style={{ marginBottom: 0 }}>Budget</span>
-              <span className="pw-value" style={{ color: 'var(--pw-primary)' }}>{budget}</span>
+              <span className="pw-value text-budget-value">{budget}</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
               <span className="pw-label" style={{ marginBottom: 0 }}>Timeline</span>

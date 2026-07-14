@@ -175,7 +175,7 @@ export default function BrandTools() {
                 <div className="comparison-footer">
                   <div className="total-est">
                     <span>Total Campaign Estimate:</span>
-                    <strong>₹{getBudgetEstimate(comparison)}</strong>
+                    <strong className="text-budget-value">₹{getBudgetEstimate(comparison)}</strong>
                   </div>
                   <button className="btn btn-primary">Send Bulk Proposal</button>
                   <button className="btn btn-ghost" onClick={() => setComparison([])}>Clear</button>
