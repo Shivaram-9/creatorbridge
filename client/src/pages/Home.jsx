@@ -42,7 +42,7 @@ function TrendingCampaigns({ user }) {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
           <h3 className="trending-campaigns-header" style={{ margin: 0, fontSize: '18px', fontWeight: 700 }}>
-            🔥 Trending Campaigns
+            Trending Campaigns
           </h3>
           <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Top opportunities brands are offering right now.</span>
         </div>
