@@ -125,6 +125,8 @@ function TrendingCampaigns({ user }) {
           onSubmit={async (data) => {
             try {
               const resData = await api.campaigns.apply(selectedCampaign._id, data);
+              if (resData?.error) throw new Error(resData.error);
+              
               setSelectedCampaign(null);
               toast.success("Application submitted!");
               
