@@ -230,11 +230,19 @@ export default function Messages() {
               <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>When you connect with others, your conversations will appear here.</p>
             </div>
           ) : (
-            filteredConversations.map(conv => conv && conv.partner && (
+            filteredConversations.map(conv => {
+              if (!conv || !conv.partner) return null;
+              const chatId = `${conv.partner._id}-${conv.application?._id || 'direct'}`;
+              const isActive = userId === conv.partner._id && (!conv.application || new URLSearchParams(window.location.search).get('applicationId') === conv.application._id);
+              
+              return (
               <div 
-                key={conv._id} 
-                className={`chat-item-v3 ${userId === conv.partner?._id ? 'active' : ''}`}
-                onClick={() => navigate(`/messages/${conv.partner?._id}`)}
+                key={chatId} 
+                className={`chat-item-v3 ${isActive ? 'active' : ''}`}
+                onClick={() => {
+                  const url = `/messages/${conv.partner._id}${conv.application ? `?applicationId=${conv.application._id}` : ''}`;
+                  navigate(url);
+                }}
               >
                 <div style={{ position: 'relative' }}>
                   <Avatar user={conv.partner} size="md" />
@@ -247,6 +255,12 @@ export default function Messages() {
                     </span>
                     <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{conv.lastMessage?.createdAt ? formatTime(conv.lastMessage.createdAt) : ""}</span>
                   </div>
+                  {conv.application && (
+                    <div style={{ fontSize: '12px', color: 'var(--primary)', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                      {conv.application.campaignTitle}
+                    </div>
+                  )}
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <p className="chat-item-preview" style={{ fontWeight: conv.unreadCount > 0 ? '600' : '400', color: conv.unreadCount > 0 ? 'var(--text-main)' : 'var(--text-muted)', flex: 1, paddingRight: '8px' }}>
                       {getPreviewText(conv.lastMessage)}
@@ -259,7 +273,8 @@ export default function Messages() {
                   </div>
                 </div>
               </div>
-            ))
+              );
+            })
           )}
         </div>
       </aside>

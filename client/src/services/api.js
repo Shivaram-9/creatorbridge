@@ -259,8 +259,13 @@ export const api = {
   },
   messages: {
     list: () => request("/messages"),
-    conversation: (id) => request(`/messages/conversation/${id}`),
-    send: (body) => request("/messages", { method: "POST", body }),
+    getConversation: (userId, options = {}) => {
+      let q = "";
+      if (options.dealId) q = `?dealId=${options.dealId}`;
+      else if (options.applicationId) q = `?applicationId=${options.applicationId}`;
+      return request(`/messages/conversation/${userId}${q}`);
+    },
+    send: (data) => request("/messages", { method: "POST", body: data }),
     sendMedia: (formData) => request("/messages/media", { method: "POST", body: formData }),
     markAsRead: (partnerId) => request(`/messages/read/${partnerId}`, { method: "PATCH" }),
     updateProposalStatus: (id, payload) => request(`/messages/${id}/proposal`, { method: "PATCH", body: typeof payload === 'string' ? { status: payload } : payload }),

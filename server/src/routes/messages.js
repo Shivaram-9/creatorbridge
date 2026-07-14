@@ -27,11 +27,14 @@ messagesRouter.get("/", async (req, res) => {
       {
         $group: {
           _id: {
-            $cond: [
-              { $eq: ["$sender", uid] },
-              "$receiver",
-              "$sender",
-            ],
+            partner: {
+              $cond: [
+                { $eq: ["$sender", uid] },
+                "$receiver",
+                "$sender",
+              ]
+            },
+            application: { $ifNull: ["$application", null] }
           },
           lastMessage: { $first: "$$ROOT" },
           unreadCount: {
@@ -53,13 +56,35 @@ messagesRouter.get("/", async (req, res) => {
       {
         $lookup: {
           from: "users",
-          localField: "_id",
+          localField: "_id.partner",
           foreignField: "_id",
           as: "partner",
         },
       },
       {
+        $lookup: {
+          from: "applications",
+          localField: "_id.application",
+          foreignField: "_id",
+          as: "applicationData"
+        }
+      },
+      {
         $unwind: "$partner",
+      },
+      {
+        $unwind: { path: "$applicationData", preserveNullAndEmptyArrays: true }
+      },
+      {
+        $lookup: {
+          from: "campaigns",
+          localField: "applicationData.campaign",
+          foreignField: "_id",
+          as: "campaignData"
+        }
+      },
+      {
+        $unwind: { path: "$campaignData", preserveNullAndEmptyArrays: true }
       },
       {
         $project: {
@@ -72,6 +97,18 @@ messagesRouter.get("/", async (req, res) => {
             role: 1,
             isVerified: 1,
             isPremium: 1,
+          },
+          application: {
+            $cond: [
+              { $eq: [{ $type: "$applicationData" }, "missing"] },
+              null,
+              {
+                _id: "$applicationData._id",
+                campaignId: "$campaignData._id",
+                campaignTitle: "$campaignData.title",
+                status: "$applicationData.status"
+              }
+            ]
           },
           lastMessage: 1,
           unreadCount: 1,
@@ -101,6 +138,7 @@ messagesRouter.get("/conversation/:otherUserId", async (req, res) => {
     const uid = new mongoose.Types.ObjectId(req.userId);
     const oid = new mongoose.Types.ObjectId(otherUserId);
     const dealId = req.query.dealId;
+    const applicationId = req.query.applicationId;
 
     const filter = {
       $or: [
@@ -109,10 +147,13 @@ messagesRouter.get("/conversation/:otherUserId", async (req, res) => {
       ],
     };
 
-    if (dealId && mongoose.isValidObjectId(dealId)) {
+    if (applicationId && mongoose.isValidObjectId(applicationId)) {
+      filter.application = applicationId;
+    } else if (dealId && mongoose.isValidObjectId(dealId)) {
       filter.deal = dealId;
     } else {
       filter.deal = { $exists: false }; // Normal chat
+      filter.application = { $exists: false };
     }
 
     const msgs = await Message.find(filter)
@@ -128,7 +169,7 @@ messagesRouter.get("/conversation/:otherUserId", async (req, res) => {
 
 messagesRouter.post("/", async (req, res) => {
   try {
-    const { receiverId, content, dealId, media: rawMedia, mediaUrl: rawMediaUrl, mediaType: rawMediaType } = req.body;
+    const { receiverId, content, dealId, applicationId, media: rawMedia, mediaUrl: rawMediaUrl, mediaType: rawMediaType } = req.body;
     if (!receiverId || !mongoose.isValidObjectId(receiverId)) {
       return res.status(400).json({ error: "Valid receiverId is required" });
     }
@@ -150,6 +191,7 @@ messagesRouter.post("/", async (req, res) => {
       mediaUrl: media.slice(0, 1000) || undefined,
       mediaType: media ? mediaType : undefined,
       deal: dealId && mongoose.isValidObjectId(dealId) ? dealId : undefined,
+      application: applicationId && mongoose.isValidObjectId(applicationId) ? applicationId : undefined,
     });
     await msg.populate("sender", "name email role avatar isVerified isPremium");
     await msg.populate("receiver", "name email role avatar isVerified isPremium");

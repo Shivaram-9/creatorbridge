@@ -136,9 +136,11 @@ export default function Chat({ standalone = true }) {
     setShowProposalModal(false);
     try {
       const contentString = JSON.stringify(proposalData);
+      const applicationId = new URLSearchParams(window.location.search).get('applicationId');
       const msg = await api.messages.send({
         receiverId: partnerId,
         content: contentString,
+        applicationId
       });
       if (msg && msg._id) {
         setMessages(prev => {
@@ -388,9 +390,10 @@ export default function Chat({ standalone = true }) {
     if (!partnerId) return;
     setLoading(true);
     try {
+      const applicationId = new URLSearchParams(window.location.search).get('applicationId');
       const [p, msgs] = await Promise.all([
         api.users.get(partnerId),
-        api.messages.conversation(partnerId),
+        api.messages.getConversation(partnerId, { applicationId }),
       ]);
       setPartner(p);
       setMessages(Array.isArray(msgs) ? msgs : []);
@@ -493,6 +496,9 @@ export default function Chat({ standalone = true }) {
         formData.append("receiverId", partnerId);
         if (input.trim()) formData.append("content", input.trim());
         
+        const applicationId = new URLSearchParams(window.location.search).get('applicationId');
+        if (applicationId) formData.append("applicationId", applicationId);
+        
         // Clear preview immediately to feel responsive
         const currentFile = selectedFile;
         const currentInput = input;
@@ -511,11 +517,13 @@ export default function Chat({ standalone = true }) {
           return;
         }
       } else {
+        const applicationId = new URLSearchParams(window.location.search).get('applicationId');
         const currentInput = input;
         setInput("");
         msg = await api.messages.send({ 
           receiverId: partnerId, 
-          content: currentInput.trim() 
+          content: currentInput.trim(),
+          applicationId 
         });
         if (msg?.error) {
           setInput(currentInput);

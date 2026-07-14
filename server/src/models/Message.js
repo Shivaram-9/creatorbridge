@@ -17,6 +17,7 @@ const messageSchema = new mongoose.Schema(
     mediaType: { type: String, enum: ["image", "video"] },
     read: { type: Boolean, default: false },
     deal: { type: mongoose.Schema.Types.ObjectId, ref: "Deal" },
+    application: { type: mongoose.Schema.Types.ObjectId, ref: "Application" },
   },
   { timestamps: true }
 );

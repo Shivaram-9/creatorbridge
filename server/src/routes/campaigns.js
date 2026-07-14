@@ -3,6 +3,7 @@ import { Campaign } from "../models/Campaign.js";
 import { Collaboration } from "../models/Collaboration.js";
 import { Notification } from "../models/Notification.js";
 import { Application } from "../models/Application.js";
+import { Message } from "../models/Message.js";
 import { authMiddleware } from "../middleware/auth.js";
 import { brandOnly, influencerOnly } from "../middleware/role.js";
 
@@ -96,6 +97,35 @@ router.post("/apply/:id", authMiddleware, influencerOnly, async (req, res) => {
     const io = req.app.get("io");
     if (io) {
       io.to(`user:${campaign.createdBy}`).emit("notification", notif);
+    }
+
+    // Auto-create initial message / conversation for the application
+    const expectedPayment = req.body.expectedPayment || campaign.budget || 0;
+    const message = req.body.message || "Application submitted.";
+    
+    const proposalContent = JSON.stringify({
+      isProposal: true,
+      status: 'Pending',
+      budget: expectedPayment,
+      message: message,
+      applicationId: application._id,
+      originalBudget: expectedPayment,
+      currency: "INR"
+    });
+
+    const initialMsg = await Message.create({
+      sender: req.userId,
+      receiver: campaign.createdBy,
+      application: application._id,
+      content: proposalContent
+    });
+
+    if (io) {
+      await initialMsg.populate("sender", "name email role avatar isVerified isPremium");
+      await initialMsg.populate("receiver", "name email role avatar isVerified isPremium");
+      const plain = initialMsg.toObject();
+      io.to(`user:${campaign.createdBy}`).emit("message", plain);
+      io.to(`user:${req.userId}`).emit("message", plain);
     }
 
     res.json({ message: "Application submitted", application });
