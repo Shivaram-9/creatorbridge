@@ -13,7 +13,7 @@ export default function SmartDiscoverCard({ user, onAction }) {
   // Resolve avatar URL
   const src = user.avatar 
     ? (user.avatar.startsWith('http') ? user.avatar : `${api.getResolvedApiOrigin()}${user.avatar}`) 
-    : "https://via.placeholder.com/150";
+    : "";
 
   // Use heuristic score or fallback to a default decent score
   const matchScore = user.matchScore || 85; 
@@ -49,7 +49,7 @@ export default function SmartDiscoverCard({ user, onAction }) {
           src={src} 
           alt={user.name} 
           className={`smart-card-avatar ${isBrand ? 'brand' : ''}`}
-          onError={(e) => { e.target.src = "https://via.placeholder.com/150"; }}
+          onError={(e) => { e.target.style.display='none'; }}
         />
         <div className="smart-card-info">
           <VerifiedUserDisplay 

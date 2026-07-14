@@ -390,7 +390,7 @@ export default function UserProfile() {
       <ErrorBanner message={error} onDismiss={() => setError("")} />
       
       <div className="cover-container">
-        <img src={profile?.cover ? (profile.cover.startsWith("http") ? profile.cover : `${BASE_URL}${profile.cover}`) : "https://via.placeholder.com/1200x300"} alt="Cover" className="cover-img" />
+        <img src={profile?.cover ? (profile.cover.startsWith("http") ? profile.cover : `${BASE_URL}${profile.cover}`) : ''} alt="Cover" className="cover-img" onError={(e) => { e.target.style.display='none'; }} />
       </div>
 
       <div className="profile-header-base">

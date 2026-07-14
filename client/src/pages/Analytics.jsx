@@ -190,7 +190,7 @@ export default function Analytics() {
                   <span className="rank-num">#{i+1}</span>
                   <div className="post-rank-media">
                     {resolveMedia(post) ? (
-                      <img src={resolveMedia(post)} alt="" onError={(e) => e.target.src = "https://via.placeholder.com/150?text=Post"} />
+                      <img src={resolveMedia(post)} alt="" onError={(e) => { e.target.style.display='none'; }} />
                     ) : (
                       <div className="media-placeholder">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.5 }}><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><polyline points="14 2 14 8 20 8"/></svg>

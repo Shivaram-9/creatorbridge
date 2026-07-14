@@ -9,7 +9,7 @@ export default function CollaborationCard({ collab, onUpdateStatus, currentUserI
     <div className={`collab-card status-${status.toLowerCase()}`}>
       <div className="collab-info">
         <div className="collab-campaign">
-          <img src={campaign?.banner || "https://via.placeholder.com/100"} alt={campaign?.title} />
+          <img src={campaign?.banner?.startsWith('http') ? campaign.banner : ''} alt={campaign?.title} onError={(e) => { e.target.style.display='none'; }} />
           <div>
             <h4>{campaign?.title}</h4>
             <p className="collab-partner">Partner: {partner?.name}</p>

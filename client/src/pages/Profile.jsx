@@ -291,7 +291,7 @@ export default function Profile() {
   return (
     <div className="profile-container fade-in">
       <div className="cover-container">
-        <img src={user?.cover ? (user.cover.startsWith("http") ? user.cover : `${BASE_URL}${user.cover}`) : "https://via.placeholder.com/1200x300"} alt="Cover" className="cover-img" />
+        <img src={user?.cover ? (user.cover.startsWith("http") ? user.cover : `${BASE_URL}${user.cover}`) : ''} alt="Cover" className="cover-img" onError={(e) => { e.target.style.display='none'; }} />
         <div className="cover-actions">
           <button className="cover-btn" onClick={() => coverInputRef.current.click()}>
             <span>📷</span> Edit cover
