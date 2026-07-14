@@ -34,21 +34,26 @@
 .floating-text {
   position: absolute;
   top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: clamp(50px, 12vw, 160px);
+  left: -50%;
+  font-size: clamp(80px, 18vw, 220px);
   font-weight: 900;
-  letter-spacing: 0.05em;
+  letter-spacing: -0.05em;
   text-transform: uppercase;
-  color: rgba(15, 23, 42, 0.04);
+  color: rgba(15, 23, 42, 0.05);
   white-space: nowrap;
   user-select: none;
   pointer-events: none;
-  animation: none; /* Removed rotation to keep it clean and readable */
+  animation: floatText 40s infinite linear;
+  transform-origin: center;
 }
 
 .dark .floating-text {
   color: rgba(255, 255, 255, 0.03);
+}
+
+@keyframes floatText {
+  0% { transform: translate(-50%, -50%) rotate(-10deg); }
+  100% { transform: translate(150vw, -70%) rotate(-10deg); }
 }
 
 /* ── Login Card ── */
