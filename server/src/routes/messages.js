@@ -33,10 +33,10 @@ messagesRouter.get("/", async (req, res) => {
                 "$receiver",
                 "$sender",
               ]
-            },
-            application: { $ifNull: ["$application", null] }
+            }
           },
           lastMessage: { $first: "$$ROOT" },
+          application: { $first: "$application" },
           unreadCount: {
             $sum: {
               $cond: [
@@ -64,7 +64,7 @@ messagesRouter.get("/", async (req, res) => {
       {
         $lookup: {
           from: "applications",
-          localField: "_id.application",
+          localField: "application",
           foreignField: "_id",
           as: "applicationData"
         }
@@ -151,10 +151,8 @@ messagesRouter.get("/conversation/:otherUserId", async (req, res) => {
       filter.application = applicationId;
     } else if (dealId && mongoose.isValidObjectId(dealId)) {
       filter.deal = dealId;
-    } else {
-      filter.deal = { $exists: false }; // Normal chat
-      filter.application = { $exists: false };
     }
+    // Otherwise load ALL messages between the two users (no filter by application/deal)
 
     const msgs = await Message.find(filter)
       .sort({ createdAt: 1 })
