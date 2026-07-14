@@ -164,7 +164,7 @@ export default function Home() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [activeTab, setActiveTab] = useState("For You");
+  const [activeTab, setActiveTab] = useState("Overview");
   const [showVerificationBanner, setShowVerificationBanner] = useState(true);
   const [showFeedDropdown, setShowFeedDropdown] = useState(false);
   const [suggestedVerifiedUsers, setSuggestedVerifiedUsers] = useState([]);
@@ -265,12 +265,7 @@ export default function Home() {
       if (!user?.following) return true; // fallback
       return user.following.includes(post.user?._id || post.user);
     }
-    if (activeTab === "For You") return true;
-    if (activeTab === "Latest") return true;
-    if (activeTab === "Brands") return post.user?.role === "brand";
-    if (activeTab === "Creators") return post.user?.role === "creator";
-    if (activeTab === "Trending") return (post.likes?.length || 0) > 0;
-    if (activeTab === "Nearby") return true;
+    if (activeTab === "Overview") return true;
     return true;
   });
 
@@ -293,7 +288,7 @@ export default function Home() {
         
         {/* Feed Tabs Pills */}
         <div className="feed-tabs-pills">
-          {["For You", "Latest", "Brands", "Creators", "Trending", "Nearby"].map(tab => (
+          {["Overview"].map(tab => (
             <button 
               key={tab}
               className={`feed-tab-pill ${activeTab === tab ? "active" : ""}`}
