@@ -53,7 +53,12 @@ export default function Messages() {
       setConversations(prev => {
         let exists = false;
         const updated = prev.map(conv => {
-          if (conv.partner?._id === msg.sender?._id || conv.partner?._id === msg.receiver?._id || conv.partner?._id === msg.sender || conv.partner?._id === msg.receiver) {
+          const partnerMatch = conv.partner?._id === msg.sender?._id || conv.partner?._id === msg.receiver?._id || conv.partner?._id === msg.sender || conv.partner?._id === msg.receiver;
+          const msgAppId = msg.application?._id || msg.application;
+          const convAppId = conv.application?._id || conv.application;
+          const appMatch = String(convAppId) === String(msgAppId);
+
+          if (partnerMatch && appMatch) {
             exists = true;
             return {
               ...conv,

@@ -23,18 +23,18 @@ function TrendingCampaigns({ user }) {
   const [selectedCampaign, setSelectedCampaign] = useState(null);
   const [campaigns, setCampaigns] = useState([]);
 
-  useEffect(() => {
-    async function fetchTrending() {
-      try {
-        const data = await api.campaigns.list();
-        if (Array.isArray(data)) {
-          // Take the newest/top 4 campaigns
-          setCampaigns(data.slice(0, 4));
-        }
-      } catch (err) {
-        console.error("Failed to load trending campaigns");
+  const fetchTrending = async () => {
+    try {
+      const data = await api.campaigns.list();
+      if (Array.isArray(data)) {
+        setCampaigns(data.slice(0, 4));
       }
+    } catch (err) {
+      console.error("Failed to load trending campaigns");
     }
+  };
+
+  useEffect(() => {
     fetchTrending();
   }, []);
 
@@ -124,10 +124,16 @@ function TrendingCampaigns({ user }) {
           onClose={() => setSelectedCampaign(null)} 
           onSubmit={async (data) => {
             try {
-              await api.campaigns.apply(selectedCampaign._id, data);
+              const resData = await api.campaigns.apply(selectedCampaign._id, data);
               setSelectedCampaign(null);
               toast.success("Application submitted!");
-              fetchTrending(); // Refresh data to show Applied status
+              
+              if (resData && resData.application) {
+                const partnerId = selectedCampaign.createdBy?._id || selectedCampaign.createdBy;
+                window.location.href = `/messages/${partnerId}?applicationId=${resData.application._id}`;
+              } else {
+                fetchTrending(); // Refresh data to show Applied status
+              }
             } catch (err) {
               toast.error(err.message || "Failed to apply");
             }
