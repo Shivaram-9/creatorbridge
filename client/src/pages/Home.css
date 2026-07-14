@@ -916,6 +916,20 @@
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
+.trend-card-yellow {
+  background: #FFF8E1 !important;
+}
+.dark .trend-card-yellow {
+  background: rgba(251, 191, 36, 0.1) !important;
+}
+
+.trend-card-blue {
+  background: #EEF5FF !important;
+}
+.dark .trend-card-blue {
+  background: rgba(59, 130, 246, 0.1) !important;
+}
+
 .trending-card-header {
   display: flex;
   align-items: center;

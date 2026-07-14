@@ -56,8 +56,8 @@ function TrendingCampaigns({ user }) {
         </div>
       ) : (
       <div className="trending-scroll-container">
-        {campaigns.map(camp => (
-          <div key={camp._id} className="trending-card new-trending-layout" style={{ position: 'relative', background: 'var(--bg-secondary)', border: 'none', borderRadius: '16px', padding: '16px' }}>
+        {campaigns.map((camp, idx) => (
+          <div key={camp._id} className={`trending-card new-trending-layout ${idx % 2 === 0 ? 'trend-card-yellow' : 'trend-card-blue'}`} style={{ position: 'relative', border: 'none', borderRadius: '16px', padding: '16px' }}>
             <div className="trending-card-header" style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
               <div className="brand-logo-circle" style={{ background: '#000', color: '#fff', width: '32px', height: '32px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '14px', flexShrink: 0, overflow: 'hidden' }}>
                 {camp.createdBy?.avatar ? <img src={camp.createdBy.avatar} alt={camp.createdBy.name} style={{width: '100%', height: '100%', objectFit: 'cover'}} /> : (camp.createdBy?.name?.charAt(0) || 'B')}
