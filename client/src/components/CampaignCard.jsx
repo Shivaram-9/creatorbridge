@@ -29,7 +29,7 @@ export default function CampaignCard({ campaign, onApply, isInfluencer, user }) 
             </Link>
           )}
 
-          {(user?.role === 'influencer' || user?.role === 'creator') && (
+          {user?.role !== 'brand' && (
             campaign.applicants?.includes(user?._id) ? (
               <button 
                 className="btn-apply" 

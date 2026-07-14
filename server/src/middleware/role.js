@@ -13,6 +13,6 @@ export const roleMiddleware = (roles) => async (req, res, next) => {
 };
 
 export const brandOnly = roleMiddleware(["brand"]);
-export const influencerOnly = roleMiddleware(["influencer", "creator"]);
+export const influencerOnly = roleMiddleware(["influencer", "creator", "admin"]);
 export const adminOnly = roleMiddleware(["admin"]);
 export const brandOrInfluencer = roleMiddleware(["brand", "influencer", "creator"]);
