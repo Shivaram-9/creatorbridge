@@ -77,13 +77,13 @@ export default function BrandDashboard() {
       </div>
 
       <div className="campaign-block card" style={{ padding: '24px', borderRadius: '16px', background: 'var(--bg-primary)', border: '1px solid var(--border-light)', marginBottom: '30px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', borderBottom: '1px solid var(--border-light)', paddingBottom: '16px' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '16px', marginBottom: '20px', borderBottom: '1px solid var(--border-light)', paddingBottom: '16px' }}>
           <div>
             <h3 style={{ margin: 0, fontSize: '18px', display: 'flex', alignItems: 'center', gap: '8px' }}>
               All Applications
             </h3>
           </div>
-          <div style={{ display: 'flex', gap: '16px', fontSize: '13px', fontWeight: 600 }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', fontSize: '13px', fontWeight: 600 }}>
             <span>Total: <strong style={{ color: '#2563EB' }}>{applications.length}</strong></span>
             <span style={{ color: '#10b981' }}>Accepted: <strong>{applications.filter(a => a.status === 'Accepted').length}</strong></span>
             <span style={{ color: '#dc2626' }}>Rejected: <strong>{applications.filter(a => a.status === 'Rejected').length}</strong></span>
@@ -95,7 +95,7 @@ export default function BrandDashboard() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {applications.length === 0 && <div className="empty-state">No applications found.</div>}
             {applications.map(app => (
-              <div key={app._id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px', background: 'var(--bg-secondary)', borderRadius: '12px', border: '1px solid var(--border-light)' }}>
+              <div key={app._id} style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', alignItems: 'center', justifyContent: 'space-between', padding: '12px', background: 'var(--bg-secondary)', borderRadius: '12px', border: '1px solid var(--border-light)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                   <img src={app.influencer?.avatar || "/default-avatar.png"} alt="avatar" style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }} />
                   <div>
@@ -107,17 +107,17 @@ export default function BrandDashboard() {
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', gap: '10px' }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
                   {app.portfolio && (
-                    <a href={app.portfolio} target="_blank" rel="noreferrer" style={{ padding: '6px 12px', background: 'transparent', border: '1px solid var(--border-light)', borderRadius: '6px', fontSize: '13px', fontWeight: 600, cursor: 'pointer', textDecoration: 'none', color: 'var(--text-main)' }}>Portfolio</a>
+                    <a href={app.portfolio} target="_blank" rel="noreferrer" style={{ padding: '6px 12px', background: 'transparent', border: '1px solid var(--border-light)', borderRadius: '6px', fontSize: '13px', fontWeight: 600, cursor: 'pointer', textDecoration: 'none', color: 'var(--text-main)', whiteSpace: 'nowrap' }}>Portfolio</a>
                   )}
                   {app.status === 'Pending' ? (
                     <>
-                      <button onClick={() => handleAction(app.influencer._id, app.campaign._id, 'accepted')} style={{ padding: '6px 16px', background: '#10b981', color: '#fff', border: 'none', borderRadius: '6px', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>Accept</button>
-                      <button onClick={() => handleAction(app.influencer._id, app.campaign._id, 'rejected')} style={{ padding: '6px 16px', background: '#dc2626', color: '#fff', border: 'none', borderRadius: '6px', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>Reject</button>
+                      <button onClick={() => handleAction(app.influencer._id, app.campaign._id, 'accepted')} style={{ padding: '6px 16px', background: '#10b981', color: '#fff', border: 'none', borderRadius: '6px', fontSize: '13px', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}>Accept</button>
+                      <button onClick={() => handleAction(app.influencer._id, app.campaign._id, 'rejected')} style={{ padding: '6px 16px', background: '#dc2626', color: '#fff', border: 'none', borderRadius: '6px', fontSize: '13px', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}>Reject</button>
                     </>
                   ) : (
-                    <span style={{ padding: '6px 16px', background: app.status === 'Accepted' ? '#dcfce7' : '#fee2e2', color: app.status === 'Accepted' ? '#166534' : '#991b1b', borderRadius: '6px', fontSize: '13px', fontWeight: 600 }}>{app.status}</span>
+                    <span style={{ padding: '6px 16px', background: app.status === 'Accepted' ? '#dcfce7' : '#fee2e2', color: app.status === 'Accepted' ? '#166534' : '#991b1b', borderRadius: '6px', fontSize: '13px', fontWeight: 600, whiteSpace: 'nowrap' }}>{app.status}</span>
                   )}
                 </div>
               </div>
