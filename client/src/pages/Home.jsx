@@ -84,21 +84,33 @@ function TrendingCampaigns({ user }) {
               </div>
             </div>
 
-            {camp.applicants?.includes(user?._id) ? (
+            {user?.role === 'influencer' && (
+              camp.applicants?.includes(user?._id) ? (
+                <button 
+                  className="btn-apply"
+                  style={{ width: '100%', opacity: 0.6, cursor: 'not-allowed', background: 'var(--bg-secondary)', color: 'var(--text-muted)' }}
+                  disabled
+                >
+                  Applied ✓
+                </button>
+              ) : (
+                <button 
+                  className="btn-apply"
+                  style={{ width: '100%' }}
+                  onClick={() => setSelectedCampaign(camp)}
+                >
+                  Apply Now &rarr;
+                </button>
+              )
+            )}
+            
+            {user?.role === 'brand' && user?._id === camp.createdBy?._id && (
               <button 
-                className="btn-apply"
-                style={{ width: '100%', opacity: 0.6, cursor: 'not-allowed', background: 'var(--bg-secondary)', color: 'var(--text-muted)' }}
-                disabled
-              >
-                Applied ✓
-              </button>
-            ) : (
-              <button 
-                className="btn-apply"
+                className="btn-secondary"
                 style={{ width: '100%' }}
-                onClick={() => setSelectedCampaign(camp)}
+                onClick={() => window.location.href = '/brand-dashboard'}
               >
-                Apply Now &rarr;
+                View Applicants
               </button>
             )}
           </div>
