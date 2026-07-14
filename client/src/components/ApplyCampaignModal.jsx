@@ -144,7 +144,7 @@ export default function ApplyCampaignModal({ campaign, onClose, onSubmit, user }
 
           <div className="apply-modal-actions">
             <button type="button" className="btn-cancel" onClick={onClose}>Cancel</button>
-            <button type="submit" className="btn-submit" disabled={!agreed || !expectedPayment}>
+            <button type="submit" className="btn-apply" disabled={!agreed || !expectedPayment}>
               Apply Now <Send size={16} />
             </button>
           </div>

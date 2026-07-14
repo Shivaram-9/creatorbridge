@@ -84,8 +84,8 @@ function TrendingCampaigns({ user }) {
             </div>
 
             <button 
-              className="apply-btn-trending"
-              style={{ width: '100%', background: '#3b82f6', color: '#fff', border: 'none', padding: '10px', borderRadius: '8px', fontWeight: 600, cursor: 'pointer', transition: 'opacity 0.2s' }}
+              className="btn-apply"
+              style={{ width: '100%' }}
               onClick={() => setSelectedCampaign(camp)}
             >
               Apply Now &rarr;

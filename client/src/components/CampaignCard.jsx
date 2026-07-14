@@ -23,7 +23,7 @@ export default function CampaignCard({ campaign, onApply, isInfluencer }) {
         <div className="campaign-actions">
           <Link to={`/campaign/${_id}`} className="btn-secondary">View Details</Link>
           {isInfluencer && (
-            <button onClick={() => onApply(_id)} className="btn-primary">Apply Now</button>
+            <button onClick={() => onApply(_id)} className="btn-apply" style={{ width: '100%' }}>Apply Now</button>
           )}
         </div>
       </div>
