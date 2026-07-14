@@ -55,7 +55,10 @@ const allowedOrigins = [
   "https://www.pactogram.com",
   "https://pactogram.onrender.com",
   "http://localhost:5173",
-  "http://localhost:3000"
+  "http://localhost:3000",
+  "http://localhost",
+  "capacitor://localhost",
+  "ionic://localhost"
 ];
 
 app.use(cors({ 

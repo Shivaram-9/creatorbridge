@@ -78,8 +78,9 @@ async function request(path, options = {}) {
           ? JSON.stringify(options.body)
           : options.body,
     });
-  } catch {
-    return { error: "Server is unreachable right now" };
+  } catch (err) {
+    console.error("API Request Failed:", url, err);
+    return { error: `Network error: ${err.message || 'Server is unreachable'}` };
   }
 
   /* ── 401 → auth failure ── */
@@ -129,8 +130,9 @@ export const login = async (body) => {
       credentials: "include",
       body: JSON.stringify(body),
     });
-  } catch {
-    return { error: "Server is unreachable right now" };
+  } catch (err) {
+    console.error("Login Request Failed:", url, err);
+    return { error: `Network error: ${err.message || 'Server is unreachable'}` };
   }
 
   let data;
