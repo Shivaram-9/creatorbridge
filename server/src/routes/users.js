@@ -44,6 +44,61 @@ usersRouter.get("/test-gender/:username", async (req, res) => {
   }
 });
 
+usersRouter.get("/remove-dummy-chat/:username", async (req, res) => {
+  try {
+    const { Message } = await import("../models/Message.js");
+    const { User } = await import("../models/User.js");
+
+    const shivaram = await User.findOne({ username: req.params.username });
+    if (!shivaram) return res.json({ error: "User not found" });
+
+    const partners = await User.find({ name: /SAIBALAJI/i }).select("_id");
+    if (partners.length < 2) return res.json({ error: "Not enough partners to have duplicates", partners });
+
+    const results = [];
+    for (const partner of partners) {
+      const msgCount = await Message.countDocuments({
+        $or: [
+          { sender: shivaram._id, receiver: partner._id },
+          { sender: partner._id, receiver: shivaram._id }
+        ]
+      });
+      const lastMsg = await Message.findOne({
+        $or: [
+          { sender: shivaram._id, receiver: partner._id },
+          { sender: partner._id, receiver: shivaram._id }
+        ]
+      }).sort({ createdAt: -1 });
+
+      results.push({ partnerId: partner._id, msgCount, lastMessageAt: lastMsg ? lastMsg.createdAt : null });
+    }
+    
+    results.sort((a, b) => {
+      if (!a.lastMessageAt) return 1;
+      if (!b.lastMessageAt) return -1;
+      return b.lastMessageAt - a.lastMessageAt;
+    });
+
+    let deletedMessagesCount = 0;
+    for (let i = 1; i < results.length; i++) {
+      const p = results[i];
+      if (p.msgCount > 0) {
+        const delRes = await Message.deleteMany({
+          $or: [
+            { sender: shivaram._id, receiver: p.partnerId },
+            { sender: p.partnerId, receiver: shivaram._id }
+          ]
+        });
+        deletedMessagesCount += delRes.deletedCount;
+      }
+    }
+
+    res.json({ success: true, results, deletedMessagesCount });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 usersRouter.use(authMiddleware);
 
