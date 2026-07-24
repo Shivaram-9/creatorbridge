@@ -55,6 +55,7 @@ export default function SplashScreen() {
         poster="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
         autoPlay
         muted
+        loop
         playsInline
         controls={false}
         preload="auto"
@@ -69,6 +70,7 @@ export default function SplashScreen() {
         poster="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
         autoPlay
         muted
+        loop
         playsInline
         controls={false}
         preload="auto"
